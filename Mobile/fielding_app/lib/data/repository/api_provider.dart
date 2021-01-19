@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fielding_app/external/constants.dart';
 
 const String BASE_URL = "https://utilityfielding.ultimosolution.com";
 
@@ -90,8 +91,9 @@ class ApiProvider {
       "PoleID": poleId,
     };
     try {
-      _response = await _dio.post(BASE_URL +
-          "/api/MobileProject/CompletePolePicture", data: data);
+      _response = await _dio.post(
+          BASE_URL + "/api/MobileProject/CompletePolePicture",
+          data: data);
       return _response;
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {
@@ -99,6 +101,52 @@ class ApiProvider {
       } else {
         throw e;
       }
+    }
+  }
+
+  Future<Response> updateLocation(
+      String token, String poleId, String latitude, String longitude) async {
+    var data = {
+      "Token": token,
+      "PoleID": poleId,
+      "Latitude": latitude,
+      "Longitude": longitude
+    };
+
+    try {
+      _response = await _dio
+          .post(BASE_URL + "/api/MobileProject/UpdateLocation", data: data);
+      return _response;
+    } on DioError catch (e) {
+      if (e.response.statusCode == 400) {
+        return e.response;
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  Future<Response> addPole(dynamic data) async {
+    try {
+      _response = await _dio
+          .post(BASE_URL + "/api/MobileProject/CompleteFielding", data: data);
+      return _response;
+    } on DioError catch (e) {
+      if (e.response.statusCode == 400) {
+        return e.response;
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  Future<Response> getLocationByLatLng(double lat, double lng) async {
+    try {
+      var response = await _dio.get(
+          "${Constants.baseGoogleApi}/maps/api/geocode/json?key=${Constants.apiKey}&latlng=$lat,$lng");
+      return response;
+    } catch (e) {
+      throw e;
     }
   }
 }

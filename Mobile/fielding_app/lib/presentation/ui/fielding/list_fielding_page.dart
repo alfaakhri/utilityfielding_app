@@ -1,14 +1,18 @@
 import 'package:fielding_app/data/models/all_projects_model.dart';
 import 'package:fielding_app/data/models/user_model.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
+import 'package:fielding_app/external/service/location_service.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/widgets/drawer_widget.dart';
 import 'package:fielding_app/presentation/widgets/error_handling_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
 import 'detail_fielding_page.dart';
@@ -19,6 +23,16 @@ class ListFieldingPage extends StatefulWidget {
 }
 
 class _ListFieldingPageState extends State<ListFieldingPage> {
+  void getCurrentLocation() async {
+    LocationService location = LocationService();
+    LocationData data = await location.getCurrentLocation();
+    print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
+    context
+        .read<FieldingProvider>()
+        .setCurrentPosition(LatLng(data.latitude, data.longitude));
+    context.read<FieldingProvider>().setCurrentLocationData(data);
+  }
+
   FieldingBloc fieldingBloc;
   @override
   void initState() {
@@ -26,6 +40,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     fieldingBloc
         .add(GetAllProjects(context.read<UserProvider>().userModel.data.token));
+    getCurrentLocation();
   }
 
   @override
@@ -190,17 +205,27 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                                   children: <Widget>[
                                                     Text(
                                                       "Notes",
-                                                      style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12),
+                                                      style: TextStyle(
+                                                          color: ColorHelpers
+                                                              .colorBlackText,
+                                                          fontSize: 12),
                                                     ),
                                                     UIHelper.verticalSpaceSmall,
                                                     Container(
                                                       width: double.infinity,
                                                       decoration: BoxDecoration(
-                                                        border: Border.all(color: ColorHelpers.colorGrey),
-                                                        borderRadius: BorderRadius.circular(5),
+                                                        border: Border.all(
+                                                            color: ColorHelpers
+                                                                .colorGrey),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
                                                       ),
-                                                      padding: EdgeInsets.all(10),
-                                                      child: Text(data.note ?? "-", softWrap: true),
+                                                      padding:
+                                                          EdgeInsets.all(10),
+                                                      child: Text(
+                                                          data.note ?? "-",
+                                                          softWrap: true),
                                                     ),
                                                   ],
                                                 ),

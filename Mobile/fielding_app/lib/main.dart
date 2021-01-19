@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'domain/bloc/auth_bloc/auth_bloc.dart';
+import 'domain/provider/fielding_provider.dart';
 import 'domain/provider/user_provider.dart';
 
 void main() {
@@ -21,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => FieldingProvider()),
       ],
       child: MultiBlocProvider(
         providers: [

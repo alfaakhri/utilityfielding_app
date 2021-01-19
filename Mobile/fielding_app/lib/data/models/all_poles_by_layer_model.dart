@@ -5,7 +5,8 @@ class AllPolesByLayerModel {
   String fieldingCompletedDate;
   String fieldingBy;
   int fieldingStatus;
-  String poleSequence;
+  int poleSequence;
+  String poleNumber;
   String message;
 
   AllPolesByLayerModel(
@@ -16,6 +17,7 @@ class AllPolesByLayerModel {
       this.fieldingBy,
       this.fieldingStatus,
       this.poleSequence,
+      this.poleNumber,
       this.message});
 
   AllPolesByLayerModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class AllPolesByLayerModel {
     fieldingBy = json['FieldingBy'];
     fieldingStatus = json['FieldingStatus'];
     poleSequence = json['PoleSequence'];
+    poleNumber = json['PoleNumber'];
     message = json['Message'];
   }
 
@@ -38,6 +41,7 @@ class AllPolesByLayerModel {
     data['FieldingBy'] = this.fieldingBy;
     data['FieldingStatus'] = this.fieldingStatus;
     data['PoleSequence'] = this.poleSequence;
+    data['PoleNumber'] = this.poleNumber;
     data['Message'] = this.message;
     return data;
   }

@@ -1,9 +1,17 @@
 import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
+import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
+import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
+import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
+import 'package:fielding_app/external/service/location_service.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
+import 'package:fielding_app/presentation/widgets/loading_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -26,13 +34,21 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   bool _editLocation = false;
   String _latitude;
   String _longitude;
-
+  FieldingBloc fieldingBloc;
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+  
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _latitude = widget.polesLayerModel.latitude;
-    _longitude = widget.polesLayerModel.longitude;
+    if (widget.polesLayerModel != null) {
+      _latitude = widget.polesLayerModel.latitude;
+      _longitude = widget.polesLayerModel.longitude;
+    } else {
+      _latitude = context.read<FieldingProvider>().currentPosition.latitude.toString();
+      _longitude = context.read<FieldingProvider>().currentPosition.longitude.toString();
+    }
+    fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     setPoleIcons();
   }
 
@@ -68,22 +84,42 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Pole",
-            style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorHelpers.colorBlackText,
+        appBar: AppBar(
+          title: Text("Pole",
+              style:
+                  TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: ColorHelpers.colorBlackText,
+            ),
+            onPressed: () {
+              Get.back();
+            },
           ),
-          onPressed: () {
-            Get.back();
-          },
+          backgroundColor: Colors.white,
         ),
-        backgroundColor: Colors.white,
-      ),
-      body: _content(widget.polesLayerModel),
-    );
+        body: BlocListener<FieldingBloc, FieldingState>(
+          listener: (context, state) {
+            if (state is UpdateLocationLoading) {
+              LoadingWidget.showLoadingDialog(context, _keyLoader);
+            } else if (state is UpdateLocationFailed) {
+              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+                  .pop();
+              Fluttertoast.showToast(msg: state.message);
+            } else if (state is UpdateLocationSuccess) {
+              setState(() {
+                _latitude = state.allPolesByLayerModel.latitude;
+                _longitude = state.allPolesByLayerModel.longitude;
+                _editLocation = false;
+              });
+              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+                  .pop();
+              Fluttertoast.showToast(msg: "Update location success");
+            }
+          },
+          child: _content(widget.polesLayerModel),
+        ));
   }
 
   Widget _content(AllPolesByLayerModel allPoles) {
@@ -102,7 +138,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                 style:
                     TextStyle(fontSize: 14, color: ColorHelpers.colorBlackText),
               ),
-              Text("${allPoles.poleSequence}",
+              Text((widget.polesLayerModel == null) ? "-" : allPoles.poleSequence,
                   style: TextStyle(
                       color: ColorHelpers.colorBlueNumber, fontSize: 18)),
             ],
@@ -124,8 +160,8 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                     ),
                   ].toSet(),
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(double.parse(allPoles.latitude),
-                        double.parse(allPoles.longitude)),
+                    target: LatLng(double.parse(_latitude),
+                        double.parse(_longitude)),
                     zoom: 16,
                   ),
                   onTap: (LatLng loc) {
@@ -139,7 +175,9 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                   },
                   onMapCreated: (GoogleMapController controller) {
                     googleMapController = controller;
-                    showPinsOnMap(allPoles);
+                    if (widget.polesLayerModel != null) {
+                      showPinsOnMap(allPoles);
+                    }
                   }),
               SlidingUpPanel(
                 minHeight: 175,
@@ -189,7 +227,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                       ),
                       Container(
                         child: Text(
-                          double.parse(_latitude).toStringAsFixed(6),
+                          double.parse(_latitude).toStringAsFixed(6) ?? "-",
                           style: TextStyle(
                               fontSize: 12, color: ColorHelpers.colorBlackText),
                         ),
@@ -232,7 +270,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                       ),
                       Container(
                         child: Text(
-                          double.parse(_longitude).toStringAsFixed(6),
+                          double.parse(_longitude).toStringAsFixed(6) ?? "-",
                           style: TextStyle(
                               fontSize: 12, color: ColorHelpers.colorBlackText),
                         ),
@@ -262,11 +300,11 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                   width: double.infinity,
                   child: FlatButton(
                     onPressed: () {
-                      setState(() {
-                        if (_editLocation) {
-                          _editLocation = false;
-                        }
-                      });
+                      fieldingBloc.add(UpdateLocation(
+                          context.read<UserProvider>().userModel.data.token,
+                          widget.polesLayerModel.id,
+                          _latitude,
+                          _longitude));
                     },
                     color: ColorHelpers.colorGreen,
                     child: Text(

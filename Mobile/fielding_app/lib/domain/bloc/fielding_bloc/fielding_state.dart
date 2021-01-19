@@ -43,6 +43,14 @@ class StartPolePictureFailed extends FieldingState {
   StartPolePictureFailed(this.message);
 }
 
+class AddPoleLoading extends FieldingState {}
+class AddPoleFailed extends FieldingState {
+  final String message;
+
+  AddPoleFailed(this.message);
+}
+class AddPoleSuccess extends FieldingState {}
+
 class StartPolePictureSuccess extends FieldingState {
   final List<AllPolesByLayerModel> allPolesByLayerModel;
 
@@ -61,4 +69,17 @@ class CompletePolePictureSuccess extends FieldingState {
   final List<AllPolesByLayerModel> allPolesByLayerModel;
 
   CompletePolePictureSuccess(this.allPolesByLayerModel);
+}
+
+class UpdateLocationLoading extends FieldingState {}
+
+class UpdateLocationSuccess extends FieldingState {
+  final AllPolesByLayerModel allPolesByLayerModel;
+
+  UpdateLocationSuccess(this.allPolesByLayerModel);
+}
+
+class UpdateLocationFailed extends FieldingState {
+  final String message;
+  UpdateLocationFailed(this.message);
 }

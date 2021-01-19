@@ -16,4 +16,6 @@ class ColorHelpers {
   static const colorWhite = Color(0xFFFFFFFF);
   static const colorBlue = Color(0xFFE9F1FF);
   static const colorBlueNumber = Color(0xFF4168AE);
+  static const colorYellowCard = Color(0xFFFFFCE9);
+  static const colorGreenCard = Color(0xFFE5FFF0);
 }

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
 import 'package:fielding_app/data/models/all_projects_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
@@ -21,7 +23,6 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
 
   AllPolesByLayerModel _responsePolePicture = AllPolesByLayerModel();
   AllPolesByLayerModel get responsePolePicture => _responsePolePicture;
-
 
   @override
   Stream<FieldingState> mapEventToState(
@@ -101,6 +102,33 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         }
       } catch (e) {
         yield CompletePolePictureFailed(e.toString());
+      }
+    } else if (event is UpdateLocation) {
+      yield UpdateLocationLoading();
+      try {
+        var response = await _apiProvider.updateLocation(
+            event.token, event.poleId, event.latitude, event.longitude);
+        _responsePolePicture = AllPolesByLayerModel.fromJson(response.data);
+
+        if (response.statusCode == 200) {
+          yield UpdateLocationSuccess(_responsePolePicture);
+        } else {
+          yield UpdateLocationFailed(_responsePolePicture.message);
+        }
+      } catch (e) {
+        yield UpdateLocationFailed(e.toString());
+      }
+    } else if (event is AddPole) {
+      try {
+        print(json.encode(event.addPoleModel.toJson()));
+        var response = await _apiProvider.addPole(event.addPoleModel.toJson());
+        if (response.statusCode == 200) {
+          yield AddPoleSuccess();
+        } else {
+          yield AddPoleFailed('Failed add pole');
+        }
+      } catch (e) {
+        yield AddPoleFailed(e.toString());
       }
     }
   }

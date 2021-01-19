@@ -40,3 +40,9 @@ class UpdateLocation extends FieldingEvent {
 
   UpdateLocation(this.token, this.poleId, this.latitude, this.longitude);
 }
+
+class AddPole extends FieldingEvent {
+  final AddPoleModel addPoleModel;
+
+  AddPole(this.addPoleModel);
+}
