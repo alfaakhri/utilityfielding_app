@@ -46,3 +46,17 @@ class AddPole extends FieldingEvent {
 
   AddPole(this.addPoleModel);
 }
+
+class GetPoleById extends FieldingEvent {
+  final String id;
+  final String token;
+
+  GetPoleById(this.id, this.token);
+}
+
+class GetCurrentAddress extends FieldingEvent {
+  final double latitude;
+  final double longitude;
+
+  GetCurrentAddress(this.latitude, this.longitude);
+}

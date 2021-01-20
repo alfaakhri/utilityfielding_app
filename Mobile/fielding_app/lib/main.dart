@@ -2,11 +2,13 @@ import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/presentation/ui/root_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import 'domain/bloc/auth_bloc/auth_bloc.dart';
+import 'domain/bloc/location_bloc/location_bloc.dart';
 import 'domain/provider/fielding_provider.dart';
 import 'domain/provider/user_provider.dart';
 
@@ -28,6 +30,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
           BlocProvider<FieldingBloc>(create: (context) => FieldingBloc()),
+          // BlocProvider<LocationBloc>(create: (context) => LocationBloc()),
         ],
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,

@@ -5,6 +5,8 @@ import 'package:bloc/bloc.dart';
 import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
 import 'package:fielding_app/data/models/all_projects_model.dart';
+import 'package:fielding_app/data/models/current_address.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:meta/meta.dart';
 
@@ -23,6 +25,12 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
 
   AllPolesByLayerModel _responsePolePicture = AllPolesByLayerModel();
   AllPolesByLayerModel get responsePolePicture => _responsePolePicture;
+
+  PoleByIdModel _poleByIdModel = PoleByIdModel();
+  PoleByIdModel get poleByIdModel => _poleByIdModel;
+
+  CurrentAddress _currentAddress = CurrentAddress();
+  CurrentAddress get currentAddress => _currentAddress;
 
   @override
   Stream<FieldingState> mapEventToState(
@@ -129,6 +137,38 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         }
       } catch (e) {
         yield AddPoleFailed(e.toString());
+      }
+    } else if (event is GetPoleById) {
+      yield GetPoleByIdLoading();
+      try {
+        var response = await _apiProvider.getPoleById(event.id, event.token);
+        if (response.statusCode == 200) {
+          if (response.data != null) {
+            _poleByIdModel = PoleByIdModel.fromJson(response.data);
+            yield GetPoleByIdSuccess(_poleByIdModel);
+          } else {
+            yield GetPoleByIdFailed("Failed load data pole");
+          }
+        } else {
+          yield GetPoleByIdFailed("Failed load data pole");
+        }
+      } catch (e) {
+        yield GetPoleByIdFailed(e.toString());
+      }
+    } else if (event is GetCurrentAddress) {
+      yield GetCurrentAddressLoading();
+      try {
+        var response = await _apiProvider.getLocationByLatLng(
+            event.latitude, event.longitude);
+        if (response.statusCode == 200) {
+          _currentAddress = CurrentAddress.fromJson(response.data);
+          print("status geocode: ${_currentAddress.status.toString()}");
+          yield GetCurrentAddressSuccess(_currentAddress);
+        } else {
+          yield GetCurrentAddressFailed("Failed get street location");
+        }
+      } catch (e) {
+        yield GetCurrentAddressFailed(e.toString());
       }
     }
   }

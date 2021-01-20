@@ -140,6 +140,20 @@ class ApiProvider {
     }
   }
 
+    Future<Response> getPoleById(String id, String token) async {
+    try {
+      _response = await _dio
+          .get(BASE_URL + "/api/MobileProject/GetPoleById/$id?token=token");
+      return _response;
+    } on DioError catch (e) {
+      if (e.response.statusCode == 400) {
+        return e.response;
+      } else {
+        throw e;
+      }
+    }
+  }
+
   Future<Response> getLocationByLatLng(double lat, double lng) async {
     try {
       var response = await _dio.get(

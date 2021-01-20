@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
+
 class FieldingProvider extends ChangeNotifier {
   AllProjectsModel _allProjectsSelected = AllProjectsModel();
   AllProjectsModel get allProjectsSelected => _allProjectsSelected;
@@ -31,6 +32,14 @@ class FieldingProvider extends ChangeNotifier {
   CurrentAddress get currentAddress => _currentAddress;
   void setCurrentAddress(CurrentAddress currentAddress) {
     _currentAddress = currentAddress;
+    _streetName = _currentAddress.results.first.formattedAddress;
+    notifyListeners();
+  }
+
+  String _streetName;
+  String get streetName => _streetName;
+  void setStreetName(String streetName) {
+    _streetName = streetName;
     notifyListeners();
   }
 
@@ -41,10 +50,25 @@ class FieldingProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         setCurrentAddress(CurrentAddress.fromJson(response.data));
         print("status geocode: ${_currentAddress.status.toString()}");
+      } else {
       }
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  double _latitude;
+  double get latitude => _latitude;
+  void setLatitude(double latitude) {
+    _latitude = latitude;
+    notifyListeners();
+  }
+
+  double _longitude;
+  double get longitude => _longitude;
+  void setLongitude(double longitude) {
+    _longitude = longitude;
+    notifyListeners();
   }
 }
 

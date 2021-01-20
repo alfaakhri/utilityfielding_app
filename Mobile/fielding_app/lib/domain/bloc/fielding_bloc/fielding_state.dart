@@ -83,3 +83,27 @@ class UpdateLocationFailed extends FieldingState {
   final String message;
   UpdateLocationFailed(this.message);
 }
+
+class GetPoleByIdLoading extends FieldingState {}
+class GetPoleByIdFailed extends FieldingState {
+  final String message;
+
+  GetPoleByIdFailed(this.message);
+}
+class GetPoleByIdSuccess extends FieldingState {
+  final PoleByIdModel poleByIdModel;
+
+  GetPoleByIdSuccess(this.poleByIdModel);
+}
+
+class GetCurrentAddressLoading extends FieldingState {}
+class GetCurrentAddressSuccess extends FieldingState {
+  final CurrentAddress currentAddress;
+
+  GetCurrentAddressSuccess(this.currentAddress);
+}
+class GetCurrentAddressFailed extends FieldingState {
+  final String message;
+
+  GetCurrentAddressFailed(this.message);
+}

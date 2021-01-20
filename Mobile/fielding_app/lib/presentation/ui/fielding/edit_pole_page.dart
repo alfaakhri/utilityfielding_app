@@ -53,6 +53,10 @@ class _EditPolePageState extends State<EditPolePage> {
     super.initState();
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     authBloc = BlocProvider.of<AuthBloc>(context);
+    if (widget.poles != null) {
+      fieldingBloc
+          .add(GetPoleById(widget.poles.id, authBloc.userModel.data.token));
+    }
   }
 
   @override
@@ -125,345 +129,364 @@ class _EditPolePageState extends State<EditPolePage> {
                     color: ColorHelpers.colorButtonDefault,
                   )),
             ),
-            body: Container(
-              color: ColorHelpers.colorBackground,
-              child: Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    color: Colors.white,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Location Number",
-                              style: TextStyle(
-                                  color: ColorHelpers.colorBlueNumber,
-                                  fontSize: 14),
-                            ),
-                            Text(
-                              "-",
-                              style: TextStyle(
-                                  color: ColorHelpers.colorBlackText,
-                                  fontSize: 14),
-                            ),
-                          ],
-                        ),
-                        Image.asset(
-                          'assets/pin_blue.png',
-                          scale: 4.5,
-                        ),
-                      ],
+            body: BlocBuilder<FieldingBloc, FieldingState>(
+              builder: (context, state) {
+                if (state is GetPoleByIdLoading) {
+                } else if (state is GetPoleByIdFailed) {
+                } else if (state is GetPoleByIdSuccess) {}
+                return _buildBody(context);
+              },
+            ),
+          ),
+        ));
+  }
+
+  Container _buildBody(BuildContext context) {
+    return Container(
+      color: ColorHelpers.colorBackground,
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(16),
+            color: Colors.white,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Location Number",
+                      style: TextStyle(
+                          color: ColorHelpers.colorBlueNumber, fontSize: 14),
                     ),
+                    Text(
+                      "-",
+                      style: TextStyle(
+                          color: ColorHelpers.colorBlackText, fontSize: 14),
+                    ),
+                  ],
+                ),
+                Image.asset(
+                  'assets/pin_blue.png',
+                  scale: 4.5,
+                ),
+              ],
+            ),
+          ),
+          UIHelper.verticalSpaceSmall,
+          Expanded(
+            child: Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(16),
+              child: ListView(
+                children: [
+                  Text(
+                    "Pole Information",
+                    style: TextStyle(
+                        color: ColorHelpers.colorBlackText,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14),
                   ),
                   UIHelper.verticalSpaceSmall,
-                  Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.all(16),
-                      child: ListView(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "GPS",
+                        style: textDefault,
+                      ),
+                      Row(
                         children: [
                           Text(
-                            "Pole Information",
+                            (context.watch<FieldingProvider>().latitude == null)
+                                ? ""
+                                : "${context.watch<FieldingProvider>().latitude.toStringAsFixed(6)}, ${context.watch<FieldingProvider>().longitude.toStringAsFixed(6)}",
                             style: TextStyle(
+                                fontWeight: FontWeight.w600,
                                 color: ColorHelpers.colorBlackText,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
+                                fontSize: 12),
                           ),
-                          UIHelper.verticalSpaceSmall,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "GPS",
-                                style: textDefault,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "-6.919634, 107.594192",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: ColorHelpers.colorBlackText,
-                                        fontSize: 12),
-                                  ),
-                                  UIHelper.horizontalSpaceSmall,
-                                  InkWell(
-                                    onTap: () {
-                                      Get.to(EditLatLngPage());
-                                    },
-                                    child: Text('Edit Location',
-                                        style: TextStyle(
-                                            color: ColorHelpers.colorBlueNumber,
-                                            fontSize: 12)),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Street Name",
-                                style: textDefault,
-                              ),
-                              Text(
-                                _street.text,
+                          UIHelper.horizontalSpaceSmall,
+                          InkWell(
+                            onTap: () {
+                              Get.to(EditLatLngPage(
+                                polesLayerModel: widget.poles,
+                              ));
+                            },
+                            child: Text('Edit Location',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: ColorHelpers.colorBlackText,
-                                    fontSize: 12),
-                              ),
-                            ],
+                                    color: ColorHelpers.colorBlueNumber,
+                                    fontSize: 12)),
                           ),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "VAP / Terminal",
-                                style: textDefault,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    _vapTerminal.text,
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: ColorHelpers.colorBlackText,
-                                        fontSize: 12),
-                                  ),
-                                  UIHelper.horizontalSpaceSmall,
-                                  InkWell(
-                                    onTap: () {
-                                      dialogAlertDefault(
-                                          "VAP / Terminal", _vapTerminal);
-                                    },
-                                    child: Text('Edit',
-                                        style: TextStyle(
-                                            color: ColorHelpers.colorBlueNumber,
-                                            fontSize: 12)),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText("Pole Number", _poleNumber.text,
-                              _poleNumber, false),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText("Osmose Number", _osmoseNumber.text,
-                              _osmoseNumber, false),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText("Other Number", _otherNumber.text,
-                              _otherNumber, false),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   children: [
-                          //     Text(
-                          //       "Picture Number",
-                          //       style: textDefault,
-                          //     ),
-                          //     Text(
-                          //       "123456",
-                          //       style: TextStyle(
-                          //           fontWeight: FontWeight.w600,
-                          //           color: ColorHelpers.colorBlackText,
-                          //           fontSize: 12),
-                          //     ),
-                          //   ],
-                          // ),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText("Pole Height", _poleHeight.text,
-                              _poleHeight, false),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText("Ground Line Circumference",
-                              _groundLine.text, _groundLine, false),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText(
-                              "Pole Class", _poleClass.text, _poleClass, false),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText("Year", _year.text, _year, false),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText("Species", "Western Red Cedar",
-                              _osmoseNumber, false),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText(
-                              "Condition", _condition.text, _condition, false),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          _contentEditText(
-                              "Pole Stamp", _poleStamp.text, _poleStamp, true),
-                          UIHelper.verticalSpaceSmall,
-                          Divider(
-                            color: ColorHelpers.colorBlackText,
-                          ),
-                          UIHelper.verticalSpaceSmall,
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          //   crossAxisAlignment: CrossAxisAlignment.start,
-                          //   children: [
-                          //     Text(
-                          //       "HOA",
-                          //       style: textDefault,
-                          //     ),
-                          //     Column(
-                          //       crossAxisAlignment: CrossAxisAlignment.end,
-                          //       children: [
-                          //         Row(
-                          //           children: [
-                          //             Text(
-                          //               "Telco",
-                          //               style: TextStyle(
-                          //                   fontWeight: FontWeight.w600,
-                          //                   color: ColorHelpers.colorBlackText,
-                          //                   fontSize: 12),
-                          //             ),
-                          //             UIHelper.horizontalSpaceSmall,
-                          //             Icon(
-                          //               Icons.arrow_forward_ios,
-                          //               color: ColorHelpers.colorBlackText,
-                          //               size: 14,
-                          //             ),
-                          //           ],
-                          //         ),
-                          //         UIHelper.verticalSpaceSmall,
-                          //         Row(
-                          //           children: [
-                          //             Icon(
-                          //               Icons.add,
-                          //               color: ColorHelpers.colorBlueNumber,
-                          //               size: 14,
-                          //             ),
-                          //             UIHelper.horizontalSpaceVerySmall,
-                          //             Text(
-                          //               "Add HOA",
-                          //               style: TextStyle(
-                          //                   fontWeight: FontWeight.w600,
-                          //                   color: ColorHelpers.colorBlueNumber,
-                          //                   fontSize: 12),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ],
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // _contentEditText("Transformer", 'Unknown', _osmoseNumber),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // _contentEditText("Anchor", "Yes", _osmoseNumber),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // _contentEditText("Riser", "Yes", _osmoseNumber),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // _contentEditText("VGR", "Yes", _osmoseNumber),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // _contentEditText("Notes", "Add Notes", _osmoseNumber),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // _contentEditText(
-                          //     "Poles Picture", "Add Pictures", _osmoseNumber),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
-                          // _contentEditText(
-                          //     "Other Attachment", "Add Files", _osmoseNumber),
-                          // UIHelper.verticalSpaceSmall,
-                          // Divider(
-                          //   color: ColorHelpers.colorBlackText,
-                          // ),
-                          // UIHelper.verticalSpaceSmall,
                         ],
                       ),
-                    ),
+                    ],
                   ),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Street Name",
+                        style: textDefault,
+                      ),
+                      UIHelper.horizontalSpaceLarge,
+                      Expanded(
+                        child: Text(
+                          (context.watch<FieldingProvider>().streetName != null)
+                              ? context.watch<FieldingProvider>().streetName
+                              : "-",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: ColorHelpers.colorBlackText,
+                              fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "VAP / Terminal",
+                        style: textDefault,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            _vapTerminal.text,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: ColorHelpers.colorBlackText,
+                                fontSize: 12),
+                          ),
+                          UIHelper.horizontalSpaceSmall,
+                          InkWell(
+                            onTap: () {
+                              dialogAlertDefault(
+                                  "VAP / Terminal", _vapTerminal);
+                            },
+                            child: Text('Edit',
+                                style: TextStyle(
+                                    color: ColorHelpers.colorBlueNumber,
+                                    fontSize: 12)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText(
+                      "Pole Number", _poleNumber.text, _poleNumber, false),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText("Osmose Number", _osmoseNumber.text,
+                      _osmoseNumber, false),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText(
+                      "Other Number", _otherNumber.text, _otherNumber, false),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       "Picture Number",
+                  //       style: textDefault,
+                  //     ),
+                  //     Text(
+                  //       "123456",
+                  //       style: TextStyle(
+                  //           fontWeight: FontWeight.w600,
+                  //           color: ColorHelpers.colorBlackText,
+                  //           fontSize: 12),
+                  //     ),
+                  //   ],
+                  // ),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText(
+                      "Pole Height", _poleHeight.text, _poleHeight, false),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText("Ground Line Circumference",
+                      _groundLine.text, _groundLine, false),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText(
+                      "Pole Class", _poleClass.text, _poleClass, false),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText("Year", _year.text, _year, false),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText(
+                      "Species", "Western Red Cedar", _osmoseNumber, false),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText(
+                      "Condition", _condition.text, _condition, false),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  _contentEditText(
+                      "Pole Stamp", _poleStamp.text, _poleStamp, true),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Text(
+                  //       "HOA",
+                  //       style: textDefault,
+                  //     ),
+                  //     Column(
+                  //       crossAxisAlignment: CrossAxisAlignment.end,
+                  //       children: [
+                  //         Row(
+                  //           children: [
+                  //             Text(
+                  //               "Telco",
+                  //               style: TextStyle(
+                  //                   fontWeight: FontWeight.w600,
+                  //                   color: ColorHelpers.colorBlackText,
+                  //                   fontSize: 12),
+                  //             ),
+                  //             UIHelper.horizontalSpaceSmall,
+                  //             Icon(
+                  //               Icons.arrow_forward_ios,
+                  //               color: ColorHelpers.colorBlackText,
+                  //               size: 14,
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         UIHelper.verticalSpaceSmall,
+                  //         Row(
+                  //           children: [
+                  //             Icon(
+                  //               Icons.add,
+                  //               color: ColorHelpers.colorBlueNumber,
+                  //               size: 14,
+                  //             ),
+                  //             UIHelper.horizontalSpaceVerySmall,
+                  //             Text(
+                  //               "Add HOA",
+                  //               style: TextStyle(
+                  //                   fontWeight: FontWeight.w600,
+                  //                   color: ColorHelpers.colorBlueNumber,
+                  //                   fontSize: 12),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ],
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // _contentEditText("Transformer", 'Unknown', _osmoseNumber),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // _contentEditText("Anchor", "Yes", _osmoseNumber),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // _contentEditText("Riser", "Yes", _osmoseNumber),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // _contentEditText("VGR", "Yes", _osmoseNumber),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // _contentEditText("Notes", "Add Notes", _osmoseNumber),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // _contentEditText(
+                  //     "Poles Picture", "Add Pictures", _osmoseNumber),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
+                  // _contentEditText(
+                  //     "Other Attachment", "Add Files", _osmoseNumber),
+                  // UIHelper.verticalSpaceSmall,
+                  // Divider(
+                  //   color: ColorHelpers.colorBlackText,
+                  // ),
+                  // UIHelper.verticalSpaceSmall,
                 ],
               ),
             ),
           ),
-        ));
+        ],
+      ),
+    );
   }
 
   InkWell _contentEditText(String title, String value,
