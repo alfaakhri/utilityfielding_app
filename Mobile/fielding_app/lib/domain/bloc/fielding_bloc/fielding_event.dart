@@ -60,3 +60,11 @@ class GetCurrentAddress extends FieldingEvent {
 
   GetCurrentAddress(this.latitude, this.longitude);
 }
+
+class StartFielding extends FieldingEvent {
+  final String token;
+  final String poleId;
+  final bool isStartAdditional;
+
+  StartFielding(this.token, this.poleId, this.isStartAdditional);
+}

@@ -3,6 +3,7 @@ class AddPoleModel {
   String id;
   String layerId;
   String street;
+  String vAPTerminal;
   String poleNumber;
   String osmose;
   String latitude;
@@ -21,6 +22,7 @@ class AddPoleModel {
       this.id,
       this.layerId,
       this.street,
+      this.vAPTerminal,
       this.poleNumber,
       this.osmose,
       this.latitude,
@@ -39,6 +41,7 @@ class AddPoleModel {
     id = json['Id'];
     layerId = json['LayerId'];
     street = json['Street'];
+    vAPTerminal = json['VAPTerminal'];
     poleNumber = json['PoleNumber'];
     osmose = json['Osmose'];
     latitude = json['Latitude'];
@@ -59,6 +62,7 @@ class AddPoleModel {
     data['Id'] = this.id;
     data['LayerId'] = this.layerId;
     data['Street'] = this.street;
+    data['VAPTerminal'] = this.vAPTerminal;
     data['PoleNumber'] = this.poleNumber;
     data['Osmose'] = this.osmose;
     data['Latitude'] = this.latitude;

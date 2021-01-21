@@ -132,9 +132,6 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             } else if (state is CompletePolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is CompletePolePictureFailed) {
-              fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data.token,
-                  widget.allProjectsModel.iD));
               Navigator.of(_keyLoader.currentContext, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: state.message);
@@ -144,6 +141,23 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
 
               Navigator.of(_keyLoader.currentContext, rootNavigator: true)
                   .pop();
+            } else if (state is StartFieldingLoading) {
+              LoadingWidget.showLoadingDialog(context, _keyLoader);
+            } else if (state is StartFieldingFailed) {
+              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+                  .pop();
+              Fluttertoast.showToast(msg: state.message);
+              fieldingBloc.add(GetAllPolesByID(
+                  context.read<UserProvider>().userModel.data.token,
+                  widget.allProjectsModel.iD));
+            } else if (state is StartFieldingSuccess) {
+              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+                  .pop();
+              Fluttertoast.showToast(msg: "Start fielding success");
+              Get.to(EditPolePage(
+                poles: poleModelSelected,
+                allProjectsModel: widget.allProjectsModel,
+              ));
             }
           },
           builder: (context, state) {
@@ -183,7 +197,9 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               ),
               InkWell(
                   onTap: () {
-                    Get.to(EditPolePage(allProjectsModel: widget.allProjectsModel, isAddPole: true));
+                    Get.to(EditPolePage(
+                        allProjectsModel: widget.allProjectsModel,
+                        isAddPole: true));
                   },
                   child: Icon(Icons.add, color: ColorHelpers.colorBlackText)),
             ],
@@ -200,8 +216,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   markers: _markers,
                   mapType: MapType.normal,
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(double.parse(allPoles.last.latitude),
-                        double.parse(allPoles.last.longitude)),
+                    target: (allPoles.length == 0)
+                        ? LatLng(this.currentLocation.latitude,
+                            this.currentLocation.longitude)
+                        : LatLng(double.parse(allPoles.last.latitude),
+                            double.parse(allPoles.last.longitude)),
                     zoom: 10,
                   ),
                   onTap: (LatLng loc) {
@@ -213,15 +232,19 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     googleMapController = controller;
                     showPinsOnMap(allPoles);
                   }),
-              SlidingUpPanel(
-                minHeight: 175,
-                maxHeight: MediaQuery.of(context).size.height / 1.3,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50)),
-                panel: _buildListAllPoles(allPoles),
-                body: Container(),
-              ),
+              (allPoles.length == 0)
+                  ? Container()
+                  : SlidingUpPanel(
+                      minHeight: 175,
+                      maxHeight: MediaQuery.of(context).size.height / 1.3,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(50),
+                          topRight: Radius.circular(50)),
+                      panel: (allPoles.length == 0)
+                          ? Container()
+                          : _buildListAllPoles(allPoles),
+                      body: Container(),
+                    ),
             ],
           ),
         ),
@@ -281,7 +304,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                         ],
                                       ),
                                       Text(
-                                          poleModelSelected.poleSequence ?? "-",
+                                          (poleModelSelected.poleSequence ==
+                                                  null)
+                                              ? "-"
+                                              : poleModelSelected.poleSequence
+                                                  .toString(),
                                           style: TextStyle(
                                               color: ColorHelpers.colorOrange,
                                               fontSize: 24)),
@@ -289,7 +316,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                   ),
                                   InkWell(
                                     onTap: () {
-                                      Get.to(EditPolePage());
+                                      fieldingBloc.add(StartFielding(
+                                          context
+                                              .read<UserProvider>()
+                                              .userModel
+                                              .data
+                                              .token,
+                                          poleModelSelected.id,
+                                          true));
                                     },
                                     child: Container(
                                         decoration: BoxDecoration(
@@ -364,7 +398,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                   ),
                                                 ],
                                               ),
-                                              Text(data.poleSequence ?? "-",
+                                              Text(
+                                                  (data.poleSequence == null)
+                                                      ? "-"
+                                                      : data.poleSequence
+                                                          .toString(),
                                                   style: TextStyle(
                                                       color: ColorHelpers
                                                           .colorGreen2,
@@ -378,6 +416,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                               InkWell(
                                                 onTap: () {
                                                   Get.to(EditPolePage(
+                                                    allProjectsModel:
+                                                        widget.allProjectsModel,
                                                     poles: data,
                                                   ));
                                                 },
@@ -456,32 +496,34 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   void showPinsOnMap(List<AllPolesByLayerModel> list) {
-    list.forEach((data) {
-      var fieldingPosition =
-          LatLng(double.parse(data.latitude), double.parse(data.longitude));
+    if (list.length != 0) {
+      list.forEach((data) {
+        var fieldingPosition =
+            LatLng(double.parse(data.latitude), double.parse(data.longitude));
 
-      // add the initial source location pin
-      if (data.fieldingStatus == null ||
-          data.fieldingStatus == 0 ||
-          data.fieldingStatus == 1) {
-        _markers.add(Marker(
-            markerId: MarkerId("${data.id}"),
-            position: fieldingPosition,
-            onTap: () {
-              selectedMarker(list, data);
-            },
-            icon: poleIcon));
-      } else {
-        _markers.add(Marker(
-            markerId: MarkerId("${data.id}"),
-            position: fieldingPosition,
-            onTap: () {
-              selectedMarker(list, data);
-            },
-            icon: poleGreen));
-      }
-    });
-    setState(() {});
+        // add the initial source location pin
+        if (data.fieldingStatus == null ||
+            data.fieldingStatus == 0 ||
+            data.fieldingStatus == 1) {
+          _markers.add(Marker(
+              markerId: MarkerId("${data.id}"),
+              position: fieldingPosition,
+              onTap: () {
+                selectedMarker(list, data);
+              },
+              icon: poleIcon));
+        } else {
+          _markers.add(Marker(
+              markerId: MarkerId("${data.id}"),
+              position: fieldingPosition,
+              onTap: () {
+                selectedMarker(list, data);
+              },
+              icon: poleGreen));
+        }
+      });
+      setState(() {});
+    }
   }
 
   void selectedMarker(
@@ -505,13 +547,25 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               icon: poleSelected);
           poleModelSelected = e;
         } else {
-          _markers.add(Marker(
-              markerId: MarkerId("${e.id}"),
-              position: position,
-              icon: poleIcon,
-              onTap: () {
-                selectedMarker(list, e);
-              }));
+          if (e.fieldingStatus == null ||
+              e.fieldingStatus == 0 ||
+              e.fieldingStatus == 1) {
+            _markers.add(Marker(
+                markerId: MarkerId("${e.id}"),
+                position: position,
+                icon: poleIcon,
+                onTap: () {
+                  selectedMarker(list, e);
+                }));
+          } else {
+            _markers.add(Marker(
+                markerId: MarkerId("${e.id}"),
+                position: position,
+                icon: poleGreen,
+                onTap: () {
+                  selectedMarker(list, e);
+                }));
+          }
         }
       }).toList();
     });

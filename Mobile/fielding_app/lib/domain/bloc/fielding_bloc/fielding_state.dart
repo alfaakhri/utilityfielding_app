@@ -107,3 +107,12 @@ class GetCurrentAddressFailed extends FieldingState {
 
   GetCurrentAddressFailed(this.message);
 }
+
+class StartFieldingLoading extends FieldingState {}
+class StartFieldingFailed extends FieldingState {
+  final String message;
+
+  StartFieldingFailed(this.message);
+}
+
+class StartFieldingSuccess extends FieldingState {}

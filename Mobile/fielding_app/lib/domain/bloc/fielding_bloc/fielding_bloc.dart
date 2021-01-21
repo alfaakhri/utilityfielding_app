@@ -127,6 +127,7 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         yield UpdateLocationFailed(e.toString());
       }
     } else if (event is AddPole) {
+      yield AddPoleLoading();
       try {
         print(json.encode(event.addPoleModel.toJson()));
         var response = await _apiProvider.addPole(event.addPoleModel.toJson());
@@ -169,6 +170,18 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         }
       } catch (e) {
         yield GetCurrentAddressFailed(e.toString());
+      }
+    } else if (event is StartFielding) {
+      yield StartFieldingLoading();
+      try {
+        var response = await _apiProvider.startFielding(event.token, event.poleId, event.isStartAdditional);
+        if (response.statusCode == 200) {
+          yield StartFieldingSuccess();
+        } else {
+          yield StartFieldingFailed(response.data['Message']);
+        }
+      } catch (e) {
+        yield StartFieldingFailed(e.toString());
       }
     }
   }

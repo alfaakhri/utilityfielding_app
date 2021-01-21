@@ -1,4 +1,5 @@
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/presentation/ui/login_page.dart';
@@ -20,6 +21,10 @@ class _RootPageState extends State<RootPage> {
   @override
   void initState() {
     super.initState();
+    context.read<FieldingProvider>().getListAllPoleClass();
+    context.read<FieldingProvider>().getListAllPoleCondition();
+    context.read<FieldingProvider>().getListAllPoleHeight();
+    context.read<FieldingProvider>().getListAllPoleSpecies();
     authBloc = BlocProvider.of<AuthBloc>(context);
     authBloc.add(StartApp());
   }

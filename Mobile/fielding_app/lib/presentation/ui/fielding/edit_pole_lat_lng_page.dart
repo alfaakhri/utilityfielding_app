@@ -169,8 +169,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               fieldingBloc.add(GetCurrentAddress(
                   double.parse(_latitude), double.parse(_longitude)));
             } else if (state is GetCurrentAddressLoading) {
-                            LoadingWidget.showLoadingDialog(context, _keyLoader);
-
+              LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is GetCurrentAddressFailed) {
               Navigator.of(_keyLoader.currentContext, rootNavigator: true)
                   .pop();
@@ -208,7 +207,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               Text(
                   (widget.polesLayerModel == null)
                       ? "-"
-                      : allPoles.poleSequence,
+                      : allPoles.poleSequence.toString(),
                   style: TextStyle(
                       color: ColorHelpers.colorBlueNumber, fontSize: 18)),
             ],
@@ -528,6 +527,12 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                                     double.parse(_latitude),
                                     double.parse(_longitude)));
                               } else {
+                                context.read<FieldingProvider>().setLatitude(
+                                    double.parse(
+                                        widget.polesLayerModel.latitude));
+                                context.read<FieldingProvider>().setLongitude(
+                                    double.parse(
+                                        widget.polesLayerModel.longitude));
                                 fieldingBloc.add(UpdateLocation(
                                     context
                                         .read<UserProvider>()

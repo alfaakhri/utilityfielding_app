@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:fielding_app/external/constants.dart';
 
@@ -112,6 +114,7 @@ class ApiProvider {
       "Latitude": latitude,
       "Longitude": longitude
     };
+    print(json.encode(data));
 
     try {
       _response = await _dio
@@ -129,7 +132,7 @@ class ApiProvider {
   Future<Response> addPole(dynamic data) async {
     try {
       _response = await _dio
-          .post(BASE_URL + "/api/MobileProject/CompleteFielding", data: data);
+          .post(BASE_URL + "/api/MobileProject/CompletedFielding", data: data);
       return _response;
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {
@@ -140,10 +143,29 @@ class ApiProvider {
     }
   }
 
-    Future<Response> getPoleById(String id, String token) async {
+  Future<Response> getPoleById(String id, String token) async {
     try {
       _response = await _dio
-          .get(BASE_URL + "/api/MobileProject/GetPoleById/$id?token=token");
+          .get(BASE_URL + "/api/MobileProject/GetPoleById/$id?token=$token");
+      return _response;
+    } on DioError catch (e) {
+      if (e.response.statusCode == 400) {
+        return e.response;
+      } else {
+        throw e;
+      }
+    }
+  }
+
+   Future<Response> startFielding(String token, String poleId, bool isStartAdditional) async {
+     var data = {
+       'Token': token, 
+       'PoleID': poleId,
+       'isStartAdditional': isStartAdditional
+     };
+    try {
+      _response = await _dio
+          .post(BASE_URL + "/api/MobileProject/StartFielding", data: data);
       return _response;
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {
@@ -158,6 +180,46 @@ class ApiProvider {
     try {
       var response = await _dio.get(
           "${Constants.baseGoogleApi}/maps/api/geocode/json?key=${Constants.apiKey}&latlng=$lat,$lng");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getAllPoleSpecies() async {
+    try {
+      var response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetAllPoleSpecies");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getAllPoleCondition() async {
+    try {
+      var response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetAllPoleCondition");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getAllPoleClass() async {
+    try {
+      var response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetAllPoleClass");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getAllPoleHeight() async {
+    try {
+      var response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetAllPoleHeight");
       return response;
     } catch (e) {
       throw e;
