@@ -135,12 +135,18 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               Navigator.of(_keyLoader.currentContext, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: state.message);
+              fieldingBloc.add(GetAllPolesByID(
+                  context.read<UserProvider>().userModel.data.token,
+                  widget.allProjectsModel.iD));
             } else if (state is CompletePolePictureSuccess) {
               setState(() {});
               Fluttertoast.showToast(msg: "Complete pole pictures success");
 
               Navigator.of(_keyLoader.currentContext, rootNavigator: true)
                   .pop();
+              fieldingBloc.add(GetAllPolesByID(
+                  context.read<UserProvider>().userModel.data.token,
+                  widget.allProjectsModel.iD));
             } else if (state is StartFieldingLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is StartFieldingFailed) {
@@ -168,7 +174,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             } else if (state is GetAllPolesByIdSuccess) {
               return _content(state.allPolesByLayer);
             }
-            return _loading();
+            return Container();
           },
         ),
       ),
@@ -219,9 +225,18 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     target: (allPoles.length == 0)
                         ? LatLng(this.currentLocation.latitude,
                             this.currentLocation.longitude)
-                        : LatLng(double.parse(allPoles.last.latitude),
-                            double.parse(allPoles.last.longitude)),
-                    zoom: 10,
+                        : LatLng(
+                            double.parse(allPoles
+                                .firstWhere((element) =>
+                                    (element.latitude != null &&
+                                        element.latitude.contains(".")))
+                                .latitude),
+                            double.parse(allPoles
+                                .firstWhere((element) =>
+                                    (element.longitude != null &&
+                                        element.longitude.contains(".")))
+                                .longitude)),
+                    zoom: 14,
                   ),
                   onTap: (LatLng loc) {
                     print(_markers
@@ -498,28 +513,32 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   void showPinsOnMap(List<AllPolesByLayerModel> list) {
     if (list.length != 0) {
       list.forEach((data) {
-        var fieldingPosition =
-            LatLng(double.parse(data.latitude), double.parse(data.longitude));
+        if (data.latitude != null && data.longitude != null) {
+          var fieldingPosition =
+              LatLng(double.parse(data.latitude), double.parse(data.longitude));
 
-        // add the initial source location pin
-        if (data.fieldingStatus == null ||
-            data.fieldingStatus == 0 ||
-            data.fieldingStatus == 1) {
-          _markers.add(Marker(
-              markerId: MarkerId("${data.id}"),
-              position: fieldingPosition,
-              onTap: () {
-                selectedMarker(list, data);
-              },
-              icon: poleIcon));
-        } else {
-          _markers.add(Marker(
-              markerId: MarkerId("${data.id}"),
-              position: fieldingPosition,
-              onTap: () {
-                selectedMarker(list, data);
-              },
-              icon: poleGreen));
+          // add the initial source location pin
+          if (data.fieldingStatus == null ||
+              data.fieldingStatus == 0 ||
+              data.fieldingStatus == 1) {
+            _markers.add(Marker(
+                markerId: MarkerId("${data.id}"),
+                position: fieldingPosition,
+                onTap: () {
+                  print("ID " + data.id);
+                  selectedMarker(list, data);
+                },
+                icon: poleIcon));
+          } else {
+            _markers.add(Marker(
+                markerId: MarkerId("${data.id}"),
+                position: fieldingPosition,
+                onTap: () {
+                  print("ID " + data.id);
+                  selectedMarker(list, data);
+                },
+                icon: poleGreen));
+          }
         }
       });
       setState(() {});
@@ -531,40 +550,45 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     setState(() {
       _markers.clear();
       list.map((e) {
-        var position =
-            LatLng(double.parse(e.latitude), double.parse(e.longitude));
-        if (e.id == data.id) {
-          _markers.add(Marker(
-              markerId: MarkerId("${e.id}"),
-              position: position,
-              icon: poleSelected,
-              onTap: () {
-                selectedMarker(list, e);
-              }));
-          _tempMarkerSelected = Marker(
-              markerId: MarkerId("${e.id}"),
-              position: position,
-              icon: poleSelected);
-          poleModelSelected = e;
-        } else {
-          if (e.fieldingStatus == null ||
-              e.fieldingStatus == 0 ||
-              e.fieldingStatus == 1) {
+        if (e.latitude != null && e.longitude != null) {
+          var position =
+              LatLng(double.parse(e.latitude), double.parse(e.longitude));
+          if (e.id == data.id) {
             _markers.add(Marker(
                 markerId: MarkerId("${e.id}"),
                 position: position,
-                icon: poleIcon,
+                icon: poleSelected,
                 onTap: () {
+                  print("ID " + data.id);
                   selectedMarker(list, e);
                 }));
+            _tempMarkerSelected = Marker(
+                markerId: MarkerId("${e.id}"),
+                position: position,
+                icon: poleSelected);
+            poleModelSelected = e;
           } else {
-            _markers.add(Marker(
-                markerId: MarkerId("${e.id}"),
-                position: position,
-                icon: poleGreen,
-                onTap: () {
-                  selectedMarker(list, e);
-                }));
+            if (e.fieldingStatus == null ||
+                e.fieldingStatus == 0 ||
+                e.fieldingStatus == 1) {
+              _markers.add(Marker(
+                  markerId: MarkerId("${e.id}"),
+                  position: position,
+                  icon: poleIcon,
+                  onTap: () {
+                    print("ID " + data.id);
+                    selectedMarker(list, e);
+                  }));
+            } else {
+              _markers.add(Marker(
+                  markerId: MarkerId("${e.id}"),
+                  position: position,
+                  icon: poleGreen,
+                  onTap: () {
+                    print("ID " + data.id);
+                    selectedMarker(list, e);
+                  }));
+            }
           }
         }
       }).toList();

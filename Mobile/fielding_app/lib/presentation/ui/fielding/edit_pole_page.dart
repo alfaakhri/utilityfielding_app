@@ -146,18 +146,18 @@ class _EditPolePageState extends State<EditPolePage> {
                         token: authBloc.userModel.data.token,
                         id: (widget.poles == null) ? null : widget.poles.id,
                         layerId: widget.allProjectsModel.iD,
-                        street: provider.streetName,
+                        street: (provider.streetName == null) ? null : provider.streetName,
                         vAPTerminal: this._vapTerminal.text,
                         poleNumber: this._poleNumber.text,
                         osmose: this._osmoseNumber.text,
-                        latitude: provider.latitude.toString(),
-                        longitude: provider.longitude.toString(),
-                        poleHeight: provider.poleHeightSelected.id,
+                        latitude: (provider.latitude == null) ? null : provider.latitude.toString(),
+                        longitude: (provider.longitude == null ) ? null : provider.longitude.toString(),
+                        poleHeight: (provider.poleHeightSelected.id == null) ? null : provider.poleHeightSelected.id,
                         groundCircumference: this._groundLine.text,
-                        poleClass: provider.poleClassSelected.id,
+                        poleClass: (provider.poleClassSelected.id == null) ? null : provider.poleClassSelected.id,
                         poleYear: this._year.text,
-                        poleSpecies: provider.poleSpeciesSelected.id,
-                        poleCondition: provider.poleConditionSelected.id,
+                        poleSpecies: (provider.poleSpeciesSelected.id == null) ? null : provider.poleSpeciesSelected.id,
+                        poleCondition: (provider.poleConditionSelected.id == null) ? null : provider.poleConditionSelected.id,
                         otherNumber: this._otherNumber.text,
                         poleStamp: _isStamp,
                       );
@@ -704,12 +704,6 @@ class _EditPolePageState extends State<EditPolePage> {
                       ? DropdownButtonFormField<String>(
                           isDense: true,
                           decoration: decorationDropdown(),
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Harap mengisi ${title.toLowerCase()}';
-                            }
-                            return null;
-                          },
                           items: data.listAllPoleHeight.map((value) {
                             return DropdownMenuItem<String>(
                               child: Text(value.text.toString(),
@@ -720,24 +714,18 @@ class _EditPolePageState extends State<EditPolePage> {
                           onChanged: (String value) {
                             setState(() {
                               data.setPoleHeightSelected(value);
-                              controller.text = value;
+                              this._poleHeight.text = value;
                             });
                           },
-                          value:
-                              (controller.text == null || controller.text == "")
-                                  ? null
-                                  : controller.text,
+                          value: (this._poleHeight.text == null ||
+                                  this._poleHeight.text == "")
+                              ? null
+                              : this._poleHeight.text,
                         )
                       : (title.toLowerCase() == "pole class")
                           ? DropdownButtonFormField<String>(
                               isDense: true,
                               decoration: decorationDropdown(),
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'Harap mengisi ${title.toLowerCase()}';
-                                }
-                                return null;
-                              },
                               items: data.listAllPoleClass.map((value) {
                                 return DropdownMenuItem<String>(
                                   child: Text(value.text,
@@ -748,24 +736,18 @@ class _EditPolePageState extends State<EditPolePage> {
                               onChanged: (String value) {
                                 setState(() {
                                   data.setPoleClassSelected(value);
-                                  controller.text = value;
+                                  this._poleClass.text = value;
                                 });
                               },
-                              value: (controller.text == null ||
-                                      controller.text == "")
+                              value: (data.poleClassSelected.text == null ||
+                                      data.poleClassSelected.text == "")
                                   ? null
-                                  : controller.text,
+                                  : data.poleClassSelected.text,
                             )
                           : (title.toLowerCase() == "species")
                               ? DropdownButtonFormField<String>(
                                   isDense: true,
                                   decoration: decorationDropdown(),
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Harap mengisi ${title.toLowerCase()}';
-                                    }
-                                    return null;
-                                  },
                                   items: data.listAllPoleSpecies.map((value) {
                                     return DropdownMenuItem<String>(
                                       child: Text(value.text,
@@ -776,24 +758,19 @@ class _EditPolePageState extends State<EditPolePage> {
                                   onChanged: (String value) {
                                     setState(() {
                                       data.setPoleSpeciesSelected(value);
-                                      controller.text = value;
+                                      this._species.text = value;
                                     });
                                   },
-                                  value: (controller.text == null ||
-                                          controller.text == "")
+                                  value: (data.poleSpeciesSelected.text ==
+                                              null ||
+                                          data.poleSpeciesSelected.text == "")
                                       ? null
-                                      : controller.text,
+                                      : data.poleSpeciesSelected.text,
                                 )
                               : (title.toLowerCase() == "condition")
                                   ? DropdownButtonFormField<String>(
                                       isDense: true,
                                       decoration: decorationDropdown(),
-                                      validator: (value) {
-                                        if (value == null) {
-                                          return 'Harap mengisi ${title.toLowerCase()}';
-                                        }
-                                        return null;
-                                      },
                                       items: data.listAllPoleCondition
                                           .map((value) {
                                         return DropdownMenuItem<String>(
@@ -805,23 +782,20 @@ class _EditPolePageState extends State<EditPolePage> {
                                       onChanged: (String value) {
                                         setState(() {
                                           data.setPoleConditionSelected(value);
-                                          controller.text = value.toString();
+                                          this._condition.text =
+                                              value.toString();
                                         });
                                       },
-                                      value: (controller.text == null ||
-                                              controller.text == "")
+                                      value: (data.poleConditionSelected.text ==
+                                                  null ||
+                                              data.poleConditionSelected.text ==
+                                                  "")
                                           ? null
-                                          : controller.text,
+                                          : data.poleConditionSelected.text,
                                     )
                                   : DropdownButtonFormField<String>(
                                       isDense: true,
                                       decoration: decorationDropdown(),
-                                      validator: (value) {
-                                        if (value == null) {
-                                          return 'Harap mengisi ${title.toLowerCase()}';
-                                        }
-                                        return null;
-                                      },
                                       items: _listChoice.map((value) {
                                         return DropdownMenuItem<String>(
                                           child: Text(value,

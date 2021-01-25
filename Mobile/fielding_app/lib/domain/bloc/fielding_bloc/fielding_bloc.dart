@@ -8,6 +8,9 @@ import 'package:fielding_app/data/models/all_projects_model.dart';
 import 'package:fielding_app/data/models/current_address.dart';
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
+import 'package:fielding_app/external/constants.dart';
+import 'package:fielding_app/presentation/ui/login_page.dart';
+import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 
 part 'fielding_event.dart';
@@ -39,16 +42,19 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     if (event is GetAllProjects) {
       yield GetAllProjectsLoading();
       try {
-        var response = await _apiProvider.getAllProject(event.token);
-        _allProjects = AllProjectsModel.fromJsonList(response.data);
+        var response = await _apiProvider.getAllProject((event.token));
         if (response.statusCode == 200) {
+          _allProjects = AllProjectsModel.fromJsonList(response.data);
+
           if (_allProjects.length == 0) {
             yield GetAllProjectsEmpty();
           } else {
             yield GetAllProjectsSuccess(_allProjects);
           }
+        } else if (response.data['Message'] == Constants.messageTokenExpired) {
+          Get.offAll(LoginPage());
         } else
-          yield GetAllProjectsFailed(_allProjects.first.message);
+          yield GetAllProjectsFailed(response.data['Message']);
       } catch (e) {
         yield GetAllProjectsFailed(e.toString());
       }
@@ -57,12 +63,13 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       try {
         var response =
             await _apiProvider.getAllPolesByLayerID(event.token, event.layerId);
-        _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
         if (response.statusCode == 200) {
           _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
           yield GetAllPolesByIdSuccess(_allPolesByLayer);
+        } else if (response.data['Message'] == Constants.messageTokenExpired) {
+          Get.offAll(LoginPage());
         } else {
-          yield GetAllPolesByIdFailed(_allPolesByLayer.first.message);
+          yield GetAllPolesByIdFailed(response.data['Message']);
         }
       } catch (e) {
         yield GetAllPolesByIdFailed(e.toString());
@@ -70,21 +77,25 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is StartPolePicture) {
       yield StartPolePictureLoading();
       try {
-        var response =
+        var responseFirst =
             await _apiProvider.startPolePicture(event.token, event.poleId);
-        _responsePolePicture = AllPolesByLayerModel.fromJson(response.data);
-        if (response.statusCode == 200) {
+        if (responseFirst.statusCode == 200) {
+          _responsePolePicture =
+              AllPolesByLayerModel.fromJson(responseFirst.data);
           var response = await _apiProvider.getAllPolesByLayerID(
               event.token, event.layerId);
-          _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
+
           if (response.statusCode == 200) {
             _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
             yield StartPolePictureSuccess(_allPolesByLayer);
+          } else if (response.data['Message'] ==
+              Constants.messageTokenExpired) {
+            Get.offAll(LoginPage());
           } else {
-            yield StartPolePictureFailed(_allPolesByLayer.first.message);
+            yield StartPolePictureFailed(response.data['Message']);
           }
         } else {
-          yield StartPolePictureFailed(_responsePolePicture.message);
+          yield StartPolePictureFailed(responseFirst.data['Message']);
         }
       } catch (e) {
         yield StartPolePictureFailed(e.toString());
@@ -92,21 +103,28 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is CompletePolePicture) {
       yield CompletePolePictureLoading();
       try {
-        var response =
+        var responseFirst =
             await _apiProvider.completePolePicture(event.token, event.poleId);
-        _responsePolePicture = AllPolesByLayerModel.fromJson(response.data);
-        if (response.statusCode == 200) {
+
+        if (responseFirst.statusCode == 200) {
+          _responsePolePicture =
+              AllPolesByLayerModel.fromJson(responseFirst.data);
           var response = await _apiProvider.getAllPolesByLayerID(
               event.token, event.layerId);
-          _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
+
           if (response.statusCode == 200) {
             _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
             yield CompletePolePictureSuccess(_allPolesByLayer);
+          } else if (response.data['Message'] ==
+              Constants.messageTokenExpired) {
+            Get.offAll(LoginPage());
           } else {
-            yield CompletePolePictureFailed(_allPolesByLayer.first.message);
+            yield CompletePolePictureFailed(response.data['Message']);
           }
+        } else if (responseFirst.data['Message'] == Constants.messageTokenExpired) {
+          Get.offAll(LoginPage());
         } else {
-          yield CompletePolePictureFailed(_responsePolePicture.message);
+          yield CompletePolePictureFailed(responseFirst.data['Message']);
         }
       } catch (e) {
         yield CompletePolePictureFailed(e.toString());
@@ -116,12 +134,14 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       try {
         var response = await _apiProvider.updateLocation(
             event.token, event.poleId, event.latitude, event.longitude);
-        _responsePolePicture = AllPolesByLayerModel.fromJson(response.data);
 
         if (response.statusCode == 200) {
+          _responsePolePicture = AllPolesByLayerModel.fromJson(response.data);
           yield UpdateLocationSuccess(_responsePolePicture);
+        } else if (response.data['Message'] == Constants.messageTokenExpired) {
+          Get.offAll(LoginPage());
         } else {
-          yield UpdateLocationFailed(_responsePolePicture.message);
+          yield UpdateLocationFailed(response.data['Message']);
         }
       } catch (e) {
         yield UpdateLocationFailed(e.toString());
@@ -133,8 +153,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         var response = await _apiProvider.addPole(event.addPoleModel.toJson());
         if (response.statusCode == 200) {
           yield AddPoleSuccess();
+        } else if (response.data['Message'] == Constants.messageTokenExpired) {
+          Get.offAll(LoginPage());
         } else {
-          yield AddPoleFailed('Failed add pole');
+          yield AddPoleFailed(response.data['Message']);
         }
       } catch (e) {
         yield AddPoleFailed(e.toString());
@@ -147,6 +169,9 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
           if (response.data != null) {
             _poleByIdModel = PoleByIdModel.fromJson(response.data);
             yield GetPoleByIdSuccess(_poleByIdModel);
+          } else if (response.data['Message'] ==
+              Constants.messageTokenExpired) {
+            Get.offAll(LoginPage());
           } else {
             yield GetPoleByIdFailed("Failed load data pole");
           }
@@ -174,9 +199,12 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is StartFielding) {
       yield StartFieldingLoading();
       try {
-        var response = await _apiProvider.startFielding(event.token, event.poleId, event.isStartAdditional);
+        var response = await _apiProvider.startFielding(
+            event.token, event.poleId, event.isStartAdditional);
         if (response.statusCode == 200) {
           yield StartFieldingSuccess();
+        } else if (response.data['Message'] == Constants.messageTokenExpired) {
+          Get.offAll(LoginPage());
         } else {
           yield StartFieldingFailed(response.data['Message']);
         }

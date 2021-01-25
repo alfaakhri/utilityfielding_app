@@ -89,8 +89,16 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void setPoleSpeciesAssign(int value) {
-    _poleSpeciesSelected = _listAllPoleSpecies
-        .firstWhere((element) => element.id == value);
+    if (value != null) {
+      _listAllPoleSpecies.forEach((element) {
+        if (element.id == value) {
+          _poleSpeciesSelected = element;
+        }
+      });
+    } else {
+      _poleSpeciesSelected = null;
+    }
+
     notifyListeners();
   }
 
@@ -123,8 +131,16 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void setPoleClassAssign(int value) {
-    _poleClassSelected = _listAllPoleClass
-        .firstWhere((element) => element.id == value);
+    if (value != null) {
+      _listAllPoleClass.forEach((element) {
+        if (element.id == value) {
+          _poleClassSelected = element;
+        }
+      });
+    } else {
+      _poleClassSelected = null;
+    }
+
     notifyListeners();
   }
 
@@ -151,14 +167,22 @@ class FieldingProvider extends ChangeNotifier {
   AllPoleHeightModel _poleHeightSelected = AllPoleHeightModel();
   AllPoleHeightModel get poleHeightSelected => _poleHeightSelected;
   void setPoleHeightSelected(String value) {
-    _poleHeightSelected =
-        _listAllPoleHeight.firstWhere((element) => element.text == int.parse(value));
+    _poleHeightSelected = _listAllPoleHeight
+        .firstWhere((element) => element.text == int.parse(value));
     notifyListeners();
   }
 
   void setPoleHeightAssign(int value) {
-    _poleHeightSelected = _listAllPoleHeight
-        .firstWhere((element) => element.id == value);
+    if (value != null) {
+      _listAllPoleHeight.forEach((element) {
+        if (element.id == value) {
+          _poleHeightSelected = element;
+        }
+      });
+    } else {
+      _poleHeightSelected = null;
+    }
+
     notifyListeners();
   }
 
@@ -175,9 +199,11 @@ class FieldingProvider extends ChangeNotifier {
     }
   }
 
-  List<AllPoleConditionModel> _listAllPoleCondition = List<AllPoleConditionModel>();
+  List<AllPoleConditionModel> _listAllPoleCondition =
+      List<AllPoleConditionModel>();
   List<AllPoleConditionModel> get listAllPoleCondition => _listAllPoleCondition;
-  void setListAllPoleCondition(List<AllPoleConditionModel> listAllPoleCondition) {
+  void setListAllPoleCondition(
+      List<AllPoleConditionModel> listAllPoleCondition) {
     _listAllPoleCondition = listAllPoleCondition;
     notifyListeners();
   }
@@ -185,14 +211,21 @@ class FieldingProvider extends ChangeNotifier {
   AllPoleConditionModel _poleConditionSelected = AllPoleConditionModel();
   AllPoleConditionModel get poleConditionSelected => _poleConditionSelected;
   void setPoleConditionSelected(String value) {
-    _poleConditionSelected =
-        _listAllPoleCondition.firstWhere((element) => element.id.toString().contains(value));
+    _poleConditionSelected = _listAllPoleCondition
+        .firstWhere((element) => element.id.toString().contains(value));
     notifyListeners();
   }
 
   void setPoleConditionAssign(int value) {
-    _poleConditionSelected = _listAllPoleCondition
-        .firstWhere((element) => element.id == value);
+    if (value != null) {
+      _listAllPoleCondition.forEach((element) {
+        if (element.id == value) {
+          _poleConditionSelected = element;
+        }
+      });
+    } else {
+      _poleConditionSelected = null;
+    }
     notifyListeners();
   }
 
@@ -201,7 +234,8 @@ class FieldingProvider extends ChangeNotifier {
     try {
       var response = await _repository.getAllPoleCondition();
       if (response.statusCode == 200) {
-        setListAllPoleCondition(AllPoleConditionModel.fromJsonList(response.data));
+        setListAllPoleCondition(
+            AllPoleConditionModel.fromJsonList(response.data));
         print("all pole condition: ${response.data}");
       } else {}
     } catch (e) {

@@ -52,6 +52,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     if (widget.polesLayerModel != null) {
       _latitude = widget.polesLayerModel.latitude;
       _longitude = widget.polesLayerModel.longitude;
+      print("_latitude0" + _latitude.toString());
     } else {
       if (context.read<FieldingProvider>().latitude == null) {
         _latitude = context
@@ -64,9 +65,11 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
             .currentPosition
             .longitude
             .toString();
+        print("_latitude1" + _latitude.toString());
       } else {
         _latitude = context.read<FieldingProvider>().latitude.toString();
         _longitude = context.read<FieldingProvider>().longitude.toString();
+        print("_latitude2" + _latitude.toString());
       }
     }
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
@@ -74,6 +77,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     setPoleIcons();
     locationService.locationStream.listen((location) {
       currentLocation = location;
+      print("CURRENT LOCATION" + currentLocation.latitude.toString());
     });
   }
 
@@ -207,7 +211,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               Text(
                   (widget.polesLayerModel == null)
                       ? "-"
-                      : allPoles.poleSequence.toString(),
+                      : (allPoles != null) ? allPoles.poleSequence.toString() : "-",
                   style: TextStyle(
                       color: ColorHelpers.colorBlueNumber, fontSize: 18)),
             ],
@@ -248,8 +252,8 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
 
                     if (widget.polesLayerModel != null) {
                       showPinsOnMap(allPoles);
-                    } else if (context.read<FieldingProvider>().latitude !=
-                        null) {
+                    } 
+                    else if (context.read<FieldingProvider>().latitude != null) {
                       showPinsOnMapDefault(
                           context.read<FieldingProvider>().latitude,
                           context.read<FieldingProvider>().longitude);
