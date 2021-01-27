@@ -99,7 +99,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: Text(
-            "Project Grid",
+            widget.allProjectsModel.layerName,
             style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
           ),
           leading: IconButton(
@@ -127,8 +127,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   .pop();
               Fluttertoast.showToast(msg: state.message);
             } else if (state is StartPolePictureSuccess) {
+              setState(() {});
+              Fluttertoast.showToast(msg: "Additional pole pictures success");
+
               Navigator.of(_keyLoader.currentContext, rootNavigator: true)
                   .pop();
+              fieldingBloc.add(GetAllPolesByID(
+                  context.read<UserProvider>().userModel.data.token,
+                  widget.allProjectsModel.iD));
             } else if (state is CompletePolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is CompletePolePictureFailed) {
@@ -254,7 +260,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                       maxHeight: MediaQuery.of(context).size.height / 1.3,
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(50),
-                          topRight: Radius.circular(50)),
+                          topRight: Radius.circular(25)),
                       panel: (allPoles.length == 0)
                           ? Container()
                           : _buildListAllPoles(allPoles),
@@ -462,7 +468,13 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                               UIHelper.verticalSpaceSmall,
                                               InkWell(
                                                 onTap: () {
-                                                  dialogAlert(data);
+                                                  if (data.startPolePicture) {
+                                                    dialogAlert(data,
+                                                        "complete pictures");
+                                                  } else {
+                                                    dialogAlert(data,
+                                                        "additional pictures");
+                                                  }
                                                 },
                                                 child: Container(
                                                     width: 150,
@@ -480,7 +492,9 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                             vertical: 5,
                                                             horizontal: 10),
                                                     child: Text(
-                                                      "Complete Pictures",
+                                                      (data.startPolePicture)
+                                                          ? "Complete Pictures"
+                                                          : "Additional Pictures",
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
@@ -595,7 +609,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     });
   }
 
-  Future dialogAlert(AllPolesByLayerModel allPolesByLayerModel) {
+  Future dialogAlert(
+      AllPolesByLayerModel allPolesByLayerModel, String valueAlert) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -609,7 +624,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    'Are you sure complete pictures?',
+                    'Are you sure $valueAlert?',
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
@@ -639,14 +654,28 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                           child: FlatButton(
                             color: ColorHelpers.colorGreen,
                             onPressed: () {
-                              fieldingBloc.add(CompletePolePicture(
+                              if (allPolesByLayerModel.startPolePicture) {
+                                fieldingBloc.add(CompletePolePicture(
                                   context
                                       .read<UserProvider>()
                                       .userModel
                                       .data
                                       .token,
+                                  allPolesByLayerModel.id,
                                   widget.allProjectsModel.iD,
-                                  allPolesByLayerModel.id));
+                                ));
+                              } else {
+                                fieldingBloc.add(StartPolePicture(
+                                  context
+                                      .read<UserProvider>()
+                                      .userModel
+                                      .data
+                                      .token,
+                                  allPolesByLayerModel.id,
+                                  widget.allProjectsModel.iD,
+                                ));
+                              }
+
                               Navigator.of(context).pop();
                             },
                             child: Text(

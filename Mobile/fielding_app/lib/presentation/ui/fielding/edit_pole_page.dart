@@ -242,12 +242,12 @@ class _EditPolePageState extends State<EditPolePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Location Number",
+                      "Pole Sequence",
                       style: TextStyle(
                           color: ColorHelpers.colorBlueNumber, fontSize: 14),
                     ),
                     Text(
-                      "-",
+                      (widget.poles != null) ? widget.poles.poleSequence.toString() : "-",
                       style: TextStyle(
                           color: ColorHelpers.colorBlackText, fontSize: 14),
                     ),

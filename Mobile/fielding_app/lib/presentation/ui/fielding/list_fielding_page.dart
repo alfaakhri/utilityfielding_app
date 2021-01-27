@@ -238,7 +238,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                           child: Text(
                                             "Notes",
                                             style:
-                                                TextStyle(color: Colors.white),
+                                                TextStyle(color: Colors.white, fontSize: 12),
                                           ),
                                         ),
                                         decoration: BoxDecoration(
