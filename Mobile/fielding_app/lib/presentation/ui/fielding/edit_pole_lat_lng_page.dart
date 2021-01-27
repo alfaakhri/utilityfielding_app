@@ -188,11 +188,11 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                   .setCurrentAddress(state.currentAddress);
             }
           },
-          child: _content(widget.polesLayerModel),
+          child: _content(),
         ));
   }
 
-  Widget _content(AllPolesByLayerModel allPoles) {
+  Widget _content() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -210,8 +210,8 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               ),
               Text(
                   (widget.polesLayerModel == null)
-                      ? "-"
-                      : (allPoles != null) ? allPoles.poleSequence.toString() : "-",
+                      ? "-" 
+                      :  widget.polesLayerModel.poleSequence.toString(),
                   style: TextStyle(
                       color: ColorHelpers.colorBlueNumber, fontSize: 18)),
             ],
@@ -251,7 +251,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                     _controller.complete(controller);
 
                     if (widget.polesLayerModel != null) {
-                      showPinsOnMap(allPoles);
+                      showPinsOnMap(widget.polesLayerModel);
                     } 
                     else if (context.read<FieldingProvider>().latitude != null) {
                       showPinsOnMapDefault(
@@ -264,8 +264,8 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                 maxHeight: 200,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50)),
-                panel: _buildListAllPoles(allPoles),
+                    topRight: Radius.circular(25)),
+                panel: _buildListAllPoles(),
                 body: Container(),
               ),
             ],
@@ -275,7 +275,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     );
   }
 
-  Widget _buildListAllPoles(AllPolesByLayerModel allPoles) {
+  Widget _buildListAllPoles() {
     // return BlocListener<LocationBloc, LocationState>(
     //   listener: (context, state) {
     //     if (state is GetCurrentAddressLoading) {
