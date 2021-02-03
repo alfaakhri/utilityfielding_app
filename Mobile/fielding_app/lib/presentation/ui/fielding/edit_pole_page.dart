@@ -356,7 +356,7 @@ class _EditPolePageState extends State<EditPolePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "VAP / Terminal",
+                        "FAP / Terminal Address",
                         style: textDefault,
                       ),
                       Row(
@@ -372,7 +372,7 @@ class _EditPolePageState extends State<EditPolePage> {
                           InkWell(
                             onTap: () {
                               dialogAlertDefault(
-                                  "VAP / Terminal", _vapTerminal);
+                                  "FAP / Terminal Address", _vapTerminal);
                             },
                             child: Text('Edit',
                                 style: TextStyle(

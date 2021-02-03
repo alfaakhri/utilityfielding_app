@@ -248,6 +248,20 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     print(_markers
                         .where((element) => element.position == loc)
                         .toString());
+                    setState(() {
+                      this.poleModelSelected = AllPolesByLayerModel();
+                      this._tempMarkerSelected = null;
+                          // id: null,
+                          // latitude: null,
+                          // longitude: null,
+                          // fieldingBy: null,
+                          // fieldingCompletedDate: null,
+                          // fieldingStatus: null,
+                          // poleSequence: null,
+                          // poleNumber: null,
+                          // startPolePicture: null);
+                      showPinsOnMap(allPoles);
+                    });
                   },
                   onMapCreated: (GoogleMapController controller) {
                     googleMapController = controller;
@@ -335,34 +349,109 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                               fontSize: 24)),
                                     ],
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      fieldingBloc.add(StartFielding(
-                                          context
-                                              .read<UserProvider>()
-                                              .userModel
-                                              .data
-                                              .token,
-                                          poleModelSelected.id,
-                                          true));
-                                    },
-                                    child: Container(
-                                        decoration: BoxDecoration(
-                                          color: ColorHelpers.colorOrange,
-                                          borderRadius:
-                                              BorderRadius.circular(5),
+                                  (poleModelSelected.fieldingStatus == 2)
+                                      ? Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                Get.to(EditPolePage(
+                                                  allProjectsModel:
+                                                      widget.allProjectsModel,
+                                                  poles: poleModelSelected,
+                                                ));
+                                              },
+                                              child: Container(
+                                                  width: 150,
+                                                  decoration: BoxDecoration(
+                                                    color: ColorHelpers
+                                                        .colorOrange,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                  ),
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 5,
+                                                      horizontal: 10),
+                                                  child: Text(
+                                                    "Edit Pole Information",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12,
+                                                    ),
+                                                  )),
+                                            ),
+                                            UIHelper.verticalSpaceSmall,
+                                            InkWell(
+                                              onTap: () {
+                                                if (poleModelSelected
+                                                    .startPolePicture) {
+                                                  dialogAlert(poleModelSelected,
+                                                      "complete pictures");
+                                                } else {
+                                                  dialogAlert(poleModelSelected,
+                                                      "additional pictures");
+                                                }
+                                              },
+                                              child: Container(
+                                                  width: 150,
+                                                  decoration: BoxDecoration(
+                                                      color: ColorHelpers
+                                                          .colorYellowCard,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      border: Border.all(
+                                                          color: ColorHelpers
+                                                              .colorOrange)),
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 5,
+                                                      horizontal: 10),
+                                                  child: Text(
+                                                    (poleModelSelected
+                                                            .startPolePicture)
+                                                        ? "Complete Pictures"
+                                                        : "Additional Pictures",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: ColorHelpers
+                                                          .colorOrange,
+                                                      fontSize: 12,
+                                                    ),
+                                                  )),
+                                            ),
+                                          ],
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            fieldingBloc.add(StartFielding(
+                                                context
+                                                    .read<UserProvider>()
+                                                    .userModel
+                                                    .data
+                                                    .token,
+                                                poleModelSelected.id,
+                                                true));
+                                          },
+                                          child: Container(
+                                              decoration: BoxDecoration(
+                                                color: ColorHelpers.colorOrange,
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 5, horizontal: 10),
+                                              child: Text(
+                                                "Start",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12,
+                                                ),
+                                              )),
                                         ),
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 5, horizontal: 10),
-                                        child: Text(
-                                          "Start",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                          ),
-                                        )),
-                                  ),
                                 ],
                               ),
                             ),
