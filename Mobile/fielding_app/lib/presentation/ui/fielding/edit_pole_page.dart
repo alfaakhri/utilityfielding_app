@@ -717,10 +717,9 @@ class _EditPolePageState extends State<EditPolePage> {
                               this._poleHeight.text = value;
                             });
                           },
-                          value: (this._poleHeight.text == null ||
-                                  this._poleHeight.text == "")
+                          value: (data.poleHeightSelected.id == null)
                               ? null
-                              : this._poleHeight.text,
+                              : data.poleHeightSelected.text.toString(),
                         )
                       : (title.toLowerCase() == "pole class")
                           ? DropdownButtonFormField<String>(

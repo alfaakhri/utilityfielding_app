@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:fielding_app/external/constants.dart';
 
-const String BASE_URL = "https://utilityfielding.ultimosolution.com";
+const String BASE_URL = "http://utilityfielding.com/";
 
 class ApiProvider {
   Dio _dio = Dio();

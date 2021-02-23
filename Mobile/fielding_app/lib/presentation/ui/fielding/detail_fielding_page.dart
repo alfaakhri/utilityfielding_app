@@ -135,6 +135,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               fieldingBloc.add(GetAllPolesByID(
                   context.read<UserProvider>().userModel.data.token,
                   widget.allProjectsModel.iD));
+              this.poleModelSelected = AllPolesByLayerModel();
+              this._tempMarkerSelected = null;
             } else if (state is CompletePolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is CompletePolePictureFailed) {
@@ -153,6 +155,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               fieldingBloc.add(GetAllPolesByID(
                   context.read<UserProvider>().userModel.data.token,
                   widget.allProjectsModel.iD));
+              this.poleModelSelected = AllPolesByLayerModel();
+              this._tempMarkerSelected = null;
             } else if (state is StartFieldingLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is StartFieldingFailed) {
@@ -251,15 +255,15 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     setState(() {
                       this.poleModelSelected = AllPolesByLayerModel();
                       this._tempMarkerSelected = null;
-                          // id: null,
-                          // latitude: null,
-                          // longitude: null,
-                          // fieldingBy: null,
-                          // fieldingCompletedDate: null,
-                          // fieldingStatus: null,
-                          // poleSequence: null,
-                          // poleNumber: null,
-                          // startPolePicture: null);
+                      // id: null,
+                      // latitude: null,
+                      // longitude: null,
+                      // fieldingBy: null,
+                      // fieldingCompletedDate: null,
+                      // fieldingStatus: null,
+                      // poleSequence: null,
+                      // poleNumber: null,
+                      // startPolePicture: null);
                       showPinsOnMap(allPoles);
                     });
                   },

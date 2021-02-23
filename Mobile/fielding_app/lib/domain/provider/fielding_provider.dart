@@ -96,7 +96,7 @@ class FieldingProvider extends ChangeNotifier {
         }
       });
     } else {
-      _poleSpeciesSelected = null;
+      _poleSpeciesSelected = AllPoleSpeciesModel();
     }
 
     notifyListeners();
@@ -138,7 +138,7 @@ class FieldingProvider extends ChangeNotifier {
         }
       });
     } else {
-      _poleClassSelected = null;
+      _poleClassSelected = AllPoleClassModel();
     }
 
     notifyListeners();
@@ -180,7 +180,7 @@ class FieldingProvider extends ChangeNotifier {
         }
       });
     } else {
-      _poleHeightSelected = null;
+      _poleHeightSelected = AllPoleHeightModel();
     }
 
     notifyListeners();
@@ -224,7 +224,7 @@ class FieldingProvider extends ChangeNotifier {
         }
       });
     } else {
-      _poleConditionSelected = null;
+      _poleConditionSelected = AllPoleConditionModel();
     }
     notifyListeners();
   }
