@@ -116,6 +116,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
             children: allProjects
                 .map((data) => InkWell(
                       onTap: () {
+                        context
+                            .read<FieldingProvider>()
+                            .setAllProjectsSelected(data);
                         Get.to(DetailFieldingPage(allProjectsModel: data));
                       },
                       child: Padding(
@@ -237,8 +240,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
                                             "Notes",
-                                            style:
-                                                TextStyle(color: Colors.white, fontSize: 12),
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12),
                                           ),
                                         ),
                                         decoration: BoxDecoration(

@@ -1,5 +1,8 @@
+import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
+import 'package:fielding_app/domain/provider/riser_provider.dart';
+import 'package:fielding_app/domain/provider/span_provider.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/presentation/ui/login_page.dart';
@@ -25,6 +28,9 @@ class _RootPageState extends State<RootPage> {
     context.read<FieldingProvider>().getListAllPoleCondition();
     context.read<FieldingProvider>().getListAllPoleHeight();
     context.read<FieldingProvider>().getListAllPoleSpecies();
+    context.read<FieldingProvider>().getListAllHoaType();
+    context.read<RiserProvider>().getAllDownGuyOwner();
+    context.read<RiserProvider>().getRiserAndVGR();
     authBloc = BlocProvider.of<AuthBloc>(context);
     authBloc.add(StartApp());
   }

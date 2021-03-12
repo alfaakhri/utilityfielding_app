@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:fielding_app/external/constants.dart';
 
-const String BASE_URL = "http://utilityfielding.com/";
+const String BASE_URL = "http://utilityfielding.ultimosolution.com/";
 
 class ApiProvider {
   Dio _dio = Dio();
@@ -205,6 +205,37 @@ class ApiProvider {
       throw e;
     }
   }
+
+  Future<Response> getRiserAndVGR() async {
+    try {
+      var response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetRiserAndVGRType");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getAllDownGuyOwner() async {
+    try {
+      var response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetAllDownGuyOwner");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+    Future<Response> getAllHoaType() async {
+    try {
+      var response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetAllHOAType");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
 
   Future<Response> getAllPoleClass() async {
     try {

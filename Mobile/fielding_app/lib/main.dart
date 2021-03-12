@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'domain/bloc/auth_bloc/auth_bloc.dart';
 import 'domain/bloc/location_bloc/location_bloc.dart';
 import 'domain/provider/fielding_provider.dart';
+import 'domain/provider/riser_provider.dart';
+import 'domain/provider/span_provider.dart';
 import 'domain/provider/user_provider.dart';
 
 void main() {
@@ -25,6 +27,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => FieldingProvider()),
+        ChangeNotifierProvider(create: (_) => SpanProvider()),
+        ChangeNotifierProvider(create: (_) => RiserProvider()),
       ],
       child: MultiBlocProvider(
         providers: [

@@ -44,12 +44,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-    context
-        .read<FieldingProvider>()
-        .setAllProjectsSelected(widget.allProjectsModel);
     fieldingBloc.add(GetAllPolesByID(
         context.read<UserProvider>().userModel.data.token,
         widget.allProjectsModel.iD));

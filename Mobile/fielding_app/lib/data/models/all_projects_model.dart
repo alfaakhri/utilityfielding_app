@@ -7,8 +7,7 @@ class AllProjectsModel {
   int layerType;
   int totalPoles;
   String dueDate;
-  String approx;
-  String message;
+  int approx;
 
   AllProjectsModel(
       {this.iD,
@@ -19,7 +18,7 @@ class AllProjectsModel {
       this.layerType,
       this.totalPoles,
       this.dueDate,
-      this.approx, this.message});
+      this.approx});
 
   AllProjectsModel.fromJson(Map<String, dynamic> json) {
     iD = json['ID'];
@@ -31,7 +30,6 @@ class AllProjectsModel {
     totalPoles = json['TotalPoles'];
     dueDate = json['DueDate'];
     approx = json['Approx'];
-    message = json['Message'];
   }
 
   Map<String, dynamic> toJson() {

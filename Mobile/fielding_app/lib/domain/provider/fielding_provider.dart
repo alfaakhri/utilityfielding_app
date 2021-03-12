@@ -1,3 +1,6 @@
+import 'package:fielding_app/data/models/add_pole_model.dart';
+import 'package:fielding_app/data/models/add_transformer_model.dart';
+import 'package:fielding_app/data/models/all_hoa_type_model.dart';
 import 'package:fielding_app/data/models/all_pole_class_model.dart';
 import 'package:fielding_app/data/models/all_pole_condition_model.dart';
 import 'package:fielding_app/data/models/all_pole_height_model.dart';
@@ -242,4 +245,75 @@ class FieldingProvider extends ChangeNotifier {
       print(e.toString());
     }
   }
+
+  List<AllHoaTypeModel> _listAllHoaType = List<AllHoaTypeModel>();
+  List<AllHoaTypeModel> get listAllHoaType => _listAllHoaType;
+  void setListAllHoaType(List<AllHoaTypeModel> listAllHoaType) {
+    _listAllHoaType = listAllHoaType;
+    notifyListeners();
+  }
+
+  void getListAllHoaType() async {
+    ApiProvider _repository = ApiProvider();
+    try {
+      var response = await _repository.getAllHoaType();
+      if (response.statusCode == 200) {
+        setListAllHoaType(
+            AllHoaTypeModel.fromJsonList(response.data));
+        print("all hoa type: ${response.data}");
+      } else {}
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  AllHoaTypeModel _hoaSelected = AllHoaTypeModel();
+  AllHoaTypeModel get hoaSelected => _hoaSelected;
+  void setHoaSelected(String value) {
+    _hoaSelected = listAllHoaType.firstWhere((element) => element.text == value);
+    notifyListeners();
+  }
+
+  void clearHoaSelected() {
+    _hoaSelected = AllHoaTypeModel();
+    notifyListeners();
+  }
+
+  List<TransformerList> _listTransformer = List<TransformerList>();
+  List<TransformerList> get listTransformer => _listTransformer;
+  addlistTransformer(TransformerList transformer) {
+    _listTransformer.add(transformer);
+  }
+
+  removeLisTransformer(int index) {
+    _listTransformer.removeAt(index);
+  }
+
+  bool _isTransformer = false;
+  bool get isTransformer => _isTransformer;
+  void setIsTransformer(bool isTransformer) {
+    _isTransformer = isTransformer;
+    notifyListeners();
+  }
+
+  bool _isHoa = false;
+  bool get isHoa => _isHoa;
+  void setIsHoa(bool isHoa) {
+    _isHoa = isHoa;
+    notifyListeners();
+  }
+
+  List<HOAList> _hoaList = List<HOAList>();
+  List<HOAList> get hoaList => _hoaList;
+  addHoaList(HOAList hoaList) {
+    _hoaList.add(hoaList);
+    notifyListeners();
+  }
+
+  removeHoaList(int index) {
+    _hoaList.removeAt(index);
+    notifyListeners();
+  }
+
+  
 }

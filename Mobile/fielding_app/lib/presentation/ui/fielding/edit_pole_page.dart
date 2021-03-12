@@ -1,13 +1,19 @@
 import 'package:fielding_app/data/models/add_pole_model.dart';
+import 'package:fielding_app/data/models/add_transformer_model.dart';
 import 'package:fielding_app/data/models/all_pole_height_model.dart';
 import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
 import 'package:fielding_app/data/models/all_projects_model.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
+import 'package:fielding_app/domain/provider/riser_provider.dart';
+import 'package:fielding_app/domain/provider/span_provider.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
+import 'package:fielding_app/presentation/ui/fielding/component/edit_transformer_widget.dart';
+import 'package:fielding_app/presentation/ui/fielding/riser/riser_widget.dart';
+import 'package:fielding_app/presentation/widgets/constants_widget.dart';
 import 'package:fielding_app/presentation/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +21,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import 'component/edit_hoa_widget.dart';
+import 'span/view_span_widget.dart';
 import 'edit_pole_lat_lng_page.dart';
 
 class EditPolePage extends StatefulWidget {
@@ -44,18 +52,21 @@ class _EditPolePageState extends State<EditPolePage> {
   TextEditingController _year = TextEditingController();
   TextEditingController _condition = TextEditingController();
   TextEditingController _poleStamp = TextEditingController();
+  TextEditingController _radioAntena = TextEditingController();
 
+  TextEditingController kvController = TextEditingController();
+  final formKey = new GlobalKey<FormState>();
   FieldingBloc fieldingBloc;
   AuthBloc authBloc;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   bool _isStamp;
+  bool _isAntena;
 
   List<String> _listChoice = ["Yes", "No"];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     authBloc = BlocProvider.of<AuthBloc>(context);
@@ -146,18 +157,33 @@ class _EditPolePageState extends State<EditPolePage> {
                         token: authBloc.userModel.data.token,
                         id: (widget.poles == null) ? null : widget.poles.id,
                         layerId: widget.allProjectsModel.iD,
-                        street: (provider.streetName == null) ? null : provider.streetName,
+                        street: (provider.streetName == null)
+                            ? null
+                            : provider.streetName,
                         vAPTerminal: this._vapTerminal.text,
                         poleNumber: this._poleNumber.text,
                         osmose: this._osmoseNumber.text,
-                        latitude: (provider.latitude == null) ? null : provider.latitude.toString(),
-                        longitude: (provider.longitude == null ) ? null : provider.longitude.toString(),
-                        poleHeight: (provider.poleHeightSelected.id == null) ? null : provider.poleHeightSelected.id,
+                        latitude: (provider.latitude == null)
+                            ? null
+                            : provider.latitude.toString(),
+                        longitude: (provider.longitude == null)
+                            ? null
+                            : provider.longitude.toString(),
+                        poleHeight: (provider.poleHeightSelected.id == null)
+                            ? null
+                            : provider.poleHeightSelected.id,
                         groundCircumference: this._groundLine.text,
-                        poleClass: (provider.poleClassSelected.id == null) ? null : provider.poleClassSelected.id,
+                        poleClass: (provider.poleClassSelected.id == null)
+                            ? null
+                            : provider.poleClassSelected.id,
                         poleYear: this._year.text,
-                        poleSpecies: (provider.poleSpeciesSelected.id == null) ? null : provider.poleSpeciesSelected.id,
-                        poleCondition: (provider.poleConditionSelected.id == null) ? null : provider.poleConditionSelected.id,
+                        poleSpecies: (provider.poleSpeciesSelected.id == null)
+                            ? null
+                            : provider.poleSpeciesSelected.id,
+                        poleCondition:
+                            (provider.poleConditionSelected.id == null)
+                                ? null
+                                : provider.poleConditionSelected.id,
                         otherNumber: this._otherNumber.text,
                         poleStamp: _isStamp,
                       );
@@ -247,7 +273,9 @@ class _EditPolePageState extends State<EditPolePage> {
                           color: ColorHelpers.colorBlueNumber, fontSize: 14),
                     ),
                     Text(
-                      (widget.poles != null) ? widget.poles.poleSequence.toString() : "-",
+                      (widget.poles != null)
+                          ? widget.poles.poleSequence.toString()
+                          : "-",
                       style: TextStyle(
                           color: ColorHelpers.colorBlackText, fontSize: 14),
                     ),
@@ -477,85 +505,107 @@ class _EditPolePageState extends State<EditPolePage> {
                     color: ColorHelpers.colorBlackText,
                   ),
                   UIHelper.verticalSpaceSmall,
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   children: [
-                  //     Text(
-                  //       "HOA",
-                  //       style: textDefault,
-                  //     ),
-                  //     Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.end,
-                  //       children: [
-                  //         Row(
-                  //           children: [
-                  //             Text(
-                  //               "Telco",
-                  //               style: TextStyle(
-                  //                   fontWeight: FontWeight.w600,
-                  //                   color: ColorHelpers.colorBlackText,
-                  //                   fontSize: 12),
-                  //             ),
-                  //             UIHelper.horizontalSpaceSmall,
-                  //             Icon(
-                  //               Icons.arrow_forward_ios,
-                  //               color: ColorHelpers.colorBlackText,
-                  //               size: 14,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //         UIHelper.verticalSpaceSmall,
-                  //         Row(
-                  //           children: [
-                  //             Icon(
-                  //               Icons.add,
-                  //               color: ColorHelpers.colorBlueNumber,
-                  //               size: 14,
-                  //             ),
-                  //             UIHelper.horizontalSpaceVerySmall,
-                  //             Text(
-                  //               "Add HOA",
-                  //               style: TextStyle(
-                  //                   fontWeight: FontWeight.w600,
-                  //                   color: ColorHelpers.colorBlueNumber,
-                  //                   fontSize: 12),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
-                  // UIHelper.verticalSpaceSmall,
-                  // Divider(
-                  //   color: ColorHelpers.colorBlackText,
-                  // ),
-                  // UIHelper.verticalSpaceSmall,
-                  // _contentEditText("Transformer", 'Unknown', _osmoseNumber),
-                  // UIHelper.verticalSpaceSmall,
-                  // Divider(
-                  //   color: ColorHelpers.colorBlackText,
-                  // ),
-                  // UIHelper.verticalSpaceSmall,
-                  // _contentEditText("Anchor", "Yes", _osmoseNumber),
-                  // UIHelper.verticalSpaceSmall,
-                  // Divider(
-                  //   color: ColorHelpers.colorBlackText,
-                  // ),
-                  // UIHelper.verticalSpaceSmall,
-                  // _contentEditText("Riser", "Yes", _osmoseNumber),
-                  // UIHelper.verticalSpaceSmall,
-                  // Divider(
-                  //   color: ColorHelpers.colorBlackText,
-                  // ),
-                  // UIHelper.verticalSpaceSmall,
-                  // _contentEditText("VGR", "Yes", _osmoseNumber),
-                  // UIHelper.verticalSpaceSmall,
-                  // Divider(
-                  //   color: ColorHelpers.colorBlackText,
-                  // ),
-                  // UIHelper.verticalSpaceSmall,
+                  _contentEditText("Radio Antena", this._radioAntena.text,
+                      this._radioAntena, true),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  EditTransformerWidget(),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  EditHoaWidget(),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  InkWell(
+                    onTap: () {
+                      Get.to(ViewSpanWidget());
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Span Direction and Distance",
+                          style: textDefault,
+                        ),
+                        Row(
+                          children: [
+                            (Provider.of<SpanProvider>(context)
+                                        .listSpanData
+                                        .length !=
+                                    0)
+                                ? Text(
+                                    context
+                                        .watch<SpanProvider>()
+                                        .listSpanData
+                                        .length
+                                        .toString(),
+                                    style: TextStyle(
+                                        color: ColorHelpers.colorBlackText,
+                                        fontSize: 14))
+                                : Container(),
+                            UIHelper.horizontalSpaceSmall,
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: ColorHelpers.colorBlackText,
+                              size: 14,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  Divider(
+                    color: ColorHelpers.colorBlackText,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  InkWell(
+                    onTap: () {
+                      Get.to(RiserWidget());
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Riser and VGR Location",
+                          style: textDefault,
+                        ),
+                        Row(
+                          children: [
+                            (Provider.of<RiserProvider>(context)
+                                        .listRiserData
+                                        .length !=
+                                    0)
+                                ? Text(
+                                    context
+                                        .watch<RiserProvider>()
+                                        .listRiserData
+                                        .length
+                                        .toString(),
+                                    style: TextStyle(
+                                        color: ColorHelpers.colorBlackText,
+                                        fontSize: 14))
+                                : Container(),
+                            UIHelper.horizontalSpaceSmall,
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              color: ColorHelpers.colorBlackText,
+                              size: 14,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
                   // _contentEditText("Notes", "Add Notes", _osmoseNumber),
                   // UIHelper.verticalSpaceSmall,
                   // Divider(
@@ -703,7 +753,7 @@ class _EditPolePageState extends State<EditPolePage> {
                   (title.toLowerCase() == "pole height")
                       ? DropdownButtonFormField<String>(
                           isDense: true,
-                          decoration: decorationDropdown(),
+                          decoration: kDecorationDropdown(),
                           items: data.listAllPoleHeight.map((value) {
                             return DropdownMenuItem<String>(
                               child: Text(value.text.toString(),
@@ -724,7 +774,7 @@ class _EditPolePageState extends State<EditPolePage> {
                       : (title.toLowerCase() == "pole class")
                           ? DropdownButtonFormField<String>(
                               isDense: true,
-                              decoration: decorationDropdown(),
+                              decoration: kDecorationDropdown(),
                               items: data.listAllPoleClass.map((value) {
                                 return DropdownMenuItem<String>(
                                   child: Text(value.text,
@@ -746,7 +796,7 @@ class _EditPolePageState extends State<EditPolePage> {
                           : (title.toLowerCase() == "species")
                               ? DropdownButtonFormField<String>(
                                   isDense: true,
-                                  decoration: decorationDropdown(),
+                                  decoration: kDecorationDropdown(),
                                   items: data.listAllPoleSpecies.map((value) {
                                     return DropdownMenuItem<String>(
                                       child: Text(value.text,
@@ -769,13 +819,13 @@ class _EditPolePageState extends State<EditPolePage> {
                               : (title.toLowerCase() == "condition")
                                   ? DropdownButtonFormField<String>(
                                       isDense: true,
-                                      decoration: decorationDropdown(),
+                                      decoration: kDecorationDropdown(),
                                       items: data.listAllPoleCondition
                                           .map((value) {
                                         return DropdownMenuItem<String>(
-                                          child: Text(value.id.toString(),
+                                          child: Text(value.text.toString(),
                                               style: TextStyle(fontSize: 12)),
-                                          value: value.id.toString(),
+                                          value: value.text.toString(),
                                         );
                                       }).toList(),
                                       onChanged: (String value) {
@@ -794,7 +844,7 @@ class _EditPolePageState extends State<EditPolePage> {
                                     )
                                   : DropdownButtonFormField<String>(
                                       isDense: true,
-                                      decoration: decorationDropdown(),
+                                      decoration: kDecorationDropdown(),
                                       items: _listChoice.map((value) {
                                         return DropdownMenuItem<String>(
                                           child: Text(value,
@@ -837,25 +887,5 @@ class _EditPolePageState extends State<EditPolePage> {
             ),
           );
         });
-  }
-
-  InputDecoration decorationDropdown() {
-    return InputDecoration(
-      filled: true,
-      fillColor: ColorHelpers.colorBackground,
-      labelStyle: TextStyle(color: Colors.black),
-      isDense: true,
-      enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-        color: ColorHelpers.colorBackground,
-      )),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: ColorHelpers.colorBackground,
-        ),
-      ),
-      errorBorder:
-          OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
-    );
   }
 }
