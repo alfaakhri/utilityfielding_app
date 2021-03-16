@@ -1,4 +1,5 @@
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/domain/provider/anchor_provider.dart';
 import 'package:fielding_app/presentation/ui/root_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => FieldingProvider()),
         ChangeNotifierProvider(create: (_) => SpanProvider()),
         ChangeNotifierProvider(create: (_) => RiserProvider()),
+        ChangeNotifierProvider(create: (_) => AnchorProvider()),
       ],
       child: MultiBlocProvider(
         providers: [

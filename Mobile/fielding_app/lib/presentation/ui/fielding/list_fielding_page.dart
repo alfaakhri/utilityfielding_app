@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:intl/intl.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
 import 'detail_fielding_page.dart';
@@ -174,7 +175,8 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Due Date ${data.dueDate ?? "-"}",
+                                          // "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate))  ?? "-"}",
+                                          "Due Date ${data.dueDate  ?? "-"}",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color:

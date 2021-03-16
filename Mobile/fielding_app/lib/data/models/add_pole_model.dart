@@ -16,7 +16,8 @@ class AddPoleModel {
   int poleCondition;
   String otherNumber;
   bool poleStamp;
-  RadioAntena radioAntena;
+  String notes;
+  bool isRadioAntenna;
   List<HOAList> hOAList;
   List<TransformerList> transformerList;
   List<SpanDirectionList> spanDirectionList;
@@ -41,7 +42,8 @@ class AddPoleModel {
       this.poleCondition,
       this.otherNumber,
       this.poleStamp,
-      this.radioAntena,
+      this.notes,
+      this.isRadioAntenna,
       this.hOAList,
       this.transformerList,
       this.spanDirectionList,
@@ -66,9 +68,8 @@ class AddPoleModel {
     poleCondition = json['PoleCondition'];
     otherNumber = json['OtherNumber'];
     poleStamp = json['PoleStamp'];
-    radioAntena = json['RadioAntena'] != null
-        ? new RadioAntena.fromJson(json['RadioAntena'])
-        : null;
+    notes = json['Notes'];
+    isRadioAntenna = json['IsRadioAntenna'];
     if (json['HOAList'] != null) {
       hOAList = new List<HOAList>();
       json['HOAList'].forEach((v) {
@@ -120,9 +121,8 @@ class AddPoleModel {
     data['PoleCondition'] = this.poleCondition;
     data['OtherNumber'] = this.otherNumber;
     data['PoleStamp'] = this.poleStamp;
-    if (this.radioAntena != null) {
-      data['RadioAntena'] = this.radioAntena.toJson();
-    }
+    data['Notes'] = this.notes;
+    data['IsRadioAntenna'] = this.isRadioAntenna;
     if (this.hOAList != null) {
       data['HOAList'] = this.hOAList.map((v) => v.toJson()).toList();
     }
@@ -206,13 +206,18 @@ class SpanDirectionList {
   int length;
   String lineData;
   String color;
+  String image;
+  int imageType;
 
-  SpanDirectionList({this.length, this.lineData, this.color});
+  SpanDirectionList(
+      {this.length, this.lineData, this.color, this.image, this.imageType});
 
   SpanDirectionList.fromJson(Map<String, dynamic> json) {
     length = json['Length'];
     lineData = json['LineData'];
     color = json['Color'];
+    image = json['Image'];
+    imageType = json['ImageType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -220,15 +225,17 @@ class SpanDirectionList {
     data['Length'] = this.length;
     data['LineData'] = this.lineData;
     data['Color'] = this.color;
+    data['Image'] = this.image;
+    data['ImageType'] = this.imageType;
     return data;
   }
 }
 
 class AnchorList {
-  int circleX;
-  int circleY;
-  int textX;
-  int textY;
+  double circleX;
+  double circleY;
+  double textX;
+  double textY;
   String text;
   int distance;
   int size;
@@ -321,11 +328,11 @@ class DownGuyList {
 }
 
 class RiserAndVGRList {
-  int shapeX;
-  int shapeY;
-  int textX;
-  int textY;
-  int sequence;
+  double shapeX;
+  double shapeY;
+  double textX;
+  double textY;
+  String name;
   int value;
   int type;
 
@@ -334,7 +341,7 @@ class RiserAndVGRList {
       this.shapeY,
       this.textX,
       this.textY,
-      this.sequence,
+      this.name,
       this.value,
       this.type});
 
@@ -343,7 +350,7 @@ class RiserAndVGRList {
     shapeY = json['ShapeY'];
     textX = json['TextX'];
     textY = json['TextY'];
-    sequence = json['Sequence'];
+    name = json['Name'];
     value = json['Value'];
     type = json['Type'];
   }
@@ -354,7 +361,7 @@ class RiserAndVGRList {
     data['ShapeY'] = this.shapeY;
     data['TextX'] = this.textX;
     data['TextY'] = this.textY;
-    data['Sequence'] = this.sequence;
+    data['Name'] = this.name;
     data['Value'] = this.value;
     data['Type'] = this.type;
     return data;

@@ -150,6 +150,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield AddPoleLoading();
       try {
         print(json.encode(event.addPoleModel.toJson()));
+        print(json.encode(event.addPoleModel.spanDirectionList.map((e) => e.toJson()).toList()));
+        print(json.encode(event.addPoleModel.anchorList.map((e) => e.toJson()).toList()));
+        print(json.encode(event.addPoleModel.riserAndVGRList.map((e) => e.toJson()).toList()));
+        // yield AddPoleFailed("Test");
         var response = await _apiProvider.addPole(event.addPoleModel.toJson());
         if (response.statusCode == 200) {
           yield AddPoleSuccess();

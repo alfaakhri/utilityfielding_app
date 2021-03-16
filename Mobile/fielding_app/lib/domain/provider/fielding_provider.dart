@@ -215,7 +215,7 @@ class FieldingProvider extends ChangeNotifier {
   AllPoleConditionModel get poleConditionSelected => _poleConditionSelected;
   void setPoleConditionSelected(String value) {
     _poleConditionSelected = _listAllPoleCondition
-        .firstWhere((element) => element.id.toString().contains(value));
+        .firstWhere((element) => element.text.contains(value));
     notifyListeners();
   }
 
@@ -315,5 +315,15 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  
+  //------------------------------------------------------------------------------
+  void clearAll() {
+    _hoaList.clear();
+    _listTransformer.clear();
+    _hoaSelected = AllHoaTypeModel();
+    _poleClassSelected = AllPoleClassModel();
+    _poleHeightSelected = AllPoleHeightModel();
+    _poleSpeciesSelected = AllPoleSpeciesModel();
+    _poleConditionSelected = AllPoleConditionModel();
+    notifyListeners();
+  }
 }

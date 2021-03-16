@@ -14,7 +14,6 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:random_color/random_color.dart';
 import 'package:provider/provider.dart';
-import 'dart:ui' as ui;
 
 class InsertSpanWidget extends StatefulWidget {
   final SpanDirectionList spanData;
@@ -40,32 +39,10 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
   TextEditingController sizeController = TextEditingController();
   Color randomColor;
 
-  _requestPermission() async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.storage,
-    ].request();
-
-    final info = statuses[Permission.storage].toString();
-    print(info);
-  }
-
-  Future<void> _capturePng() async {
-    RenderRepaintBoundary boundary =
-        globalKey.currentContext.findRenderObject() as RenderRepaintBoundary;
-    ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    Uint8List pngBytes = byteData.buffer.asUint8List();
-    print(pngBytes);
-    final result =
-        await ImageGallerySaver.saveImage(pngBytes, quality: 100, name: "1234");
-    print(result);
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _requestPermission();
     RandomColor _randomColor = RandomColor();
     if (widget.spanData != null) {
       this.randomColor = HexColor.fromHex(widget.spanData.color);

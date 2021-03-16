@@ -157,15 +157,16 @@ class ApiProvider {
     }
   }
 
-   Future<Response> startFielding(String token, String poleId, bool isStartAdditional) async {
-     var data = {
-       'Token': token, 
-       'PoleID': poleId,
-       'isStartAdditional': isStartAdditional
-     };
+  Future<Response> startFielding(
+      String token, String poleId, bool isStartAdditional) async {
+    var data = {
+      'Token': token,
+      'PoleID': poleId,
+      'isStartAdditional': isStartAdditional
+    };
     try {
-      _response = await _dio
-          .post(BASE_URL + "/api/MobileProject/StartFielding", data: data);
+      _response = await _dio.post(BASE_URL + "/api/MobileProject/StartFielding",
+          data: data);
       return _response;
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {
@@ -188,8 +189,8 @@ class ApiProvider {
 
   Future<Response> getAllPoleSpecies() async {
     try {
-      var response = await _dio.get(
-          BASE_URL + "/api/MobileProject/GetAllPoleSpecies");
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllPoleSpecies");
       return response;
     } catch (e) {
       throw e;
@@ -198,8 +199,8 @@ class ApiProvider {
 
   Future<Response> getAllPoleCondition() async {
     try {
-      var response = await _dio.get(
-          BASE_URL + "/api/MobileProject/GetAllPoleCondition");
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllPoleCondition");
       return response;
     } catch (e) {
       throw e;
@@ -208,8 +209,8 @@ class ApiProvider {
 
   Future<Response> getRiserAndVGR() async {
     try {
-      var response = await _dio.get(
-          BASE_URL + "/api/MobileProject/GetRiserAndVGRType");
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetRiserAndVGRType");
       return response;
     } catch (e) {
       throw e;
@@ -218,29 +219,28 @@ class ApiProvider {
 
   Future<Response> getAllDownGuyOwner() async {
     try {
-      var response = await _dio.get(
-          BASE_URL + "/api/MobileProject/GetAllDownGuyOwner");
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllDownGuyOwner");
       return response;
     } catch (e) {
       throw e;
     }
   }
 
-    Future<Response> getAllHoaType() async {
+  Future<Response> getAllHoaType() async {
     try {
-      var response = await _dio.get(
-          BASE_URL + "/api/MobileProject/GetAllHOAType");
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllHOAType");
       return response;
     } catch (e) {
       throw e;
     }
   }
-
 
   Future<Response> getAllPoleClass() async {
     try {
-      var response = await _dio.get(
-          BASE_URL + "/api/MobileProject/GetAllPoleClass");
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllPoleClass");
       return response;
     } catch (e) {
       throw e;
@@ -249,8 +249,18 @@ class ApiProvider {
 
   Future<Response> getAllPoleHeight() async {
     try {
-      var response = await _dio.get(
-          BASE_URL + "/api/MobileProject/GetAllPoleHeight");
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllPoleHeight");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> uploadImage(dynamic data) async {
+    try {
+      var response =
+          await _dio.post(BASE_URL + "/api/MobileProject/UploadImage", data: data);
       return response;
     } catch (e) {
       throw e;
