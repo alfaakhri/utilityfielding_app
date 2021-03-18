@@ -32,6 +32,7 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
 
   double _bX = 300;
   double _bY = 250 / 1.75;
+  int imageType = 0;
 
   GlobalKey globalKey = GlobalKey();
   final formKey = new GlobalKey<FormState>();
@@ -45,6 +46,7 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
     super.initState();
     RandomColor _randomColor = RandomColor();
     if (widget.spanData != null) {
+      imageType = widget.spanData.imageType;
       this.randomColor = HexColor.fromHex(widget.spanData.color);
       this.sizeController.text = widget.spanData.length.toString();
       _aX = double.parse(widget.spanData.lineData
@@ -52,15 +54,15 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
           .replaceAll("]", "")
           .split(",")[0]);
       _aY = double.parse(widget.spanData.lineData
-          .replaceAll("[]", "")
+          .replaceAll("[", "")
           .replaceAll("]", "")
           .split(",")[1]);
       _bX = double.parse(widget.spanData.lineData
-          .replaceAll("[]", "")
+          .replaceAll("[", "")
           .replaceAll("]", "")
           .split(",")[2]);
       _bY = double.parse(widget.spanData.lineData
-          .replaceAll("[]", "")
+          .replaceAll("[", "")
           .replaceAll("]", "")
           .split(",")[3]);
     } else {
@@ -104,15 +106,28 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
             child: RaisedButton(
               onPressed: () {
                 if (formKey.currentState.validate()) {
-                  List<double> lineData = [
-                    this._aX,
-                    this._aY,
-                    this._bX,
-                    this._bY
-                  ];
+                  List<double> lineData;
+                  // if (context.read<SpanProvider>().listSpanData.length != 0) {
+                  //   imageType = context.read<SpanProvider>().listSpanData.first.imageType;
+                  // } else {
+                  //   imageType = 0;
+                  // }
+
+                  // if (imageType == 0) {
+                    lineData = [this._aX, this._aY, this._bX, this._bY];
+                  // } else {
+                  //   lineData = [
+                  //     this._aX - 30,
+                  //     this._aY - 30,
+                  //     this._bX - 30,
+                  //     this._bY - 30
+                  //   ];
+                  // }
+
                   SpanDirectionList data = SpanDirectionList(
                       length: double.parse(this.sizeController.text),
                       lineData: lineData.toString(),
+                      imageType: 0,
                       color: randomColor.toHex());
                   print(json.encode(data));
                   if (widget.spanData != null) {

@@ -74,9 +74,17 @@ class _RiserWidgetState extends State<RiserWidget> {
                         ),
                         width: double.infinity,
                         height: 250,
-                        child: Image.asset(
-                          'assets/riser.png',
-                          scale: 2,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/riser.png',
+                              scale: 2,
+                            ),
+                            UIHelper.verticalSpaceSmall,
+                            Text("Curb Face / Street Side",
+                                style: TextStyle(fontSize: 12)),
+                          ],
                         ),
                       ),
                       Stack(

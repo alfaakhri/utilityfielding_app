@@ -113,7 +113,9 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         backgroundColor: ColorHelpers.colorBackground,
         body: BlocConsumer<FieldingBloc, FieldingState>(
           listener: (context, state) {
-            if (state is StartPolePictureLoading) {
+            if (state is GetAllPolesByIdSuccess) {
+              context.read<FieldingProvider>().setAllPolesByLayer(state.allPolesByLayer);
+            } else if (state is StartPolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is StartPolePictureFailed) {
               fieldingBloc.add(GetAllPolesByID(

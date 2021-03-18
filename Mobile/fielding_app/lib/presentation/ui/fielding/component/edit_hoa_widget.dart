@@ -18,6 +18,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
   var textDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12);
   bool valueDropdown = false;
   TextEditingController ftController = TextEditingController();
+  TextEditingController inchController = TextEditingController();
   final formKey = new GlobalKey<FormState>();
   String choiceValue;
 
@@ -47,6 +48,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                   context.read<FieldingProvider>().setIsHoa(false);
                   this.choiceValue = null;
                   this.ftController.clear();
+                  this.inchController.clear();
                   dialogHoa("HOA Type");
                 },
                 child: Row(
@@ -81,96 +83,87 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                 String typeName = data.listAllHoaType
                     .firstWhere((element) => element.id == list.type)
                     .text;
-                return InkWell(
-                  onTap: () {
-                    setState(() {
-                      data.setIsHoa(true);
-                      this.ftController.text = list.poleLengthInFeet.toString();
-                    });
-
-                    dialogHoa("HOA Type");
-                  },
-                  child: Column(
-                    children: [
-                      UIHelper.verticalSpaceSmall,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "HOA ${index + 1}",
-                            style: textDefault,
-                          ),
-                          Text(
-                            "$typeName",
-                            style: textDefault,
-                          )
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Pole Lenght",
-                            style: textDefault,
-                          ),
-                          Text(
-                            "${list.poleLengthInFeet} ft",
-                            style: textDefault,
-                          )
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              child: RaisedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    data.removeHoaList(index);
-                                  });
-                                },
-                                child: Text(
-                                  "Delete",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
-                                ),
-                                color: ColorHelpers.colorRed,
+                return Column(
+                  children: [
+                    UIHelper.verticalSpaceSmall,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "HOA ${index + 1}",
+                          style: textDefault,
+                        ),
+                        Text(
+                          "$typeName",
+                          style: textDefault,
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Pole Lenght",
+                          style: textDefault,
+                        ),
+                        Text(
+                          "${list.poleLengthInFeet} ft, ${list.poleLengthInInch} inch",
+                          style: textDefault,
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            child: RaisedButton(
+                              onPressed: () {
+                                setState(() {
+                                  data.removeHoaList(index);
+                                });
+                              },
+                              child: Text(
+                                "Delete",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
                               ),
+                              color: ColorHelpers.colorRed,
                             ),
                           ),
-                          UIHelper.horizontalSpaceSmall,
-                          Expanded(
-                            child: Container(
-                              child: RaisedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    data.setIsHoa(true);
-                                    this.ftController.text =
-                                        list.poleLengthInFeet.toString();
-                                    data.setHoaSelected(typeName);
-                                  });
+                        ),
+                        UIHelper.horizontalSpaceSmall,
+                        Expanded(
+                          child: Container(
+                            child: RaisedButton(
+                              onPressed: () {
+                                setState(() {
+                                  data.setIsHoa(true);
+                                  this.ftController.text =
+                                      list.poleLengthInFeet.toString();
+                                  this.inchController.text = list.poleLengthInInch.toString();
+                                  data.setHoaSelected(typeName);
+                                });
 
-                                  dialogHoa(
-                                    "Hoa Type",
-                                  );
-                                },
-                                child: Text(
-                                  "Edit",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
-                                ),
-                                color: ColorHelpers.colorGreen,
+                                dialogHoa(
+                                  "Hoa Type",
+                                );
+                              },
+                              child: Text(
+                                "Edit",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
                               ),
+                              color: ColorHelpers.colorGreen,
                             ),
                           ),
-                        ],
-                      ),
-                      UIHelper.verticalSpaceVerySmall,
-                      Divider(
-                        color: ColorHelpers.colorBlackText,
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    UIHelper.verticalSpaceVerySmall,
+                    Divider(
+                      color: ColorHelpers.colorBlackText,
+                    ),
+                  ],
                 );
               },
             ),
@@ -230,47 +223,108 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                                 style: textDefault,
                               ),
                               UIHelper.verticalSpaceSmall,
-                              TextFormField(
-                                controller: ftController,
-                                keyboardType: TextInputType.number,
-                                validator: (value) {
-                                  if (value == null) {
-                                    return 'Please insert pole lenght';
-                                  } else if (value == "") {
-                                    return 'Please insert pole lenght';
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                  suffixText: "ft",
-                                  suffixStyle: textDefault,
-                                  focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorRed)),
-                                  disabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorGrey
-                                              .withOpacity(0.3))),
-                                  errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorRed)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorGrey
-                                              .withOpacity(0.3))),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorGrey
-                                              .withOpacity(0.3))),
-                                ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: ftController,
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Please insert pole lenght';
+                                        } else if (value == "") {
+                                          return 'Please insert pole lenght';
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        isDense: true,
+                                        suffixText: "ft",
+                                        suffixStyle: textDefault,
+                                        focusedErrorBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorRed)),
+                                        disabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorGrey
+                                                    .withOpacity(0.3))),
+                                        errorBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorRed)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorGrey
+                                                    .withOpacity(0.3))),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorGrey
+                                                    .withOpacity(0.3))),
+                                      ),
+                                    ),
+                                  ),
+                                  UIHelper.horizontalSpaceVerySmall,
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: inchController,
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        if (value == null) {
+                                          return 'Please insert inch';
+                                        } else if (value == "") {
+                                          return 'Please insert inch';
+                                        }
+                                        return null;
+                                      },
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        isDense: true,
+                                        suffixText: "inch",
+                                        suffixStyle: textDefault,
+                                        focusedErrorBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorRed)),
+                                        disabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorGrey
+                                                    .withOpacity(0.3))),
+                                        errorBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorRed)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorGrey
+                                                    .withOpacity(0.3))),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            borderSide: BorderSide(
+                                                color: ColorHelpers.colorGrey
+                                                    .withOpacity(0.3))),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              UIHelper.verticalSpaceSmall,
                             ],
                           )
                         : Container(),
@@ -288,6 +342,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                             setState(() {
                               data.addHoaList(HOAList(
                                   type: data.hoaSelected.id,
+                                  poleLengthInInch: double.parse(this.inchController.text),
                                   poleLengthInFeet:
                                       double.parse(this.ftController.text)));
                               data.clearHoaSelected();

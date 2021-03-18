@@ -154,13 +154,19 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                                     .replaceAll("]", "")
                                     .split(",")[3]);
                                 Color color = HexColor.fromHex(e.color);
-                                return Line(
-                                  start: {"x": aX, "y": aY},
-                                  end: {"x": bX, "y": bY},
-                                  // start: {"x": aX + 30, "y": aY + 30},
-                                  // end: {"x": bX + 30, "y": bY + 30},
-                                  color: color,
-                                );
+                                if (e.imageType == 0 || e.imageType == null) {
+                                  return Line(
+                                    start: {"x": aX, "y": aY},
+                                    end: {"x": bX, "y": bY},
+                                    color: color,
+                                  );
+                                } else {
+                                  return Line(
+                                    start: {"x": aX + 30, "y": aY + 30},
+                                    end: {"x": bX + 30, "y": bY + 30},
+                                    color: color,
+                                  );
+                                }
                               } else {
                                 return Container();
                               }
@@ -192,7 +198,6 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                             } else {
                               color = ColorHelpers.colorBlackText;
                             }
-                             
 
                             return InkWell(
                               onTap: () {

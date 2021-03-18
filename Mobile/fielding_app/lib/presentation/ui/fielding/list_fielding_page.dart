@@ -139,7 +139,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          data.projectName,
+                                          data.projectName ?? "-",
                                           style: TextStyle(
                                               color:
                                                   ColorHelpers.colorBlackText,
@@ -147,7 +147,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          data.layerName,
+                                          data.layerName ?? "-",
                                           style: TextStyle(
                                               color:
                                                   ColorHelpers.colorBlackText,
@@ -162,7 +162,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                       children: [
                                         Row(
                                           children: [
-                                            Text("${data.totalPoles}",
+                                            Text((data.totalPoles != null) ? data.totalPoles.toString() ?? "0" : "0",
                                                 style: TextStyle(
                                                     color: ColorHelpers
                                                         .colorBlueNumber,
@@ -189,7 +189,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate)) ?? "-"}",
+                                          (data.dueDate != null) ? "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate)) ?? "-"}" : "Due Date -",
                                           // "Due Date ${data.dueDate  ?? "-"}",
                                           style: TextStyle(
                                               fontSize: 12,
@@ -197,7 +197,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                                   ColorHelpers.colorBlackText),
                                         ),
                                         Text(
-                                          "Approx ${data.totalPoles} Poles",
+                                          (data.approx != null) ? "Approx ${data.approx} Poles" : "Approx 0 Poles",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color:

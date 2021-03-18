@@ -49,27 +49,25 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    var fielding = context.read<FieldingProvider>();
     if (widget.polesLayerModel != null) {
       _latitude = widget.polesLayerModel.latitude;
       _longitude = widget.polesLayerModel.longitude;
       print("_latitude0" + _latitude.toString());
     } else {
-      if (context.read<FieldingProvider>().latitude == null) {
-        _latitude = context
-            .read<FieldingProvider>()
-            .currentPosition
-            .latitude
-            .toString();
-        _longitude = context
-            .read<FieldingProvider>()
-            .currentPosition
-            .longitude
-            .toString();
-        print("_latitude1" + _latitude.toString());
+      if (fielding.allPolesByLayer.length != 0) {
+        _latitude = fielding.allPolesByLayer.first.latitude;
+        _longitude = fielding.allPolesByLayer.first.longitude;
       } else {
-        _latitude = context.read<FieldingProvider>().latitude.toString();
-        _longitude = context.read<FieldingProvider>().longitude.toString();
-        print("_latitude2" + _latitude.toString());
+        if (fielding.latitude == null) {
+          _latitude = fielding.currentPosition.latitude.toString();
+          _longitude = fielding.currentPosition.longitude.toString();
+          print("_latitude1" + _latitude.toString());
+        } else {
+          _latitude = fielding.latitude.toString();
+          _longitude = fielding.longitude.toString();
+          print("_latitude2" + _latitude.toString());
+        }
       }
     }
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
@@ -210,8 +208,8 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               ),
               Text(
                   (widget.polesLayerModel == null)
-                      ? "-" 
-                      :  widget.polesLayerModel.poleSequence.toString(),
+                      ? "-"
+                      : widget.polesLayerModel.poleSequence.toString(),
                   style: TextStyle(
                       color: ColorHelpers.colorBlueNumber, fontSize: 18)),
             ],
@@ -252,8 +250,8 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
 
                     if (widget.polesLayerModel != null) {
                       showPinsOnMap(widget.polesLayerModel);
-                    } 
-                    else if (context.read<FieldingProvider>().latitude != null) {
+                    } else if (context.read<FieldingProvider>().latitude !=
+                        null) {
                       showPinsOnMapDefault(
                           context.read<FieldingProvider>().latitude,
                           context.read<FieldingProvider>().longitude);

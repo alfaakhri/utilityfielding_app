@@ -3,6 +3,7 @@ import 'package:fielding_app/data/models/add_transformer_model.dart';
 import 'package:fielding_app/data/models/all_pole_height_model.dart';
 import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
 import 'package:fielding_app/data/models/all_projects_model.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
@@ -242,7 +243,9 @@ class _EditPolePageState extends State<EditPolePage> {
                     this._osmoseNumber.text = state.poleByIdModel.osmose;
                     this._groundLine.text =
                         state.poleByIdModel.groundCircumference;
-                    this._year.text = (state.poleByIdModel.poleYear != null) ? state.poleByIdModel.poleYear.toString() : "";
+                    this._year.text = (state.poleByIdModel.poleYear != null)
+                        ? state.poleByIdModel.poleYear.toString()
+                        : "";
                     this._otherNumber.text = state.poleByIdModel.otherNumber;
                     this._isStamp = state.poleByIdModel.poleStamp;
                     if (this._isStamp) {
@@ -258,17 +261,22 @@ class _EditPolePageState extends State<EditPolePage> {
                     }
                     this._notes.text = state.poleByIdModel.note;
                     provider.setPoleClassAssign(state.poleByIdModel.poleClass);
-                    this._poleClass.text = provider.poleClassSelected.text ?? "";
+                    this._poleClass.text =
+                        provider.poleClassSelected.text ?? "";
                     provider.setPoleConditionAssign(
                         state.poleByIdModel.poleCondition);
-                    this._condition.text = provider.poleConditionSelected.text ?? "";
+                    this._condition.text =
+                        provider.poleConditionSelected.text ?? "";
                     provider
                         .setPoleHeightAssign(state.poleByIdModel.poleHeight);
-                    this._poleHeight.text = (provider.poleHeightSelected.text != null) ?
-                        provider.poleHeightSelected.text.toString() : "";
+                    this._poleHeight.text =
+                        (provider.poleHeightSelected.text != null)
+                            ? provider.poleHeightSelected.text.toString()
+                            : "";
                     provider
                         .setPoleSpeciesAssign(state.poleByIdModel.poleSpecies);
-                    this._species.text = provider.poleSpeciesSelected.text ?? "";
+                    this._species.text =
+                        provider.poleSpeciesSelected.text ?? "";
 
                     provider.setLatitude(
                         double.parse(state.poleByIdModel.latitude));
@@ -642,7 +650,13 @@ class _EditPolePageState extends State<EditPolePage> {
           Row(
             children: [
               Text(
-                (controller.text.isEmpty) ? value : controller.text,
+                (controller.text.isEmpty)
+                    ? "-"
+                    : (title.toLowerCase().contains("pole height"))
+                        ? controller.text + " ft"
+                        : (title.toLowerCase().contains("ground line"))
+                            ? controller.text + " inch"
+                            : controller.text,
                 style: TextStyle(
                     fontWeight: FontWeight.w600,
                     color: ColorHelpers.colorBlackText,
@@ -677,28 +691,44 @@ class _EditPolePageState extends State<EditPolePage> {
                   style: textDefault,
                 ),
                 UIHelper.verticalSpaceSmall,
-                TextFormField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    isDense: true,
-                    hintText: "$title...",
-                    hintStyle: TextStyle(
-                        color: ColorHelpers.colorBlackText.withOpacity(0.3),
-                        fontSize: 12),
-                    disabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(
-                            color: ColorHelpers.colorGrey.withOpacity(0.3))),
-                    enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(
-                            color: ColorHelpers.colorGrey.withOpacity(0.3))),
-                    focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                        borderSide: BorderSide(
-                            color: ColorHelpers.colorGrey.withOpacity(0.3))),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: controller,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          hintText: "$title...",
+                          hintStyle: TextStyle(
+                              color:
+                                  ColorHelpers.colorBlackText.withOpacity(0.3),
+                              fontSize: 12),
+                          disabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: BorderSide(
+                                  color:
+                                      ColorHelpers.colorGrey.withOpacity(0.3))),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: BorderSide(
+                                  color:
+                                      ColorHelpers.colorGrey.withOpacity(0.3))),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: BorderSide(
+                                  color:
+                                      ColorHelpers.colorGrey.withOpacity(0.3))),
+                        ),
+                      ),
+                    ),
+                    (title.toLowerCase().contains("ground line"))
+                        ? Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Text("Inch", style: TextStyle(fontSize: 12)),
+                          )
+                        : Container()
+                  ],
                 ),
                 UIHelper.verticalSpaceSmall,
                 Container(
@@ -737,25 +767,33 @@ class _EditPolePageState extends State<EditPolePage> {
                   ),
                   UIHelper.verticalSpaceSmall,
                   (title.toLowerCase() == "pole height")
-                      ? DropdownButtonFormField<String>(
-                          isDense: true,
-                          decoration: kDecorationDropdown(),
-                          items: data.listAllPoleHeight.map((value) {
-                            return DropdownMenuItem<String>(
-                              child: Text(value.text.toString(),
-                                  style: TextStyle(fontSize: 12)),
-                              value: value.text.toString(),
-                            );
-                          }).toList(),
-                          onChanged: (String value) {
-                            setState(() {
-                              data.setPoleHeightSelected(value);
-                              this._poleHeight.text = value;
-                            });
-                          },
-                          value: (data.poleHeightSelected.id == null)
-                              ? null
-                              : data.poleHeightSelected.text.toString(),
+                      ? Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                isDense: true,
+                                decoration: kDecorationDropdown(),
+                                items: data.listAllPoleHeight.map((value) {
+                                  return DropdownMenuItem<String>(
+                                    child: Text(value.text.toString(),
+                                        style: TextStyle(fontSize: 12)),
+                                    value: value.text.toString(),
+                                  );
+                                }).toList(),
+                                onChanged: (String value) {
+                                  setState(() {
+                                    data.setPoleHeightSelected(value);
+                                    this._poleHeight.text = value;
+                                  });
+                                },
+                                value: (data.poleHeightSelected.id == null)
+                                    ? null
+                                    : data.poleHeightSelected.text.toString(),
+                              ),
+                            ),
+                            UIHelper.horizontalSpaceSmall,
+                            Text("Feet", style: TextStyle(fontSize: 12)),
+                          ],
                         )
                       : (title.toLowerCase() == "pole class")
                           ? DropdownButtonFormField<String>(
@@ -763,7 +801,7 @@ class _EditPolePageState extends State<EditPolePage> {
                               decoration: kDecorationDropdown(),
                               items: data.listAllPoleClass.map((value) {
                                 return DropdownMenuItem<String>(
-                                  child: Text(value.text,
+                                  child: Text(value.text.toUpperCase(),
                                       style: TextStyle(fontSize: 12)),
                                   value: value.text,
                                 );
@@ -771,13 +809,13 @@ class _EditPolePageState extends State<EditPolePage> {
                               onChanged: (String value) {
                                 setState(() {
                                   data.setPoleClassSelected(value);
-                                  this._poleClass.text = value;
+                                  this._poleClass.text = value.toUpperCase();
                                 });
                               },
                               value: (data.poleClassSelected.text == null ||
                                       data.poleClassSelected.text == "")
                                   ? null
-                                  : data.poleClassSelected.text,
+                                  : data.poleClassSelected.text.toUpperCase(),
                             )
                           : (title.toLowerCase() == "species")
                               ? DropdownButtonFormField<String>(

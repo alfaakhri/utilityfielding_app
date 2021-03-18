@@ -24,6 +24,7 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
   TextEditingController sizeDg = TextEditingController();
   TextEditingController hoaOwner = TextEditingController();
   TextEditingController textInsulated = TextEditingController();
+  final formKey = new GlobalKey<FormState>();
 
   bool isPictureAnchor;
   bool isInsulated;
@@ -46,6 +47,17 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
     //     }
     //   }
     // }
+  }
+
+  _validator(String value, String textWarning) {
+    if (value == null) {
+      return 'Please insert $textWarning';
+    } else if (value.isEmpty) {
+      return 'Please insert $textWarning';
+    } else if (value == "0.00") {
+      return 'Please insert $textWarning';
+    }
+    return null;
   }
 
   @override
@@ -220,153 +232,137 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                 borderRadius: BorderRadius.all(Radius.circular(5.0))),
             content: Consumer<AnchorProvider>(
               builder: (context, anchor, _) => Consumer<RiserProvider>(
-                builder: (context, data, _) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("DG Size",
-                            style: TextStyle(
-                                fontSize: 14, color: ColorHelpers.colorGrey)),
-                        UIHelper.verticalSpaceSmall,
-                        TextFormField(
-                          controller: this.sizeDg,
-                          keyboardType: TextInputType.number,
-                          validator: (value) {
-                            if (value == null) {
-                              return 'Please insert size';
-                            } else if (value == "") {
-                              return 'Please insert size';
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            isDense: true,
-                            suffixText: "ft",
-                            suffixStyle: TextStyle(fontSize: 14),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      ColorHelpers.colorGrey.withOpacity(0.2)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color:
-                                      ColorHelpers.colorGrey.withOpacity(0.2)),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorHelpers.colorRed),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: ColorHelpers.colorRed),
+                builder: (context, data, _) => Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("DG Size",
+                              style: TextStyle(
+                                  fontSize: 14, color: ColorHelpers.colorGrey)),
+                          UIHelper.verticalSpaceSmall,
+                          TextFormField(
+                            controller: this.sizeDg,
+                            keyboardType: TextInputType.number,
+                            validator: (value) => _validator(value, "size"),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              isDense: true,
+                              suffixText: "ft",
+                              suffixStyle: TextStyle(fontSize: 14),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorHelpers.colorGrey
+                                        .withOpacity(0.2)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: ColorHelpers.colorGrey
+                                        .withOpacity(0.2)),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: ColorHelpers.colorRed),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: ColorHelpers.colorRed),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    UIHelper.verticalSpaceSmall,
-                    Text(
-                      "DG HOA Owner",
-                      style: textDefault,
-                    ),
-                    UIHelper.verticalSpaceSmall,
-                    DropdownButtonFormField<String>(
-                      isDense: true,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please insert hoa owner';
-                        } else if (value == "") {
-                          return 'Please insert hoa owner';
-                        }
-                        return null;
-                      },
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                      },
-                      decoration: kDecorationDropdown(),
-                      items: data.listDownGuyOwner.map((value) {
-                        return DropdownMenuItem<String>(
-                          child:
-                              Text(value.text, style: TextStyle(fontSize: 12)),
-                          value: value.text,
-                        );
-                      }).toList(),
-                      onChanged: (String value) {
-                        setState(() {
-                          data.setDownGuySelected(value);
-                          this.hoaOwner.text = value;
-                        });
-                      },
-                      value: data.downGuySelected.text == null
-                          ? null
-                          : data.downGuySelected.text,
-                    ),
-                    UIHelper.verticalSpaceSmall,
-                    Text("Insulated",
-                        style: TextStyle(
-                            fontSize: 14, color: ColorHelpers.colorGrey)),
-                    UIHelper.verticalSpaceSmall,
-                    DropdownButtonFormField<String>(
-                      isDense: true,
-                      onTap: () {
-                        FocusScope.of(context).unfocus();
-                      },
-                      decoration: kDecorationDropdown(),
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please insert insulated';
-                        } else if (value == "") {
-                          return 'Please insert insulated';
-                        }
-                        return null;
-                      },
-                      items: listChoice.map((value) {
-                        return DropdownMenuItem<String>(
-                          child: Text(value, style: TextStyle(fontSize: 12)),
-                          value: value,
-                        );
-                      }).toList(),
-                      onChanged: (String value) {
-                        setState(() {
-                          this.textInsulated.text = value;
-                          if (value == "Yes") {
-                            this.isInsulated = true;
-                          } else {
-                            this.isInsulated = false;
-                          }
-                        });
-                      },
-                      value: (this.textInsulated.text == null ||
-                              this.textInsulated.text == "")
-                          ? null
-                          : this.textInsulated.text.toString(),
-                    ),
-                    UIHelper.verticalSpaceSmall,
-                    Container(
-                      width: double.infinity,
-                      child: FlatButton(
-                        child:
-                            Text("Save", style: TextStyle(color: Colors.white)),
-                        onPressed: () {
-                          anchor.addDownGuyByAnchor(DownGuyList(
-                              size: double.parse(this.sizeDg.text),
-                              owner: data.downGuySelected.id,
-                              isInsulated: this.isInsulated,
-                              hOA: 0,
-                              type: (widget.type) ? 1 : 0));
-                          data.clearRiserAndtype();
-                          this.sizeDg.clear();
-                          Navigator.pop(context);
-                        },
-                        color: ColorHelpers.colorButtonDefault,
+                        ],
                       ),
-                    ),
-                  ],
+                      UIHelper.verticalSpaceSmall,
+                      Text(
+                        "DG HOA Owner",
+                        style: textDefault,
+                      ),
+                      UIHelper.verticalSpaceSmall,
+                      DropdownButtonFormField<String>(
+                        isDense: true,
+                        validator: (value) => _validator(value, "hoa owner"),
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                        },
+                        decoration: kDecorationDropdown(),
+                        items: data.listDownGuyOwner.map((value) {
+                          return DropdownMenuItem<String>(
+                            child: Text(value.text,
+                                style: TextStyle(fontSize: 12)),
+                            value: value.text,
+                          );
+                        }).toList(),
+                        onChanged: (String value) {
+                          setState(() {
+                            data.setDownGuySelected(value);
+                            this.hoaOwner.text = value;
+                          });
+                        },
+                        value: data.downGuySelected.text == null
+                            ? null
+                            : data.downGuySelected.text,
+                      ),
+                      UIHelper.verticalSpaceSmall,
+                      Text("Insulated",
+                          style: TextStyle(
+                              fontSize: 14, color: ColorHelpers.colorGrey)),
+                      UIHelper.verticalSpaceSmall,
+                      DropdownButtonFormField<String>(
+                        isDense: true,
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                        },
+                        decoration: kDecorationDropdown(),
+                        validator: (value) => _validator(value, "insulated"),
+                        items: listChoice.map((value) {
+                          return DropdownMenuItem<String>(
+                            child: Text(value, style: TextStyle(fontSize: 12)),
+                            value: value,
+                          );
+                        }).toList(),
+                        onChanged: (String value) {
+                          setState(() {
+                            this.textInsulated.text = value;
+                            if (value == "Yes") {
+                              this.isInsulated = true;
+                            } else {
+                              this.isInsulated = false;
+                            }
+                          });
+                        },
+                        value: (this.textInsulated.text == null ||
+                                this.textInsulated.text == "")
+                            ? null
+                            : this.textInsulated.text.toString(),
+                      ),
+                      UIHelper.verticalSpaceSmall,
+                      Container(
+                        width: double.infinity,
+                        child: FlatButton(
+                          child: Text("Save",
+                              style: TextStyle(color: Colors.white)),
+                          onPressed: () {
+                            if (formKey.currentState.validate()) {
+                              anchor.addDownGuyByAnchor(DownGuyList(
+                                  size: double.parse(this.sizeDg.text),
+                                  owner: data.downGuySelected.id,
+                                  isInsulated: this.isInsulated,
+                                  hOA: 0,
+                                  type: (widget.type) ? 1 : 0));
+                              data.clearRiserAndtype();
+                              this.sizeDg.clear();
+                              Navigator.pop(context);
+                            }
+                          },
+                          color: ColorHelpers.colorButtonDefault,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

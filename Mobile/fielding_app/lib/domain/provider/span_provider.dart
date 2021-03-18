@@ -60,4 +60,11 @@ class SpanProvider extends ChangeNotifier {
     _listSpanData.clear();
     notifyListeners();
   }
+
+  int _imageType;
+  int get imageType => _imageType;
+  void setImageType(int imageType) {
+    _imageType = imageType;
+    notifyListeners();
+  }
 }

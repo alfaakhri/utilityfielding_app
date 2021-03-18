@@ -5,6 +5,7 @@ import 'package:fielding_app/data/models/all_pole_class_model.dart';
 import 'package:fielding_app/data/models/all_pole_condition_model.dart';
 import 'package:fielding_app/data/models/all_pole_height_model.dart';
 import 'package:fielding_app/data/models/all_pole_species_model.dart';
+import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
 import 'package:fielding_app/data/models/all_projects_model.dart';
 import 'package:fielding_app/data/models/current_address.dart';
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
@@ -14,6 +15,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class FieldingProvider extends ChangeNotifier {
+
+  List<AllPolesByLayerModel> _allPolesByLayer = List<AllPolesByLayerModel>();
+  List<AllPolesByLayerModel> get allPolesByLayer => _allPolesByLayer;
+  void setAllPolesByLayer(List<AllPolesByLayerModel> allPolesByLayer) {
+    _allPolesByLayer = allPolesByLayer;
+    notifyListeners();
+  }
+  
   AllProjectsModel _allProjectsSelected = AllProjectsModel();
   AllProjectsModel get allProjectsSelected => _allProjectsSelected;
   void setAllProjectsSelected(AllProjectsModel allProjectsSelected) {

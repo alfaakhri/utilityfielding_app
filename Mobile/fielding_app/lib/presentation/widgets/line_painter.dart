@@ -15,11 +15,14 @@ class Line extends StatefulWidget {
 class _LineState extends State<Line> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      size: Size(MediaQuery.of(context).size.width,
-          250),
-      painter: DrawLine(start: widget.start, end: widget.end, color: widget.color),
-      foregroundPainter: DrawCircle(center: {"x": MediaQuery.of(context).size.width, "y": 250}, radius: 18),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+          child: CustomPaint(
+        size: Size(MediaQuery.of(context).size.width,
+            250),
+        painter: DrawLine(start: widget.start, end: widget.end, color: widget.color),
+        foregroundPainter: DrawCircle(center: {"x": MediaQuery.of(context).size.width, "y": 250}, radius: 18),
+      ),
     );
   }
 }
