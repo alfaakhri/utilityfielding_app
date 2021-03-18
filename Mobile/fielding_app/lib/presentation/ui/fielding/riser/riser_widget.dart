@@ -81,18 +81,22 @@ class _RiserWidgetState extends State<RiserWidget> {
                       ),
                       Stack(
                         children: data.listRiserData.map((e) {
-                          if (e.name.contains("VGR")) {
-                            return TriangleText(
-                              x: e.shapeX,
-                              y: e.shapeY,
-                              text: e.name,
-                            );
+                          if (e.name != null) {
+                            if (e.name.contains("VGR")) {
+                              return TriangleText(
+                                x: e.shapeX,
+                                y: e.shapeY,
+                                text: e.name,
+                              );
+                            } else {
+                              return CircleText(
+                                center: {"x": e.shapeX, "y": e.shapeY},
+                                radius: 15,
+                                text: e.name,
+                              );
+                            }
                           } else {
-                            return CircleText(
-                              center: {"x": e.shapeX, "y": e.shapeY},
-                              radius: 15,
-                              text: e.name,
-                            );
+                            return Container();
                           }
                         }).toList(),
                       ),

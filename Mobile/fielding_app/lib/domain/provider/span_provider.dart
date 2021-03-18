@@ -1,4 +1,4 @@
-import 'package:fielding_app/data/models/add_pole_model.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +7,17 @@ class SpanProvider extends ChangeNotifier {
   List<SpanDirectionList> get listSpanData => _listSpanData;
   void addListSpanData(SpanDirectionList spanData) {
     _listSpanData.add(spanData);
+    notifyListeners();
+  }
+
+  addAllListSpanData(List<SpanDirectionList> data) {
+    _listSpanData.clear();
+    if (data != null) {
+      _listSpanData.addAll(data);
+    } else {
+      _listSpanData = List<SpanDirectionList>();
+    }
+
     notifyListeners();
   }
 
@@ -21,7 +32,8 @@ class SpanProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void uploadImage(String filename, String base64, String imagePath, String location) async {
+  void uploadImage(
+      String filename, String base64, String imagePath, String location) async {
     try {
       ApiProvider _apiProvider = ApiProvider();
 
@@ -38,7 +50,7 @@ class SpanProvider extends ChangeNotifier {
           element.image = response.data['imagepath'];
           element.imageType = 0;
         });
-      } 
+      }
     } catch (e) {
       print(e.toString());
     }

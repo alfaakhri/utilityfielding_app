@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:fielding_app/data/models/add_pole_model.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/span_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/service/hex_color.dart';
@@ -48,7 +49,8 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
     Map<dynamic, dynamic> result =
         await ImageGallerySaver.saveImage(pngBytes, quality: 100, name: "1234");
     print(result);
-    context.read<SpanProvider>().uploadImage(Uuid().v1() + ".png", base64Image, result["filePath"], "span");
+    context.read<SpanProvider>().uploadImage(
+        Uuid().v1() + ".png", base64Image, result["filePath"], "span");
   }
 
   @override
@@ -134,28 +136,34 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                         Stack(
                           children: data.listSpanData.map(
                             (e) {
-                              double aX = double.parse(e.lineData
-                                  .replaceAll("[", "")
-                                  .replaceAll("]", "")
-                                  .split(",")[0]);
-                              double aY = double.parse(e.lineData
-                                  .replaceAll("[]", "")
-                                  .replaceAll("]", "")
-                                  .split(",")[1]);
-                              double bX = double.parse(e.lineData
-                                  .replaceAll("[]", "")
-                                  .replaceAll("]", "")
-                                  .split(",")[2]);
-                              double bY = double.parse(e.lineData
-                                  .replaceAll("[]", "")
-                                  .replaceAll("]", "")
-                                  .split(",")[3]);
-                              Color color = HexColor.fromHex(e.color);
-                              return Line(
-                                start: {"x": aX, "y": aY},
-                                end: {"x": bX, "y": bY},
-                                color: color,
-                              );
+                              if (e.lineData != null) {
+                                double aX = double.parse(e.lineData
+                                    .replaceAll("[", "")
+                                    .replaceAll("]", "")
+                                    .split(",")[0]);
+                                double aY = double.parse(e.lineData
+                                    .replaceAll("[]", "")
+                                    .replaceAll("]", "")
+                                    .split(",")[1]);
+                                double bX = double.parse(e.lineData
+                                    .replaceAll("[]", "")
+                                    .replaceAll("]", "")
+                                    .split(",")[2]);
+                                double bY = double.parse(e.lineData
+                                    .replaceAll("[]", "")
+                                    .replaceAll("]", "")
+                                    .split(",")[3]);
+                                Color color = HexColor.fromHex(e.color);
+                                return Line(
+                                  start: {"x": aX, "y": aY},
+                                  end: {"x": bX, "y": bY},
+                                  // start: {"x": aX + 30, "y": aY + 30},
+                                  // end: {"x": bX + 30, "y": bY + 30},
+                                  color: color,
+                                );
+                              } else {
+                                return Container();
+                              }
                             },
                           ).toList(),
                         ),
@@ -177,8 +185,14 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: data.listSpanData.length,
                           itemBuilder: (context, index) {
+                            Color color;
                             var e = data.listSpanData[index];
-                            Color color = HexColor.fromHex(e.color);
+                            if (e.color != null) {
+                              color = HexColor.fromHex(e.color);
+                            } else {
+                              color = ColorHelpers.colorBlackText;
+                            }
+                             
 
                             return InkWell(
                               onTap: () {
@@ -206,7 +220,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                                                 color: color,
                                               ),
                                               UIHelper.horizontalSpaceVerySmall,
-                                              Text(e.length.toString()),
+                                              Text(e.length.toString() ?? "-"),
                                             ],
                                           ),
                                           Text("ft"),

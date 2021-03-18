@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/all_down_guy_owner.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/data/models/riser_active.dart';
 import 'package:fielding_app/data/models/riser_and_vgr_type_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
@@ -26,7 +27,8 @@ class RiserProvider extends ChangeNotifier {
   }
 
   AllDownGuyOwnerModel getNameDownGuySelected(int index) {
-    AllDownGuyOwnerModel data = _listDownGuyOwner.firstWhere((element) => element.id == index);
+    AllDownGuyOwnerModel data =
+        _listDownGuyOwner.firstWhere((element) => element.id == index);
     return data;
   }
 
@@ -86,6 +88,7 @@ class RiserProvider extends ChangeNotifier {
   //-----------------------------------------------------------------------------------------
   List<String> _listVGRActive = List<String>();
   List<String> get listVGRActive => _listVGRActive;
+
   void addListVGRActive() {
     if (_listVGRActive.length == 0) {
       String data = "VGR 1";
@@ -196,6 +199,30 @@ class RiserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addAllListRiserData(List<RiserAndVGRList> data) {
+    _listRiserData.clear();
+    if (data != null) {
+      _listRiserData.addAll(data);
+      for (var riser in _listRiserData) {
+        if (riser.name != null) {
+          if (riser.name.contains("VGR")) {
+            _listVGRActive.add(riser.name);
+          } else {
+            _listRiserActive.add(riser.name);
+          }
+        }
+      }
+      assignActivePoint();
+    } else {
+      _listRiserData = List<RiserAndVGRList>();
+      _listVGRActive = List<String>();
+      _listRiserActive = List<String>();
+      _listActivePoint = List<String>();
+    }
+
+    notifyListeners();
+  }
+
   void searchTypeByPointName(String value) {
     int index =
         _listRiserData.firstWhere((element) => element.name == value).type;
@@ -211,6 +238,7 @@ class RiserProvider extends ChangeNotifier {
     _listRiserData.add(data);
     notifyListeners();
   }
+
   //-----------------------------------------------------------------------------------------
   void clearAll() {
     _listRiserData.clear();

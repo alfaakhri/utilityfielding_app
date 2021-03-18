@@ -1,11 +1,18 @@
 import 'package:fielding_app/data/models/add_pole_model.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:flutter/material.dart';
 
 class AnchorProvider extends ChangeNotifier {
   List<AnchorList> _listAnchorData = List<AnchorList>();
   List<AnchorList> get listAnchorData => _listAnchorData;
   void setListAnchorData(List<AnchorList> listAnchorData) {
-    _listAnchorData = listAnchorData;
+    _listAnchorData.clear();
+    if (listAnchorData != null) {
+      _listAnchorData = listAnchorData;
+    } else {
+      _listAnchorData = List<AnchorList>();
+    }
+
     notifyListeners();
   }
 
@@ -61,9 +68,9 @@ class AnchorProvider extends ChangeNotifier {
       {String distance, String size, String eyes, bool isPicture}) {
     _listAnchorData.forEach((element) {
       if (element.text == _anchorActiveSelected.text) {
-        element.distance = int.parse(distance);
-        element.size = int.parse(size);
-        element.anchorEye = int.parse(eyes);
+        element.distance = double.parse(distance);
+        element.size = double.parse(size);
+        element.anchorEye = double.parse(eyes);
         element.eyesPict = isPicture;
       }
     });

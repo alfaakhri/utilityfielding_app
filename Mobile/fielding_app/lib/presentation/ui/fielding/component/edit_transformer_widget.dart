@@ -1,5 +1,6 @@
 import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/add_transformer_model.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/ui_helpers.dart';

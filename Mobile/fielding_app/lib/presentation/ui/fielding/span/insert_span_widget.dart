@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:fielding_app/data/models/add_pole_model.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/span_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/service/hex_color.dart';
@@ -111,7 +111,7 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
                     this._bY
                   ];
                   SpanDirectionList data = SpanDirectionList(
-                      length: int.parse(this.sizeController.text),
+                      length: double.parse(this.sizeController.text),
                       lineData: lineData.toString(),
                       color: randomColor.toHex());
                   print(json.encode(data));

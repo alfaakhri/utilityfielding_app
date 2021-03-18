@@ -7,6 +7,7 @@ import 'package:fielding_app/data/models/all_pole_height_model.dart';
 import 'package:fielding_app/data/models/all_pole_species_model.dart';
 import 'package:fielding_app/data/models/all_projects_model.dart';
 import 'package:fielding_app/data/models/current_address.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -76,6 +77,7 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  //--------------------------------------------------------------------------------------------
   List<AllPoleSpeciesModel> _listAllPoleSpecies = List<AllPoleSpeciesModel>();
   List<AllPoleSpeciesModel> get listAllPoleSpecies => _listAllPoleSpecies;
   void setListAllPoleSpecies(List<AllPoleSpeciesModel> listAllPoleSpecies) {
@@ -118,6 +120,7 @@ class FieldingProvider extends ChangeNotifier {
     }
   }
 
+  //--------------------------------------------------------------------------------------------
   List<AllPoleClassModel> _listAllPoleClass = List<AllPoleClassModel>();
   List<AllPoleClassModel> get listAllPoleClass => _listAllPoleClass;
   void setListAllPoleClass(List<AllPoleClassModel> listAllPoleClass) {
@@ -160,6 +163,7 @@ class FieldingProvider extends ChangeNotifier {
     }
   }
 
+//--------------------------------------------------------------------------------------------
   List<AllPoleHeightModel> _listAllPoleHeight = List<AllPoleHeightModel>();
   List<AllPoleHeightModel> get listAllPoleHeight => _listAllPoleHeight;
   void setListAllPoleHeight(List<AllPoleHeightModel> listAllPoleHeight) {
@@ -202,6 +206,7 @@ class FieldingProvider extends ChangeNotifier {
     }
   }
 
+//--------------------------------------------------------------------------------------------
   List<AllPoleConditionModel> _listAllPoleCondition =
       List<AllPoleConditionModel>();
   List<AllPoleConditionModel> get listAllPoleCondition => _listAllPoleCondition;
@@ -246,6 +251,7 @@ class FieldingProvider extends ChangeNotifier {
     }
   }
 
+//--------------------------------------------------------------------------------------------
   List<AllHoaTypeModel> _listAllHoaType = List<AllHoaTypeModel>();
   List<AllHoaTypeModel> get listAllHoaType => _listAllHoaType;
   void setListAllHoaType(List<AllHoaTypeModel> listAllHoaType) {
@@ -258,8 +264,7 @@ class FieldingProvider extends ChangeNotifier {
     try {
       var response = await _repository.getAllHoaType();
       if (response.statusCode == 200) {
-        setListAllHoaType(
-            AllHoaTypeModel.fromJsonList(response.data));
+        setListAllHoaType(AllHoaTypeModel.fromJsonList(response.data));
         print("all hoa type: ${response.data}");
       } else {}
     } catch (e) {
@@ -270,29 +275,13 @@ class FieldingProvider extends ChangeNotifier {
   AllHoaTypeModel _hoaSelected = AllHoaTypeModel();
   AllHoaTypeModel get hoaSelected => _hoaSelected;
   void setHoaSelected(String value) {
-    _hoaSelected = listAllHoaType.firstWhere((element) => element.text == value);
+    _hoaSelected =
+        listAllHoaType.firstWhere((element) => element.text == value);
     notifyListeners();
   }
 
   void clearHoaSelected() {
     _hoaSelected = AllHoaTypeModel();
-    notifyListeners();
-  }
-
-  List<TransformerList> _listTransformer = List<TransformerList>();
-  List<TransformerList> get listTransformer => _listTransformer;
-  addlistTransformer(TransformerList transformer) {
-    _listTransformer.add(transformer);
-  }
-
-  removeLisTransformer(int index) {
-    _listTransformer.removeAt(index);
-  }
-
-  bool _isTransformer = false;
-  bool get isTransformer => _isTransformer;
-  void setIsTransformer(bool isTransformer) {
-    _isTransformer = isTransformer;
     notifyListeners();
   }
 
@@ -310,8 +299,50 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  addAllHoaList(List<HOAList> data) {
+    _hoaList.clear();
+    if (data != null) {
+      _hoaList.addAll(data);
+    } else {
+      _hoaList = List<HOAList>();
+    }
+
+    notifyListeners();
+  }
+
   removeHoaList(int index) {
     _hoaList.removeAt(index);
+    notifyListeners();
+  }
+
+//--------------------------------------------------------------------------------------------
+  List<TransformerList> _listTransformer = List<TransformerList>();
+  List<TransformerList> get listTransformer => _listTransformer;
+  addlistTransformer(TransformerList transformer) {
+    _listTransformer.add(transformer);
+    notifyListeners();
+  }
+
+  addAllListTransformer(List<TransformerList> data) {
+    _listTransformer.clear();
+    if (data != null) {
+      _listTransformer.addAll(data);
+    } else {
+      _listTransformer = List<TransformerList>();
+    }
+
+    notifyListeners();
+  }
+
+  removeLisTransformer(int index) {
+    _listTransformer.removeAt(index);
+    notifyListeners();
+  }
+
+  bool _isTransformer = false;
+  bool get isTransformer => _isTransformer;
+  void setIsTransformer(bool isTransformer) {
+    _isTransformer = isTransformer;
     notifyListeners();
   }
 

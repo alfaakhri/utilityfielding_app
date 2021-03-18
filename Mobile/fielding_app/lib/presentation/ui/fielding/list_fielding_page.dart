@@ -135,12 +135,26 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      data.layerName,
-                                      style: TextStyle(
-                                          color: ColorHelpers.colorBlackText,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          data.projectName,
+                                          style: TextStyle(
+                                              color:
+                                                  ColorHelpers.colorBlackText,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          data.layerName,
+                                          style: TextStyle(
+                                              color:
+                                                  ColorHelpers.colorBlackText,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
                                     ),
                                     Column(
                                       crossAxisAlignment:
@@ -175,8 +189,8 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          // "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate))  ?? "-"}",
-                                          "Due Date ${data.dueDate  ?? "-"}",
+                                          "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate)) ?? "-"}",
+                                          // "Due Date ${data.dueDate  ?? "-"}",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color:

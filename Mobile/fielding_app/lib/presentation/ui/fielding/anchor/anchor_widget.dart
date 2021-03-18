@@ -1,4 +1,5 @@
 import 'package:fielding_app/data/models/add_pole_model.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
 import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
@@ -117,6 +118,9 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                               painter: DrawCircleTextAnchor(center: {
                                 "x": e.circleX - 10,
                                 "y": e.circleY - 100
+                                //Dari web
+                                // "x": e.circleX ,
+                                // "y": e.circleY + 30
                               }, radius: 15, text: e.text),
                             );
                           }).toList(),

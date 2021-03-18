@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:fielding_app/external/constants.dart';
 
-const String BASE_URL = "http://utilityfielding.ultimosolution.com/";
+const String BASE_URL = "http://utilityfielding.com/";
 
 class ApiProvider {
   Dio _dio = Dio();
@@ -42,6 +42,7 @@ class ApiProvider {
   }
 
   Future<Response> getAllProject(String token) async {
+    print(token);
     try {
       _response = await _dio.get(
           BASE_URL + "/api/MobileProject/GetAllFieldingRequest?token=$token");
@@ -146,7 +147,7 @@ class ApiProvider {
   Future<Response> getPoleById(String id, String token) async {
     try {
       _response = await _dio
-          .get(BASE_URL + "/api/MobileProject/GetPoleById/$id?token=$token");
+          .get(BASE_URL + "/api/MobileProject/GetPoleByIdNew/$id?token=$token");
       return _response;
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {
@@ -164,6 +165,7 @@ class ApiProvider {
       'PoleID': poleId,
       'isStartAdditional': isStartAdditional
     };
+    print(json.encode(data));
     try {
       _response = await _dio.post(BASE_URL + "/api/MobileProject/StartFielding",
           data: data);

@@ -1,5 +1,6 @@
 import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/all_down_guy_owner.dart';
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
 import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
@@ -353,7 +354,7 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                             Text("Save", style: TextStyle(color: Colors.white)),
                         onPressed: () {
                           anchor.addDownGuyByAnchor(DownGuyList(
-                              size: int.parse(this.sizeDg.text),
+                              size: double.parse(this.sizeDg.text),
                               owner: data.downGuySelected.id,
                               isInsulated: this.isInsulated,
                               hOA: 0,

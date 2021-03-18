@@ -232,29 +232,44 @@ class _EditPolePageState extends State<EditPolePage> {
               listener: (context, state) {
                 if (state is GetPoleByIdSuccess) {
                   var provider = context.read<FieldingProvider>();
+                  var span = context.read<SpanProvider>();
+                  var anchor = context.read<AnchorProvider>();
+                  var riser = context.read<RiserProvider>();
                   setState(() {
                     this._poleNumber.text = state.poleByIdModel.poleNumber;
+                    this._vapTerminal.text = state.poleByIdModel.vAPTerminal;
+
                     this._osmoseNumber.text = state.poleByIdModel.osmose;
-                    this._poleHeight.text =
-                        state.poleByIdModel.poleHeight.toString();
                     this._groundLine.text =
                         state.poleByIdModel.groundCircumference;
-                    this._poleClass.text =
-                        state.poleByIdModel.poleClass.toString();
-                    this._year.text = state.poleByIdModel.poleYear.toString();
-                    this._species.text =
-                        state.poleByIdModel.poleSpecies.toString();
-                    this._condition.text =
-                        state.poleByIdModel.poleCondition.toString();
+                    this._year.text = (state.poleByIdModel.poleYear != null) ? state.poleByIdModel.poleYear.toString() : "";
                     this._otherNumber.text = state.poleByIdModel.otherNumber;
                     this._isStamp = state.poleByIdModel.poleStamp;
+                    if (this._isStamp) {
+                      this._poleStamp.text = "Yes";
+                    } else {
+                      this._poleStamp.text = "No";
+                    }
+                    this._isAntena = state.poleByIdModel.isRadioAntenna;
+                    if (this._isAntena) {
+                      this._radioAntena.text = "Yes";
+                    } else {
+                      this._radioAntena.text = "No";
+                    }
+                    this._notes.text = state.poleByIdModel.note;
                     provider.setPoleClassAssign(state.poleByIdModel.poleClass);
+                    this._poleClass.text = provider.poleClassSelected.text ?? "";
                     provider.setPoleConditionAssign(
                         state.poleByIdModel.poleCondition);
+                    this._condition.text = provider.poleConditionSelected.text ?? "";
                     provider
                         .setPoleHeightAssign(state.poleByIdModel.poleHeight);
+                    this._poleHeight.text = (provider.poleHeightSelected.text != null) ?
+                        provider.poleHeightSelected.text.toString() : "";
                     provider
                         .setPoleSpeciesAssign(state.poleByIdModel.poleSpecies);
+                    this._species.text = provider.poleSpeciesSelected.text ?? "";
+
                     provider.setLatitude(
                         double.parse(state.poleByIdModel.latitude));
                     provider.setLongitude(
@@ -262,6 +277,16 @@ class _EditPolePageState extends State<EditPolePage> {
                     provider.getCurrentAddress(
                         double.parse(state.poleByIdModel.latitude),
                         double.parse(state.poleByIdModel.longitude));
+
+                    provider.addAllHoaList(state.poleByIdModel.hOAList);
+                    provider.addAllListTransformer(
+                        state.poleByIdModel.transformerList);
+                    span.addAllListSpanData(
+                        state.poleByIdModel.spanDirectionList);
+
+                    anchor.setListAnchorData(state.poleByIdModel.anchorList);
+                    riser.addAllListRiserData(
+                        state.poleByIdModel.riseAndVGRList);
                   });
                 }
               },
