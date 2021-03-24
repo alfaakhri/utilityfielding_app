@@ -48,7 +48,7 @@ class SpanProvider extends ChangeNotifier {
         print(response.data['imagepath']);
         _listSpanData.forEach((element) {
           element.image = response.data['imagepath'];
-          element.imageType = 0;
+          // element.
         });
       }
     } catch (e) {

@@ -16,6 +16,15 @@ import 'package:location/location.dart';
 
 class FieldingProvider extends ChangeNotifier {
 
+  double baseWidth;
+  double baseHeight;
+  setBaseSize(double width, double height) {
+    baseWidth = width;
+    baseHeight = height;
+    notifyListeners();
+  }
+  
+
   List<AllPolesByLayerModel> _allPolesByLayer = List<AllPolesByLayerModel>();
   List<AllPolesByLayerModel> get allPolesByLayer => _allPolesByLayer;
   void setAllPolesByLayer(List<AllPolesByLayerModel> allPolesByLayer) {

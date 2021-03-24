@@ -1,5 +1,7 @@
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
+import 'package:fielding_app/external/constants.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/widgets/circle_and_text_painter.dart';
 import 'package:fielding_app/presentation/widgets/circle_painter.dart';
@@ -56,8 +58,9 @@ class _RiserWidgetState extends State<RiserWidget> {
           backgroundColor: ColorHelpers.colorWhite,
         ),
         backgroundColor: Colors.white,
-        body: Consumer<RiserProvider>(
-          builder: (context, data, _) => ListView(
+        body: Consumer<RiserProvider>(builder: (context, data, _) {
+          
+          return ListView(
             children: [
               RepaintBoundary(
                 key: globalKey,
@@ -65,6 +68,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                   height: 250,
                   margin: EdgeInsets.all(15),
                   child: Stack(
+                    alignment: Alignment.center,
                     children: [
                       Container(
                         decoration: BoxDecoration(
@@ -72,39 +76,56 @@ class _RiserWidgetState extends State<RiserWidget> {
                               color: ColorHelpers.colorGrey.withOpacity(0.2)),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        width: double.infinity,
+                        width: 350,
                         height: 250,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
                               'assets/riser.png',
-                              scale: 2,
+                              // scale: 1.6,
+                              width: 199,
+                              height: 199,
                             ),
-                            UIHelper.verticalSpaceSmall,
-                            Text("Curb Face / Street Side",
-                                style: TextStyle(fontSize: 12)),
                           ],
                         ),
                       ),
                       Stack(
+                        alignment: Alignment.center,
                         children: data.listRiserData.map((e) {
-                          if (e.name != null) {
-                            if (e.name.contains("VGR")) {
+                          double newWidth = MediaQuery.of(context).size.width;
+                          double newHeight = MediaQuery.of(context).size.height;
+                          var fielding = Provider.of<FieldingProvider>(context);
+                          double newX =
+                              ((newWidth * e.shapeX) / fielding.baseWidth);
+                          double newY =
+                              ((newHeight * e.shapeY) / fielding.baseHeight);
+
+                          if (e.value == 4) {
+                            if (e.imageType == 1) {
                               return TriangleText(
-                                x: e.shapeX,
-                                y: e.shapeY,
-                                text: e.name,
+                                x: newX + 15,
+                                y: newY + 15,
+                                text: "VGR-${e.sequence}",
                               );
                             } else {
-                              return CircleText(
-                                center: {"x": e.shapeX, "y": e.shapeY},
-                                radius: 15,
-                                text: e.name,
+                              return TriangleText(
+                                x: newX,
+                                y: newY,
+                                text: "VGR-${e.sequence}",
                               );
                             }
                           } else {
-                            return Container();
+                            var value = Provider.of<RiserProvider>(context)
+                                .valueType(e.value);
+                            return CircleText(
+                              center: (e.imageType == 1)
+                                  ? (newWidth > 360) ? {"x": newX + 25, "y": newY + 25} : {"x": newX + 15, "y": newY + 25}
+                                  : {"x": newX, "y": newY},
+                              radius: 10,
+                              text:
+                                  "R$value-${Constants.alphabet[e.sequence - 1]}",
+                            );
                           }
                         }).toList(),
                       ),
@@ -125,11 +146,11 @@ class _RiserWidgetState extends State<RiserWidget> {
                           DropdownButtonFormField<String>(
                             isDense: true,
                             decoration: kDecorationDropdown(),
-                            items: data.listActivePoint.map((value) {
+                            items: data.listRiserData.map((value) {
                               return DropdownMenuItem<String>(
-                                child:
-                                    Text(value, style: TextStyle(fontSize: 12)),
-                                value: value,
+                                child: Text(value.name,
+                                    style: TextStyle(fontSize: 12)),
+                                value: value.name,
                               );
                             }).toList(),
                             onChanged: (String value) {
@@ -263,8 +284,8 @@ class _RiserWidgetState extends State<RiserWidget> {
                     color: ColorHelpers.colorButtonDefault),
               ),
             ],
-          ),
-        ));
+          );
+        }));
   }
 
   Future dialogAlertDropdown() {

@@ -67,7 +67,7 @@ class _EditPolePageState extends State<EditPolePage> {
   bool _isStamp;
   bool _isAntena;
 
-  List<String> _listChoice = ["Yes", "No"];
+  List<String> _listChoice = ["-", "Yes", "No"];
 
   Widget spaceForm() {
     return Column(
@@ -93,13 +93,35 @@ class _EditPolePageState extends State<EditPolePage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    context.read<FieldingProvider>().setLatitude(null);
+    context.read<FieldingProvider>().setLongitude(null);
+    context.read<FieldingProvider>().setStreetName(null);
+    context.read<FieldingProvider>().clearAll();
+    context.read<SpanProvider>().clearAll();
+    context.read<RiserProvider>().clearAll();
+    context.read<AnchorProvider>().clearAll();
+
+    this._vapTerminal.clear();
+    this._poleNumber.clear();
+    this._osmoseNumber.clear();
+    this._otherNumber.clear();
+    this._poleHeight.clear();
+    this._groundLine.clear();
+    this._poleClass.clear();
+    this._year.clear();
+    this._species.clear();
+    this._condition.clear();
+    this._poleStamp.clear();
+    this._notes.clear();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () {
-          context.read<FieldingProvider>().setLatitude(null);
-          context.read<FieldingProvider>().setLongitude(null);
-          context.read<FieldingProvider>().setStreetName(null);
-
           fieldingBloc.add(GetAllPolesByID(
               context.read<UserProvider>().userModel.data.token,
               context.read<FieldingProvider>().allProjectsSelected.iD));
@@ -158,6 +180,10 @@ class _EditPolePageState extends State<EditPolePage> {
                   context.read<FieldingProvider>().setLatitude(null);
                   context.read<FieldingProvider>().setLongitude(null);
                   context.read<FieldingProvider>().setStreetName(null);
+                  context.read<FieldingProvider>().clearAll();
+                  context.read<SpanProvider>().clearAll();
+                  context.read<RiserProvider>().clearAll();
+                  context.read<AnchorProvider>().clearAll();
 
                   fieldingBloc.add(GetAllPolesByID(
                       context.read<UserProvider>().userModel.data.token,
@@ -206,9 +232,13 @@ class _EditPolePageState extends State<EditPolePage> {
                                   ? null
                                   : provider.poleConditionSelected.id,
                           otherNumber: this._otherNumber.text,
-                          poleStamp: _isStamp,
+                          poleStamp: (this._poleStamp.text == "-")
+                              ? null
+                              : this._isStamp,
                           notes: this._notes.text,
-                          isRadioAntenna: this._isAntena,
+                          isRadioAntenna: (this._radioAntena.text == "-")
+                              ? null
+                              : this._isAntena,
                           hOAList: provider.hoaList,
                           transformerList: provider.listTransformer,
                           spanDirectionList:
@@ -248,16 +278,20 @@ class _EditPolePageState extends State<EditPolePage> {
                         : "";
                     this._otherNumber.text = state.poleByIdModel.otherNumber;
                     this._isStamp = state.poleByIdModel.poleStamp;
-                    if (this._isStamp) {
+                    if (this._isStamp == null) {
+                      this._poleStamp.text = "-";
+                    } else if (this._isStamp) {
                       this._poleStamp.text = "Yes";
                     } else {
                       this._poleStamp.text = "No";
                     }
                     this._isAntena = state.poleByIdModel.isRadioAntenna;
-                    if (this._isAntena) {
-                      this._radioAntena.text = "Yes";
-                    } else {
+                    if (this._isAntena == null) {
+                      this._radioAntena.text = "-";
+                    } else if (!this._isAntena) {
                       this._radioAntena.text = "No";
+                    } else {
+                      this._radioAntena.text = "Yes";
                     }
                     this._notes.text = state.poleByIdModel.note;
                     provider.setPoleClassAssign(state.poleByIdModel.poleClass);
@@ -503,6 +537,12 @@ class _EditPolePageState extends State<EditPolePage> {
                   spaceForm(),
                   InkWell(
                     onTap: () {
+                      double width = MediaQuery.of(context).size.width;
+                      double height = MediaQuery.of(context).size.height;
+
+                      print("WIDTH : $width, HEIGHT : $height");
+                      context.read<FieldingProvider>().baseWidth = width;
+                      context.read<FieldingProvider>().baseHeight = height;
                       Get.to(ViewSpanWidget());
                     },
                     child: Row(
@@ -542,6 +582,12 @@ class _EditPolePageState extends State<EditPolePage> {
                   spaceForm(),
                   InkWell(
                     onTap: () {
+                      double width = MediaQuery.of(context).size.width;
+                      double height = MediaQuery.of(context).size.height;
+
+                      print("WIDTH : $width, HEIGHT : $height");
+                      context.read<FieldingProvider>().baseWidth = width;
+                      context.read<FieldingProvider>().baseHeight = height;
                       Get.to(AnchorWidget());
                     },
                     child: Row(
@@ -581,6 +627,12 @@ class _EditPolePageState extends State<EditPolePage> {
                   spaceForm(),
                   InkWell(
                     onTap: () {
+                      double width = MediaQuery.of(context).size.width;
+                      double height = MediaQuery.of(context).size.height;
+
+                      print("WIDTH : $width, HEIGHT : $height");
+                      context.read<FieldingProvider>().baseWidth = width;
+                      context.read<FieldingProvider>().baseHeight = height;
                       Get.to(RiserWidget());
                     },
                     child: Row(
@@ -880,10 +932,8 @@ class _EditPolePageState extends State<EditPolePage> {
                                         setState(() {
                                           if (value == "Yes") {
                                             valueDropdown = true;
-                                            _isStamp = true;
-                                          } else {
+                                          } else if (value == "No") {
                                             valueDropdown = false;
-                                            _isStamp = false;
                                           }
                                           controller.text = value;
                                         });

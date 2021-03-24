@@ -37,9 +37,10 @@ class _CircleState extends State<Circle> with SingleTickerProviderStateMixin {
 }
 
 class DrawCircle extends CustomPainter {
+  double width;
   Map<String, double> center;
   double radius;
-  DrawCircle({this.center, this.radius});
+  DrawCircle({this. width, this.center, this.radius});
   @override
   void paint(Canvas canvas, Size size) {
     // Paint brush = new Paint()
@@ -54,9 +55,9 @@ class DrawCircle extends CustomPainter {
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(
-        Offset(center["x"] / 2, center["y"] / 1.75), radius, paintCircle);
+        Offset(center["x"] / 2, center["y"] / 2), radius, paintCircle);
     canvas.drawCircle(
-        Offset(center["x"] / 2, center["y"] / 1.75), radius, paintBorder);
+        Offset(center["x"] / 2, center["y"] / 2), radius, paintBorder);
   }
 
   @override

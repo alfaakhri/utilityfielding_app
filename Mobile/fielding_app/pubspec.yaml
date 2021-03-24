@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
+  device_preview: ^0.5.5
   dio: ^3.0.10
   flutter_bloc: ^6.1.1
   flutter_easyloading: ^2.2.2

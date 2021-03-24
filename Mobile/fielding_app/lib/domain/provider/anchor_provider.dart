@@ -16,32 +16,51 @@ class AnchorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addListAnchorData(double dx, double dy) {
+  checkListAnchorData(double dx, double dy) {
     if (_listAnchorData.length == 0) {
-      _listAnchorData.add(AnchorList(
-          circleX: dx,
-          circleY: dy,
-          textX: dx,
-          textY: dy,
-          distance: 0,
-          size: 0,
-          anchorEye: 0,
-          text: "1",
-          eyesPict: true,
-          downGuyList: []));
+       addAnchorData(
+            dx, dy + 15, "A1");
     } else {
-      _listAnchorData.add(AnchorList(
-          circleX: dx,
-          circleY: dy,
-          textX: dx,
-          textY: dy,
-          distance: 0,
-          size: 0,
-          anchorEye: 0,
-          text: (_listAnchorData.length + 1).toString(),
-          eyesPict: true,
-          downGuyList: []));
+      int length = _listAnchorData.length;
+      List<int> missing = [];
+      List<int> sequence = [];
+
+      _listAnchorData.forEach((element) {
+        sequence.add(int.parse(element.text.replaceAll("A", "")));
+      });
+      sequence.sort();
+
+      for (int i = 1; i <= length; i++) {
+        if (!sequence.contains(i)) {
+          missing.add(i);
+        }
+      }
+
+      print(missing);
+      if (missing.isEmpty) {
+        addAnchorData(
+            dx, dy + 15, "A" + (_listAnchorData.length + 1).toString());
+      } else {
+        addAnchorData(dx, dy + 15, "A" + (missing.first).toString());
+      }
     }
+    notifyListeners();
+  }
+
+  addAnchorData(double dx, double dy, String text) {
+    _listAnchorData.add(AnchorList(
+        circleX: dx,
+        circleY: dy - 25,
+        textX: dx,
+        textY: dy - 25,
+        distance: 0,
+        size: 0,
+        anchorEye: 0,
+        text: text,
+        eyesPict: true,
+        imageType: 0,
+        downGuyList: []));
+
     notifyListeners();
   }
 

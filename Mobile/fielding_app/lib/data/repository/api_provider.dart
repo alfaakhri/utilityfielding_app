@@ -133,7 +133,7 @@ class ApiProvider {
   Future<Response> addPole(dynamic data) async {
     try {
       _response = await _dio
-          .post(BASE_URL + "/api/MobileProject/CompletedFielding", data: data);
+          .post(BASE_URL + "/api/MobileProject/CompletedFieldingNew", data: data);
       return _response;
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {

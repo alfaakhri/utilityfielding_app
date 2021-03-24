@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/span_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/service/hex_color.dart';
@@ -27,7 +28,6 @@ class ViewSpanWidget extends StatefulWidget {
 
 class _ViewSpanWidgetState extends State<ViewSpanWidget> {
   GlobalKey globalKey = GlobalKey();
-
   _requestPermission() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.storage,
@@ -88,7 +88,9 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
               IconButton(
                 icon: Icon(Icons.add, color: ColorHelpers.colorBlackText),
                 onPressed: () {
-                  Get.to(InsertSpanWidget());
+                  Get.to(InsertSpanWidget(
+                    bXCoor: 350 / 1.5,
+                  ));
                 },
               )
             ],
@@ -120,52 +122,76 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                   key: globalKey,
                   child: Container(
                     height: 250,
+                    margin: EdgeInsets.all(15),
+                    alignment: Alignment.center,
                     color: Colors.white,
                     child: Stack(
+                      alignment: Alignment.center,
                       children: [
                         Container(
-                          margin: EdgeInsets.all(15),
+                          alignment: Alignment.center,
                           decoration: BoxDecoration(
                             border: Border.all(
                                 color: ColorHelpers.colorGrey.withOpacity(0.2)),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          width: double.infinity,
+                          width: 350,
                           height: 250,
                         ),
                         Stack(
+                          alignment: Alignment.center,
                           children: data.listSpanData.map(
                             (e) {
                               if (e.lineData != null) {
-                                double aX = double.parse(e.lineData
-                                    .replaceAll("[", "")
-                                    .replaceAll("]", "")
-                                    .split(",")[0]);
-                                double aY = double.parse(e.lineData
-                                    .replaceAll("[]", "")
-                                    .replaceAll("]", "")
-                                    .split(",")[1]);
-                                double bX = double.parse(e.lineData
-                                    .replaceAll("[]", "")
-                                    .replaceAll("]", "")
-                                    .split(",")[2]);
-                                double bY = double.parse(e.lineData
-                                    .replaceAll("[]", "")
-                                    .replaceAll("]", "")
-                                    .split(",")[3]);
-                                Color color = HexColor.fromHex(e.color);
-                                if (e.imageType == 0 || e.imageType == null) {
-                                  return Line(
-                                    start: {"x": aX, "y": aY},
-                                    end: {"x": bX, "y": bY},
-                                    color: color,
-                                  );
+                                double newWidth =
+                                    MediaQuery.of(context).size.width;
+                                double newHeight =
+                                    MediaQuery.of(context).size.height;
+
+                                if (e.lineData != "null") {
+                                  double aX = double.parse(e.lineData
+                                      .replaceAll("[", "")
+                                      .replaceAll("]", "")
+                                      .split(",")[0]);
+                                  double aY = double.parse(e.lineData
+                                      .replaceAll("[]", "")
+                                      .replaceAll("]", "")
+                                      .split(",")[1]);
+                                  double bX = double.parse(e.lineData
+                                      .replaceAll("[]", "")
+                                      .replaceAll("]", "")
+                                      .split(",")[2]);
+                                  double bY = double.parse(e.lineData
+                                      .replaceAll("[]", "")
+                                      .replaceAll("]", "")
+                                      .split(",")[3]);
+                                  Color color = HexColor.fromHex(e.color);
+                                  var fielding =
+                                      Provider.of<FieldingProvider>(context);
+                                  double newAX =
+                                      ((newWidth * aX) / fielding.baseWidth);
+                                  double newAY =
+                                      ((newHeight * aY) / fielding.baseHeight);
+                                  double newBX =
+                                      ((newWidth * bX) / fielding.baseWidth);
+                                  double newBY =
+                                      ((newHeight * bY) / fielding.baseHeight);
+
+                                  if (e.imageType == 0 || e.imageType == null) {
+                                    return Line(
+                                      start: {"x": newAX, "y": newAY},
+                                      end: {"x": newBX, "y": newBY},
+                                      color: color,
+                                    );
+                                  } else {
+                                    return Line(
+                                      start: {"x": newAX + 25, "y": newAY + 25},
+                                      end: {"x": newBX + 25, "y": newBY + 25},
+                                      color: color,
+                                    );
+                                  }
                                 } else {
-                                  return Line(
-                                    start: {"x": aX + 30, "y": aY + 30},
-                                    end: {"x": bX + 30, "y": bY + 30},
-                                    color: color,
-                                  );
+                                  return Container();
                                 }
                               } else {
                                 return Container();
@@ -182,7 +208,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("List Size in Feet",
+                        Text("Length in Feet",
                             style: TextStyle(
                                 fontSize: 14, color: ColorHelpers.colorGrey)),
                         UIHelper.verticalSpaceSmall,
@@ -297,6 +323,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                               Get.to(InsertSpanWidget(
                                 spanData: spanData,
                                 index: index,
+                                bXCoor: MediaQuery.of(context).size.width / 1.5,
                               ));
                             },
                             child: Text(

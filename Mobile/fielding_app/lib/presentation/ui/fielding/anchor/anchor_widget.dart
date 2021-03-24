@@ -1,6 +1,7 @@
 import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
@@ -21,6 +22,7 @@ class AnchorWidget extends StatefulWidget {
 class _AnchorWidgetState extends State<AnchorWidget> {
   double shapeX = 25;
   double shapeY = 25;
+  double _width;
   var textDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12);
 
   TextEditingController activeAnchor = TextEditingController();
@@ -59,6 +61,7 @@ class _AnchorWidgetState extends State<AnchorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    _width = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(
           title: Text("Anchor",
@@ -82,50 +85,64 @@ class _AnchorWidgetState extends State<AnchorWidget> {
               RepaintBoundary(
                 child: Container(
                   height: 250,
+                  width: 350,
+                  alignment: Alignment.center,
                   margin: EdgeInsets.all(15),
-                  child: GestureDetector(
-                    onTapDown: (detail) {
-                      if (data.listAnchorData.length > 2) {
-                        Fluttertoast.showToast(msg: "Anchor max 3");
-                      } else {
-                        data.addListAnchorData(
-                            detail.globalPosition.dx, detail.globalPosition.dy);
-                      }
-                    },
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                            borderRadius: BorderRadius.circular(10),
+                  child: CustomPaint(
+                    size: Size(350, 250),
+                    child: GestureDetector(
+                      onTapDown: (detail) {
+                        if (data.listAnchorData.length > 2) {
+                          Fluttertoast.showToast(msg: "Anchor max 3");
+                        } else {
+                          data.checkListAnchorData(
+                              detail.localPosition.dx, detail.localPosition.dy);
+                        }
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color:
+                                      ColorHelpers.colorGrey.withOpacity(0.2)),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            width: 350,
+                            height: 250,
+                            child: CustomPaint(
+                              size: Size(350, 250),
+                              painter: DrawCircle(
+                                  width: _width,
+                                  center: {"x": 350, "y": 250},
+                                  radius: 10),
+                            ),
                           ),
-                          width: MediaQuery.of(context).size.width,
-                          height: 250,
-                          child: CustomPaint(
-                            size: Size(MediaQuery.of(context).size.width, 250),
-                            painter: DrawCircle(center: {
-                              "x": MediaQuery.of(context).size.width - 30,
-                              "y": 225
-                            }, radius: 15),
+                          Stack(
+                            children: data.listAnchorData.map((e) {
+                              double newWidth =
+                                  MediaQuery.of(context).size.width;
+                              double newHeight =
+                                  MediaQuery.of(context).size.height;
+                              var fielding =
+                                  Provider.of<FieldingProvider>(context);
+                              double newX =
+                                  ((newWidth * e.circleX) / fielding.baseWidth);
+                              double newY =
+                                  ((newHeight * e.circleY) / fielding.baseHeight);
+
+                              return CustomPaint(
+                                size: Size(350, 250),
+                                painter: DrawCircleTextAnchor(
+                                    center: (e.imageType == 1) ? {"x": newX + 30, "y": newY + 30} : {"x": newX, "y": newY},
+                                    radius: 10,
+                                    text: e.text),
+                              );
+                            }).toList(),
                           ),
-                        ),
-                        Stack(
-                          children: data.listAnchorData.map((e) {
-                            return CustomPaint(
-                              size:
-                                  Size(MediaQuery.of(context).size.width, 250),
-                              painter: DrawCircleTextAnchor(center: {
-                                "x": e.circleX - 10,
-                                "y": e.circleY - 100
-                                //Dari web
-                                // "x": e.circleX ,
-                                // "y": e.circleY + 30
-                              }, radius: 15, text: e.text),
-                            );
-                          }).toList(),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

@@ -18,8 +18,9 @@ import 'package:provider/provider.dart';
 class InsertSpanWidget extends StatefulWidget {
   final SpanDirectionList spanData;
   final int index;
+  final double bXCoor;
 
-  const InsertSpanWidget({Key key, this.spanData, this.index})
+  const InsertSpanWidget({Key key, this.spanData, this.index, this.bXCoor})
       : super(key: key);
 
   @override
@@ -30,8 +31,8 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
   double _aX;
   double _aY;
 
-  double _bX = 300;
-  double _bY = 250 / 1.75;
+  double _bX;
+  double _bY = 250 / 2;
   int imageType = 0;
 
   GlobalKey globalKey = GlobalKey();
@@ -44,6 +45,7 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    this._bX = widget.bXCoor;
     RandomColor _randomColor = RandomColor();
     if (widget.spanData != null) {
       imageType = widget.spanData.imageType;
@@ -79,8 +81,8 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
 
   @override
   Widget build(BuildContext context) {
-    this._aX = MediaQuery.of(context).size.width / 2;
-    this._aY = MediaQuery.of(context).size.height / 5.25;
+    this._aX = 350 / 2;
+    this._aY = 250 / 2;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -114,7 +116,7 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
                   // }
 
                   // if (imageType == 0) {
-                    lineData = [this._aX, this._aY, this._bX, this._bY];
+                  lineData = [this._aX, this._aY, this._bX, this._bY];
                   // } else {
                   //   lineData = [
                   //     this._aX - 30,
@@ -155,37 +157,38 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
             key: globalKey,
             child: Container(
               color: Colors.white,
+              margin: EdgeInsets.all(15),
               child: Stack(
+                alignment: Alignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.all(15),
                     decoration: BoxDecoration(
                       border: Border.all(
                           color: ColorHelpers.colorGrey.withOpacity(0.2)),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    width: double.infinity,
+                    width: 350,
                     height: 250,
                   ),
                   GestureDetector(
                       onHorizontalDragStart: (detail) {
                         setState(() {
-                          this._bX = detail.globalPosition.dx;
+                          this._bX = detail.localPosition.dx;
                         });
                       },
                       onVerticalDragStart: (detail) {
                         setState(() {
-                          this._bY = detail.globalPosition.dy;
+                          this._bY = detail.localPosition.dy;
                         });
                       },
                       onHorizontalDragUpdate: (detail) {
                         setState(() {
-                          this._bX = detail.globalPosition.dx;
+                          this._bX = detail.localPosition.dx;
                         });
                       },
                       onVerticalDragUpdate: (detail) {
                         setState(() {
-                          this._bY = detail.globalPosition.dy;
+                          this._bY = detail.localPosition.dy;
                         });
                       },
                       child: Line(

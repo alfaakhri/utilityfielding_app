@@ -33,7 +33,7 @@ class _CircleTextState extends State<CircleText>
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: Size(MediaQuery.of(context).size.width, 250),
+      size: Size(350, 250),
       painter: DrawCircleText(
           center: widget.center, radius: widget.radius, text: widget.text),
     );
@@ -58,7 +58,7 @@ class DrawCircleText extends CustomPainter {
         Offset(center["x"], center["y"]), radius, paintBorder);
     final textSpan = TextSpan(
       text: text,
-      style: TextStyle(color: ColorHelpers.colorRed, fontSize: 10)
+      style: TextStyle(color: ColorHelpers.colorRed, fontSize: 12)
     );
     final textPainter = TextPainter(
       text: textSpan,
@@ -66,9 +66,9 @@ class DrawCircleText extends CustomPainter {
     );
     textPainter.layout(
       minWidth: 0,
-      maxWidth: 20,
+      maxWidth: 30,
     );
-    final offset = Offset(center["x"] - 7, center["y"] - 10);
+    final offset = Offset(center["x"] - 7, center["y"] - 8);
     textPainter.paint(canvas, offset);
   }
 
@@ -97,7 +97,7 @@ class DrawCircleTextAnchor extends CustomPainter {
         Offset(center["x"], center["y"]), radius, paintBorder);
     final textSpan = TextSpan(
       text: text,
-      style: TextStyle(color: ColorHelpers.colorRed, fontSize: 12)
+      style: TextStyle(color: ColorHelpers.colorRed, fontSize: 11)
     );
     final textPainter = TextPainter(
       text: textSpan,

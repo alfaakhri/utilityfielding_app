@@ -109,9 +109,9 @@ class PoleByIdModel {
         anchorList.add(new AnchorList.fromJson(v));
       });
     }
-    if (json['RiseAndVGRList'] != null) {
+    if (json['RiserAndVGRList'] != null) {
       riseAndVGRList = new List<RiserAndVGRList>();
-      json['RiseAndVGRList'].forEach((v) {
+      json['RiserAndVGRList'].forEach((v) {
         riseAndVGRList.add(new RiserAndVGRList.fromJson(v));
       });
     }
@@ -158,7 +158,7 @@ class PoleByIdModel {
       data['AnchorList'] = this.anchorList.map((v) => v.toJson()).toList();
     }
     if (this.riseAndVGRList != null) {
-      data['RiseAndVGRList'] =
+      data['RiserAndVGRList'] =
           this.riseAndVGRList.map((v) => v.toJson()).toList();
     }
     return data;
@@ -272,6 +272,7 @@ class AnchorList {
   double anchorEye;
   bool eyesPict;
   String poleID;
+  int imageType;
   List<DownGuyList> downGuyList;
 
   AnchorList(
@@ -286,6 +287,7 @@ class AnchorList {
       this.anchorEye,
       this.eyesPict,
       this.poleID,
+      this.imageType,
       this.downGuyList});
 
   AnchorList.fromJson(Map<String, dynamic> json) {
@@ -300,6 +302,7 @@ class AnchorList {
     anchorEye = json['AnchorEye'];
     eyesPict = json['EyesPict'];
     poleID = json['PoleID'];
+    imageType = json['ImageType'];
     if (json['DownGuyList'] != null) {
       downGuyList = new List<DownGuyList>();
       json['DownGuyList'].forEach((v) {
@@ -321,6 +324,7 @@ class AnchorList {
     data['AnchorEye'] = this.anchorEye;
     data['EyesPict'] = this.eyesPict;
     data['PoleID'] = this.poleID;
+    data['ImageType'] = this.imageType;
     if (this.downGuyList != null) {
       data['DownGuyList'] = this.downGuyList.map((v) => v.toJson()).toList();
     }
@@ -370,6 +374,7 @@ class RiserAndVGRList {
   String name;
   int value;
   int type;
+  int imageType;
 
   RiserAndVGRList(
       {this.iD,
@@ -380,7 +385,8 @@ class RiserAndVGRList {
       this.sequence,
       this.name,
       this.value,
-      this.type});
+      this.type,
+      this.imageType});
 
   RiserAndVGRList.fromJson(Map<String, dynamic> json) {
     iD = json['ID'];
@@ -392,6 +398,7 @@ class RiserAndVGRList {
     name = json['Name'];
     value = json['Value'];
     type = json['Type'];
+    imageType = json['ImageType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -405,6 +412,7 @@ class RiserAndVGRList {
     data['Name'] = this.name;
     data['Value'] = this.value;
     data['Type'] = this.type;
+    data['ImageType'] = this.imageType;
     return data;
   }
 }

@@ -6,6 +6,7 @@ import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/data/models/riser_active.dart';
 import 'package:fielding_app/data/models/riser_and_vgr_type_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
+import 'package:fielding_app/external/constants.dart';
 import 'package:flutter/material.dart';
 
 class RiserProvider extends ChangeNotifier {
@@ -91,16 +92,25 @@ class RiserProvider extends ChangeNotifier {
 
   void addListVGRActive() {
     if (_listVGRActive.length == 0) {
-      String data = "VGR 1";
+      String data = "VGR-1";
       _listVGRActive.add(data);
-      _activePointName = data;
+      _activePointName = "VGR";
+      _sequenceCurrent = 1;
     } else {
-      String data = "VGR ${_listVGRActive.length + 1}";
+      String last = _listVGRActive.last;
+      int lastValue = int.parse(last.split("-")[1]);
+      String data = "VGR-${lastValue + 1}";
+      _sequenceCurrent = lastValue + 1;
       _listVGRActive.add(data);
-      _activePointName = data;
+      _activePointName = "VGR";
     }
     print(json.encode(_listVGRActive).toString());
     assignActivePoint();
+    notifyListeners();
+  }
+
+  void removeOneListVGRActive(String value) {
+    _listVGRActive.remove(value);
     notifyListeners();
   }
 
@@ -109,12 +119,12 @@ class RiserProvider extends ChangeNotifier {
   List<String> get listRiserActive => _listRiserActive;
   void addListRiserActive(String value) {
     if (_listRiserActive.length == 0) {
-      String data = "R" + value + "-1";
+      String data = "R" + value + "-A";
       _listRiserActive.add(data);
-      _activePointName = data;
+      _activePointName = "R" + value;
+      _sequenceCurrent = 1;
     } else {
       bool isRiserNotFound = false;
-      bool isEqualNumber = false;
       String tempNumberRiser;
       int tempSequenceEqualNumber;
       //Looping untuk mengecek apakah riser number telah ada atau tidak
@@ -122,7 +132,9 @@ class RiserProvider extends ChangeNotifier {
       _listRiserActive.forEach((element) {
         String numberRiser = element.replaceAll("R", "");
         numberRiser = numberRiser.split("-")[0];
-        int sequence = int.parse(element.split("-")[1]);
+        int sequence = Constants.alphabet
+                .indexWhere((note) => note.startsWith(element.split("-")[1])) +
+            1;
         if (numberRiser.contains(value)) {
           tempNumberRiser = numberRiser;
           tempSequenceEqualNumber = sequence;
@@ -132,17 +144,25 @@ class RiserProvider extends ChangeNotifier {
       });
 
       if (!isRiserNotFound) {
-        String data = "R" + value + "-1";
+        String data = "R" + value + "-A";
         _listRiserActive.add(data);
-        _activePointName = data;
+        _activePointName = "R" + value;
+        _sequenceCurrent = 1;
       } else {
-        String data = "R$tempNumberRiser-${tempSequenceEqualNumber + 1}";
-        _activePointName = data;
+        String data =
+            "R$tempNumberRiser-${Constants.alphabet[tempSequenceEqualNumber]}";
+        _activePointName = "R" + tempNumberRiser;
         _listRiserActive.add(data);
+        _sequenceCurrent = tempSequenceEqualNumber + 1;
       }
     }
     print(json.encode(_listRiserActive));
     assignActivePoint();
+    notifyListeners();
+  }
+
+  void removeOneListRiserActive(String value) {
+    _listRiserActive.remove(value);
     notifyListeners();
   }
 
@@ -154,13 +174,30 @@ class RiserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  int _sequenceCurrent;
+  int get sequenceCurrent => _sequenceCurrent;
+  void setSequenceCurrent(int sequenceCurrent) {
+    _sequenceCurrent = sequenceCurrent;
+    notifyListeners();
+  }
+
   List<String> _listActivePoint = List<String>();
   List<String> get listActivePoint => _listActivePoint;
   void setListActivePoint(String value) {
+    _sequenceCurrent = null;
     if (value.contains("VGR")) {
       addListVGRActive();
     } else {
       addListRiserActive(value);
+    }
+  }
+
+  void removeListActivePoint() {
+    if (activePointName.contains("VGR")) {
+      removeOneListVGRActive(activePointName + "-$sequenceCurrent");
+    } else {
+      removeOneListRiserActive(
+          activePointName + "-${Constants.alphabet[sequenceCurrent - 1]}");
     }
   }
 
@@ -195,14 +232,23 @@ class RiserProvider extends ChangeNotifier {
   List<RiserAndVGRList> get listRiserData => _listRiserData;
   void addListRiserData(RiserAndVGRList data) {
     _listRiserData.add(data);
+    _listRiserData
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
     print(json.encode(_listRiserData.map((e) => e.toJson()).toList()));
     notifyListeners();
   }
 
   void addAllListRiserData(List<RiserAndVGRList> data) {
     _listRiserData.clear();
+    _listActivePoint.clear();
+    _listRiserActive.clear();
+    _listVGRActive.clear();
     if (data != null) {
       _listRiserData.addAll(data);
+      _listRiserData
+          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      print(_listRiserData.toList());
       for (var riser in _listRiserData) {
         if (riser.name != null) {
           if (riser.name.contains("VGR")) {
@@ -248,5 +294,13 @@ class RiserProvider extends ChangeNotifier {
     _riserVGRSelected = RiserAndVGRTypeModel();
     _downGuySelected = AllDownGuyOwnerModel();
     notifyListeners();
+  }
+
+  //-----------------------------------------------------------------------------------------
+
+  String valueType(int data) {
+    String value =
+        _listRiserType.firstWhere((element) => element.id == data).text;
+    return value;
   }
 }

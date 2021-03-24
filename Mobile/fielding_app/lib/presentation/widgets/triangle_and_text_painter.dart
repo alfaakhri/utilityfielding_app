@@ -31,14 +31,6 @@ class _TriangleTextState extends State<TriangleText> {
   }
 
   Future<ui.Image> loadImage(List<int> img) async {
-    // final Completer<ui.Image> completer = new Completer();
-    // ui.decodeImageFromList(img, (ui.Image img) {
-    //   setState(() {
-    //     isImageloaded = true;
-    //   });
-    //   return completer.complete(img);
-    // });
-    // return completer.future;
     final IMG.Image image = IMG.decodeImage(img);
     final IMG.Image resized = IMG.copyResize(image, width: 100);
     final List<int> resizedBytes = IMG.encodePng(resized);
@@ -51,10 +43,11 @@ class _TriangleTextState extends State<TriangleText> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return CustomPaint(
-      size: Size(MediaQuery.of(context).size.width, 250),
+      size: Size(350, 250),
       painter: DrawTriangle(
-          x: widget.x, y: widget.y, text: widget.text, image: image),
+          x: (width > 360) ? (widget.x + 10) : widget.x, y: widget.y, text: widget.text),
     );
   }
 }
@@ -63,9 +56,8 @@ class DrawTriangle extends CustomPainter {
   double x;
   double y;
   String text;
-  ui.Image image;
 
-  DrawTriangle({this.x, this.y, this.text, this.image});
+  DrawTriangle({this.x, this.y, this.text});
   @override
   void paint(Canvas canvas, Size size) {
     // Paint imagePaint = Paint();

@@ -1,6 +1,8 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
 import 'package:fielding_app/presentation/ui/root_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +22,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
-    runApp(new MyApp());
+    runApp(DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(), // Wrap your app
+    ));
+    // runApp(MyApp());
   });
 }
 
@@ -44,6 +50,8 @@ class MyApp extends StatelessWidget {
         ],
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,
+          locale: DevicePreview.locale(context), // Add the locale here
+          builder: DevicePreview.appBuilder,
           theme: ThemeData(
               primarySwatch: Colors.blue,
               fontFamily: GoogleFonts.poppins().fontFamily),
