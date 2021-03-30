@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 
 import 'anchor/anchor_widget.dart';
 import 'component/edit_hoa_widget.dart';
+import 'note/note_widget.dart';
 import 'span/view_span_widget.dart';
 import 'edit_pole_lat_lng_page.dart';
 
@@ -670,7 +671,10 @@ class _EditPolePageState extends State<EditPolePage> {
                     ),
                   ),
                   spaceForm(),
-                  _contentEditText("Note", _notes.text, _notes, false),
+                  NoteWidget(
+                    title: "Note",
+                    controller: _notes,
+                  ),
                   spaceForm(),
                 ],
               ),
@@ -699,28 +703,32 @@ class _EditPolePageState extends State<EditPolePage> {
             title,
             style: textDefault,
           ),
-          Row(
-            children: [
-              Text(
-                (controller.text.isEmpty)
-                    ? "-"
-                    : (title.toLowerCase().contains("pole height"))
-                        ? controller.text + " ft"
-                        : (title.toLowerCase().contains("ground line"))
-                            ? controller.text + " inch"
-                            : controller.text,
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: ColorHelpers.colorBlackText,
-                    fontSize: 12),
-              ),
-              UIHelper.horizontalSpaceSmall,
-              Icon(
-                Icons.arrow_forward_ios,
-                color: ColorHelpers.colorBlackText,
-                size: 14,
-              ),
-            ],
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  (controller.text.isEmpty)
+                      ? "-"
+                      : (title.toLowerCase().contains("pole height"))
+                          ? controller.text + " ft"
+                          : (title.toLowerCase().contains("ground line"))
+                              ? controller.text + " inch"
+                              : controller.text,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: ColorHelpers.colorBlackText,
+                      fontSize: 12),
+                ),
+                UIHelper.horizontalSpaceSmall,
+                Icon(
+                  Icons.arrow_forward_ios,
+                  color: ColorHelpers.colorBlackText,
+                  size: 14,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -734,67 +742,72 @@ class _EditPolePageState extends State<EditPolePage> {
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5.0))),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  title,
-                  style: textDefault,
-                ),
-                UIHelper.verticalSpaceSmall,
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: controller,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          isDense: true,
-                          hintText: "$title...",
-                          hintStyle: TextStyle(
-                              color:
-                                  ColorHelpers.colorBlackText.withOpacity(0.3),
-                              fontSize: 12),
-                          disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              borderSide: BorderSide(
-                                  color:
-                                      ColorHelpers.colorGrey.withOpacity(0.3))),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              borderSide: BorderSide(
-                                  color:
-                                      ColorHelpers.colorGrey.withOpacity(0.3))),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              borderSide: BorderSide(
-                                  color:
-                                      ColorHelpers.colorGrey.withOpacity(0.3))),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    title,
+                    style: textDefault,
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          maxLines: null,
+                          controller: controller,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            isDense: true,
+                            hintText: "$title...",
+                            hintStyle: TextStyle(
+                                color: ColorHelpers.colorBlackText
+                                    .withOpacity(0.3),
+                                fontSize: 12),
+                            disabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide(
+                                    color: ColorHelpers.colorGrey
+                                        .withOpacity(0.3))),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide(
+                                    color: ColorHelpers.colorGrey
+                                        .withOpacity(0.3))),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                                borderSide: BorderSide(
+                                    color: ColorHelpers.colorGrey
+                                        .withOpacity(0.3))),
+                          ),
                         ),
                       ),
-                    ),
-                    (title.toLowerCase().contains("ground line"))
-                        ? Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: Text("Inch", style: TextStyle(fontSize: 12)),
-                          )
-                        : Container()
-                  ],
-                ),
-                UIHelper.verticalSpaceSmall,
-                Container(
-                  width: double.infinity,
-                  child: FlatButton(
-                    child: Text("Save", style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      setState(() {});
-                      Navigator.of(context).pop();
-                    },
-                    color: ColorHelpers.colorButtonDefault,
+                      (title.toLowerCase().contains("ground line"))
+                          ? Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child:
+                                  Text("Inch", style: TextStyle(fontSize: 12)),
+                            )
+                          : Container()
+                    ],
                   ),
-                ),
-              ],
+                  UIHelper.verticalSpaceSmall,
+                  Container(
+                    width: double.infinity,
+                    child: FlatButton(
+                      child:
+                          Text("Save", style: TextStyle(color: Colors.white)),
+                      onPressed: () {
+                        setState(() {});
+                        Navigator.of(context).pop();
+                      },
+                      color: ColorHelpers.colorButtonDefault,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         });

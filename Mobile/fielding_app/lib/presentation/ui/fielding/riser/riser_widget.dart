@@ -1,3 +1,4 @@
+import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
@@ -59,7 +60,6 @@ class _RiserWidgetState extends State<RiserWidget> {
         ),
         backgroundColor: Colors.white,
         body: Consumer<RiserProvider>(builder: (context, data, _) {
-          
           return ListView(
             children: [
               RepaintBoundary(
@@ -67,69 +67,95 @@ class _RiserWidgetState extends State<RiserWidget> {
                 child: Container(
                   height: 250,
                   margin: EdgeInsets.all(15),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                          borderRadius: BorderRadius.circular(10),
+                  child: GestureDetector(
+                    onTapDown: (detail) {
+                      // RiserAndVGRList result = RiserAndVGRList(
+                      //     shapeX: detail.localPosition.dx,
+                      //     shapeY: detail.localPosition.dy,
+                      //     textX: detail.localPosition.dx,
+                      //     textY: detail.localPosition.dy,
+                      //     name: (data.activePointName == "VGR")
+                      //         ? data.activePointName +
+                      //             "-" +
+                      //             data.sequenceCurrent.toString()
+                      //         : data.activePointName +
+                      //             "-" +
+                      //             Constants.alphabet[data.sequenceCurrent - 1],
+                      //     value: data.riserVGRSelected.id,
+                      //     type: data.downGuySelected.id,
+                      //     sequence: data.sequenceCurrent,
+                      //     imageType: 0);
+                      // print(result.toJson());
+                      // data.addListRiserData(result);
+                      // data.clearRiserAndtype();
+                    },
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                color: ColorHelpers.colorGrey.withOpacity(0.2)),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          width: 350,
+                          height: 250,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                'assets/riser.png',
+                                width: 199,
+                                height: 199,
+                              ),
+                            ],
+                          ),
                         ),
-                        width: 350,
-                        height: 250,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/riser.png',
-                              // scale: 1.6,
-                              width: 199,
-                              height: 199,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: data.listRiserData.map((e) {
-                          double newWidth = MediaQuery.of(context).size.width;
-                          double newHeight = MediaQuery.of(context).size.height;
-                          var fielding = Provider.of<FieldingProvider>(context);
-                          double newX =
-                              ((newWidth * e.shapeX) / fielding.baseWidth);
-                          double newY =
-                              ((newHeight * e.shapeY) / fielding.baseHeight);
+                        Stack(
+                          alignment: Alignment.center,
+                          children: data.listRiserData.map((e) {
+                            double newWidth = MediaQuery.of(context).size.width;
+                            double newHeight =
+                                MediaQuery.of(context).size.height;
+                            var fielding =
+                                Provider.of<FieldingProvider>(context);
+                            double newX =
+                                ((newWidth * e.shapeX) / fielding.baseWidth);
+                            double newY =
+                                ((newHeight * e.shapeY) / fielding.baseHeight);
 
-                          if (e.value == 4) {
-                            if (e.imageType == 1) {
-                              return TriangleText(
-                                x: newX + 15,
-                                y: newY + 15,
-                                text: "VGR-${e.sequence}",
-                              );
+                            if (e.value == 4) {
+                              if (e.imageType == 1) {
+                                return TriangleText(
+                                  x: newX + 15,
+                                  y: newY + 15,
+                                  text: "VGR-${e.sequence}",
+                                );
+                              } else {
+                                return TriangleText(
+                                  x: newX,
+                                  y: newY,
+                                  text: "VGR-${e.sequence}",
+                                );
+                              }
                             } else {
-                              return TriangleText(
-                                x: newX,
-                                y: newY,
-                                text: "VGR-${e.sequence}",
+                              var value = Provider.of<RiserProvider>(context)
+                                  .valueType(e.value);
+                              return CircleText(
+                                center: (e.imageType == 1)
+                                    ? (newWidth > 360)
+                                        ? {"x": newX + 25, "y": newY + 25}
+                                        : {"x": newX + 15, "y": newY + 25}
+                                    : {"x": newX, "y": newY},
+                                radius: 10,
+                                text:
+                                    "R$value-${Constants.alphabet[e.sequence - 1]}",
                               );
                             }
-                          } else {
-                            var value = Provider.of<RiserProvider>(context)
-                                .valueType(e.value);
-                            return CircleText(
-                              center: (e.imageType == 1)
-                                  ? (newWidth > 360) ? {"x": newX + 25, "y": newY + 25} : {"x": newX + 15, "y": newY + 25}
-                                  : {"x": newX, "y": newY},
-                              radius: 10,
-                              text:
-                                  "R$value-${Constants.alphabet[e.sequence - 1]}",
-                            );
-                          }
-                        }).toList(),
-                      ),
-                    ],
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -377,6 +403,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                           if (formKey.currentState.validate()) {
                             data.setListActivePoint(data.riserVGRSelected.text);
                             Navigator.of(context).pop();
+                            // Fluttertoast.showToast(msg: "Please tap Riser/VGR in canvas");
                             Get.to(InsertRiserWidget());
                           }
                         },

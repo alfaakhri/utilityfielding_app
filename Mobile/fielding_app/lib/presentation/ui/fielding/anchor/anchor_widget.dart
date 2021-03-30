@@ -40,8 +40,8 @@ class _AnchorWidgetState extends State<AnchorWidget> {
   void assignValueForm(AnchorList data) {
     setState(() {
       this.distance.text = data.distance.toString();
-      this.size.text = data.size.toString();
-      this.eyes.text = data.anchorEye.toString();
+      // this.size.text = data.size.toString();
+      // this.eyes.text = data.anchorEye.toString();
       if (data.eyesPict) {
         this.textPictureAnchorEye.text = "Yes";
         isPictureAnchor = true;
@@ -92,12 +92,12 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                     size: Size(350, 250),
                     child: GestureDetector(
                       onTapDown: (detail) {
-                        if (data.listAnchorData.length > 2) {
-                          Fluttertoast.showToast(msg: "Anchor max 3");
-                        } else {
-                          data.checkListAnchorData(
-                              detail.localPosition.dx, detail.localPosition.dy);
-                        }
+                        // if (data.listAnchorData.length > 2) {
+                        //   Fluttertoast.showToast(msg: "Anchor max 3");
+                        // } else {
+                        data.checkListAnchorData(
+                            detail.localPosition.dx, detail.localPosition.dy);
+                        // }
                       },
                       child: Stack(
                         alignment: Alignment.center,
@@ -129,13 +129,15 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                   Provider.of<FieldingProvider>(context);
                               double newX =
                                   ((newWidth * e.circleX) / fielding.baseWidth);
-                              double newY =
-                                  ((newHeight * e.circleY) / fielding.baseHeight);
+                              double newY = ((newHeight * e.circleY) /
+                                  fielding.baseHeight);
 
                               return CustomPaint(
                                 size: Size(350, 250),
                                 painter: DrawCircleTextAnchor(
-                                    center: (e.imageType == 1) ? {"x": newX + 30, "y": newY + 30} : {"x": newX, "y": newY},
+                                    center: (e.imageType == 1)
+                                        ? {"x": newX + 30, "y": newY + 30}
+                                        : {"x": newX, "y": newY},
                                     radius: 10,
                                     text: e.text),
                               );
@@ -188,9 +190,61 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                   _textFormWidget(
                                       this.distance, "Distance from Pole"),
                                   UIHelper.verticalSpaceSmall,
-                                  _textFormWidget(this.size, "Anchor Size"),
+                                  Text("Anchor Size",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: ColorHelpers.colorGrey)),
                                   UIHelper.verticalSpaceSmall,
-                                  _textFormWidget(this.eyes, "Anchor Eyes"),
+                                  DropdownButtonFormField<String>(
+                                    isDense: true,
+                                    decoration: kDecorationDropdown(),
+                                    items: data.listAllAnchorSize.map((value) {
+                                      return DropdownMenuItem<String>(
+                                        child: Text(value.text,
+                                            style: TextStyle(fontSize: 12)),
+                                        value: value.text,
+                                      );
+                                    }).toList(),
+                                    onChanged: (String value) {
+                                      setState(() {
+                                        this.size.text = value;
+
+                                        data.setAnchorSizeSelected(value);
+                                      });
+                                    },
+                                    value:
+                                        (data.anchorSizeSelected.text == null)
+                                            ? null
+                                            : data.anchorSizeSelected.text,
+                                  ),
+                                  UIHelper.verticalSpaceSmall,
+                                  Text("Anchor Eyes",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: ColorHelpers.colorGrey)),
+                                  UIHelper.verticalSpaceSmall,
+                                  DropdownButtonFormField<String>(
+                                    isDense: true,
+                                    decoration: kDecorationDropdown(),
+                                    items:
+                                        data.listAnchorEyesModel.map((value) {
+                                      return DropdownMenuItem<String>(
+                                        child: Text(value.text,
+                                            style: TextStyle(fontSize: 12)),
+                                        value: value.text,
+                                      );
+                                    }).toList(),
+                                    onChanged: (String value) {
+                                      setState(() {
+                                        this.eyes.text = value;
+
+                                        data.setAnchorEyesSelected(value);
+                                      });
+                                    },
+                                    value: (data.anchorEyesSelected.text == null)
+                                        ? null
+                                        : data.anchorEyesSelected.text,
+                                  ),
                                   UIHelper.verticalSpaceSmall,
                                   Text("Picture of anchor eyes",
                                       style: TextStyle(
@@ -265,8 +319,10 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                             onPressed: () {
                                               data.updateDataAnchorList(
                                                   distance: this.distance.text,
-                                                  size: this.size.text,
-                                                  eyes: this.eyes.text,
+                                                  size: data
+                                                      .anchorSizeSelected.id,
+                                                  eyes: data
+                                                      .anchorEyesSelected.id,
                                                   isPicture:
                                                       this.isPictureAnchor);
                                               Fluttertoast.showToast(

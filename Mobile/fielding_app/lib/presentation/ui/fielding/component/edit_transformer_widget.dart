@@ -18,6 +18,8 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
   List<String> _listChoice = ["Yes", "No"];
   bool valueDropdown = false;
   TextEditingController kvController = TextEditingController();
+  TextEditingController ftController = TextEditingController();
+
   final formKey = new GlobalKey<FormState>();
   String choiceValue;
 
@@ -78,6 +80,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                       data.setIsTransformer(true);
                       this.choiceValue = "Yes";
                       this.kvController.text = list.value.toString();
+                      this.ftController.text = list.hOA.toString();
                     });
 
                     dialogTransformer("Transformer", index: index);
@@ -96,7 +99,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                                 style: textDefault,
                               ),
                               Text(
-                                "${list.value} KV",
+                                "${list.value} kV, ${list.hOA} ft",
                                 style: textDefault,
                               )
                             ],
@@ -177,51 +180,93 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                     ),
                     UIHelper.verticalSpaceSmall,
                     (data.isTransformer)
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        ? Row(
                             children: [
-                              Text(
-                                "KV",
-                                style: textDefault,
+                              Expanded(
+                                child: TextFormField(
+                                  controller: kvController,
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Please insert kV value';
+                                    } else if (value == "") {
+                                      return 'Please insert kV value';
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    suffixText: "kV",
+                                    suffixStyle: textDefault,
+                                    focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorRed)),
+                                    disabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorGrey
+                                                .withOpacity(0.3))),
+                                    errorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorRed)),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorGrey
+                                                .withOpacity(0.3))),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorGrey
+                                                .withOpacity(0.3))),
+                                  ),
+                                ),
                               ),
-                              UIHelper.verticalSpaceSmall,
-                              TextFormField(
-                                controller: kvController,
-                                keyboardType: TextInputType.number,
-                                validator: (value) {
-                                  if (value == null) {
-                                    return 'Please insert KV value';
-                                  } else if (value == "") {
-                                    return 'Please insert KV value';
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  isDense: true,
-                                  focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorRed)),
-                                  disabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorGrey
-                                              .withOpacity(0.3))),
-                                  errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorRed)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorGrey
-                                              .withOpacity(0.3))),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                      borderSide: BorderSide(
-                                          color: ColorHelpers.colorGrey
-                                              .withOpacity(0.3))),
+                              UIHelper.horizontalSpaceVerySmall,
+                              Expanded(
+                                child: TextFormField(
+                                  controller: ftController,
+                                  keyboardType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Please insert ft value';
+                                    } else if (value == "") {
+                                      return 'Please insert ft value';
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    suffixText: "ft",
+                                    suffixStyle: textDefault,
+                                    focusedErrorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorRed)),
+                                    disabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorGrey
+                                                .withOpacity(0.3))),
+                                    errorBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorRed)),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorGrey
+                                                .withOpacity(0.3))),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                        borderSide: BorderSide(
+                                            color: ColorHelpers.colorGrey
+                                                .withOpacity(0.3))),
+                                  ),
                                 ),
                               ),
                             ],
@@ -235,15 +280,30 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                         onPressed: () {
                           if (formKey.currentState.validate()) {
                             setState(() {
-                              if (index != null) {
+                              if (!data.isTransformer) {
                                 data.removeLisTransformer(index);
                               } else {
-                                data.addlistTransformer(TransformerList(
+                                if (index != null) {
+                                  data.updateListTransformer(TransformerList(
                                     value: double.parse(this
                                         .kvController
                                         .text
                                         .replaceAll(",", ".")),
-                                    hOA: 0));
+                                    hOA: double.parse(this
+                                        .ftController
+                                        .text
+                                        .replaceAll(",", "."))), index);
+                                } else {
+                                  data.addlistTransformer(TransformerList(
+                                      value: double.parse(this
+                                          .kvController
+                                          .text
+                                          .replaceAll(",", ".")),
+                                      hOA: double.parse(this
+                                          .ftController
+                                          .text
+                                          .replaceAll(",", "."))));
+                                }
                               }
 
                               Navigator.pop(context);

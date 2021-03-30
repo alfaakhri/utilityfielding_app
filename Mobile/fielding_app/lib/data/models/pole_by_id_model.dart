@@ -268,8 +268,8 @@ class AnchorList {
   double textY;
   String text;
   double distance;
-  double size;
-  double anchorEye;
+  int size;
+  int anchorEye;
   bool eyesPict;
   String poleID;
   int imageType;
@@ -334,7 +334,7 @@ class AnchorList {
 
 class DownGuyList {
   String iD;
-  double size;
+  int size;
   int owner;
   bool isInsulated;
   double hOA;

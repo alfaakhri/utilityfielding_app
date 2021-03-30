@@ -7,7 +7,7 @@ class SplashPage extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          Image.asset('assets/bg_splash.png',
+          Image.asset('assets/bg_login.png',
               fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity),

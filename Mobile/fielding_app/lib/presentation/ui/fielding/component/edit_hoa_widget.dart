@@ -49,7 +49,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                   this.choiceValue = null;
                   this.ftController.clear();
                   this.inchController.clear();
-                  dialogHoa("HOA Type");
+                  dialogHoa("HOA Type", false);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -140,13 +140,12 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                                   data.setIsHoa(true);
                                   this.ftController.text =
                                       list.poleLengthInFeet.toString();
-                                  this.inchController.text = list.poleLengthInInch.toString();
+                                  this.inchController.text =
+                                      list.poleLengthInInch.toString();
                                   data.setHoaSelected(typeName);
                                 });
 
-                                dialogHoa(
-                                  "Hoa Type",
-                                );
+                                dialogHoa("Hoa Type", true, index: index);
                               },
                               child: Text(
                                 "Edit",
@@ -173,7 +172,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
     );
   }
 
-  Future dialogHoa(String title) {
+  Future dialogHoa(String title, bool isEdit, {int index}) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -339,15 +338,28 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                                     listen: false)
                                 .setIsHoa(false);
 
-                            setState(() {
-                              data.addHoaList(HOAList(
-                                  type: data.hoaSelected.id,
-                                  poleLengthInInch: double.parse(this.inchController.text),
-                                  poleLengthInFeet:
-                                      double.parse(this.ftController.text)));
-                              data.clearHoaSelected();
-                              Navigator.pop(context);
-                            });
+                            if (isEdit) {
+                              setState(() {
+                                data.updateHoaList(HOAList(
+                                    type: data.hoaSelected.id,
+                                    poleLengthInInch:
+                                        double.parse(this.inchController.text),
+                                    poleLengthInFeet:
+                                        double.parse(this.ftController.text)), index);
+                              });
+                            } else {
+                              setState(() {
+                                data.addHoaList(HOAList(
+                                    type: data.hoaSelected.id,
+                                    poleLengthInInch:
+                                        double.parse(this.inchController.text),
+                                    poleLengthInFeet:
+                                        double.parse(this.ftController.text)));
+                              });
+                            }
+                            data.clearHoaSelected();
+
+                            Navigator.pop(context);
                           }
                         },
                         color: ColorHelpers.colorButtonDefault,

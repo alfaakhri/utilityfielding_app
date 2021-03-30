@@ -78,22 +78,22 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                           ? GestureDetector(
                               onHorizontalDragStart: (detail) {
                                 setState(() {
-                                  this.shapeX = detail.globalPosition.dx;
+                                  this.shapeX = detail.localPosition.dx;
                                 });
                               },
                               onVerticalDragStart: (detail) {
                                 setState(() {
-                                  this.shapeY = detail.globalPosition.dy;
+                                  this.shapeY = detail.localPosition.dy;
                                 });
                               },
                               onHorizontalDragUpdate: (detail) {
                                 setState(() {
-                                  this.shapeX = detail.globalPosition.dx;
+                                  this.shapeX = detail.localPosition.dx;
                                 });
                               },
                               onVerticalDragUpdate: (detail) {
                                 setState(() {
-                                  this.shapeY = detail.globalPosition.dy;
+                                  this.shapeY = detail.localPosition.dy;
                                 });
                               },
                               child: TriangleText(
@@ -105,22 +105,22 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                           : GestureDetector(
                               onHorizontalDragStart: (detail) {
                                 setState(() {
-                                  this.shapeX = detail.globalPosition.dx;
+                                  this.shapeX = detail.localPosition.dx;
                                 });
                               },
                               onVerticalDragStart: (detail) {
                                 setState(() {
-                                  this.shapeY = detail.globalPosition.dy;
+                                  this.shapeY = detail.localPosition.dy;
                                 });
                               },
                               onHorizontalDragUpdate: (detail) {
                                 setState(() {
-                                  this.shapeX = detail.globalPosition.dx;
+                                  this.shapeX = detail.localPosition.dx;
                                 });
                               },
                               onVerticalDragUpdate: (detail) {
                                 setState(() {
-                                  this.shapeY = detail.globalPosition.dy;
+                                  this.shapeY = detail.localPosition.dy;
                                 });
                               },
                               child: CircleText(

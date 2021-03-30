@@ -317,6 +317,12 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  updateHoaList(HOAList hoa, index) {
+    _hoaList.elementAt(index).poleLengthInFeet = hoa.poleLengthInFeet;
+    _hoaList.elementAt(index).poleLengthInInch = hoa.poleLengthInInch;
+    notifyListeners();
+  }
+
   addAllHoaList(List<HOAList> data) {
     _hoaList.clear();
     if (data != null) {
@@ -338,6 +344,12 @@ class FieldingProvider extends ChangeNotifier {
   List<TransformerList> get listTransformer => _listTransformer;
   addlistTransformer(TransformerList transformer) {
     _listTransformer.add(transformer);
+    notifyListeners();
+  }
+
+  updateListTransformer(TransformerList transformer, int index) {
+    _listTransformer.elementAt(index).hOA = transformer.hOA;
+    _listTransformer.elementAt(index).value = transformer.value;
     notifyListeners();
   }
 

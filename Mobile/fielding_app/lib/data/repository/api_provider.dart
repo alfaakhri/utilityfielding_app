@@ -132,8 +132,9 @@ class ApiProvider {
 
   Future<Response> addPole(dynamic data) async {
     try {
-      _response = await _dio
-          .post(BASE_URL + "/api/MobileProject/CompletedFieldingNew", data: data);
+      _response = await _dio.post(
+          BASE_URL + "/api/MobileProject/CompletedFieldingNew",
+          data: data);
       return _response;
     } on DioError catch (e) {
       if (e.response.statusCode == 400) {
@@ -261,8 +262,48 @@ class ApiProvider {
 
   Future<Response> uploadImage(dynamic data) async {
     try {
+      var response = await _dio
+          .post(BASE_URL + "/api/MobileProject/UploadImage", data: data);
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getAllAnchorSize() async {
+    try {
       var response =
-          await _dio.post(BASE_URL + "/api/MobileProject/UploadImage", data: data);
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllAnchorSize");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getAllAnchorEyes() async {
+    try {
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllAnchorEyes");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getDownGuySize() async {
+    try {
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetDownGuySize");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getBrokenDownGuySize() async {
+    try {
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetBrokenDownGuySize");
       return response;
     } catch (e) {
       throw e;
