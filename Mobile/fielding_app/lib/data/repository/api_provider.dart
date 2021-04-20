@@ -9,6 +9,21 @@ class ApiProvider {
   Dio _dio = Dio();
   Response _response;
 
+  Future<Response> getPrivacyPolicy() async {
+    try {
+      _response = await _dio.get(
+          BASE_URL + "/home/privacypolicy",
+          );
+      return _response;
+    } on DioError catch (e) {
+      if (e.response.statusCode == 400) {
+        return e.response;
+      } else {
+        throw e;
+      }
+    }
+  }
+
   Future<Response> checkToken(String token) async {
     var data = {'token': token};
     try {
@@ -70,10 +85,11 @@ class ApiProvider {
     }
   }
 
-  Future<Response> startPolePicture(String token, String poleId) async {
+  Future<Response> startPolePicture(String token, String poleId, String layerId) async {
     var data = {
       "Token": token,
       "PoleID": poleId,
+      "LayerID": layerId,
     };
     try {
       _response = await _dio
@@ -160,10 +176,11 @@ class ApiProvider {
   }
 
   Future<Response> startFielding(
-      String token, String poleId, bool isStartAdditional) async {
+      String token, String poleId, bool isStartAdditional, String layerId) async {
     var data = {
       'Token': token,
       'PoleID': poleId,
+      'LayerID': layerId,
       'isStartAdditional': isStartAdditional
     };
     print(json.encode(data));

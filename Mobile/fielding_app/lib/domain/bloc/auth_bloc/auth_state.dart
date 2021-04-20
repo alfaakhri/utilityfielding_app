@@ -19,6 +19,8 @@ class GetAuthFailed extends AuthState {
   GetAuthFailed(this.message);
 }
 
+class FirstInstall extends AuthState {}
+
 class GetAuthMustLogin extends AuthState {}
 
 class DoLoginLoading extends AuthState {}

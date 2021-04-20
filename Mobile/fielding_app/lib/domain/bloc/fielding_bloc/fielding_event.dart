@@ -65,6 +65,7 @@ class StartFielding extends FieldingEvent {
   final String token;
   final String poleId;
   final bool isStartAdditional;
+  final String layerId;
 
-  StartFielding(this.token, this.poleId, this.isStartAdditional);
+  StartFielding(this.token, this.poleId, this.isStartAdditional, this.layerId);
 }

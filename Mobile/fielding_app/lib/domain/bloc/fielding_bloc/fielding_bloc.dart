@@ -78,7 +78,7 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield StartPolePictureLoading();
       try {
         var responseFirst =
-            await _apiProvider.startPolePicture(event.token, event.poleId);
+            await _apiProvider.startPolePicture(event.token, event.poleId, event.layerId);
         if (responseFirst.statusCode == 200) {
           _responsePolePicture =
               AllPolesByLayerModel.fromJson(responseFirst.data);
@@ -204,7 +204,7 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield StartFieldingLoading();
       try {
         var response = await _apiProvider.startFielding(
-            event.token, event.poleId, event.isStartAdditional);
+            event.token, event.poleId, event.isStartAdditional, event.layerId);
         if (response.statusCode == 200) {
           yield StartFieldingSuccess();
         } else if (response.data['Message'] == Constants.messageTokenExpired) {

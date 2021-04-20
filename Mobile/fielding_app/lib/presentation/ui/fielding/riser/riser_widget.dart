@@ -33,6 +33,12 @@ class _RiserWidgetState extends State<RiserWidget> {
   final formKey = new GlobalKey<FormState>();
 
   @override
+  void initState() { 
+    super.initState();
+    Fluttertoast.showToast(msg: "Tap + to add Riser & VGR", toastLength: Toast.LENGTH_LONG);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(

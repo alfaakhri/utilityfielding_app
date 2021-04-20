@@ -1,6 +1,7 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
+import 'package:fielding_app/domain/provider/intro_provider.dart';
 import 'package:fielding_app/presentation/ui/root_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +23,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
-    runApp(DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(), // Wrap your app
-    ));
-    // runApp(MyApp());
+    // runApp(DevicePreview(
+    //   enabled: !kReleaseMode,
+    //   builder: (context) => MyApp(), // Wrap your app
+    // ));
+    runApp(MyApp());
   });
 }
 
@@ -41,6 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => SpanProvider()),
         ChangeNotifierProvider(create: (_) => RiserProvider()),
         ChangeNotifierProvider(create: (_) => AnchorProvider()),
+        ChangeNotifierProvider(create: (_) => IntroProvider()),
       ],
       child: MultiBlocProvider(
         providers: [

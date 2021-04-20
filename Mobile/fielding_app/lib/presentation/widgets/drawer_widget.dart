@@ -20,7 +20,7 @@ class DrawerWidget extends StatelessWidget {
         color: Colors.white,
         child: ListView(
           children: <Widget>[
-            Image.asset('assets/logo.png', scale: 4),
+            Image.asset('assets/logo.png', scale: 2,),
             Divider(
               color: Colors.black,
             ),

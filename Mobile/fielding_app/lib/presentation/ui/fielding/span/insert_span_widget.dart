@@ -200,7 +200,9 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
               ),
             ),
           ),
-          UIHelper.verticalSpaceMedium,
+          Text("Touch & Drag",
+              style: TextStyle(fontSize: 14, color: ColorHelpers.colorGrey)),
+          UIHelper.verticalSpaceSmall,
           Form(
             key: this.formKey,
             child: Padding(

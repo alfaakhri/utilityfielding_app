@@ -2,12 +2,14 @@ import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
+import 'package:fielding_app/domain/provider/intro_provider.dart';
 import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/domain/provider/span_provider.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/presentation/ui/login_page.dart';
 import 'package:fielding_app/presentation/ui/splash_page.dart';
+import 'package:fielding_app/presentation/widgets/introduction_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -36,6 +38,7 @@ class _RootPageState extends State<RootPage> {
     context.read<AnchorProvider>().getAllAnchorSize();
     context.read<AnchorProvider>().getBrokenDownGuySize();
     context.read<AnchorProvider>().getDownGuySize();
+    context.read<IntroProvider>().getPrivacyPolicy();
     authBloc = BlocProvider.of<AuthBloc>(context);
     authBloc.add(StartApp());
   }
@@ -51,6 +54,8 @@ class _RootPageState extends State<RootPage> {
           Get.offAll(LoginPage());
         } else if (state is GetAuthMustLogin) {
           Get.offAll(LoginPage());
+        } else if (state is FirstInstall) {
+          Get.offAll(IntroductionPage());
         }
       },
       builder: (context, state) {

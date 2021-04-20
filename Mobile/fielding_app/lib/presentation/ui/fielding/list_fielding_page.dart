@@ -62,16 +62,51 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
           if (state is GetAllProjectsLoading) {
             return _skeletonLoading();
           } else if (state is GetAllProjectsFailed) {
-            return ErrorHandlingWidget(
-              title: state.message,
-              subTitle: "Please come back in a moment.",
-            );
+            return _handlingWidget(state.message);
           } else if (state is GetAllProjectsSuccess) {
             return _content(state.allProjectsModel);
+          } else if (state is GetAllProjectsEmpty) {
+            return _handlingWidget("Fielding Request Empty");
           }
           return _skeletonLoading();
         },
       ),
+    );
+  }
+
+  Column _handlingWidget(String title) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ErrorHandlingWidget(
+          title: title,
+          subTitle: "Please come back in a moment.",
+        ),
+        UIHelper.verticalSpaceSmall,
+        FittedBox(
+          child: InkWell(
+            onTap: () {
+              fieldingBloc.add(GetAllProjects(
+                  context.read<UserProvider>().userModel.data.token));
+            },
+            child: Container(
+              color: ColorHelpers.colorBlueIntro,
+              padding: EdgeInsets.all(8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.replay_outlined,
+                    color: ColorHelpers.colorGrey,
+                  ),
+                  Text("Reload"),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -115,7 +150,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             children: allProjects
-                .map((data) => InkWell(
+                .map((data) => GestureDetector(
                       onTap: () {
                         context
                             .read<FieldingProvider>()
@@ -136,7 +171,8 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           data.projectName ?? "-",
@@ -162,7 +198,12 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                       children: [
                                         Row(
                                           children: [
-                                            Text((data.totalPoles != null) ? data.totalPoles.toString() ?? "0" : "0",
+                                            Text(
+                                                (data.totalPoles != null)
+                                                    ? data.totalPoles
+                                                            .toString() ??
+                                                        "0"
+                                                    : "0",
                                                 style: TextStyle(
                                                     color: ColorHelpers
                                                         .colorBlueNumber,
@@ -189,7 +230,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          (data.dueDate != null) ? "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate)) ?? "-"}" : "Due Date -",
+                                          (data.dueDate != null)
+                                              ? "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate)) ?? "-"}"
+                                              : "Due Date -",
                                           // "Due Date ${data.dueDate  ?? "-"}",
                                           style: TextStyle(
                                               fontSize: 12,
@@ -197,7 +240,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                                   ColorHelpers.colorBlackText),
                                         ),
                                         Text(
-                                          (data.approx != null) ? "Approx ${data.approx} Poles" : "Approx 0 Poles",
+                                          (data.approx != null)
+                                              ? "Approx ${data.approx} Poles"
+                                              : "Approx 0 Poles",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color:

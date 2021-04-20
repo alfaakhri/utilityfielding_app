@@ -170,6 +170,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               Fluttertoast.showToast(msg: "Update location success");
               fieldingBloc.add(GetCurrentAddress(
                   double.parse(_latitude), double.parse(_longitude)));
+              Get.back();
             } else if (state is GetCurrentAddressLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is GetCurrentAddressFailed) {
@@ -180,7 +181,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               Navigator.of(_keyLoader.currentContext, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: "Update location success");
-
+              Get.back();
               context
                   .read<FieldingProvider>()
                   .setCurrentAddress(state.currentAddress);

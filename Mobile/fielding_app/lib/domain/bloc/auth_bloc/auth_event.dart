@@ -15,3 +15,5 @@ class DoLogin extends AuthEvent {
 class DoLogout extends AuthEvent {}
 
 class StartApp extends AuthEvent {}
+
+class SaveFirstInstall extends AuthEvent {}

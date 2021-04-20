@@ -1,4 +1,4 @@
-package com.example.fielding_app
+package com.utility.fielding_app
 
 import io.flutter.embedding.android.FlutterActivity
 

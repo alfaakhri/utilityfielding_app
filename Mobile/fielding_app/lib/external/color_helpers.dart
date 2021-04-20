@@ -10,12 +10,14 @@ class ColorHelpers {
   static const Color colorGrey = const Color(0xFF707070);
   static const Color colorGrey2 = const Color(0xFFF4F5FA);
   static const Color colorRed = const Color(0xFFC0392B);
-  static const colorOrangeLoginError= Color(0xffE74C3C);
+  static const colorOrangeLoginError = Color(0xffE74C3C);
   static const colorBlackText = Color(0xFF434343);
   static const colorButtonDefault = Color(0xFF879BFF);
   static const colorWhite = Color(0xFFFFFFFF);
   static const colorBlue = Color(0xFFE9F1FF);
+  static const colorBlueIntro = Color(0xFFF2F4FF);
   static const colorBlueNumber = Color(0xFF4168AE);
   static const colorYellowCard = Color(0xFFFFFCE9);
   static const colorGreenCard = Color(0xFFE5FFF0);
+  static const colorGreyIntro = Color(0xFFA0A0A0);
 }

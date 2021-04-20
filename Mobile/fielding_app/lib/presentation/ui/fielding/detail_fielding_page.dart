@@ -114,7 +114,9 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         body: BlocConsumer<FieldingBloc, FieldingState>(
           listener: (context, state) {
             if (state is GetAllPolesByIdSuccess) {
-              context.read<FieldingProvider>().setAllPolesByLayer(state.allPolesByLayer);
+              context
+                  .read<FieldingProvider>()
+                  .setAllPolesByLayer(state.allPolesByLayer);
             } else if (state is StartPolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is StartPolePictureFailed) {
@@ -233,17 +235,20 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     target: (allPoles.length == 0)
                         ? LatLng(this.currentLocation.latitude,
                             this.currentLocation.longitude)
-                        : LatLng(
-                            double.parse(allPoles
-                                .firstWhere((element) =>
-                                    (element.latitude != null &&
-                                        element.latitude.contains(".")))
-                                .latitude),
-                            double.parse(allPoles
-                                .firstWhere((element) =>
-                                    (element.longitude != null &&
-                                        element.longitude.contains(".")))
-                                .longitude)),
+                        : (allPoles.first.latitude == null)
+                            ? LatLng(this.currentLocation.latitude,
+                                this.currentLocation.longitude)
+                            : LatLng(
+                                double.parse(allPoles
+                                    .firstWhere((element) =>
+                                        (element.latitude != null &&
+                                            element.latitude.contains(".")))
+                                    .latitude),
+                                double.parse(allPoles
+                                    .firstWhere((element) =>
+                                        (element.longitude != null &&
+                                            element.longitude.contains(".")))
+                                    .longitude)),
                     zoom: 14,
                   ),
                   onTap: (LatLng loc) {
@@ -435,7 +440,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                     .data
                                                     .token,
                                                 poleModelSelected.id,
-                                                true));
+                                                true,
+                                                widget.allProjectsModel.iD));
                                           },
                                           child: Container(
                                               decoration: BoxDecoration(
