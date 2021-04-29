@@ -405,13 +405,15 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                               child: Container(
                                                   width: 150,
                                                   decoration: BoxDecoration(
-                                                      color: ColorHelpers
+                                                      color: (poleModelSelected
+                                                            .startPolePicture) ? ColorHelpers.colorButtonDefault : ColorHelpers
                                                           .colorYellowCard,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               5),
                                                       border: Border.all(
-                                                          color: ColorHelpers
+                                                          color: (poleModelSelected
+                                                            .startPolePicture) ? ColorHelpers.colorButtonDefault : ColorHelpers
                                                               .colorOrange)),
                                                   padding: EdgeInsets.symmetric(
                                                       vertical: 5,
@@ -423,8 +425,9 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                         : "Additional Pictures",
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
-                                                      color: ColorHelpers
-                                                          .colorOrange,
+                                                      color: (poleModelSelected
+                                                            .startPolePicture) ? ColorHelpers.colorWhite :
+                                                          ColorHelpers.colorOrange,
                                                       fontSize: 12,
                                                     ),
                                                   )),
@@ -576,13 +579,15 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                 child: Container(
                                                     width: 150,
                                                     decoration: BoxDecoration(
-                                                        color: ColorHelpers
+                                                        color:  (data.startPolePicture)
+                                                          ? ColorHelpers.colorButtonDefault : ColorHelpers
                                                             .colorGreenCard,
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(5),
                                                         border: Border.all(
-                                                            color: ColorHelpers
+                                                            color: (data.startPolePicture)
+                                                          ? ColorHelpers.colorButtonDefault: ColorHelpers
                                                                 .colorGreen2)),
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -595,7 +600,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
-                                                        color: ColorHelpers
+                                                        color: (data.startPolePicture)
+                                                          ? ColorHelpers.colorWhite : ColorHelpers
                                                             .colorGreen2,
                                                         fontSize: 12,
                                                       ),

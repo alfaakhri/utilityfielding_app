@@ -34,6 +34,9 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   double pinPillPosition = -100;
   LocationData currentLocation;
   BitmapDescriptor poleIcon;
+  BitmapDescriptor poleGreen;
+  BitmapDescriptor poleBlue;
+
   GoogleMapController googleMapController;
   // bool _editLocation = false;
   String _latitude;
@@ -84,6 +87,18 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
             ImageConfiguration(size: Size(6, 6)), 'assets/pin_yellow.png')
         .then((onValue) {
       poleIcon = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/pin_blue.png')
+        .then((onValue) {
+      poleBlue = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/pin_green.png')
+        .then((onValue) {
+      poleGreen = onValue;
     });
   }
 
@@ -170,7 +185,6 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               Fluttertoast.showToast(msg: "Update location success");
               fieldingBloc.add(GetCurrentAddress(
                   double.parse(_latitude), double.parse(_longitude)));
-              Get.back();
             } else if (state is GetCurrentAddressLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is GetCurrentAddressFailed) {
@@ -244,6 +258,14 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
 
                     _onAddMarkerButtonPressed(loc.latitude, loc.longitude);
                     // }
+                    if (context
+                            .read<FieldingProvider>()
+                            .allPolesByLayer
+                            .length !=
+                        0) {
+                      showPinsOnMapAllPoles(
+                          context.read<FieldingProvider>().allPolesByLayer);
+                    }
                   },
                   onMapCreated: (GoogleMapController controller) {
                     googleMapController = controller;
@@ -257,6 +279,18 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                           context.read<FieldingProvider>().latitude,
                           context.read<FieldingProvider>().longitude);
                     }
+
+                    if (context
+                            .read<FieldingProvider>()
+                            .allPolesByLayer
+                            .length !=
+                        0) {
+                      showPinsOnMapAllPoles(
+                          context.read<FieldingProvider>().allPolesByLayer);
+                    }
+                    Fluttertoast.showToast(
+                        msg: "Tap & drag to add pole in map",
+                        toastLength: Toast.LENGTH_LONG);
                   }),
               SlidingUpPanel(
                 minHeight: 200,
@@ -275,20 +309,6 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   }
 
   Widget _buildListAllPoles() {
-    // return BlocListener<LocationBloc, LocationState>(
-    //   listener: (context, state) {
-    //     if (state is GetCurrentAddressLoading) {
-    //       LoadingWidget.showLoadingDialog(context, _keyLoader);
-    //     } else if (state is GetCurrentAddressFailed) {
-    //       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-    //     } else if (state is GetCurrentAddressSuccess) {
-    //       Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-    //       context
-    //           .read<FieldingProvider>()
-    //           .setCurrentAddress(state.currentAddress);
-    //     }
-    //   },
-    // child:
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
@@ -473,6 +493,33 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
         },
         icon: poleIcon));
     setState(() {});
+  }
+
+  void showPinsOnMapAllPoles(List<AllPolesByLayerModel> list) {
+    if (list.length != 0) {
+      list.forEach((data) {
+        if (data.latitude != null && data.longitude != null) {
+          var fieldingPosition =
+              LatLng(double.parse(data.latitude), double.parse(data.longitude));
+
+          // add the initial source location pin
+          if (data.fieldingStatus == null ||
+              data.fieldingStatus == 0 ||
+              data.fieldingStatus == 1) {
+            _markers.add(Marker(
+                markerId: MarkerId("${data.id}"),
+                position: fieldingPosition,
+                icon: poleBlue));
+          } else {
+            _markers.add(Marker(
+                markerId: MarkerId("${data.id}"),
+                position: fieldingPosition,
+                icon: poleGreen));
+          }
+        }
+      });
+      setState(() {});
+    }
   }
 
   Future dialogAlert() {
