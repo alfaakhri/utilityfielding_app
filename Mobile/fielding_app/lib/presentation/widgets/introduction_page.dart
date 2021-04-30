@@ -1,6 +1,8 @@
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/constants.dart';
+import 'package:fielding_app/external/service/location_service.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/ui/login_page.dart';
 import 'package:fielding_app/presentation/widgets/open_intro_webview.dart';
@@ -9,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:location/location.dart';
 
 class IntroductionPage extends StatefulWidget {
   @override
@@ -19,6 +23,16 @@ class IntroductionPage extends StatefulWidget {
 class _IntroductionPageState extends State<IntroductionPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
   AuthBloc authBloc;
+
+  void getCurrentLocation() async {
+    LocationService location = LocationService();
+    LocationData data = await location.getCurrentLocation();
+    print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
+    context
+        .read<FieldingProvider>()
+        .setCurrentPosition(LatLng(data.latitude, data.longitude));
+    context.read<FieldingProvider>().setCurrentLocationData(data);
+  }
 
   @override
   void initState() {
@@ -50,6 +64,9 @@ class _IntroductionPageState extends State<IntroductionPage> {
           Expanded(
             child: IntroductionScreen(
               onChange: (value) {
+                if (value == 1) {
+                  getCurrentLocation();
+                }
                 setState(() {
                   _page = value;
                 });
@@ -182,7 +199,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                       color: ColorHelpers.colorButtonDefault, size: 20),
                 ],
               ),
-
+              
               done: Column(
                 children: [],
               ),

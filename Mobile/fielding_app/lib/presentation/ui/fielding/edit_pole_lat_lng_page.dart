@@ -501,20 +501,37 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
         if (data.latitude != null && data.longitude != null) {
           var fieldingPosition =
               LatLng(double.parse(data.latitude), double.parse(data.longitude));
-
-          // add the initial source location pin
-          if (data.fieldingStatus == null ||
-              data.fieldingStatus == 0 ||
-              data.fieldingStatus == 1) {
-            _markers.add(Marker(
-                markerId: MarkerId("${data.id}"),
-                position: fieldingPosition,
-                icon: poleBlue));
+          if (widget.polesLayerModel != null) {
+            if (widget.polesLayerModel.id != data.id) {
+              // add the initial source location pin
+              if (data.fieldingStatus == null ||
+                  data.fieldingStatus == 0 ||
+                  data.fieldingStatus == 1) {
+                _markers.add(Marker(
+                    markerId: MarkerId("${data.id}"),
+                    position: fieldingPosition,
+                    icon: poleBlue));
+              } else {
+                _markers.add(Marker(
+                    markerId: MarkerId("${data.id}"),
+                    position: fieldingPosition,
+                    icon: poleGreen));
+              }
+            }
           } else {
-            _markers.add(Marker(
-                markerId: MarkerId("${data.id}"),
-                position: fieldingPosition,
-                icon: poleGreen));
+            if (data.fieldingStatus == null ||
+                data.fieldingStatus == 0 ||
+                data.fieldingStatus == 1) {
+              _markers.add(Marker(
+                  markerId: MarkerId("${data.id}"),
+                  position: fieldingPosition,
+                  icon: poleBlue));
+            } else {
+              _markers.add(Marker(
+                  markerId: MarkerId("${data.id}"),
+                  position: fieldingPosition,
+                  icon: poleGreen));
+            }
           }
         }
       });
