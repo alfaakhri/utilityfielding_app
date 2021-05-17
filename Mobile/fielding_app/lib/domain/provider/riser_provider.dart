@@ -83,6 +83,7 @@ class RiserProvider extends ChangeNotifier {
   void clearRiserAndtype() {
     _downGuySelected = AllDownGuyOwnerModel();
     _riserVGRSelected = RiserAndVGRTypeModel();
+    _resultDataRiser = RiserAndVGRList();
     notifyListeners();
   }
 
@@ -178,6 +179,24 @@ class RiserProvider extends ChangeNotifier {
   int get sequenceCurrent => _sequenceCurrent;
   void setSequenceCurrent(int sequenceCurrent) {
     _sequenceCurrent = sequenceCurrent;
+    notifyListeners();
+  }
+
+  RiserAndVGRList _resultDataRiser = RiserAndVGRList();
+  RiserAndVGRList get resultDataRiser => _resultDataRiser;
+  setResultDataRiser(double shapeX, double shapeY) {
+    _resultDataRiser = RiserAndVGRList(
+        shapeX: shapeX,
+        shapeY: shapeY,
+        textX: shapeX,
+        textY: shapeY,
+        name: (activePointName == "VGR")
+            ? activePointName + "-" + sequenceCurrent.toString()
+            : activePointName + "-" + Constants.alphabet[sequenceCurrent - 1],
+        value: riserVGRSelected.id,
+        type: downGuySelected.id,
+        sequence: sequenceCurrent,
+        imageType: 0);
     notifyListeners();
   }
 

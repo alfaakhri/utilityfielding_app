@@ -24,16 +24,6 @@ class _IntroductionPageState extends State<IntroductionPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
   AuthBloc authBloc;
 
-  void getCurrentLocation() async {
-    LocationService location = LocationService();
-    LocationData data = await location.getCurrentLocation();
-    print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
-    context
-        .read<FieldingProvider>()
-        .setCurrentPosition(LatLng(data.latitude, data.longitude));
-    context.read<FieldingProvider>().setCurrentLocationData(data);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -64,9 +54,6 @@ class _IntroductionPageState extends State<IntroductionPage> {
           Expanded(
             child: IntroductionScreen(
               onChange: (value) {
-                if (value == 1) {
-                  getCurrentLocation();
-                }
                 setState(() {
                   _page = value;
                 });
@@ -199,7 +186,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                       color: ColorHelpers.colorButtonDefault, size: 20),
                 ],
               ),
-              
+
               done: Column(
                 children: [],
               ),

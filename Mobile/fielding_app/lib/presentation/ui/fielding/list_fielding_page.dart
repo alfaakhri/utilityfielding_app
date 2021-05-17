@@ -24,7 +24,16 @@ class ListFieldingPage extends StatefulWidget {
 }
 
 class _ListFieldingPageState extends State<ListFieldingPage> {
-  
+  void getCurrentLocation() async {
+    LocationService location = LocationService();
+    LocationData data = await location.getCurrentLocation();
+    print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
+    context
+        .read<FieldingProvider>()
+        .setCurrentPosition(LatLng(data.latitude, data.longitude));
+    context.read<FieldingProvider>().setCurrentLocationData(data);
+  }
+
   FieldingBloc fieldingBloc;
   @override
   void initState() {
@@ -32,6 +41,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     fieldingBloc
         .add(GetAllProjects(context.read<UserProvider>().userModel.data.token));
+    getCurrentLocation();
   }
 
   @override
