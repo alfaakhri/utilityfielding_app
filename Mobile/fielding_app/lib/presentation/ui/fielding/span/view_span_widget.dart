@@ -208,7 +208,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Length in Feet",
+                        Text("Span length",
                             style: TextStyle(
                                 fontSize: 14, color: ColorHelpers.colorGrey)),
                         UIHelper.verticalSpaceSmall,

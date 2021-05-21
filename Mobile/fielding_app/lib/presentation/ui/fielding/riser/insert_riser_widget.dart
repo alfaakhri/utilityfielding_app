@@ -1,5 +1,6 @@
 import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/constants.dart';
@@ -22,10 +23,13 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
   double shapeY = 25;
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
-    Fluttertoast.showToast(msg: "Tap on the box layer to add Riser & VGR", toastLength: Toast.LENGTH_LONG);
+    Fluttertoast.showToast(
+        msg: "Tap on the box layer to add Riser & VGR",
+        toastLength: Toast.LENGTH_LONG);
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -61,7 +65,8 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                   margin: EdgeInsets.all(15),
                   child: GestureDetector(
                     onTapDown: (detail) {
-                      data.setResultDataRiser(detail.localPosition.dx, detail.localPosition.dy);
+                      data.setResultDataRiser(
+                          detail.localPosition.dx, detail.localPosition.dy);
                     },
                     child: Stack(
                       alignment: Alignment.center,
@@ -85,28 +90,51 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                             ],
                           ),
                         ),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: data.listRiserData.map((e) {
+                            double newWidth = MediaQuery.of(context).size.width;
+                            double newHeight =
+                                MediaQuery.of(context).size.height;
+                            var fielding =
+                                Provider.of<FieldingProvider>(context);
+                            double newX =
+                                ((newWidth * e.shapeX) / fielding.baseWidth);
+                            double newY =
+                                ((newHeight * e.shapeY) / fielding.baseHeight);
+
+                            if (e.value == 4) {
+                              if (e.imageType == 1) {
+                                return TriangleText(
+                                  x: newX + 15,
+                                  y: newY + 15,
+                                  text: "VGR-${e.sequence}",
+                                );
+                              } else {
+                                return TriangleText(
+                                  x: newX,
+                                  y: newY,
+                                  text: "VGR-${e.sequence}",
+                                );
+                              }
+                            } else {
+                              var value = Provider.of<RiserProvider>(context)
+                                  .valueType(e.value);
+                              return CircleText(
+                                center: (e.imageType == 1)
+                                    ? (newWidth > 360)
+                                        ? {"x": newX + 25, "y": newY + 25}
+                                        : {"x": newX + 15, "y": newY + 25}
+                                    : {"x": newX, "y": newY},
+                                radius: 10,
+                                text:
+                                    "R$value-${Constants.alphabet[e.sequence - 1]}",
+                              );
+                            }
+                          }).toList(),
+                        ),
                         (data.activePointName.contains("VGR"))
                             ? GestureDetector(
-                                // onHorizontalDragStart: (detail) {
-                                //   setState(() {
-                                //     this.shapeX = detail.localPosition.dx;
-                                //   });
-                                // },
-                                // onVerticalDragStart: (detail) {
-                                //   setState(() {
-                                //     this.shapeY = detail.localPosition.dy;
-                                //   });
-                                // },
-                                // onHorizontalDragUpdate: (detail) {
-                                //   setState(() {
-                                //     this.shapeX = detail.localPosition.dx;
-                                //   });
-                                // },
-                                // onVerticalDragUpdate: (detail) {
-                                //   setState(() {
-                                //     this.shapeY = detail.localPosition.dy;
-                                //   });
-                                // },
                                 child: TriangleText(
                                   x: data.resultDataRiser.shapeX,
                                   y: data.resultDataRiser.shapeY,
@@ -115,34 +143,11 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                 ),
                               )
                             : GestureDetector(
-                                // onHorizontalDragStart: (detail) {
-                                //   setState(() {
-                                //     this.shapeX = detail.localPosition.dx;
-                                //   });
-                                // },
-                                // onVerticalDragStart: (detail) {
-                                //   setState(() {
-                                //     this.shapeY = detail.localPosition.dy;
-                                //   });
-                                // },
-                                // onHorizontalDragUpdate: (detail) {
-                                //   setState(() {
-                                //     this.shapeX = detail.localPosition.dx;
-                                //   });
-                                // },
-                                // onVerticalDragUpdate: (detail) {
-                                //   setState(() {
-                                //     this.shapeY = detail.localPosition.dy;
-                                //   });
-                                // },
-                                // child: CircleText(
-                                //   center: {"x": this.shapeX, "y": this.shapeY},
-                                //   radius: 10,
-                                //   text: data.activePointName +
-                                //       "-${Constants.alphabet[data.sequenceCurrent - 1]}",
-                                // ),
                                 child: CircleText(
-                                  center: {"x": data.resultDataRiser.shapeX, "y": data.resultDataRiser.shapeY},
+                                  center: {
+                                    "x": data.resultDataRiser.shapeX,
+                                    "y": data.resultDataRiser.shapeY
+                                  },
                                   radius: 10,
                                   text: data.activePointName +
                                       "-${Constants.alphabet[data.sequenceCurrent - 1]}",
@@ -159,23 +164,6 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                       child: RaisedButton(
                         padding: EdgeInsets.all(15),
                         onPressed: () {
-                          // RiserAndVGRList result = RiserAndVGRList(
-                          //     shapeX: this.shapeX,
-                          //     shapeY: this.shapeY,
-                          //     textX: this.shapeX,
-                          //     textY: this.shapeY,
-                          //     name: (data.activePointName == "VGR")
-                          //         ? data.activePointName +
-                          //             "-" +
-                          //             data.sequenceCurrent.toString()
-                          //         : data.activePointName +
-                          //             "-" +
-                          //             Constants
-                          //                 .alphabet[data.sequenceCurrent - 1],
-                          //     value: data.riserVGRSelected.id,
-                          //     type: data.downGuySelected.id,
-                          //     sequence: data.sequenceCurrent,
-                          //     imageType: 0);
                           print(data.resultDataRiser.toJson());
                           data.addListRiserData(data.resultDataRiser);
                           data.clearRiserAndtype();

@@ -155,6 +155,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                         context
                             .read<FieldingProvider>()
                             .setAllProjectsSelected(data);
+                        context
+                            .read<FieldingProvider>()
+                            .getJobNumberAttachModel(data.iD);
                         Get.to(DetailFieldingPage(allProjectsModel: data));
                       },
                       child: Padding(

@@ -326,4 +326,14 @@ class ApiProvider {
       throw e;
     }
   }
+
+  Future<Response> getJobNumberAttach(String layerId) async {
+    try {
+      var response =
+          await _dio.get(BASE_URL + "/api/Layer/GetJobnumberAttachments?assignedLayerId=$layerId");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

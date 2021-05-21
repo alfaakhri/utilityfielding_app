@@ -79,178 +79,191 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
     }
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('The data that you have added will not be saved'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                  Get.back();
+                },
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     this._aX = 350 / 2;
     this._aY = 250 / 2;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-            (widget.spanData != null)
-                ? "Edit Span Direction and Distance"
-                : "Add Span Direction and Distance",
-            style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorHelpers.colorBlackText,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+              (widget.spanData != null)
+                  ? "Edit Span Direction and Distance"
+                  : "Add Span Direction and Distance",
+              style:
+                  TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: ColorHelpers.colorBlackText,
+            ),
+            onPressed: _onWillPop,
           ),
-          onPressed: () {
-            Get.back();
-          },
+          backgroundColor: ColorHelpers.colorWhite,
         ),
-        backgroundColor: ColorHelpers.colorWhite,
-      ),
-      backgroundColor: Colors.white,
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-            padding: EdgeInsets.all(15),
-            child: RaisedButton(
-              onPressed: () {
-                if (formKey.currentState.validate()) {
-                  List<double> lineData;
-                  // if (context.read<SpanProvider>().listSpanData.length != 0) {
-                  //   imageType = context.read<SpanProvider>().listSpanData.first.imageType;
-                  // } else {
-                  //   imageType = 0;
-                  // }
+        backgroundColor: Colors.white,
+        bottomNavigationBar: BottomAppBar(
+          child: Padding(
+              padding: EdgeInsets.all(15),
+              child: RaisedButton(
+                onPressed: () {
+                  if (formKey.currentState.validate()) {
+                    List<double> lineData;
 
-                  // if (imageType == 0) {
-                  lineData = [this._aX, this._aY, this._bX, this._bY];
-                  // } else {
-                  //   lineData = [
-                  //     this._aX - 30,
-                  //     this._aY - 30,
-                  //     this._bX - 30,
-                  //     this._bY - 30
-                  //   ];
-                  // }
+                    lineData = [this._aX, this._aY, this._bX, this._bY];
 
-                  SpanDirectionList data = SpanDirectionList(
-                      length: double.parse(this.sizeController.text),
-                      lineData: lineData.toString(),
-                      imageType: 0,
-                      color: randomColor.toHex());
-                  print(json.encode(data));
-                  if (widget.spanData != null) {
-                    context
-                        .read<SpanProvider>()
-                        .editListSpanData(data, widget.index);
-                  } else {
-                    context.read<SpanProvider>().addListSpanData(data);
+                    SpanDirectionList data = SpanDirectionList(
+                        length: double.parse(this.sizeController.text),
+                        lineData: lineData.toString(),
+                        imageType: 0,
+                        color: randomColor.toHex());
+                    print(json.encode(data));
+                    if (widget.spanData != null) {
+                      context
+                          .read<SpanProvider>()
+                          .editListSpanData(data, widget.index);
+                    } else {
+                      context.read<SpanProvider>().addListSpanData(data);
+                    }
+
+                    this.sizeController.clear();
+                    Get.back();
                   }
-
-                  this.sizeController.clear();
-                  Get.back();
-                }
-              },
-              child: Text(
-                "Save",
-                style: TextStyle(fontSize: 14, color: ColorHelpers.colorWhite),
-              ),
-              color: ColorHelpers.colorButtonDefault,
-            )),
-      ),
-      body: Column(
-        children: [
-          RepaintBoundary(
-            key: globalKey,
-            child: Container(
-              color: Colors.white,
-              margin: EdgeInsets.all(15),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                          color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                      borderRadius: BorderRadius.circular(10),
+                },
+                child: Text(
+                  "Save",
+                  style:
+                      TextStyle(fontSize: 14, color: ColorHelpers.colorWhite),
+                ),
+                color: ColorHelpers.colorButtonDefault,
+              )),
+        ),
+        body: Column(
+          children: [
+            RepaintBoundary(
+              key: globalKey,
+              child: Container(
+                color: Colors.white,
+                margin: EdgeInsets.all(15),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: ColorHelpers.colorGrey.withOpacity(0.2)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      width: 350,
+                      height: 250,
                     ),
-                    width: 350,
-                    height: 250,
-                  ),
-                  GestureDetector(
-                      onHorizontalDragStart: (detail) {
-                        setState(() {
-                          this._bX = detail.localPosition.dx;
-                        });
-                      },
-                      onVerticalDragStart: (detail) {
-                        setState(() {
-                          this._bY = detail.localPosition.dy;
-                        });
-                      },
-                      onHorizontalDragUpdate: (detail) {
-                        setState(() {
-                          this._bX = detail.localPosition.dx;
-                        });
-                      },
-                      onVerticalDragUpdate: (detail) {
-                        setState(() {
-                          this._bY = detail.localPosition.dy;
-                        });
-                      },
-                      child: Line(
-                        start: {"x": this._aX, "y": this._aY},
-                        end: {"x": this._bX, "y": this._bY},
-                        color: randomColor,
-                      )),
-                ],
+                    GestureDetector(
+                        onHorizontalDragStart: (detail) {
+                          setState(() {
+                            this._bX = detail.localPosition.dx;
+                          });
+                        },
+                        onVerticalDragStart: (detail) {
+                          setState(() {
+                            this._bY = detail.localPosition.dy;
+                          });
+                        },
+                        onHorizontalDragUpdate: (detail) {
+                          setState(() {
+                            this._bX = detail.localPosition.dx;
+                          });
+                        },
+                        onVerticalDragUpdate: (detail) {
+                          setState(() {
+                            this._bY = detail.localPosition.dy;
+                          });
+                        },
+                        child: Line(
+                          start: {"x": this._aX, "y": this._aY},
+                          end: {"x": this._bX, "y": this._bY},
+                          color: randomColor,
+                        )),
+                  ],
+                ),
               ),
             ),
-          ),
-          Text("Touch & Drag",
-              style: TextStyle(fontSize: 14, color: ColorHelpers.colorGrey)),
-          UIHelper.verticalSpaceSmall,
-          Form(
-            key: this.formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Size in Feet",
-                      style: TextStyle(
-                          fontSize: 14, color: ColorHelpers.colorGrey)),
-                  UIHelper.verticalSpaceSmall,
-                  TextFormField(
-                    controller: this.sizeController,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Please insert feet';
-                      } else if (value == "") {
-                        return 'Please insert feet';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      isDense: true,
-                      suffixText: "ft",
-                      suffixStyle: TextStyle(fontSize: 14),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: ColorHelpers.colorRed),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: ColorHelpers.colorRed),
+            Text("Touch & Drag",
+                style: TextStyle(fontSize: 14, color: ColorHelpers.colorGrey)),
+            UIHelper.verticalSpaceSmall,
+            Form(
+              key: this.formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Size in Feet",
+                        style: TextStyle(
+                            fontSize: 14, color: ColorHelpers.colorGrey)),
+                    UIHelper.verticalSpaceSmall,
+                    TextFormField(
+                      controller: this.sizeController,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please insert feet';
+                        } else if (value == "") {
+                          return 'Please insert feet';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                        suffixText: "ft",
+                        suffixStyle: TextStyle(fontSize: 14),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: ColorHelpers.colorGrey.withOpacity(0.2)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: ColorHelpers.colorGrey.withOpacity(0.2)),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: ColorHelpers.colorRed),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: ColorHelpers.colorRed),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

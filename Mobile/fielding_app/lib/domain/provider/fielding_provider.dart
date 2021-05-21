@@ -8,6 +8,7 @@ import 'package:fielding_app/data/models/all_pole_species_model.dart';
 import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
 import 'package:fielding_app/data/models/all_projects_model.dart';
 import 'package:fielding_app/data/models/current_address.dart';
+import 'package:fielding_app/data/models/job_number_attachment_model.dart';
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class FieldingProvider extends ChangeNotifier {
+  ApiProvider _apiProvider = ApiProvider();
 
   double baseWidth;
   double baseHeight;
@@ -23,7 +25,6 @@ class FieldingProvider extends ChangeNotifier {
     baseHeight = height;
     notifyListeners();
   }
-  
 
   List<AllPolesByLayerModel> _allPolesByLayer = List<AllPolesByLayerModel>();
   List<AllPolesByLayerModel> get allPolesByLayer => _allPolesByLayer;
@@ -31,7 +32,7 @@ class FieldingProvider extends ChangeNotifier {
     _allPolesByLayer = allPolesByLayer;
     notifyListeners();
   }
-  
+
   AllProjectsModel _allProjectsSelected = AllProjectsModel();
   AllProjectsModel get allProjectsSelected => _allProjectsSelected;
   void setAllProjectsSelected(AllProjectsModel allProjectsSelected) {
@@ -386,5 +387,28 @@ class FieldingProvider extends ChangeNotifier {
     _poleSpeciesSelected = AllPoleSpeciesModel();
     _poleConditionSelected = AllPoleConditionModel();
     notifyListeners();
+  }
+
+  //------------------------------------------------------------------------------
+
+  List<JobNumberAttachModel> _jobNumberAttachModel =
+      List<JobNumberAttachModel>();
+  List<JobNumberAttachModel> get jobNumberAttachModel => _jobNumberAttachModel;
+  void setJobNumberAttachModel(
+      List<JobNumberAttachModel> jobNumberAttachModel) {
+    _jobNumberAttachModel = jobNumberAttachModel;
+    notifyListeners();
+  }
+
+  void getJobNumberAttachModel(String layerId) async {
+    try {
+      var response = await _apiProvider.getJobNumberAttach(layerId);
+      if (response.statusCode == 200) {
+        _jobNumberAttachModel =
+            JobNumberAttachModel.fromJsonList(response.data);
+      }
+    } catch (e) {
+      print("JOB NUMBER ATTACH " + e.toString());
+    }
   }
 }

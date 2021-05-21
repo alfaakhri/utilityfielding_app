@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:fielding_app/domain/bloc/download_image_bloc/download_image_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
 import 'package:fielding_app/domain/provider/intro_provider.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
           BlocProvider<FieldingBloc>(create: (context) => FieldingBloc()),
-          // BlocProvider<LocationBloc>(create: (context) => LocationBloc()),
+          BlocProvider<DownloadImageBloc>(create: (context) => DownloadImageBloc()),
         ],
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,

@@ -47,7 +47,8 @@ dependencies:
   sliding_up_panel: ^1.0.2
   uuid: ^2.2.2
   webview_flutter: ^1.0.7
-  super_tooltip: ^0.9.6
+  photo_view: ^0.10.3
+  url_launcher: ^5.7.10
 
 dev_dependencies:
   flutter_test:
