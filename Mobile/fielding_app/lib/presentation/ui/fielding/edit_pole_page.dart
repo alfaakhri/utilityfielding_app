@@ -70,6 +70,29 @@ class _EditPolePageState extends State<EditPolePage> {
 
   List<String> _listChoice = ["-", "Yes", "No"];
 
+  void clearFormController() {
+    context.read<FieldingProvider>().setLatitude(null);
+    context.read<FieldingProvider>().setLongitude(null);
+    context.read<FieldingProvider>().setStreetName(null);
+    context.read<FieldingProvider>().clearAll();
+    context.read<SpanProvider>().clearAll();
+    context.read<RiserProvider>().clearAll();
+    context.read<AnchorProvider>().clearAll();
+
+    this._vapTerminal.clear();
+    this._poleNumber.clear();
+    this._osmoseNumber.clear();
+    this._otherNumber.clear();
+    this._poleHeight.clear();
+    this._groundLine.clear();
+    this._poleClass.clear();
+    this._year.clear();
+    this._species.clear();
+    this._condition.clear();
+    this._poleStamp.clear();
+    this._notes.clear();
+  }
+
   Widget spaceForm() {
     return Column(
       children: [
@@ -97,26 +120,7 @@ class _EditPolePageState extends State<EditPolePage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    context.read<FieldingProvider>().setLatitude(null);
-    context.read<FieldingProvider>().setLongitude(null);
-    context.read<FieldingProvider>().setStreetName(null);
-    context.read<FieldingProvider>().clearAll();
-    context.read<SpanProvider>().clearAll();
-    context.read<RiserProvider>().clearAll();
-    context.read<AnchorProvider>().clearAll();
-
-    this._vapTerminal.clear();
-    this._poleNumber.clear();
-    this._osmoseNumber.clear();
-    this._otherNumber.clear();
-    this._poleHeight.clear();
-    this._groundLine.clear();
-    this._poleClass.clear();
-    this._year.clear();
-    this._species.clear();
-    this._condition.clear();
-    this._poleStamp.clear();
-    this._notes.clear();
+    clearFormController();
   }
 
   @override
@@ -138,25 +142,7 @@ class _EditPolePageState extends State<EditPolePage> {
                   .pop();
               Fluttertoast.showToast(msg: state.message);
             } else if (state is AddPoleSuccess) {
-              context.read<FieldingProvider>().setLatitude(null);
-              context.read<FieldingProvider>().setLongitude(null);
-              context.read<FieldingProvider>().setStreetName(null);
-              context.read<FieldingProvider>().clearAll();
-              context.read<SpanProvider>().clearAll();
-              context.read<RiserProvider>().clearAll();
-              context.read<AnchorProvider>().clearAll();
-              this._vapTerminal.clear();
-              this._poleNumber.clear();
-              this._osmoseNumber.clear();
-              this._otherNumber.clear();
-              this._poleHeight.clear();
-              this._groundLine.clear();
-              this._poleClass.clear();
-              this._year.clear();
-              this._species.clear();
-              this._condition.clear();
-              this._poleStamp.clear();
-              this._notes.clear();
+              clearFormController();
               Navigator.of(_keyLoader.currentContext, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: "Success");
@@ -178,13 +164,7 @@ class _EditPolePageState extends State<EditPolePage> {
                   color: ColorHelpers.colorBlackText,
                 ),
                 onPressed: () {
-                  context.read<FieldingProvider>().setLatitude(null);
-                  context.read<FieldingProvider>().setLongitude(null);
-                  context.read<FieldingProvider>().setStreetName(null);
-                  context.read<FieldingProvider>().clearAll();
-                  context.read<SpanProvider>().clearAll();
-                  context.read<RiserProvider>().clearAll();
-                  context.read<AnchorProvider>().clearAll();
+                  clearFormController();
 
                   fieldingBloc.add(GetAllPolesByID(
                       context.read<UserProvider>().userModel.data.token,
