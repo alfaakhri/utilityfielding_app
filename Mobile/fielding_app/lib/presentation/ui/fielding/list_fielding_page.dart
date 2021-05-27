@@ -6,6 +6,7 @@ import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/service/location_service.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
+import 'package:fielding_app/presentation/ui/fielding/map_view_number_page.dart';
 import 'package:fielding_app/presentation/widgets/drawer_widget.dart';
 import 'package:fielding_app/presentation/widgets/error_handling_widget.dart';
 import 'package:flutter/material.dart';
@@ -138,12 +139,36 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
       padding: EdgeInsets.all(16),
       child: ListView(
         children: [
-          Text(
-            "Fielding Request",
-            style: TextStyle(
-                color: ColorHelpers.colorBlackText,
-                fontSize: 16,
-                fontWeight: FontWeight.bold),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Fielding Request",
+                style: TextStyle(
+                    color: ColorHelpers.colorBlackText,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
+              ),
+              InkWell(
+                onTap: () {
+                  Get.to(MapViewNumberPage());
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: ColorHelpers.colorGreen2,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    child: Text(
+                      "Map View",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    )),
+              ),
+            ],
           ),
           UIHelper.verticalSpaceSmall,
           ListView(

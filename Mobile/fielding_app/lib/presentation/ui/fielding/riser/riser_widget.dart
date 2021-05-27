@@ -33,9 +33,10 @@ class _RiserWidgetState extends State<RiserWidget> {
   final formKey = new GlobalKey<FormState>();
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
-    Fluttertoast.showToast(msg: "Tap + to add Riser & VGR", toastLength: Toast.LENGTH_LONG);
+    Fluttertoast.showToast(
+        msg: "Tap + to add Riser & VGR", toastLength: Toast.LENGTH_LONG);
   }
 
   @override
@@ -331,73 +332,84 @@ class _RiserWidgetState extends State<RiserWidget> {
               builder: (context, data, _) => Form(
                 key: formKey,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      "Riser And VGR Location",
+                      "Riser & VGR",
+                      textAlign: TextAlign.center,
                       style: textDefault,
                     ),
                     UIHelper.verticalSpaceSmall,
-                    DropdownButtonFormField<String>(
-                      isDense: true,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please choose one';
-                        } else if (value == "") {
-                          return 'Please choose one';
-                        }
-                        return null;
-                      },
-                      decoration: kDecorationDropdown(),
-                      items: data.listRiser.map((value) {
-                        return DropdownMenuItem<String>(
-                          child: Text(value.text.toString(),
-                              style: TextStyle(fontSize: 12)),
-                          value: value.text.toString(),
-                        );
-                      }).toList(),
-                      onChanged: (String value) {
-                        setState(() {
-                          data.setRiserVGRSelected(value);
-                        });
-                      },
-                      value: (data.riserVGRSelected.id == null)
-                          ? null
-                          : data.riserVGRSelected.text.toString(),
-                    ),
                     UIHelper.verticalSpaceSmall,
-                    Text(
-                      "Type",
-                      style: textDefault,
-                    ),
-                    UIHelper.verticalSpaceSmall,
-                    DropdownButtonFormField<String>(
-                      isDense: true,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please insert type';
-                        } else if (value == "") {
-                          return 'Please insert type';
-                        }
-                        return null;
-                      },
-                      decoration: kDecorationDropdown(),
-                      items: data.listDownGuyOwner.map((value) {
-                        return DropdownMenuItem<String>(
-                          child: Text(value.text.toString(),
-                              style: TextStyle(fontSize: 12)),
-                          value: value.text.toString(),
-                        );
-                      }).toList(),
-                      onChanged: (String value) {
-                        setState(() {
-                          data.setDownGuySelected(value);
-                        });
-                      },
-                      value: (data.downGuySelected.id == null)
-                          ? null
-                          : data.downGuySelected.text.toString(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Riser Type",
+                          style: textDefault,
+                        ),
+                        UIHelper.verticalSpaceSmall,
+                        DropdownButtonFormField<String>(
+                          isDense: true,
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please choose one';
+                            } else if (value == "") {
+                              return 'Please choose one';
+                            }
+                            return null;
+                          },
+                          decoration: kDecorationDropdown(),
+                          items: data.listRiser.map((value) {
+                            return DropdownMenuItem<String>(
+                              child: Text(value.text.toString() + " Inch",
+                                  style: TextStyle(fontSize: 12)),
+                              value: value.text.toString(),
+                            );
+                          }).toList(),
+                          onChanged: (String value) {
+                            setState(() {
+                              data.setRiserVGRSelected(value);
+                            });
+                          },
+                          value: (data.riserVGRSelected.id == null)
+                              ? null
+                              : data.riserVGRSelected.text.toString(),
+                        ),
+                        UIHelper.verticalSpaceSmall,
+                        Text(
+                          "Owner",
+                          style: textDefault,
+                        ),
+                        UIHelper.verticalSpaceSmall,
+                        DropdownButtonFormField<String>(
+                          isDense: true,
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please insert owner';
+                            } else if (value == "") {
+                              return 'Please insert owner';
+                            }
+                            return null;
+                          },
+                          decoration: kDecorationDropdown(),
+                          items: data.listDownGuyOwner.map((value) {
+                            return DropdownMenuItem<String>(
+                              child: Text(value.text.toString(),
+                                  style: TextStyle(fontSize: 12)),
+                              value: value.text.toString(),
+                            );
+                          }).toList(),
+                          onChanged: (String value) {
+                            setState(() {
+                              data.setDownGuySelected(value);
+                            });
+                          },
+                          value: (data.downGuySelected.id == null)
+                              ? null
+                              : data.downGuySelected.text.toString(),
+                        ),
+                      ],
                     ),
                     UIHelper.verticalSpaceSmall,
                     Container(

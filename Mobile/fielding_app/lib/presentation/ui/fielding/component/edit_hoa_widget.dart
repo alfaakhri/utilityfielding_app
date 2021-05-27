@@ -16,6 +16,10 @@ class EditHoaWidget extends StatefulWidget {
 
 class _EditHoaWidgetState extends State<EditHoaWidget> {
   var textDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12);
+  var textBoldDefault = TextStyle(
+      color: ColorHelpers.colorBlackText,
+      fontSize: 12,
+      fontWeight: FontWeight.bold);
   bool valueDropdown = false;
   TextEditingController ftController = TextEditingController();
   TextEditingController inchController = TextEditingController();
@@ -31,6 +35,8 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(color: ColorHelpers.colorWhite),
       child: Column(
         children: [
           Row(
@@ -40,7 +46,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "HOA",
-                  style: textDefault,
+                  style: textBoldDefault,
                 ),
               ),
               InkWell(
@@ -51,23 +57,17 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                   this.inchController.clear();
                   dialogHoa("HOA Type", false);
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: ColorHelpers.colorBlueNumber,
-                      size: 14,
-                    ),
-                    UIHelper.horizontalSpaceVerySmall,
-                    Text(
-                      "Add HOA",
+                child: Container(
+                  width: 50,
+                  height: 30,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ColorHelpers.colorBlueNumber,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text("Add",
                       style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: ColorHelpers.colorBlueNumber,
-                          fontSize: 12),
-                    ),
-                  ],
+                          color: ColorHelpers.colorWhite, fontSize: 12)),
                 ),
               ),
             ],
@@ -84,77 +84,99 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                     .firstWhere((element) => element.id == list.type)
                     .text;
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     UIHelper.verticalSpaceSmall,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "HOA ${index + 1}",
-                          style: textDefault,
-                        ),
-                        Text(
-                          "$typeName",
-                          style: textDefault,
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Pole Lenght",
-                          style: textDefault,
-                        ),
-                        Text(
-                          "${list.poleLengthInFeet} ft, ${list.poleLengthInInch} inch",
-                          style: textDefault,
-                        )
-                      ],
-                    ),
-                    Row(
-                      children: [
                         Expanded(
-                          child: Container(
-                            child: RaisedButton(
-                              onPressed: () {
-                                setState(() {
-                                  data.removeHoaList(index);
-                                });
-                              },
-                              child: Text(
-                                "Delete",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "HOA ${index + 1}",
+                                style: textDefault,
                               ),
-                              color: ColorHelpers.colorRed,
-                            ),
+                              Text(
+                                "$typeName",
+                                style: textDefault,
+                              ),
+                              Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                width:
+                                    (MediaQuery.of(context).size.width - 52) /
+                                        2,
+                                height: 1,
+                                color: ColorHelpers.colorBlackLine
+                              ),
+                              Text(
+                                "Hight Of Attachment",
+                                style: textDefault,
+                              ),
+                              Text(
+                                "${list.poleLengthInFeet} ft, ${list.poleLengthInInch} inch",
+                                style: textDefault,
+                              ),
+                            ],
                           ),
                         ),
                         UIHelper.horizontalSpaceSmall,
-                        Expanded(
-                          child: Container(
-                            child: RaisedButton(
-                              onPressed: () {
-                                setState(() {
-                                  data.setIsHoa(true);
-                                  this.ftController.text =
-                                      list.poleLengthInFeet.toString();
-                                  this.inchController.text =
-                                      list.poleLengthInInch.toString();
-                                  data.setHoaSelected(typeName);
-                                });
-
-                                dialogHoa("Hoa Type", true, index: index);
-                              },
-                              child: Text(
-                                "Edit",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                        Row(
+                          children: [
+                            Container(
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    data.removeHoaList(index);
+                                  });
+                                },
+                                child: Container(
+                                  width: 50,
+                                  height: 30,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: ColorHelpers.colorRed,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Text("Delete",
+                                      style: TextStyle(
+                                          color: ColorHelpers.colorWhite,
+                                          fontSize: 12)),
+                                ),
                               ),
-                              color: ColorHelpers.colorGreen,
                             ),
-                          ),
+                            UIHelper.horizontalSpaceSmall,
+                            Container(
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    data.setIsHoa(true);
+                                    this.ftController.text =
+                                        list.poleLengthInFeet.toString();
+                                    this.inchController.text =
+                                        list.poleLengthInInch.toString();
+                                    data.setHoaSelected(typeName);
+                                  });
+
+                                  dialogHoa("Hoa Type", true, index: index);
+                                },
+                                child: Container(
+                                  width: 50,
+                                  height: 30,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: ColorHelpers.colorGreen,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: Text("Edit",
+                                      style: TextStyle(
+                                          color: ColorHelpers.colorWhite,
+                                          fontSize: 12)),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -218,7 +240,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Pole Lenght",
+                                "Hight Of Attachment",
                                 style: textDefault,
                               ),
                               UIHelper.verticalSpaceSmall,
@@ -230,9 +252,9 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                                       keyboardType: TextInputType.number,
                                       validator: (value) {
                                         if (value == null) {
-                                          return 'Please insert pole lenght';
+                                          return 'Please insert hight of attachment';
                                         } else if (value == "") {
-                                          return 'Please insert pole lenght';
+                                          return 'Please insert hight of attachment';
                                         }
                                         return null;
                                       },
@@ -340,12 +362,14 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
 
                             if (isEdit) {
                               setState(() {
-                                data.updateHoaList(HOAList(
-                                    type: data.hoaSelected.id,
-                                    poleLengthInInch:
-                                        double.parse(this.inchController.text),
-                                    poleLengthInFeet:
-                                        double.parse(this.ftController.text)), index);
+                                data.updateHoaList(
+                                    HOAList(
+                                        type: data.hoaSelected.id,
+                                        poleLengthInInch: double.parse(
+                                            this.inchController.text),
+                                        poleLengthInFeet: double.parse(
+                                            this.ftController.text)),
+                                    index);
                               });
                             } else {
                               setState(() {

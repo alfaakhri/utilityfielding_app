@@ -15,6 +15,10 @@ class EditTransformerWidget extends StatefulWidget {
 
 class _EditTransformerWidgetState extends State<EditTransformerWidget> {
   var textDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12);
+  var textBoldDefault = TextStyle(
+      color: ColorHelpers.colorBlackText,
+      fontSize: 12,
+      fontWeight: FontWeight.bold);
   List<String> _listChoice = ["Yes", "No"];
   bool valueDropdown = false;
   TextEditingController kvController = TextEditingController();
@@ -27,6 +31,8 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(color: ColorHelpers.colorBlueIntro),
       child: Column(
         children: [
           Row(
@@ -36,7 +42,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Transformer",
-                  style: textDefault,
+                  style: textBoldDefault,
                 ),
               ),
               InkWell(
@@ -46,23 +52,17 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                   this.kvController.clear();
                   dialogTransformer("Transformer");
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: ColorHelpers.colorBlueNumber,
-                      size: 14,
-                    ),
-                    UIHelper.horizontalSpaceVerySmall,
-                    Text(
-                      "Add Transformer",
+                child: Container(
+                  width: 50,
+                  height: 30,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: ColorHelpers.colorBlueNumber,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text("Add",
                       style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: ColorHelpers.colorBlueNumber,
-                          fontSize: 12),
-                    ),
-                  ],
+                          color: ColorHelpers.colorWhite, fontSize: 12)),
                 ),
               ),
             ],
@@ -74,61 +74,57 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 var list = data.listTransformer[index];
-                return InkWell(
-                  onTap: () {
-                    setState(() {
-                      data.setIsTransformer(true);
-                      this.choiceValue = "Yes";
-                      this.kvController.text = list.value.toString();
-                      this.ftController.text = list.hOA.toString();
-                    });
+                return Column(
+                  children: [
+                    UIHelper.verticalSpaceSmall,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Transformer ${index + 1}",
+                              style: textDefault,
+                            ),
+                            Text(
+                              "${list.value} kV, ${list.hOA} ft",
+                              style: textDefault,
+                            )
+                          ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              data.setIsTransformer(true);
+                              this.choiceValue = "Yes";
+                              this.kvController.text = list.value.toString();
+                              this.ftController.text = list.hOA.toString();
+                            });
 
-                    dialogTransformer("Transformer", index: index);
-                  },
-                  child: Column(
-                    children: [
-                      UIHelper.verticalSpaceSmall,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Transformer ${index + 1}",
-                                style: textDefault,
-                              ),
-                              Text(
-                                "${list.value} kV, ${list.hOA} ft",
-                                style: textDefault,
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "Edit",
+                            dialogTransformer("Transformer", index: index);
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 30,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: ColorHelpers.colorGreen,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text("Edit",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: ColorHelpers.colorBlueNumber,
-                                    fontSize: 12),
-                              ),
-                              UIHelper.horizontalSpaceVerySmall,
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: ColorHelpers.colorBlueNumber,
-                                size: 14,
-                              ),
-                            ],
+                                    color: ColorHelpers.colorWhite,
+                                    fontSize: 12)),
                           ),
-                        ],
-                      ),
-                      UIHelper.verticalSpaceVerySmall,
-                      Divider(
-                        color: ColorHelpers.colorBlackText,
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    UIHelper.verticalSpaceVerySmall,
+                    Divider(
+                      color: ColorHelpers.colorBlackText,
+                    ),
+                  ],
                 );
               },
             ),
@@ -284,15 +280,17 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                                 data.removeLisTransformer(index);
                               } else {
                                 if (index != null) {
-                                  data.updateListTransformer(TransformerList(
-                                    value: double.parse(this
-                                        .kvController
-                                        .text
-                                        .replaceAll(",", ".")),
-                                    hOA: double.parse(this
-                                        .ftController
-                                        .text
-                                        .replaceAll(",", "."))), index);
+                                  data.updateListTransformer(
+                                      TransformerList(
+                                          value: double.parse(this
+                                              .kvController
+                                              .text
+                                              .replaceAll(",", ".")),
+                                          hOA: double.parse(this
+                                              .ftController
+                                              .text
+                                              .replaceAll(",", "."))),
+                                      index);
                                 } else {
                                   data.addlistTransformer(TransformerList(
                                       value: double.parse(this

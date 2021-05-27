@@ -15,21 +15,23 @@ import 'package:provider/provider.dart';
 
 import 'domain/bloc/auth_bloc/auth_bloc.dart';
 import 'domain/bloc/location_bloc/location_bloc.dart';
+import 'domain/bloc/map_bloc/map_bloc.dart';
 import 'domain/provider/fielding_provider.dart';
+import 'domain/provider/map_provider.dart';
 import 'domain/provider/riser_provider.dart';
 import 'domain/provider/span_provider.dart';
 import 'domain/provider/user_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+  // SystemChrome.setPreferredOrientations(
+      // [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     // runApp(DevicePreview(
     //   enabled: !kReleaseMode,
     //   builder: (context) => MyApp(), // Wrap your app
     // ));
     runApp(MyApp());
-  });
+  // });
 }
 
 class MyApp extends StatelessWidget {
@@ -44,12 +46,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => RiserProvider()),
         ChangeNotifierProvider(create: (_) => AnchorProvider()),
         ChangeNotifierProvider(create: (_) => IntroProvider()),
+        ChangeNotifierProvider(create: (_) => MapProvider()),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
           BlocProvider<FieldingBloc>(create: (context) => FieldingBloc()),
           BlocProvider<DownloadImageBloc>(create: (context) => DownloadImageBloc()),
+          BlocProvider<MapBloc>(create: (context) => MapBloc()),
         ],
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,

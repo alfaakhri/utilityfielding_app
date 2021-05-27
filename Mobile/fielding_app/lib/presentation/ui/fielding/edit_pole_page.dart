@@ -44,6 +44,10 @@ class EditPolePage extends StatefulWidget {
 
 class _EditPolePageState extends State<EditPolePage> {
   var textDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12);
+  var textBoldDefault = TextStyle(
+      color: ColorHelpers.colorBlackText,
+      fontSize: 12,
+      fontWeight: FontWeight.bold);
 
   TextEditingController _vapTerminal = TextEditingController();
   TextEditingController _poleNumber = TextEditingController();
@@ -380,284 +384,273 @@ class _EditPolePageState extends State<EditPolePage> {
                         fontSize: 14),
                   ),
                   UIHelper.verticalSpaceSmall,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "GPS",
-                        style: textDefault,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            (context.watch<FieldingProvider>().latitude == null)
-                                ? ""
-                                : "${context.watch<FieldingProvider>().latitude.toStringAsFixed(6)}, ${context.watch<FieldingProvider>().longitude.toStringAsFixed(6)}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: ColorHelpers.colorBlackText,
-                                fontSize: 12),
-                          ),
-                          UIHelper.horizontalSpaceSmall,
-                          InkWell(
-                            onTap: () {
-                              Get.to(EditLatLngPage(
-                                polesLayerModel: widget.poles,
-                              ));
-                            },
-                            child: Text('Edit Location',
-                                style: TextStyle(
-                                    color: ColorHelpers.colorBlueNumber,
-                                    fontSize: 12)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  spaceForm(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Street Name",
-                        style: textDefault,
-                      ),
-                      UIHelper.horizontalSpaceLarge,
-                      (context.watch<FieldingProvider>().streetName != null)
-                          ? Expanded(
-                              child: Text(
-                                (context.watch<FieldingProvider>().streetName !=
-                                        null)
-                                    ? context
-                                        .watch<FieldingProvider>()
-                                        .streetName
-                                    : "-",
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: ColorHelpers.colorBlackText,
-                                    fontSize: 12),
-                              ),
-                            )
-                          : Text(
-                              "-",
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration:
+                        BoxDecoration(color: ColorHelpers.colorBlueIntro),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "GPS",
+                          style: textBoldDefault,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              (context.watch<FieldingProvider>().latitude ==
+                                      null)
+                                  ? ""
+                                  : "${context.watch<FieldingProvider>().latitude.toStringAsFixed(6)}, ${context.watch<FieldingProvider>().longitude.toStringAsFixed(6)}",
                               style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   color: ColorHelpers.colorBlackText,
                                   fontSize: 12),
                             ),
-                    ],
+                            UIHelper.horizontalSpaceSmall,
+                            InkWell(
+                              onTap: () {
+                                Get.to(EditLatLngPage(
+                                  polesLayerModel: widget.poles,
+                                ));
+                              },
+                              child: Container(
+                                width: 50,
+                                height: 30,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: (context
+                                              .watch<FieldingProvider>()
+                                              .latitude ==
+                                          null)
+                                      ? ColorHelpers.colorBlueNumber
+                                      : ColorHelpers.colorGreen,
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Text(
+                                    (context
+                                                .watch<FieldingProvider>()
+                                                .latitude ==
+                                            null)
+                                        ? 'Enter'
+                                        : "Edit",
+                                    style: TextStyle(
+                                        color: ColorHelpers.colorWhite,
+                                        fontSize: 12)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  spaceForm(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "FAP / Terminal Address",
-                        style: textDefault,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            _vapTerminal.text,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: ColorHelpers.colorBlackText,
-                                fontSize: 12),
-                          ),
-                          UIHelper.horizontalSpaceSmall,
-                          InkWell(
-                            onTap: () {
-                              dialogAlertDefault(
-                                  "FAP / Terminal Address", _vapTerminal);
-                            },
-                            child: Text('Edit',
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(color: ColorHelpers.colorWhite),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Street Name",
+                          style: textBoldDefault,
+                        ),
+                        UIHelper.horizontalSpaceLarge,
+                        (context.watch<FieldingProvider>().streetName != null)
+                            ? Expanded(
+                                child: Text(
+                                  (context
+                                              .watch<FieldingProvider>()
+                                              .streetName !=
+                                          null)
+                                      ? context
+                                          .watch<FieldingProvider>()
+                                          .streetName
+                                      : "-",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: ColorHelpers.colorBlackText,
+                                      fontSize: 12),
+                                ),
+                              )
+                            : Text(
+                                "-",
                                 style: TextStyle(
-                                    color: ColorHelpers.colorBlueNumber,
-                                    fontSize: 12)),
-                          ),
-                        ],
-                      ),
-                    ],
+                                    fontWeight: FontWeight.w600,
+                                    color: ColorHelpers.colorBlackText,
+                                    fontSize: 12),
+                              ),
+                      ],
+                    ),
                   ),
-                  spaceForm(),
-                  _contentEditText(
-                      "Pole Number", _poleNumber.text, _poleNumber, false),
-                  spaceForm(),
-                  _contentEditText("Osmose Number", _osmoseNumber.text,
-                      _osmoseNumber, false),
-                  spaceForm(),
-                  _contentEditText(
-                      "Other Number", _otherNumber.text, _otherNumber, false),
-                  spaceForm(),
-                  _contentEditText(
-                      "Pole Height", _poleHeight.text, _poleHeight, true),
-                  spaceForm(),
-                  _contentEditText("Ground Line Circumference",
-                      _groundLine.text, _groundLine, false),
-                  spaceForm(),
-                  _contentEditText(
-                      "Pole Class", _poleClass.text, _poleClass, true),
-                  spaceForm(),
-                  _contentEditText("Year", _year.text, _year, false),
-                  spaceForm(),
-                  _contentEditText("Species", _species.text, _species, true),
-                  spaceForm(),
-                  _contentEditText(
-                      "Condition", _condition.text, _condition, true),
-                  spaceForm(),
-                  _contentEditText(
-                      "Pole Stamp", _poleStamp.text, _poleStamp, true),
-                  spaceForm(),
-                  _contentEditText("Radio Antena", this._radioAntena.text,
-                      this._radioAntena, true),
-                  spaceForm(),
+                  _contentFormText("FAP / Terminal Address", _vapTerminal.text,
+                      _vapTerminal, false, true),
+                  _contentFormText("Pole Number", _poleNumber.text, _poleNumber,
+                      false, false),
+                  _contentFormText("Osmose Number", _osmoseNumber.text,
+                      _osmoseNumber, false, true),
+                  _contentFormText("Other Number", _otherNumber.text,
+                      _otherNumber, false, false),
+                  _contentFormText(
+                      "Pole Height", _poleHeight.text, _poleHeight, true, true),
+                  _contentFormText("Ground Line Circumference",
+                      _groundLine.text, _groundLine, false, false),
+                  _contentFormText(
+                      "Pole Class", _poleClass.text, _poleClass, true, true),
+                  _contentFormText("Year", _year.text, _year, false, false),
+                  _contentFormText(
+                      "Species", _species.text, _species, true, true),
+                  _contentFormText(
+                      "Condition", _condition.text, _condition, true, false),
+                  _contentFormText(
+                      "Pole Stamp", _poleStamp.text, _poleStamp, true, true),
+                  _contentFormText("Radio Antena", this._radioAntena.text,
+                      this._radioAntena, true, false),
                   EditTransformerWidget(),
-                  spaceForm(),
                   EditHoaWidget(),
-                  spaceForm(),
-                  InkWell(
-                    onTap: () {
-                      double width = MediaQuery.of(context).size.width;
-                      double height = MediaQuery.of(context).size.height;
-
-                      print("WIDTH : $width, HEIGHT : $height");
-                      context.read<FieldingProvider>().baseWidth = width;
-                      context.read<FieldingProvider>().baseHeight = height;
-                      Get.to(ViewSpanWidget());
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Span Direction and Distance",
-                          style: textDefault,
-                        ),
-                        Row(
-                          children: [
-                            (Provider.of<SpanProvider>(context)
-                                        .listSpanData
-                                        .length !=
-                                    0)
-                                ? Text(
-                                    context
-                                        .watch<SpanProvider>()
-                                        .listSpanData
-                                        .length
-                                        .toString(),
-                                    style: TextStyle(
-                                        color: ColorHelpers.colorBlackText,
-                                        fontSize: 14))
-                                : Container(),
-                            UIHelper.horizontalSpaceSmall,
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color: ColorHelpers.colorBlackText,
-                              size: 14,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  spaceForm(),
-                  InkWell(
-                    onTap: () {
-                      double width = MediaQuery.of(context).size.width;
-                      double height = MediaQuery.of(context).size.height;
-
-                      print("WIDTH : $width, HEIGHT : $height");
-                      context.read<FieldingProvider>().baseWidth = width;
-                      context.read<FieldingProvider>().baseHeight = height;
-                      Get.to(AnchorWidget());
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Anchor",
-                          style: textDefault,
-                        ),
-                        Row(
-                          children: [
-                            (Provider.of<AnchorProvider>(context)
-                                        .listAnchorData
-                                        .length !=
-                                    0)
-                                ? Text(
-                                    context
-                                        .watch<AnchorProvider>()
-                                        .listAnchorData
-                                        .length
-                                        .toString(),
-                                    style: TextStyle(
-                                        color: ColorHelpers.colorBlackText,
-                                        fontSize: 14))
-                                : Container(),
-                            UIHelper.horizontalSpaceSmall,
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color: ColorHelpers.colorBlackText,
-                              size: 14,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  spaceForm(),
-                  InkWell(
-                    onTap: () {
-                      double width = MediaQuery.of(context).size.width;
-                      double height = MediaQuery.of(context).size.height;
-
-                      print("WIDTH : $width, HEIGHT : $height");
-                      context.read<FieldingProvider>().baseWidth = width;
-                      context.read<FieldingProvider>().baseHeight = height;
-                      Get.to(RiserWidget());
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Riser and VGR Location",
-                          style: textDefault,
-                        ),
-                        Row(
-                          children: [
-                            (Provider.of<RiserProvider>(context)
-                                        .listRiserData
-                                        .length !=
-                                    0)
-                                ? Text(
-                                    context
-                                        .watch<RiserProvider>()
-                                        .listRiserData
-                                        .length
-                                        .toString(),
-                                    style: TextStyle(
-                                        color: ColorHelpers.colorBlackText,
-                                        fontSize: 14))
-                                : Container(),
-                            UIHelper.horizontalSpaceSmall,
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color: ColorHelpers.colorBlackText,
-                              size: 14,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  spaceForm(),
+                  _contentFormSpan(
+                      "Span Direction and Distance",
+                      Provider.of<SpanProvider>(context).listSpanData.length,
+                      ViewSpanWidget(),
+                      true),
+                  _contentFormSpan(
+                      "Anchor",
+                      Provider.of<AnchorProvider>(context)
+                          .listAnchorData
+                          .length,
+                      AnchorWidget(),
+                      false),
+                  _contentFormSpan(
+                      "Riser and VGR Location",
+                      Provider.of<RiserProvider>(context).listRiserData.length,
+                      RiserWidget(),
+                      true),
                   NoteWidget(
                     title: "Note",
                     controller: _notes,
                   ),
-                  spaceForm(),
                 ],
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _contentFormSpan(
+      String title, int lengthValue, Widget classname, bool isBlueColor) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          color: isBlueColor
+              ? ColorHelpers.colorBlueIntro
+              : ColorHelpers.colorWhite),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            flex: 4,
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              style: textBoldDefault,
+            ),
+          ),
+          (lengthValue != 0)
+              ? Expanded(
+                  flex: 2,
+                  child: Text(lengthValue.toString(),
+                      style: TextStyle(
+                          color: ColorHelpers.colorBlackText, fontSize: 14)),
+                )
+              : Container(),
+          InkWell(
+            onTap: () {
+              double width = MediaQuery.of(context).size.width;
+              double height = MediaQuery.of(context).size.height;
+
+              print("WIDTH : $width, HEIGHT : $height");
+              context.read<FieldingProvider>().baseWidth = width;
+              context.read<FieldingProvider>().baseHeight = height;
+              Get.to(classname);
+            },
+            child: Container(
+              width: 50,
+              height: 30,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: (lengthValue == 0)
+                    ? ColorHelpers.colorBlueNumber
+                    : ColorHelpers.colorGreen,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Text((lengthValue == 0) ? 'Enter' : "Edit",
+                  style:
+                      TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Container _contentFormText(String title, String value,
+      TextEditingController controller, bool isDropdown, bool isBlueColor,
+      {bool valueDropdown}) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+          color: isBlueColor
+              ? ColorHelpers.colorBlueIntro
+              : ColorHelpers.colorWhite),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            flex: 4,
+            child: Text(
+              title,
+              overflow: TextOverflow.ellipsis,
+              style: textBoldDefault,
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              (controller.text.isEmpty)
+                  ? "-"
+                  : (title.toLowerCase().contains("pole height"))
+                      ? controller.text + " ft"
+                      : (title.toLowerCase().contains("ground line"))
+                          ? controller.text + " inch"
+                          : controller.text,
+              style: TextStyle(
+                  color: ColorHelpers.colorBlackText,
+                  fontSize: 12),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              if (isDropdown) {
+                dialogAlertDropdown(title, controller, valueDropdown);
+              } else {
+                dialogAlertDefault(title, controller);
+              }
+            },
+            child: Container(
+              width: 50,
+              height: 30,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: (controller.text.isEmpty)
+                    ? ColorHelpers.colorBlueNumber
+                    : ColorHelpers.colorGreen,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Text((controller.text.isEmpty) ? 'Enter' : "Edit",
+                  style:
+                      TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
             ),
           ),
         ],

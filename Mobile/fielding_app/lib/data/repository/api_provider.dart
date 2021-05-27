@@ -336,4 +336,14 @@ class ApiProvider {
       throw e;
     }
   }
+
+  Future<Response> getJobNumberLoc(String token) async {
+    try {
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetJobnumberLocations?token=$token");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
 }
