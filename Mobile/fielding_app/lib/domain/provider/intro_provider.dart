@@ -15,7 +15,7 @@ class IntroProvider extends ChangeNotifier {
   void getPrivacyPolicy() async {
     try {
       var response = await _apiProvider.getPrivacyPolicy();
-      if (response.statusCode == 200) {
+      if (response!.statusCode == 200) {
         _privacyPolicy = response.data;
       } else {
         print("Failed load privacy policy");

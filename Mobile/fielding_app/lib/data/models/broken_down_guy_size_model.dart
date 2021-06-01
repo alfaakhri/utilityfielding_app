@@ -1,6 +1,6 @@
 class BrokenDownGuySizeModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   BrokenDownGuySizeModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class BrokenDownGuySizeModel {
     return data;
   }
 
-  static List<BrokenDownGuySizeModel> fromJsonList(jsonList) {
+  static List<BrokenDownGuySizeModel>? fromJsonList(jsonList) {
     return jsonList
         .map<BrokenDownGuySizeModel>((obj) => BrokenDownGuySizeModel.fromJson(obj))
         .toList();

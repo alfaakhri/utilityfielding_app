@@ -1,6 +1,6 @@
 class AllPoleHeightModel {
-  int id;
-  int text;
+  int? id;
+  int? text;
 
   AllPoleHeightModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class AllPoleHeightModel {
     return data;
   }
 
-  static List<AllPoleHeightModel> fromJsonList(jsonList) {
+  static List<AllPoleHeightModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllPoleHeightModel>((obj) => AllPoleHeightModel.fromJson(obj))
         .toList();

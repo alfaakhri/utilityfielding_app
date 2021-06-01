@@ -1,33 +1,34 @@
 class PoleByIdModel {
-  String id;
-  String layerID;
-  String street;
-  String vAPTerminal;
-  String poleNumber;
-  String osmose;
-  String latitude;
-  String longitude;
-  int poleHeight;
-  String groundCircumference;
-  int poleClass;
-  String poleYear;
-  int poleSpecies;
-  int poleCondition;
-  int poleType;
-  bool isRadioAntenna;
-  String note;
-  String otherNumber;
-  bool poleStamp;
-  String fieldingCompletedDate;
-  String fieldingById;
-  String fieldingBy;
-  int fieldingStatus;
-  int poleSequence;
-  List<HOAList> hOAList;
-  List<TransformerList> transformerList;
-  List<SpanDirectionList> spanDirectionList;
-  List<AnchorList> anchorList;
-  List<RiserAndVGRList> riseAndVGRList;
+  String? id;
+  String? layerID;
+  String? street;
+  String? vAPTerminal;
+  String? poleNumber;
+  String? osmose;
+  String? latitude;
+  String? longitude;
+  int? poleHeight;
+  String? groundCircumference;
+  int? poleClass;
+  String? poleYear;
+  int? poleSpecies;
+  int? poleCondition;
+  int? poleType;
+  bool? isRadioAntenna;
+  String? note;
+  String? otherNumber;
+  bool? poleStamp;
+  String? fieldingCompletedDate;
+  String? fieldingById;
+  String? fieldingBy;
+  int? fieldingStatus;
+  int? poleSequence;
+  List<HOAList>? hOAList;
+  List<TransformerList>? transformerList;
+  List<SpanDirectionList>? spanDirectionList;
+  List<AnchorList>? anchorList;
+  List<RiserAndVGRList>? riseAndVGRList;
+  int? fieldingType;
 
   PoleByIdModel(
       {this.id,
@@ -58,7 +59,8 @@ class PoleByIdModel {
       this.transformerList,
       this.spanDirectionList,
       this.anchorList,
-      this.riseAndVGRList});
+      this.riseAndVGRList,
+      this.fieldingType});
 
   PoleByIdModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -86,35 +88,36 @@ class PoleByIdModel {
     fieldingStatus = json['FieldingStatus'];
     poleSequence = json['PoleSequence'];
     if (json['HOAList'] != null) {
-      hOAList = new List<HOAList>();
+      hOAList = <HOAList>[];
       json['HOAList'].forEach((v) {
-        hOAList.add(new HOAList.fromJson(v));
+        hOAList!.add(new HOAList.fromJson(v));
       });
     }
     if (json['TransformerList'] != null) {
-      transformerList = new List<TransformerList>();
+      transformerList = <TransformerList>[];
       json['TransformerList'].forEach((v) {
-        transformerList.add(new TransformerList.fromJson(v));
+        transformerList!.add(new TransformerList.fromJson(v));
       });
     }
     if (json['SpanDirectionList'] != null) {
-      spanDirectionList = new List<SpanDirectionList>();
+      spanDirectionList = <SpanDirectionList>[];
       json['SpanDirectionList'].forEach((v) {
-        spanDirectionList.add(new SpanDirectionList.fromJson(v));
+        spanDirectionList!.add(new SpanDirectionList.fromJson(v));
       });
     }
     if (json['AnchorList'] != null) {
-      anchorList = new List<AnchorList>();
+      anchorList = <AnchorList>[];
       json['AnchorList'].forEach((v) {
-        anchorList.add(new AnchorList.fromJson(v));
+        anchorList!.add(new AnchorList.fromJson(v));
       });
     }
     if (json['RiserAndVGRList'] != null) {
-      riseAndVGRList = new List<RiserAndVGRList>();
+      riseAndVGRList = <RiserAndVGRList>[];
       json['RiserAndVGRList'].forEach((v) {
-        riseAndVGRList.add(new RiserAndVGRList.fromJson(v));
+        riseAndVGRList!.add(new RiserAndVGRList.fromJson(v));
       });
     }
+    fieldingType = json['FieldingType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -144,33 +147,35 @@ class PoleByIdModel {
     data['FieldingStatus'] = this.fieldingStatus;
     data['PoleSequence'] = this.poleSequence;
     if (this.hOAList != null) {
-      data['HOAList'] = this.hOAList.map((v) => v.toJson()).toList();
+      data['HOAList'] = this.hOAList!.map((v) => v.toJson()).toList();
     }
     if (this.transformerList != null) {
       data['TransformerList'] =
-          this.transformerList.map((v) => v.toJson()).toList();
+          this.transformerList!.map((v) => v.toJson()).toList();
     }
     if (this.spanDirectionList != null) {
       data['SpanDirectionList'] =
-          this.spanDirectionList.map((v) => v.toJson()).toList();
+          this.spanDirectionList!.map((v) => v.toJson()).toList();
     }
     if (this.anchorList != null) {
-      data['AnchorList'] = this.anchorList.map((v) => v.toJson()).toList();
+      data['AnchorList'] = this.anchorList!.map((v) => v.toJson()).toList();
     }
     if (this.riseAndVGRList != null) {
       data['RiserAndVGRList'] =
-          this.riseAndVGRList.map((v) => v.toJson()).toList();
+          this.riseAndVGRList!.map((v) => v.toJson()).toList();
     }
+    data['FieldingType'] = this.fieldingType;
+
     return data;
   }
 }
 
 class HOAList {
-  String iD;
-  int type;
-  double poleLengthInInch;
-  double poleLengthInFeet;
-  String poleID;
+  String? iD;
+  int? type;
+  double? poleLengthInInch;
+  double? poleLengthInFeet;
+  String? poleID;
 
   HOAList(
       {this.iD,
@@ -199,10 +204,10 @@ class HOAList {
 }
 
 class TransformerList {
-  String iD;
-  double value;
-  double hOA;
-  String poleID;
+  String? iD;
+  double? value;
+  double? hOA;
+  String? poleID;
 
   TransformerList({this.iD, this.value, this.hOA, this.poleID});
 
@@ -224,12 +229,12 @@ class TransformerList {
 }
 
 class SpanDirectionList {
-  String iD;
-  double length;
-  String lineData;
-  String color;
-  String image;
-  int imageType;
+  String? iD;
+  double? length;
+  String? lineData;
+  String? color;
+  String? image;
+  int? imageType;
 
   SpanDirectionList(
       {this.iD,
@@ -261,19 +266,19 @@ class SpanDirectionList {
 }
 
 class AnchorList {
-  String iD;
-  double circleX;
-  double circleY;
-  double textX;
-  double textY;
-  String text;
-  double distance;
-  int size;
-  int anchorEye;
-  bool eyesPict;
-  String poleID;
-  int imageType;
-  List<DownGuyList> downGuyList;
+  String? iD;
+  double? circleX;
+  double? circleY;
+  double? textX;
+  double? textY;
+  String? text;
+  double? distance;
+  int? size;
+  int? anchorEye;
+  bool? eyesPict;
+  String? poleID;
+  int? imageType;
+  List<DownGuyList>? downGuyList;
 
   AnchorList(
       {this.iD,
@@ -304,9 +309,9 @@ class AnchorList {
     poleID = json['PoleID'];
     imageType = json['ImageType'];
     if (json['DownGuyList'] != null) {
-      downGuyList = new List<DownGuyList>();
+      downGuyList = <DownGuyList>[];
       json['DownGuyList'].forEach((v) {
-        downGuyList.add(new DownGuyList.fromJson(v));
+        downGuyList!.add(new DownGuyList.fromJson(v));
       });
     }
   }
@@ -326,19 +331,19 @@ class AnchorList {
     data['PoleID'] = this.poleID;
     data['ImageType'] = this.imageType;
     if (this.downGuyList != null) {
-      data['DownGuyList'] = this.downGuyList.map((v) => v.toJson()).toList();
+      data['DownGuyList'] = this.downGuyList!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
 class DownGuyList {
-  String iD;
-  int size;
-  int owner;
-  bool isInsulated;
-  double hOA;
-  int type;
+  String? iD;
+  int? size;
+  int? owner;
+  bool? isInsulated;
+  double? hOA;
+  int? type;
 
   DownGuyList(
       {this.iD, this.size, this.owner, this.isInsulated, this.hOA, this.type});
@@ -365,16 +370,16 @@ class DownGuyList {
 }
 
 class RiserAndVGRList {
-  String iD;
-  double shapeX;
-  double shapeY;
-  double textX;
-  double textY;
-  int sequence;
-  String name;
-  int value;
-  int type;
-  int imageType;
+  String? iD;
+  double? shapeX;
+  double? shapeY;
+  double? textX;
+  double? textY;
+  int? sequence;
+  String? name;
+  int? value;
+  int? type;
+  int? imageType;
 
   RiserAndVGRList(
       {this.iD,

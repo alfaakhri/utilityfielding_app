@@ -12,30 +12,30 @@ import 'package:flutter/material.dart';
 class RiserProvider extends ChangeNotifier {
   ApiProvider _apiProvider = ApiProvider();
   //-----------------------------------------------------------------------------------------
-  List<AllDownGuyOwnerModel> _listDownGuyOwner = List<AllDownGuyOwnerModel>();
-  List<AllDownGuyOwnerModel> get listDownGuyOwner => _listDownGuyOwner;
-  void setListDownGuyOwner(List<AllDownGuyOwnerModel> listDownGuyOwner) {
+  List<AllDownGuyOwnerModel>? _listDownGuyOwner = <AllDownGuyOwnerModel>[];
+  List<AllDownGuyOwnerModel>? get listDownGuyOwner => _listDownGuyOwner;
+  void setListDownGuyOwner(List<AllDownGuyOwnerModel>? listDownGuyOwner) {
     _listDownGuyOwner = listDownGuyOwner;
     notifyListeners();
   }
 
   AllDownGuyOwnerModel _downGuySelected = AllDownGuyOwnerModel();
   AllDownGuyOwnerModel get downGuySelected => _downGuySelected;
-  void setDownGuySelected(String value) {
+  void setDownGuySelected(String? value) {
     _downGuySelected =
-        _listDownGuyOwner.firstWhere((element) => element.text == value);
+        _listDownGuyOwner!.firstWhere((element) => element.text == value);
     notifyListeners();
   }
 
-  AllDownGuyOwnerModel getNameDownGuySelected(int index) {
+  AllDownGuyOwnerModel getNameDownGuySelected(int? index) {
     AllDownGuyOwnerModel data =
-        _listDownGuyOwner.firstWhere((element) => element.id == index);
+        _listDownGuyOwner!.firstWhere((element) => element.id == index);
     return data;
   }
 
-  void setDownGuySelectedByEnum(int index) {
+  void setDownGuySelectedByEnum(int? index) {
     _downGuySelected =
-        _listDownGuyOwner.firstWhere((element) => element.id == index);
+        _listDownGuyOwner!.firstWhere((element) => element.id == index);
     notifyListeners();
   }
 
@@ -52,18 +52,18 @@ class RiserProvider extends ChangeNotifier {
   }
 
   //-----------------------------------------------------------------------------------------
-  List<RiserAndVGRTypeModel> _listRiserType = List<RiserAndVGRTypeModel>();
-  List<RiserAndVGRTypeModel> get listRiser => _listRiserType;
-  void setListTypeRiser(List<RiserAndVGRTypeModel> data) {
+  List<RiserAndVGRTypeModel>? _listRiserType = <RiserAndVGRTypeModel>[];
+  List<RiserAndVGRTypeModel>? get listRiser => _listRiserType;
+  void setListTypeRiser(List<RiserAndVGRTypeModel>? data) {
     _listRiserType = data;
     notifyListeners();
   }
 
   RiserAndVGRTypeModel _riserVGRSelected = RiserAndVGRTypeModel();
   RiserAndVGRTypeModel get riserVGRSelected => _riserVGRSelected;
-  void setRiserVGRSelected(String value) {
+  void setRiserVGRSelected(String? value) {
     _riserVGRSelected =
-        _listRiserType.firstWhere((element) => element.text == value);
+        _listRiserType!.firstWhere((element) => element.text == value);
     notifyListeners();
   }
 
@@ -88,8 +88,8 @@ class RiserProvider extends ChangeNotifier {
   }
 
   //-----------------------------------------------------------------------------------------
-  List<String> _listVGRActive = List<String>();
-  List<String> get listVGRActive => _listVGRActive;
+  List<String?> _listVGRActive = <String?>[];
+  List<String?> get listVGRActive => _listVGRActive;
 
   void addListVGRActive() {
     if (_listVGRActive.length == 0) {
@@ -98,7 +98,7 @@ class RiserProvider extends ChangeNotifier {
       _activePointName = "VGR";
       _sequenceCurrent = 1;
     } else {
-      String last = _listVGRActive.last;
+      String last = _listVGRActive.last!;
       int lastValue = int.parse(last.split("-")[1]);
       String data = "VGR-${lastValue + 1}";
       _sequenceCurrent = lastValue + 1;
@@ -116,8 +116,8 @@ class RiserProvider extends ChangeNotifier {
   }
 
   //-----------------------------------------------------------------------------------------
-  List<String> _listRiserActive = List<String>();
-  List<String> get listRiserActive => _listRiserActive;
+  List<String?> _listRiserActive = <String?>[];
+  List<String?> get listRiserActive => _listRiserActive;
   void addListRiserActive(String value) {
     if (_listRiserActive.length == 0) {
       String data = "R" + value + "-A";
@@ -126,12 +126,12 @@ class RiserProvider extends ChangeNotifier {
       _sequenceCurrent = 1;
     } else {
       bool isRiserNotFound = false;
-      String tempNumberRiser;
-      int tempSequenceEqualNumber;
+      late String tempNumberRiser;
+      late int tempSequenceEqualNumber;
       //Looping untuk mengecek apakah riser number telah ada atau tidak
       //Jika ada maka menambahkan increment berdasarkan riser number
       _listRiserActive.forEach((element) {
-        String numberRiser = element.replaceAll("R", "");
+        String numberRiser = element!.replaceAll("R", "");
         numberRiser = numberRiser.split("-")[0];
         int sequence = Constants.alphabet
                 .indexWhere((note) => note.startsWith(element.split("-")[1])) +
@@ -168,15 +168,15 @@ class RiserProvider extends ChangeNotifier {
   }
 
   //-----------------------------------------------------------------------------------------
-  String _activePointName;
-  String get activePointName => _activePointName;
+  String? _activePointName;
+  String? get activePointName => _activePointName;
   void setActivePointName(value) {
     _activePointName = value;
     notifyListeners();
   }
 
-  int _sequenceCurrent;
-  int get sequenceCurrent => _sequenceCurrent;
+  int? _sequenceCurrent;
+  int? get sequenceCurrent => _sequenceCurrent;
   void setSequenceCurrent(int sequenceCurrent) {
     _sequenceCurrent = sequenceCurrent;
     notifyListeners();
@@ -191,8 +191,8 @@ class RiserProvider extends ChangeNotifier {
         textX: shapeX,
         textY: shapeY,
         name: (activePointName == "VGR")
-            ? activePointName + "-" + sequenceCurrent.toString()
-            : activePointName + "-" + Constants.alphabet[sequenceCurrent - 1],
+            ? activePointName! + "-" + sequenceCurrent.toString()
+            : activePointName! + "-" + Constants.alphabet[sequenceCurrent! - 1],
         value: riserVGRSelected.id,
         type: downGuySelected.id,
         sequence: sequenceCurrent,
@@ -200,8 +200,8 @@ class RiserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<String> _listActivePoint = List<String>();
-  List<String> get listActivePoint => _listActivePoint;
+  List<String?> _listActivePoint = <String?>[];
+  List<String?> get listActivePoint => _listActivePoint;
   void setListActivePoint(String value) {
     _sequenceCurrent = null;
     if (value.contains("VGR")) {
@@ -212,11 +212,11 @@ class RiserProvider extends ChangeNotifier {
   }
 
   void removeListActivePoint() {
-    if (activePointName.contains("VGR")) {
-      removeOneListVGRActive(activePointName + "-$sequenceCurrent");
+    if (activePointName!.contains("VGR")) {
+      removeOneListVGRActive(activePointName! + "-$sequenceCurrent");
     } else {
       removeOneListRiserActive(
-          activePointName + "-${Constants.alphabet[sequenceCurrent - 1]}");
+          activePointName! + "-${Constants.alphabet[sequenceCurrent! - 1]}");
     }
   }
 
@@ -247,18 +247,18 @@ class RiserProvider extends ChangeNotifier {
   }
 
   //-----------------------------------------------------------------------------------------
-  List<RiserAndVGRList> _listRiserData = List<RiserAndVGRList>();
+  List<RiserAndVGRList> _listRiserData = <RiserAndVGRList>[];
   List<RiserAndVGRList> get listRiserData => _listRiserData;
   void addListRiserData(RiserAndVGRList data) {
     _listRiserData.add(data);
     _listRiserData
-        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+        .sort((a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
 
     print(json.encode(_listRiserData.map((e) => e.toJson()).toList()));
     notifyListeners();
   }
 
-  void addAllListRiserData(List<RiserAndVGRList> data) {
+  void addAllListRiserData(List<RiserAndVGRList>? data) {
     _listRiserData.clear();
     _listActivePoint.clear();
     _listRiserActive.clear();
@@ -266,11 +266,11 @@ class RiserProvider extends ChangeNotifier {
     if (data != null) {
       _listRiserData.addAll(data);
       _listRiserData
-          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+          .sort((a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
       print(_listRiserData.toList());
       for (var riser in _listRiserData) {
         if (riser.name != null) {
-          if (riser.name.contains("VGR")) {
+          if (riser.name!.contains("VGR")) {
             _listVGRActive.add(riser.name);
           } else {
             _listRiserActive.add(riser.name);
@@ -279,23 +279,23 @@ class RiserProvider extends ChangeNotifier {
       }
       assignActivePoint();
     } else {
-      _listRiserData = List<RiserAndVGRList>();
-      _listVGRActive = List<String>();
-      _listRiserActive = List<String>();
-      _listActivePoint = List<String>();
+      _listRiserData = <RiserAndVGRList>[];
+      _listVGRActive = <String?>[];
+      _listRiserActive = <String?>[];
+      _listActivePoint = <String?>[];
     }
 
     notifyListeners();
   }
 
-  void searchTypeByPointName(String value) {
-    int index =
+  void searchTypeByPointName(String? value) {
+    int? index =
         _listRiserData.firstWhere((element) => element.name == value).type;
     setDownGuySelectedByEnum(index);
     notifyListeners();
   }
 
-  void editListRiserData(String name, int indexType) {
+  void editListRiserData(String name, int? indexType) {
     RiserAndVGRList data =
         _listRiserData.firstWhere((element) => element.name == name);
     _listRiserData.remove(data);
@@ -317,9 +317,9 @@ class RiserProvider extends ChangeNotifier {
 
   //-----------------------------------------------------------------------------------------
 
-  String valueType(int data) {
-    String value =
-        _listRiserType.firstWhere((element) => element.id == data).text;
+  String? valueType(int? data) {
+    String? value =
+        _listRiserType!.firstWhere((element) => element.id == data).text;
     return value;
   }
 }

@@ -6,7 +6,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PreviewImage extends StatefulWidget {
-  final String image;
+  final String? image;
 
   const PreviewImage({this.image});
   @override
@@ -23,7 +23,7 @@ class _PreviewImageState extends State<PreviewImage> {
     print(info);
   }
 
-  DownloadImageBloc downloadBloc;
+  late DownloadImageBloc downloadBloc;
 
   @override
   void initState() {
@@ -61,7 +61,7 @@ class _PreviewImageState extends State<PreviewImage> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  downloadBloc.add(SaveImage(widget.image));
+                  downloadBloc.add(SaveImage(widget.image!));
                 })
           ],
         ),
@@ -76,7 +76,7 @@ class _PreviewImageState extends State<PreviewImage> {
           child: ClipRect(
             child: PhotoView(
               imageProvider: NetworkImage(
-                widget.image,
+                widget.image!,
               ),
               // Contained = the smallest possible size to fit one dimension of the screen
               minScale: PhotoViewComputedScale.contained * 1,

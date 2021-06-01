@@ -1,14 +1,10 @@
-import 'package:fielding_app/data/models/all_projects_model.dart';
-import 'package:fielding_app/data/models/user_model.dart';
+import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
-import 'package:fielding_app/domain/provider/fielding_provider.dart';
-import 'package:fielding_app/domain/provider/user_provider.dart';
-import 'package:fielding_app/external/color_helpers.dart';
-import 'package:fielding_app/external/service/location_service.dart';
-import 'package:fielding_app/external/ui_helpers.dart';
-import 'package:fielding_app/presentation/ui/fielding/map_view_number_page.dart';
-import 'package:fielding_app/presentation/widgets/drawer_widget.dart';
-import 'package:fielding_app/presentation/widgets/error_handling_widget.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/external/service/service.exports.dart';
+import 'package:fielding_app/presentation/ui/fielding/fielding.exports.dart';
+import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -31,17 +27,17 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
     context
         .read<FieldingProvider>()
-        .setCurrentPosition(LatLng(data.latitude, data.longitude));
+        .setCurrentPosition(LatLng(data.latitude!, data.longitude!));
     context.read<FieldingProvider>().setCurrentLocationData(data);
   }
 
-  FieldingBloc fieldingBloc;
+  late FieldingBloc fieldingBloc;
   @override
   void initState() {
     super.initState();
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-    fieldingBloc
-        .add(GetAllProjects(context.read<UserProvider>().userModel.data.token));
+    fieldingBloc.add(
+        GetAllProjects(context.read<UserProvider>().userModel.data!.token));
     getCurrentLocation();
   }
 
@@ -65,7 +61,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
           } else if (state is GetAllProjectsFailed) {
             return _handlingWidget(state.message);
           } else if (state is GetAllProjectsSuccess) {
-            return _content(state.allProjectsModel);
+            return _content(state.allProjectsModel!);
           } else if (state is GetAllProjectsEmpty) {
             return _handlingWidget("Fielding Request Empty");
           }
@@ -75,7 +71,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     );
   }
 
-  Column _handlingWidget(String title) {
+  Column _handlingWidget(String? title) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -88,7 +84,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
           child: InkWell(
             onTap: () {
               fieldingBloc.add(GetAllProjects(
-                  context.read<UserProvider>().userModel.data.token));
+                  context.read<UserProvider>().userModel.data!.token));
             },
             child: Container(
               color: ColorHelpers.colorBlueIntro,
@@ -203,7 +199,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          data.projectName ?? "-",
+                                          data.projectName!,
                                           style: TextStyle(
                                               color:
                                                   ColorHelpers.colorBlackText,
@@ -211,7 +207,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         Text(
-                                          data.layerName ?? "-",
+                                          data.layerName!,
                                           style: TextStyle(
                                               color:
                                                   ColorHelpers.colorBlackText,
@@ -228,9 +224,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                           children: [
                                             Text(
                                                 (data.totalPoles != null)
-                                                    ? data.totalPoles
-                                                            .toString() ??
-                                                        "0"
+                                                    ? data.totalPoles.toString()
                                                     : "0",
                                                 style: TextStyle(
                                                     color: ColorHelpers
@@ -259,9 +253,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                       children: [
                                         Text(
                                           (data.dueDate != null)
-                                              ? "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate)) ?? "-"}"
+                                              ? "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate!))}"
                                               : "Due Date -",
-                                          // "Due Date ${data.dueDate  ?? "-"}",
+                                          // "Due Date ${data.dueDate  }",
                                           style: TextStyle(
                                               fontSize: 12,
                                               color:
@@ -315,8 +309,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
                                                       ),
                                                       padding:
                                                           EdgeInsets.all(10),
-                                                      child: Text(
-                                                          data.note ?? "-",
+                                                      child: Text(data.note!,
                                                           softWrap: true),
                                                     ),
                                                   ],

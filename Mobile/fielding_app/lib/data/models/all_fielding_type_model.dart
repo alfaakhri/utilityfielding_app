@@ -1,10 +1,10 @@
-class DownGuySizeModel {
+class AllFieldingTypeModel {
   int? id;
   String? text;
 
-  DownGuySizeModel({this.id, this.text});
+  AllFieldingTypeModel({this.id, this.text});
 
-  DownGuySizeModel.fromJson(Map<String, dynamic> json) {
+  AllFieldingTypeModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     text = json['text'];
   }
@@ -16,9 +16,9 @@ class DownGuySizeModel {
     return data;
   }
 
-  static List<DownGuySizeModel>? fromJsonList(jsonList) {
+  static List<AllFieldingTypeModel>? fromJsonList(jsonList) {
     return jsonList
-        .map<DownGuySizeModel>((obj) => DownGuySizeModel.fromJson(obj))
+        .map<AllFieldingTypeModel>((obj) => AllFieldingTypeModel.fromJson(obj))
         .toList();
   }
 }

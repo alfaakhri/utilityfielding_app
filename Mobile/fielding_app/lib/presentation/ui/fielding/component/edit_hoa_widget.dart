@@ -24,7 +24,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
   TextEditingController ftController = TextEditingController();
   TextEditingController inchController = TextEditingController();
   final formKey = new GlobalKey<FormState>();
-  String choiceValue;
+  String? choiceValue;
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
               itemBuilder: (context, index) {
                 var list = data.hoaList[index];
 
-                String typeName = data.listAllHoaType
+                String? typeName = data.listAllHoaType!
                     .firstWhere((element) => element.id == list.type)
                     .text;
                 return Column(
@@ -194,7 +194,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
     );
   }
 
-  Future dialogHoa(String title, bool isEdit, {int index}) {
+  Future dialogHoa(String title, bool isEdit, {int? index}) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -216,14 +216,14 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                     DropdownButtonFormField<String>(
                       isDense: true,
                       decoration: kDecorationDropdown(),
-                      items: data.listAllHoaType.map((value) {
+                      items: data.listAllHoaType!.map((value) {
                         return DropdownMenuItem<String>(
                           child:
-                              Text(value.text, style: TextStyle(fontSize: 12)),
+                              Text(value.text!, style: TextStyle(fontSize: 12)),
                           value: value.text,
                         );
                       }).toList(),
-                      onChanged: (String value) {
+                      onChanged: (String? value) {
                         setState(() {
                           choiceValue = value;
                           data.setIsHoa(true);
@@ -355,7 +355,7 @@ class _EditHoaWidgetState extends State<EditHoaWidget> {
                         child:
                             Text("Save", style: TextStyle(color: Colors.white)),
                         onPressed: () {
-                          if (formKey.currentState.validate()) {
+                          if (formKey.currentState!.validate()) {
                             Provider.of<FieldingProvider>(context,
                                     listen: false)
                                 .setIsHoa(false);

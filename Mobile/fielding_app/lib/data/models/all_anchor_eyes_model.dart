@@ -1,6 +1,6 @@
 class AllAnchorEyesModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   AllAnchorEyesModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class AllAnchorEyesModel {
     return data;
   }
 
-  static List<AllAnchorEyesModel> fromJsonList(jsonList) {
+  static List<AllAnchorEyesModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllAnchorEyesModel>((obj) => AllAnchorEyesModel.fromJson(obj))
         .toList();

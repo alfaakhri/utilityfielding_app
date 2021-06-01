@@ -1,21 +1,14 @@
-import 'dart:convert';
 import 'dart:io';
-
-import 'package:fielding_app/domain/provider/intro_provider.dart';
-import 'package:fielding_app/external/color_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
+
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:get/get.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:provider/provider.dart';
 
 class OpenIntroWebview extends StatefulWidget {
-  final String url;
+  final String? url;
 
-  const OpenIntroWebview({Key key, this.url}) : super(key: key);
+  const OpenIntroWebview({Key? key, this.url}) : super(key: key);
   @override
   _OpenIntroWebviewState createState() => _OpenIntroWebviewState();
 }
@@ -29,7 +22,7 @@ class _OpenIntroWebviewState extends State<OpenIntroWebview> {
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
-  WebViewController _controller;
+  WebViewController? _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +40,7 @@ class _OpenIntroWebviewState extends State<OpenIntroWebview> {
         ),
       ),
       body: WebView(
-        initialUrl: widget.url,
+        initialUrl: widget.url!,
         onWebViewCreated: (WebViewController webViewController) {
           _controller = webViewController;
         },

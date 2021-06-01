@@ -12,8 +12,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   MapBloc() : super(MapInitial());
   ApiProvider _apiProvider = ApiProvider();
 
-  List<JobNumberLocModel> _jobNumberLocModel = List<JobNumberLocModel>();
-  List<JobNumberLocModel> get jobNumberLocModel => _jobNumberLocModel;
+  List<JobNumberLocModel>? _jobNumberLocModel = <JobNumberLocModel>[];
+  List<JobNumberLocModel>? get jobNumberLocModel => _jobNumberLocModel;
 
   @override
   Stream<MapState> mapEventToState(

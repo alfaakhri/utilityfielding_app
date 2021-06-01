@@ -1,11 +1,12 @@
+import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:fielding_app/data/models/job_number_location_model.dart';
+import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/bloc/map_bloc/map_bloc.dart';
-import 'package:fielding_app/domain/provider/user_provider.dart';
-import 'package:fielding_app/external/color_helpers.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/external/external.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -18,10 +19,10 @@ class MapViewNumberPage extends StatefulWidget {
 }
 
 class _MapViewNumberPageState extends State<MapViewNumberPage> {
-  MapBloc mapBloc;
-  AuthBloc authBloc;
-  FieldingBloc fieldingBloc;
-  GoogleMapController googleMapController;
+  late MapBloc mapBloc;
+  late AuthBloc authBloc;
+  late FieldingBloc fieldingBloc;
+  GoogleMapController? googleMapController;
   Set<Marker> _markers = Set<Marker>();
 
   @override
@@ -30,11 +31,11 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
     mapBloc = BlocProvider.of<MapBloc>(context);
     authBloc = BlocProvider.of<AuthBloc>(context);
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-    mapBloc.add(GetJobNumberLoc(authBloc.userModel.data.token));
+    mapBloc.add(GetJobNumberLoc(authBloc.userModel.data!.token));
   }
 
   Future<Uint8List> getBytesFromCanvas(
-      int width, int height, String title) async {
+      int width, int height, String? title) async {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint()..color = Colors.white;
@@ -59,7 +60,7 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
         Offset((width * 0.5) - painter.width * 0.5,
             (height * 0.5) - painter.height * 0.5));
     final img = await pictureRecorder.endRecording().toImage(width, height);
-    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    final data = await (img.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
     return data.buffer.asUint8List();
   }
 
@@ -75,7 +76,7 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
         leading: IconButton(
           onPressed: () {
             fieldingBloc.add(GetAllProjects(
-                context.read<UserProvider>().userModel.data.token));
+                context.read<UserProvider>().userModel.data!.token));
             Get.back();
           },
           icon: Icon(
@@ -92,10 +93,10 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
               child: CircularProgressIndicator(),
             );
           } else if (state is GetJobNumberSuccess) {
-            return contentBody(state.jobNumberLocModel);
+            return contentBody(state.jobNumberLocModel!);
           } else if (state is GetJobNumberFailed) {
             return Center(
-              child: Text(state.message),
+              child: Text(state.message!),
             );
           }
           return Center(
@@ -121,12 +122,12 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
             target: LatLng(
                 double.parse(listJobNumber
                     .firstWhere((element) => (element.latitude != null &&
-                        element.latitude.contains(".")))
-                    .latitude),
+                        element.latitude!.contains(".")))
+                    .latitude!),
                 double.parse(listJobNumber
                     .firstWhere((element) => (element.longitude != null &&
-                        element.longitude.contains(".")))
-                    .longitude)),
+                        element.longitude!.contains(".")))
+                    .longitude!)),
             zoom: 10,
           ),
           onMapCreated: (GoogleMapController controller) {
@@ -157,7 +158,7 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
             width.toInt() + 40, 80, data.jobNumber);
 
         var fieldingPosition =
-            LatLng(double.parse(data.latitude), double.parse(data.longitude));
+            LatLng(double.parse(data.latitude!), double.parse(data.longitude!));
         _markers.add(Marker(
             markerId: MarkerId("${data.jobNumber}"),
             position: fieldingPosition,

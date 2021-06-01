@@ -1,15 +1,10 @@
-import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
-import 'package:fielding_app/data/models/all_projects_model.dart';
+import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
-import 'package:fielding_app/domain/provider/fielding_provider.dart';
-import 'package:fielding_app/domain/provider/user_provider.dart';
-import 'package:fielding_app/external/color_helpers.dart';
-import 'package:fielding_app/external/service/location_service.dart';
-import 'package:fielding_app/external/ui_helpers.dart';
-import 'package:fielding_app/presentation/ui/fielding/edit_pole_lat_lng_page.dart';
-import 'package:fielding_app/presentation/widgets/error_handling_widget.dart';
-import 'package:fielding_app/presentation/widgets/loading_widget.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/external/service/service.exports.dart';
+import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -22,25 +17,25 @@ import 'component/supporting_docs_widget.dart';
 import 'edit_pole_page.dart';
 
 class DetailFieldingPage extends StatefulWidget {
-  final AllProjectsModel allProjectsModel;
+  final AllProjectsModel? allProjectsModel;
 
-  const DetailFieldingPage({Key key, this.allProjectsModel}) : super(key: key);
+  const DetailFieldingPage({Key? key, this.allProjectsModel}) : super(key: key);
   @override
   _DetailFieldingPageState createState() => _DetailFieldingPageState();
 }
 
 class _DetailFieldingPageState extends State<DetailFieldingPage> {
-  FieldingBloc fieldingBloc;
-  GoogleMapController googleMapController;
-  Marker _tempMarkerBlue;
-  Marker _tempMarkerSelected;
+  late FieldingBloc fieldingBloc;
+  GoogleMapController? googleMapController;
+  Marker? _tempMarkerBlue;
+  Marker? _tempMarkerSelected;
   Set<Marker> _markers = Set<Marker>();
   double pinPillPosition = -100;
-  LocationData currentLocation;
-  BitmapDescriptor poleIcon;
-  BitmapDescriptor poleSelected;
-  BitmapDescriptor poleGreen;
-  AllPolesByLayerModel poleModelSelected;
+  late LocationData currentLocation;
+  late BitmapDescriptor poleIcon;
+  late BitmapDescriptor poleSelected;
+  late BitmapDescriptor poleGreen;
+  AllPolesByLayerModel? poleModelSelected;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
@@ -48,8 +43,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     super.initState();
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     fieldingBloc.add(GetAllPolesByID(
-        context.read<UserProvider>().userModel.data.token,
-        widget.allProjectsModel.iD));
+        context.read<UserProvider>().userModel.data!.token,
+        widget.allProjectsModel!.iD));
     getCurrentLocation();
     setPoleIcons();
   }
@@ -88,7 +83,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     return WillPopScope(
       onWillPop: () {
         fieldingBloc.add(
-            GetAllProjects(context.read<UserProvider>().userModel.data.token));
+            GetAllProjects(context.read<UserProvider>().userModel.data!.token));
         Get.back();
         return Future.value(false);
       },
@@ -96,13 +91,13 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: Text(
-            widget.allProjectsModel.layerName,
+            widget.allProjectsModel!.layerName!,
             style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
           ),
           leading: IconButton(
             onPressed: () {
               fieldingBloc.add(GetAllProjects(
-                  context.read<UserProvider>().userModel.data.token));
+                  context.read<UserProvider>().userModel.data!.token));
               Get.back();
             },
             icon: Icon(
@@ -122,53 +117,53 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is StartPolePictureFailed) {
               fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data.token,
-                  widget.allProjectsModel.iD));
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+                  context.read<UserProvider>().userModel.data!.token,
+                  widget.allProjectsModel!.iD));
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: state.message);
+              Fluttertoast.showToast(msg: state.message!);
             } else if (state is StartPolePictureSuccess) {
               setState(() {});
               Fluttertoast.showToast(msg: "Additional pole pictures success");
 
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data.token,
-                  widget.allProjectsModel.iD));
+                  context.read<UserProvider>().userModel.data!.token,
+                  widget.allProjectsModel!.iD));
               this.poleModelSelected = AllPolesByLayerModel();
               this._tempMarkerSelected = null;
             } else if (state is CompletePolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is CompletePolePictureFailed) {
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: state.message);
+              Fluttertoast.showToast(msg: state.message!);
               fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data.token,
-                  widget.allProjectsModel.iD));
+                  context.read<UserProvider>().userModel.data!.token,
+                  widget.allProjectsModel!.iD));
             } else if (state is CompletePolePictureSuccess) {
               setState(() {});
               Fluttertoast.showToast(msg: "Complete pole pictures success");
 
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data.token,
-                  widget.allProjectsModel.iD));
+                  context.read<UserProvider>().userModel.data!.token,
+                  widget.allProjectsModel!.iD));
               this.poleModelSelected = AllPolesByLayerModel();
               this._tempMarkerSelected = null;
             } else if (state is StartFieldingLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is StartFieldingFailed) {
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: state.message);
+              Fluttertoast.showToast(msg: state.message!);
               fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data.token,
-                  widget.allProjectsModel.iD));
+                  context.read<UserProvider>().userModel.data!.token,
+                  widget.allProjectsModel!.iD));
             } else if (state is StartFieldingSuccess) {
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: "Start fielding success");
               Get.to(EditPolePage(
@@ -196,7 +191,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     return Center(child: CircularProgressIndicator());
   }
 
-  Widget _content(List<AllPolesByLayerModel> allPoles) {
+  Widget _content(List<AllPolesByLayerModel>? allPoles) {
     return Column(
       children: [
         Container(
@@ -262,23 +257,23 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   markers: _markers,
                   mapType: MapType.normal,
                   initialCameraPosition: CameraPosition(
-                    target: (allPoles.length == 0)
-                        ? LatLng(this.currentLocation.latitude,
-                            this.currentLocation.longitude)
+                    target: (allPoles!.length == 0)
+                        ? LatLng(this.currentLocation.latitude!,
+                            this.currentLocation.longitude!)
                         : (allPoles.first.latitude == null)
-                            ? LatLng(this.currentLocation.latitude,
-                                this.currentLocation.longitude)
+                            ? LatLng(this.currentLocation.latitude!,
+                                this.currentLocation.longitude!)
                             : LatLng(
                                 double.parse(allPoles
                                     .firstWhere((element) =>
                                         (element.latitude != null &&
-                                            element.latitude.contains(".")))
-                                    .latitude),
+                                            element.latitude!.contains(".")))
+                                    .latitude!),
                                 double.parse(allPoles
                                     .firstWhere((element) =>
                                         (element.longitude != null &&
-                                            element.longitude.contains(".")))
-                                    .longitude)),
+                                            element.longitude!.contains(".")))
+                                    .longitude!)),
                     zoom: 14,
                   ),
                   onTap: (LatLng loc) {
@@ -376,17 +371,17 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                         ],
                                       ),
                                       Text(
-                                          (poleModelSelected.poleSequence ==
+                                          (poleModelSelected!.poleSequence ==
                                                   null)
                                               ? "-"
-                                              : poleModelSelected.poleSequence
+                                              : poleModelSelected!.poleSequence
                                                   .toString(),
                                           style: TextStyle(
                                               color: ColorHelpers.colorOrange,
                                               fontSize: 24)),
                                     ],
                                   ),
-                                  (poleModelSelected.fieldingStatus == 2)
+                                  (poleModelSelected!.fieldingStatus == 2)
                                       ? Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
@@ -423,8 +418,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                             UIHelper.verticalSpaceSmall,
                                             InkWell(
                                               onTap: () {
-                                                if (poleModelSelected
-                                                    .startPolePicture) {
+                                                if (poleModelSelected!
+                                                    .startPolePicture!) {
                                                   dialogAlert(poleModelSelected,
                                                       "complete pictures");
                                                 } else {
@@ -435,8 +430,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                               child: Container(
                                                   width: 150,
                                                   decoration: BoxDecoration(
-                                                      color: (poleModelSelected
-                                                              .startPolePicture)
+                                                      color: poleModelSelected!
+                                                              .startPolePicture!
                                                           ? ColorHelpers
                                                               .colorButtonDefault
                                                           : ColorHelpers
@@ -445,8 +440,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                           BorderRadius.circular(
                                                               5),
                                                       border: Border.all(
-                                                          color: (poleModelSelected
-                                                                  .startPolePicture)
+                                                          color: poleModelSelected!
+                                                                  .startPolePicture!
                                                               ? ColorHelpers
                                                                   .colorButtonDefault
                                                               : ColorHelpers
@@ -455,14 +450,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                       vertical: 5,
                                                       horizontal: 10),
                                                   child: Text(
-                                                    (poleModelSelected
-                                                            .startPolePicture)
+                                                    poleModelSelected!
+                                                            .startPolePicture!
                                                         ? "Complete Pictures"
                                                         : "Additional Pictures",
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
-                                                      color: (poleModelSelected
-                                                              .startPolePicture)
+                                                      color: poleModelSelected!
+                                                              .startPolePicture!
                                                           ? ColorHelpers
                                                               .colorWhite
                                                           : ColorHelpers
@@ -479,11 +474,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                 context
                                                     .read<UserProvider>()
                                                     .userModel
-                                                    .data
+                                                    .data!
                                                     .token,
-                                                poleModelSelected.id,
+                                                poleModelSelected!.id,
                                                 true,
-                                                widget.allProjectsModel.iD));
+                                                widget.allProjectsModel!.iD));
                                           },
                                           child: Container(
                                               decoration: BoxDecoration(
@@ -607,7 +602,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                               UIHelper.verticalSpaceSmall,
                                               InkWell(
                                                 onTap: () {
-                                                  if (data.startPolePicture) {
+                                                  if (data.startPolePicture!) {
                                                     dialogAlert(data,
                                                         "complete pictures");
                                                   } else {
@@ -618,8 +613,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                 child: Container(
                                                     width: 150,
                                                     decoration: BoxDecoration(
-                                                        color: (data
-                                                                .startPolePicture)
+                                                        color: data
+                                                                .startPolePicture!
                                                             ? ColorHelpers
                                                                 .colorButtonDefault
                                                             : ColorHelpers
@@ -628,8 +623,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                             BorderRadius
                                                                 .circular(5),
                                                         border: Border.all(
-                                                            color: (data
-                                                                    .startPolePicture)
+                                                            color: data
+                                                                    .startPolePicture!
                                                                 ? ColorHelpers
                                                                     .colorButtonDefault
                                                                 : ColorHelpers
@@ -639,14 +634,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                                             vertical: 5,
                                                             horizontal: 10),
                                                     child: Text(
-                                                      (data.startPolePicture)
+                                                      data.startPolePicture!
                                                           ? "Complete Pictures"
                                                           : "Additional Pictures",
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
-                                                        color: (data
-                                                                .startPolePicture)
+                                                        color: data
+                                                                .startPolePicture!
                                                             ? ColorHelpers
                                                                 .colorWhite
                                                             : ColorHelpers
@@ -680,7 +675,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
       list.forEach((data) {
         if (data.latitude != null && data.longitude != null) {
           var fieldingPosition =
-              LatLng(double.parse(data.latitude), double.parse(data.longitude));
+              LatLng(double.parse(data.latitude!), double.parse(data.longitude!));
 
           // add the initial source location pin
           if (data.fieldingStatus == null ||
@@ -690,7 +685,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 markerId: MarkerId("${data.id}"),
                 position: fieldingPosition,
                 onTap: () {
-                  print("ID " + data.id);
+                  print("ID " + data.id!);
                   selectedMarker(list, data);
                 },
                 icon: poleIcon));
@@ -699,7 +694,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 markerId: MarkerId("${data.id}"),
                 position: fieldingPosition,
                 onTap: () {
-                  print("ID " + data.id);
+                  print("ID " + data.id!);
                   selectedMarker(list, data);
                 },
                 icon: poleGreen));
@@ -717,14 +712,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
       list.map((e) {
         if (e.latitude != null && e.longitude != null) {
           var position =
-              LatLng(double.parse(e.latitude), double.parse(e.longitude));
+              LatLng(double.parse(e.latitude!), double.parse(e.longitude!));
           if (e.id == data.id) {
             _markers.add(Marker(
                 markerId: MarkerId("${e.id}"),
                 position: position,
                 icon: poleSelected,
                 onTap: () {
-                  print("ID " + data.id);
+                  print("ID " + data.id!);
                   selectedMarker(list, e);
                 }));
             _tempMarkerSelected = Marker(
@@ -741,7 +736,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   position: position,
                   icon: poleIcon,
                   onTap: () {
-                    print("ID " + data.id);
+                    print("ID " + data.id!);
                     selectedMarker(list, e);
                   }));
             } else {
@@ -750,7 +745,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   position: position,
                   icon: poleGreen,
                   onTap: () {
-                    print("ID " + data.id);
+                    print("ID " + data.id!);
                     selectedMarker(list, e);
                   }));
             }
@@ -761,7 +756,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   Future dialogAlert(
-      AllPolesByLayerModel allPolesByLayerModel, String valueAlert) {
+      AllPolesByLayerModel? allPolesByLayerModel, String valueAlert) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -805,25 +800,25 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                           child: FlatButton(
                             color: ColorHelpers.colorGreen,
                             onPressed: () {
-                              if (allPolesByLayerModel.startPolePicture) {
+                              if (allPolesByLayerModel!.startPolePicture!) {
                                 fieldingBloc.add(CompletePolePicture(
                                   context
                                       .read<UserProvider>()
                                       .userModel
-                                      .data
+                                      .data!
                                       .token,
                                   allPolesByLayerModel.id,
-                                  widget.allProjectsModel.iD,
+                                  widget.allProjectsModel!.iD,
                                 ));
                               } else {
                                 fieldingBloc.add(StartPolePicture(
                                   context
                                       .read<UserProvider>()
                                       .userModel
-                                      .data
+                                      .data!
                                       .token,
                                   allPolesByLayerModel.id,
-                                  widget.allProjectsModel.iD,
+                                  widget.allProjectsModel!.iD,
                                 ));
                               }
 

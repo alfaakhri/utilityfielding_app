@@ -20,11 +20,11 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
   FieldingBloc() : super(FieldingInitial());
   ApiProvider _apiProvider = ApiProvider();
 
-  List<AllProjectsModel> _allProjects = List<AllProjectsModel>();
-  List<AllProjectsModel> get allProjects => _allProjects;
+  List<AllProjectsModel>? _allProjects;
+  List<AllProjectsModel>? get allProjects => _allProjects;
 
-  List<AllPolesByLayerModel> _allPolesByLayer = List<AllPolesByLayerModel>();
-  List<AllPolesByLayerModel> get allPolesByLayer => _allPolesByLayer;
+  List<AllPolesByLayerModel>? _allPolesByLayer;
+  List<AllPolesByLayerModel>? get allPolesByLayer => _allPolesByLayer;
 
   AllPolesByLayerModel _responsePolePicture = AllPolesByLayerModel();
   AllPolesByLayerModel get responsePolePicture => _responsePolePicture;
@@ -43,10 +43,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield GetAllProjectsLoading();
       try {
         var response = await _apiProvider.getAllProject((event.token));
-        if (response.statusCode == 200) {
+        if (response!.statusCode == 200) {
           _allProjects = AllProjectsModel.fromJsonList(response.data);
 
-          if (_allProjects.length == 0) {
+          if (_allProjects!.length == 0) {
             yield GetAllProjectsEmpty();
           } else {
             yield GetAllProjectsSuccess(_allProjects);
@@ -61,9 +61,9 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is GetAllPolesByID) {
       yield GetAllPolesByIdLoading();
       try {
-        var response =
-            await _apiProvider.getAllPolesByLayerID(event.token, event.layerId);
-        if (response.statusCode == 200) {
+        var response = await (_apiProvider.getAllPolesByLayerID(
+            event.token, event.layerId));
+        if (response!.statusCode == 200) {
           _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
           yield GetAllPolesByIdSuccess(_allPolesByLayer);
         } else if (response.data['Message'] == Constants.messageTokenExpired) {
@@ -77,15 +77,15 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is StartPolePicture) {
       yield StartPolePictureLoading();
       try {
-        var responseFirst =
-            await _apiProvider.startPolePicture(event.token, event.poleId, event.layerId);
-        if (responseFirst.statusCode == 200) {
+        var responseFirst = await (_apiProvider.startPolePicture(
+            event.token, event.poleId, event.layerId));
+        if (responseFirst!.statusCode == 200) {
           _responsePolePicture =
               AllPolesByLayerModel.fromJson(responseFirst.data);
-          var response = await _apiProvider.getAllPolesByLayerID(
-              event.token, event.layerId);
+          var response = await (_apiProvider.getAllPolesByLayerID(
+              event.token, event.layerId));
 
-          if (response.statusCode == 200) {
+          if (response!.statusCode == 200) {
             _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
             yield StartPolePictureSuccess(_allPolesByLayer);
           } else if (response.data['Message'] ==
@@ -104,15 +104,15 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield CompletePolePictureLoading();
       try {
         var responseFirst =
-            await _apiProvider.completePolePicture(event.token, event.poleId);
+            await (_apiProvider.completePolePicture(event.token, event.poleId));
 
-        if (responseFirst.statusCode == 200) {
+        if (responseFirst!.statusCode == 200) {
           _responsePolePicture =
               AllPolesByLayerModel.fromJson(responseFirst.data);
-          var response = await _apiProvider.getAllPolesByLayerID(
-              event.token, event.layerId);
+          var response = await (_apiProvider.getAllPolesByLayerID(
+              event.token, event.layerId));
 
-          if (response.statusCode == 200) {
+          if (response!.statusCode == 200) {
             _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
             yield CompletePolePictureSuccess(_allPolesByLayer);
           } else if (response.data['Message'] ==
@@ -121,7 +121,8 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
           } else {
             yield CompletePolePictureFailed(response.data['Message']);
           }
-        } else if (responseFirst.data['Message'] == Constants.messageTokenExpired) {
+        } else if (responseFirst.data['Message'] ==
+            Constants.messageTokenExpired) {
           Get.offAll(LoginPage());
         } else {
           yield CompletePolePictureFailed(responseFirst.data['Message']);
@@ -132,10 +133,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is UpdateLocation) {
       yield UpdateLocationLoading();
       try {
-        var response = await _apiProvider.updateLocation(
-            event.token, event.poleId, event.latitude, event.longitude);
+        var response = await (_apiProvider.updateLocation(
+            event.token, event.poleId, event.latitude, event.longitude));
 
-        if (response.statusCode == 200) {
+        if (response!.statusCode == 200) {
           _responsePolePicture = AllPolesByLayerModel.fromJson(response.data);
           yield UpdateLocationSuccess(_responsePolePicture);
         } else if (response.data['Message'] == Constants.messageTokenExpired) {
@@ -150,12 +151,18 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield AddPoleLoading();
       try {
         print(json.encode(event.addPoleModel.toJson()));
-        print(json.encode(event.addPoleModel.spanDirectionList.map((e) => e.toJson()).toList()));
-        print(json.encode(event.addPoleModel.anchorList.map((e) => e.toJson()).toList()));
-        print(json.encode(event.addPoleModel.riserAndVGRList.map((e) => e.toJson()).toList()));
+        print(json.encode(event.addPoleModel.spanDirectionList!
+            .map((e) => e.toJson())
+            .toList()));
+        print(json.encode(
+            event.addPoleModel.anchorList!.map((e) => e.toJson()).toList()));
+        print(json.encode(event.addPoleModel.riserAndVGRList!
+            .map((e) => e.toJson())
+            .toList()));
         // yield AddPoleFailed("Test");
-        var response = await _apiProvider.addPole(event.addPoleModel.toJson());
-        if (response.statusCode == 200) {
+        var response =
+            await (_apiProvider.addPole(event.addPoleModel.toJson()));
+        if (response!.statusCode == 200) {
           yield AddPoleSuccess();
         } else if (response.data['Message'] == Constants.messageTokenExpired) {
           Get.offAll(LoginPage());
@@ -168,8 +175,8 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is GetPoleById) {
       yield GetPoleByIdLoading();
       try {
-        var response = await _apiProvider.getPoleById(event.id, event.token);
-        if (response.statusCode == 200) {
+        var response = await (_apiProvider.getPoleById(event.id, event.token));
+        if (response!.statusCode == 200) {
           if (response.data != null) {
             _poleByIdModel = PoleByIdModel.fromJson(response.data);
             yield GetPoleByIdSuccess(_poleByIdModel);
@@ -203,9 +210,9 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is StartFielding) {
       yield StartFieldingLoading();
       try {
-        var response = await _apiProvider.startFielding(
-            event.token, event.poleId, event.isStartAdditional, event.layerId);
-        if (response.statusCode == 200) {
+        var response = await (_apiProvider.startFielding(
+            event.token, event.poleId, event.isStartAdditional, event.layerId));
+        if (response!.statusCode == 200) {
           yield StartFieldingSuccess();
         } else if (response.data['Message'] == Constants.messageTokenExpired) {
           Get.offAll(LoginPage());

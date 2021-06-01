@@ -1,13 +1,13 @@
 class AllProjectsModel {
-  String iD;
-  String projectID;
-  String projectName;
-  String layerName;
-  String note;
-  int layerType;
-  int totalPoles;
-  String dueDate;
-  int approx;
+  String? iD;
+  String? projectID;
+  String? projectName;
+  String? layerName;
+  String? note;
+  int? layerType;
+  int? totalPoles;
+  String? dueDate;
+  int? approx;
 
   AllProjectsModel(
       {this.iD,
@@ -46,7 +46,7 @@ class AllProjectsModel {
     return data;
   }
 
-  static List<AllProjectsModel> fromJsonList(jsonList) {
+  static List<AllProjectsModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllProjectsModel>((obj) => AllProjectsModel.fromJson(obj))
         .toList();

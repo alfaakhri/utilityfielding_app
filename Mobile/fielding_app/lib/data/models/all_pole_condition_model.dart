@@ -1,6 +1,6 @@
 class AllPoleConditionModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   AllPoleConditionModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class AllPoleConditionModel {
     return data;
   }
 
-  static List<AllPoleConditionModel> fromJsonList(jsonList) {
+  static List<AllPoleConditionModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllPoleConditionModel>((obj) => AllPoleConditionModel.fromJson(obj))
         .toList();

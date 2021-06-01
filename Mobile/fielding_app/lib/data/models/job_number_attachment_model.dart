@@ -1,6 +1,6 @@
 class JobNumberAttachModel {
-  String fileName;
-  String filePath;
+  String? fileName;
+  String? filePath;
 
   JobNumberAttachModel({this.fileName, this.filePath});
 
@@ -16,7 +16,7 @@ class JobNumberAttachModel {
     return data;
   }
 
-  static List<JobNumberAttachModel> fromJsonList(jsonList) {
+  static List<JobNumberAttachModel>? fromJsonList(jsonList) {
     return jsonList
         .map<JobNumberAttachModel>((obj) => JobNumberAttachModel.fromJson(obj))
         .toList();

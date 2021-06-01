@@ -3,11 +3,11 @@ import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:flutter/material.dart';
 
 class ErrorHandlingWidget extends StatelessWidget {
-  final String icon;
-  final String title;
-  final String subTitle;
+  final String? icon;
+  final String? title;
+  final String? subTitle;
 
-  const ErrorHandlingWidget({Key key, this.icon, this.title, this.subTitle})
+  const ErrorHandlingWidget({Key? key, this.icon, this.title, this.subTitle})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -18,13 +18,13 @@ class ErrorHandlingWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              title,
+              title!,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
             UIHelper.verticalSpaceSmall,
             Text(
-              subTitle,
+              subTitle!,
               style: TextStyle(
                 fontSize: 14,
               ),

@@ -1,7 +1,7 @@
 import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
-import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
+
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
-import 'package:fielding_app/domain/bloc/location_bloc/location_bloc.dart';
+
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -22,9 +22,9 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'dart:async';
 
 class EditLatLngPage extends StatefulWidget {
-  final AllPolesByLayerModel polesLayerModel;
+  final AllPolesByLayerModel? polesLayerModel;
 
-  const EditLatLngPage({Key key, this.polesLayerModel}) : super(key: key);
+  const EditLatLngPage({Key? key, this.polesLayerModel}) : super(key: key);
   @override
   _EditLatLngPageState createState() => _EditLatLngPageState();
 }
@@ -32,16 +32,16 @@ class EditLatLngPage extends StatefulWidget {
 class _EditLatLngPageState extends State<EditLatLngPage> {
   Set<Marker> _markers = Set<Marker>();
   double pinPillPosition = -100;
-  LocationData currentLocation;
-  BitmapDescriptor poleIcon;
-  BitmapDescriptor poleGreen;
-  BitmapDescriptor poleBlue;
+  late LocationData currentLocation;
+  late BitmapDescriptor poleIcon;
+  late BitmapDescriptor poleGreen;
+  late BitmapDescriptor poleBlue;
 
-  GoogleMapController googleMapController;
+  late GoogleMapController googleMapController;
   // bool _editLocation = false;
-  String _latitude;
-  String _longitude;
-  FieldingBloc fieldingBloc;
+  String? _latitude;
+  String? _longitude;
+  late FieldingBloc fieldingBloc;
   // LocationBloc locationBloc;
   GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
@@ -54,17 +54,17 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     super.initState();
     var fielding = context.read<FieldingProvider>();
     if (widget.polesLayerModel != null) {
-      _latitude = widget.polesLayerModel.latitude;
-      _longitude = widget.polesLayerModel.longitude;
+      _latitude = widget.polesLayerModel!.latitude;
+      _longitude = widget.polesLayerModel!.longitude;
       print("_latitude0" + _latitude.toString());
     } else {
-      if (fielding.allPolesByLayer.length != 0) {
-        _latitude = fielding.allPolesByLayer.first.latitude;
-        _longitude = fielding.allPolesByLayer.first.longitude;
+      if (fielding.allPolesByLayer!.length != 0) {
+        _latitude = fielding.allPolesByLayer!.first.latitude;
+        _longitude = fielding.allPolesByLayer!.first.longitude;
       } else {
         if (fielding.latitude == null) {
-          _latitude = fielding.currentPosition.latitude.toString();
-          _longitude = fielding.currentPosition.longitude.toString();
+          _latitude = fielding.currentPosition!.latitude.toString();
+          _longitude = fielding.currentPosition!.longitude.toString();
           print("_latitude1" + _latitude.toString());
         } else {
           _latitude = fielding.latitude.toString();
@@ -129,10 +129,10 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   void cameraMyLocation() async {
     googleMapController = await _controller.future;
     _onAddMarkerButtonPressed(
-        currentLocation.latitude, currentLocation.longitude);
+        currentLocation.latitude!, currentLocation.longitude!);
     CameraPosition cPosition = CameraPosition(
       zoom: 16,
-      target: LatLng(currentLocation.latitude, currentLocation.longitude),
+      target: LatLng(currentLocation.latitude!, currentLocation.longitude!),
     );
     setState(() {
       googleMapController
@@ -171,28 +171,28 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
             if (state is UpdateLocationLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is UpdateLocationFailed) {
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: state.message);
+              Fluttertoast.showToast(msg: state.message!);
             } else if (state is UpdateLocationSuccess) {
               setState(() {
                 _latitude = state.allPolesByLayerModel.latitude;
                 _longitude = state.allPolesByLayerModel.longitude;
                 // _editLocation = false;
               });
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: "Update location success");
               fieldingBloc.add(GetCurrentAddress(
-                  double.parse(_latitude), double.parse(_longitude)));
+                  double.parse(_latitude!), double.parse(_longitude!)));
             } else if (state is GetCurrentAddressLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is GetCurrentAddressFailed) {
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: state.message);
+              Fluttertoast.showToast(msg: state.message!);
             } else if (state is GetCurrentAddressSuccess) {
-              Navigator.of(_keyLoader.currentContext, rootNavigator: true)
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: "Update location success");
               Get.back();
@@ -224,7 +224,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               Text(
                   (widget.polesLayerModel == null)
                       ? "-"
-                      : widget.polesLayerModel.poleSequence.toString(),
+                      : widget.polesLayerModel!.poleSequence.toString(),
                   style: TextStyle(
                       color: ColorHelpers.colorBlueNumber, fontSize: 18)),
             ],
@@ -247,7 +247,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                   ].toSet(),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
-                        double.parse(_latitude), double.parse(_longitude)),
+                        double.parse(_latitude!), double.parse(_longitude!)),
                     zoom: 16,
                   ),
                   onTap: (LatLng loc) {
@@ -260,11 +260,11 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                     // }
                     if (context
                             .read<FieldingProvider>()
-                            .allPolesByLayer
+                            .allPolesByLayer!
                             .length !=
                         0) {
                       showPinsOnMapAllPoles(
-                          context.read<FieldingProvider>().allPolesByLayer);
+                          context.read<FieldingProvider>().allPolesByLayer!);
                     }
                   },
                   onMapCreated: (GoogleMapController controller) {
@@ -272,21 +272,21 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                     _controller.complete(controller);
 
                     if (widget.polesLayerModel != null) {
-                      showPinsOnMap(widget.polesLayerModel);
+                      showPinsOnMap(widget.polesLayerModel!);
                     } else if (context.read<FieldingProvider>().latitude !=
                         null) {
                       showPinsOnMapDefault(
-                          context.read<FieldingProvider>().latitude,
-                          context.read<FieldingProvider>().longitude);
+                          context.read<FieldingProvider>().latitude!,
+                          context.read<FieldingProvider>().longitude!);
                     }
 
                     if (context
                             .read<FieldingProvider>()
-                            .allPolesByLayer
+                            .allPolesByLayer!
                             .length !=
                         0) {
                       showPinsOnMapAllPoles(
-                          context.read<FieldingProvider>().allPolesByLayer);
+                          context.read<FieldingProvider>().allPolesByLayer!);
                     }
                     Fluttertoast.showToast(
                         msg: "Tap & drag to add pole in map",
@@ -344,8 +344,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             ),
                             Container(
                               child: Text(
-                                double.parse(_latitude).toStringAsFixed(6) ??
-                                    "-",
+                                double.parse(_latitude!).toStringAsFixed(6),
                                 style: TextStyle(
                                     fontSize: 12,
                                     color: ColorHelpers.colorBlackText),
@@ -371,8 +370,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             ),
                             Container(
                               child: Text(
-                                double.parse(_longitude).toStringAsFixed(6) ??
-                                    "-",
+                                double.parse(_longitude!).toStringAsFixed(6),
                                 style: TextStyle(
                                     fontSize: 12,
                                     color: ColorHelpers.colorBlackText),
@@ -442,7 +440,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
 
   void showPinsOnMap(AllPolesByLayerModel list) {
     var fieldingPosition =
-        LatLng(double.parse(list.latitude), double.parse(list.longitude));
+        LatLng(double.parse(list.latitude!), double.parse(list.longitude!));
 
     // add the initial source location pin
 
@@ -499,10 +497,10 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     if (list.length != 0) {
       list.forEach((data) {
         if (data.latitude != null && data.longitude != null) {
-          var fieldingPosition =
-              LatLng(double.parse(data.latitude), double.parse(data.longitude));
+          var fieldingPosition = LatLng(
+              double.parse(data.latitude!), double.parse(data.longitude!));
           if (widget.polesLayerModel != null) {
-            if (widget.polesLayerModel.id != data.id) {
+            if (widget.polesLayerModel!.id != data.id) {
               // add the initial source location pin
               if (data.fieldingStatus == null ||
                   data.fieldingStatus == 0 ||
@@ -586,27 +584,27 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                               if (widget.polesLayerModel == null) {
                                 context
                                     .read<FieldingProvider>()
-                                    .setLatitude(double.parse(_latitude));
+                                    .setLatitude(double.parse(_latitude!));
                                 context
                                     .read<FieldingProvider>()
-                                    .setLongitude(double.parse(_longitude));
+                                    .setLongitude(double.parse(_longitude!));
                                 fieldingBloc.add(GetCurrentAddress(
-                                    double.parse(_latitude),
-                                    double.parse(_longitude)));
+                                    double.parse(_latitude!),
+                                    double.parse(_longitude!)));
                               } else {
                                 context.read<FieldingProvider>().setLatitude(
                                     double.parse(
-                                        widget.polesLayerModel.latitude));
+                                        widget.polesLayerModel!.latitude!));
                                 context.read<FieldingProvider>().setLongitude(
                                     double.parse(
-                                        widget.polesLayerModel.longitude));
+                                        widget.polesLayerModel!.longitude!));
                                 fieldingBloc.add(UpdateLocation(
                                     context
                                         .read<UserProvider>()
                                         .userModel
-                                        .data
+                                        .data!
                                         .token,
-                                    widget.polesLayerModel.id,
+                                    widget.polesLayerModel!.id,
                                     _latitude,
                                     _longitude));
                               }

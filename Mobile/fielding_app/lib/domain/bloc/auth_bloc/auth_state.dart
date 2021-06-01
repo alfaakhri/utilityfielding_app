@@ -14,7 +14,7 @@ class GetAuthSuccess extends AuthState {
 }
 
 class GetAuthFailed extends AuthState {
-  final String message;
+  final String? message;
 
   GetAuthFailed(this.message);
 }
@@ -32,7 +32,7 @@ class DoLoginSuccess extends AuthState {
 }
 
 class DoLoginFailed extends AuthState {
-  final String message;
+  final String? message;
 
   DoLoginFailed(this.message);
 }

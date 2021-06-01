@@ -1,5 +1,3 @@
-import 'package:fielding_app/data/models/add_pole_model.dart';
-import 'package:fielding_app/data/models/add_transformer_model.dart';
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
@@ -25,7 +23,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
   TextEditingController ftController = TextEditingController();
 
   final formKey = new GlobalKey<FormState>();
-  String choiceValue;
+  String? choiceValue;
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +132,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
     );
   }
 
-  Future dialogTransformer(String title, {int index}) {
+  Future dialogTransformer(String title, {int? index}) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -162,10 +160,10 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                           value: value,
                         );
                       }).toList(),
-                      onChanged: (String value) {
+                      onChanged: (String? value) {
                         setState(() {
                           choiceValue = value;
-                          if (value.toLowerCase() == "yes") {
+                          if (value!.toLowerCase() == "yes") {
                             data.setIsTransformer(true);
                           } else {
                             data.setIsTransformer(false);
@@ -274,10 +272,10 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                         child:
                             Text("Save", style: TextStyle(color: Colors.white)),
                         onPressed: () {
-                          if (formKey.currentState.validate()) {
+                          if (formKey.currentState!.validate()) {
                             setState(() {
                               if (!data.isTransformer) {
-                                data.removeLisTransformer(index);
+                                data.removeLisTransformer(index!);
                               } else {
                                 if (index != null) {
                                   data.updateListTransformer(

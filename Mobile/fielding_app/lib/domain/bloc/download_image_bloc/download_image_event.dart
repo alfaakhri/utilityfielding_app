@@ -4,7 +4,7 @@ part of 'download_image_bloc.dart';
 abstract class DownloadImageEvent {}
 
 class SaveImage extends DownloadImageEvent {
-  final String image;
+  final String? image;
 
   SaveImage(this.image);
 }

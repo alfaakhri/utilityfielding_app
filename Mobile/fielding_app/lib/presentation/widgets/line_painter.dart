@@ -2,11 +2,11 @@ import 'package:fielding_app/presentation/widgets/circle_painter.dart';
 import 'package:flutter/material.dart';
 
 class Line extends StatefulWidget {
-  final Map<String, double> start;
-  final Map<String, double> end;
-  final Color color;
+  final Map<String, double?>? start;
+  final Map<String, double?>? end;
+  final Color? color;
 
-  const Line({Key key, this.start, this.end, this.color}) : super(key: key);
+  const Line({Key? key, this.start, this.end, this.color}) : super(key: key);
 
   @override
   _LineState createState() => _LineState();
@@ -30,19 +30,19 @@ class _LineState extends State<Line> with SingleTickerProviderStateMixin {
 }
 
 class DrawLine extends CustomPainter {
-  Map<String, double> start;
-  Map<String, double> end;
-  Color color;
+  Map<String, double?>? start;
+  Map<String, double?>? end;
+  Color? color;
   DrawLine({this.start, this.end, this.color});
   @override
   void paint(Canvas canvas, Size size) {
     Paint line = new Paint()
-      ..color = color
+      ..color = color!
       ..strokeCap = StrokeCap.square
       ..style = PaintingStyle.fill
       ..strokeWidth = 2;
     canvas.drawLine(
-        Offset(start["x"], start["y"]), Offset(end["x"], end["y"]), line);
+        Offset(start!["x"]!, start!["y"]!), Offset(end!["x"]!, end!["y"]!), line);
   }
 
   @override

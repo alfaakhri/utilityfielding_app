@@ -99,9 +99,9 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                             var fielding =
                                 Provider.of<FieldingProvider>(context);
                             double newX =
-                                ((newWidth * e.shapeX) / fielding.baseWidth);
+                                ((newWidth * e.shapeX!) / fielding.baseWidth);
                             double newY =
-                                ((newHeight * e.shapeY) / fielding.baseHeight);
+                                ((newHeight * e.shapeY!) / fielding.baseHeight);
 
                             if (e.value == 4) {
                               if (e.imageType == 1) {
@@ -128,17 +128,17 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                     : {"x": newX, "y": newY},
                                 radius: 10,
                                 text:
-                                    "R$value-${Constants.alphabet[e.sequence - 1]}",
+                                    "R$value-${Constants.alphabet[e.sequence! - 1]}",
                               );
                             }
                           }).toList(),
                         ),
-                        (data.activePointName.contains("VGR"))
+                        (data.activePointName!.contains("VGR"))
                             ? GestureDetector(
                                 child: TriangleText(
                                   x: data.resultDataRiser.shapeX,
                                   y: data.resultDataRiser.shapeY,
-                                  text: data.activePointName +
+                                  text: data.activePointName! +
                                       "-${data.sequenceCurrent}",
                                 ),
                               )
@@ -149,8 +149,8 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                     "y": data.resultDataRiser.shapeY
                                   },
                                   radius: 10,
-                                  text: data.activePointName +
-                                      "-${Constants.alphabet[data.sequenceCurrent - 1]}",
+                                  text: data.activePointName! +
+                                      "-${Constants.alphabet[data.sequenceCurrent! - 1]}",
                                 ),
                               )
                       ],

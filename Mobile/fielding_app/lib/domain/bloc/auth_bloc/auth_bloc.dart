@@ -33,11 +33,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (firstInstall == null) {
           yield FirstInstall();
         } else {
-          _userModel = await _sharedPref.getUserModel();
+          _userModel = await (_sharedPref.getUserModel() as FutureOr<UserModel>);
           if (_userModel == null) {
             yield GetAuthMustLogin();
           } else {
-            var response = await _apiProvider.checkToken(_userModel.data.token);
+            var response = await (_apiProvider.checkToken(_userModel.data!.token) as FutureOr<Response<dynamic>>);
             if (response.statusCode == 200) {
               yield GetAuthSuccess(_userModel);
             } else
@@ -52,7 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         var response =
             await _apiProvider.doLogin(event.username, event.password);
-        _userModel = UserModel.fromJson(response.data);
+        _userModel = UserModel.fromJson(response!.data);
         if (response.statusCode == 200) {
           _sharedPref.saveUserModel(_userModel);
           yield DoLoginSuccess(_userModel);
@@ -66,7 +66,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield* _startAppToState();
     } else if (event is DoLogout) {
       _sharedPref.deleteUserModel();
-      _userModel = null;
       Get.offAll(LoginPage());
     } else if (event is SaveFirstInstall) {
       _sharedPref.saveFirstInstall();

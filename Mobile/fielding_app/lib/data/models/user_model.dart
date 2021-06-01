@@ -1,7 +1,7 @@
 class UserModel {
-  Data data;
-  bool status;
-  String message;
+  Data? data;
+  bool? status;
+  String? message;
 
   UserModel({this.data, this.status, this.message});
 
@@ -14,7 +14,7 @@ class UserModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.data != null) {
-      data['data'] = this.data.toJson();
+      data['data'] = this.data!.toJson();
     }
     data['status'] = this.status;
     data['Message'] = this.message;
@@ -23,9 +23,9 @@ class UserModel {
 }
 
 class Data {
-  User user;
-  String token;
-  String expiredTime;
+  User? user;
+  String? token;
+  String? expiredTime;
 
   Data({this.user, this.token, this.expiredTime});
 
@@ -38,7 +38,7 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.user != null) {
-      data['User'] = this.user.toJson();
+      data['User'] = this.user!.toJson();
     }
     data['Token'] = this.token;
     data['ExpiredTime'] = this.expiredTime;
@@ -47,10 +47,10 @@ class Data {
 }
 
 class User {
-  String iD;
-  String companyID;
-  String companyName;
-  String email;
+  String? iD;
+  String? companyID;
+  String? companyName;
+  String? email;
 
   User({this.iD, this.companyID, this.companyName, this.email});
 

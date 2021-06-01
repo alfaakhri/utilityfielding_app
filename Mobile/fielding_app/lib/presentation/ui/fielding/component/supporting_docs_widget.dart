@@ -27,7 +27,7 @@ class SupportingDocsWidget extends StatelessWidget {
             child: ListView(
               children: context
                   .watch<FieldingProvider>()
-                  .jobNumberAttachModel
+                  .jobNumberAttachModel!
                   .map((e) => Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -41,7 +41,7 @@ class SupportingDocsWidget extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    e.fileName,
+                                    e.fileName!,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: ColorHelpers.colorBlackText,
@@ -50,17 +50,17 @@ class SupportingDocsWidget extends StatelessWidget {
                                 ),
                                 InkWell(
                                   onTap: () async {
-                                    String format = e.fileName.split(".").last;
+                                    String format = e.fileName!.split(".").last;
                                     if (format.toLowerCase() == "jpg" ||
                                         format.toLowerCase() == "jpeg" ||
                                         format.toLowerCase() == "png") {
                                       Navigator.pop(context);
                                       Get.to(PreviewImage(
-                                        image: Constants.baseURL + e.filePath,
+                                        image: Constants.baseURL + e.filePath!,
                                       ));
                                     } else {
                                       String url =
-                                          Constants.baseURL + e.filePath;
+                                          Constants.baseURL + e.filePath!;
                                       if (await canLaunch(url)) {
                                         Navigator.pop(context);
                                         await launch(url);

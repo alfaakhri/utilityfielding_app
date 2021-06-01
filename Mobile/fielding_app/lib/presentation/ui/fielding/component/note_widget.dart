@@ -3,10 +3,10 @@ import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:flutter/material.dart';
 
 class NoteWidget extends StatefulWidget {
-  final String title;
-  final TextEditingController controller;
+  final String? title;
+  final TextEditingController? controller;
 
-  const NoteWidget({Key key, this.title, this.controller}) : super(key: key);
+  const NoteWidget({Key? key, this.title, this.controller}) : super(key: key);
 
   @override
   _NoteWidgetState createState() => _NoteWidgetState();
@@ -29,7 +29,7 @@ class _NoteWidgetState extends State<NoteWidget> {
           Expanded(
             flex: 4,
             child: Text(
-              widget.title,
+              widget.title!,
               style: textDefault,
             ),
           ),
@@ -39,7 +39,7 @@ class _NoteWidgetState extends State<NoteWidget> {
           Expanded(
             flex: 2,
             child: Text(
-              widget.controller.text,
+              widget.controller!.text,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
@@ -60,12 +60,12 @@ class _NoteWidgetState extends State<NoteWidget> {
               height: 30,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: (widget.controller.text.isEmpty)
+                color: (widget.controller!.text.isEmpty)
                     ? ColorHelpers.colorBlueNumber
                     : ColorHelpers.colorGreen,
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: Text((widget.controller.text.isEmpty) ? 'Enter' : "Edit",
+              child: Text((widget.controller!.text.isEmpty) ? 'Enter' : "Edit",
                   style:
                       TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
             ),
@@ -88,7 +88,7 @@ class _NoteWidgetState extends State<NoteWidget> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text(
-                widget.title,
+                widget.title!,
                 style: textDefault,
               ),
               UIHelper.verticalSpaceSmall,

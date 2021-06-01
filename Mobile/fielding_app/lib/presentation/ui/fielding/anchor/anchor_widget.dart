@@ -22,7 +22,7 @@ class AnchorWidget extends StatefulWidget {
 class _AnchorWidgetState extends State<AnchorWidget> {
   double shapeX = 25;
   double shapeY = 25;
-  double _width;
+  double? _width;
   var textDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12);
 
   TextEditingController activeAnchor = TextEditingController();
@@ -31,10 +31,10 @@ class _AnchorWidgetState extends State<AnchorWidget> {
   TextEditingController eyes = TextEditingController();
   TextEditingController textPictureAnchorEye = TextEditingController();
 
-  bool isPictureAnchor;
+  bool? isPictureAnchor;
 
-  List<DownGuyList> downGuyList = List<DownGuyList>();
-  List<DownGuyList> brokenDownGuyList = List<DownGuyList>();
+  List<DownGuyList> downGuyList = <DownGuyList>[];
+  List<DownGuyList> brokenDownGuyList = <DownGuyList>[];
   List<String> listChoice = ['Yes', 'No'];
 
   void assignValueForm(AnchorList data) {
@@ -42,14 +42,14 @@ class _AnchorWidgetState extends State<AnchorWidget> {
       this.distance.text = data.distance.toString();
       // this.size.text = data.size.toString();
       // this.eyes.text = data.anchorEye.toString();
-      if (data.eyesPict) {
+      if (data.eyesPict!) {
         this.textPictureAnchorEye.text = "Yes";
         isPictureAnchor = true;
       } else {
         this.textPictureAnchorEye.text = "No";
         isPictureAnchor = false;
       }
-      data.downGuyList.forEach((element) {
+      data.downGuyList!.forEach((element) {
         if (element.type == 0) {
           downGuyList.add(element);
         } else {
@@ -128,8 +128,8 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                               var fielding =
                                   Provider.of<FieldingProvider>(context);
                               double newX =
-                                  ((newWidth * e.circleX) / fielding.baseWidth);
-                              double newY = ((newHeight * e.circleY) /
+                                  ((newWidth * e.circleX!) / fielding.baseWidth);
+                              double newY = ((newHeight * e.circleY!) /
                                   fielding.baseHeight);
 
                               return CustomPaint(
@@ -163,14 +163,14 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                           decoration: kDecorationDropdown(),
                           items: data.listAnchorData.map((value) {
                             return DropdownMenuItem<String>(
-                              child: Text(value.text,
+                              child: Text(value.text!,
                                   style: TextStyle(fontSize: 12)),
                               value: value.text,
                             );
                           }).toList(),
-                          onChanged: (String value) {
+                          onChanged: (String? value) {
                             setState(() {
-                              this.activeAnchor.text = value;
+                              this.activeAnchor.text = value!;
                               AnchorList _anchor =
                                   data.getDataAnchorList(value);
                               assignValueForm(_anchor);
@@ -198,16 +198,16 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                   DropdownButtonFormField<String>(
                                     isDense: true,
                                     decoration: kDecorationDropdown(),
-                                    items: data.listAllAnchorSize.map((value) {
+                                    items: data.listAllAnchorSize!.map((value) {
                                       return DropdownMenuItem<String>(
-                                        child: Text(value.text,
+                                        child: Text(value.text!,
                                             style: TextStyle(fontSize: 12)),
                                         value: value.text,
                                       );
                                     }).toList(),
-                                    onChanged: (String value) {
+                                    onChanged: (String? value) {
                                       setState(() {
-                                        this.size.text = value;
+                                        this.size.text = value!;
 
                                         data.setAnchorSizeSelected(value);
                                       });
@@ -227,16 +227,16 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                     isDense: true,
                                     decoration: kDecorationDropdown(),
                                     items:
-                                        data.listAnchorEyesModel.map((value) {
+                                        data.listAnchorEyesModel!.map((value) {
                                       return DropdownMenuItem<String>(
-                                        child: Text(value.text,
+                                        child: Text(value.text!,
                                             style: TextStyle(fontSize: 12)),
                                         value: value.text,
                                       );
                                     }).toList(),
-                                    onChanged: (String value) {
+                                    onChanged: (String? value) {
                                       setState(() {
-                                        this.eyes.text = value;
+                                        this.eyes.text = value!;
 
                                         data.setAnchorEyesSelected(value);
                                       });
@@ -261,9 +261,9 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                         value: value,
                                       );
                                     }).toList(),
-                                    onChanged: (String value) {
+                                    onChanged: (String? value) {
                                       setState(() {
-                                        this.textPictureAnchorEye.text = value;
+                                        this.textPictureAnchorEye.text = value!;
                                         if (value == "Yes") {
                                           this.isPictureAnchor = true;
                                         } else {

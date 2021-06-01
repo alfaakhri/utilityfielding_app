@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 class DrawerWidget extends StatelessWidget {
   UserModel userModel = UserModel();
-  AuthBloc authBloc;
+  late AuthBloc authBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class DrawerWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    userModel.data.user.companyName,
+                    userModel.data!.user!.companyName!,
                     style: TextStyle(
                         color: ColorHelpers.colorGrey,
                         fontSize: 14,
@@ -38,7 +38,7 @@ class DrawerWidget extends StatelessWidget {
                   ),
                   UIHelper.verticalSpaceVerySmall,
                   Text(
-                    userModel.data.user.email,
+                    userModel.data!.user!.email!,
                     style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 12),
                   ),
                 ],

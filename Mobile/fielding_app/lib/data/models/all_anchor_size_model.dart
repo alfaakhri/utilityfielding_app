@@ -1,6 +1,6 @@
 class AllAnchorSizeModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   AllAnchorSizeModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class AllAnchorSizeModel {
     return data;
   }
 
-  static List<AllAnchorSizeModel> fromJsonList(jsonList) {
+  static List<AllAnchorSizeModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllAnchorSizeModel>((obj) => AllAnchorSizeModel.fromJson(obj))
         .toList();

@@ -10,7 +10,7 @@ class SaveImageLoading extends DownloadImageState {}
 class SaveImageSuccess extends DownloadImageState {}
 
 class SaveImageError extends DownloadImageState {
-  final String message;
+  final String? message;
 
   SaveImageError(this.message);
 }

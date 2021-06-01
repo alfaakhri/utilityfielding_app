@@ -1,6 +1,6 @@
 class RiserAndVGRTypeModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   RiserAndVGRTypeModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class RiserAndVGRTypeModel {
     return data;
   }
 
-  static List<RiserAndVGRTypeModel> fromJsonList(jsonList) {
+  static List<RiserAndVGRTypeModel>? fromJsonList(jsonList) {
     return jsonList
         .map<RiserAndVGRTypeModel>((obj) => RiserAndVGRTypeModel.fromJson(obj))
         .toList();

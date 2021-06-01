@@ -4,11 +4,11 @@ import 'package:fielding_app/external/color_helpers.dart';
 import 'package:flutter/material.dart';
 
 class CircleText extends StatefulWidget {
-  final Map<String, double> center;
-  final double radius;
-  final String text;
+  final Map<String, double?>? center;
+  final double? radius;
+  final String? text;
 
-  const CircleText({Key key, this.center, this.radius, this.text})
+  const CircleText({Key? key, this.center, this.radius, this.text})
       : super(key: key);
 
   @override
@@ -17,7 +17,7 @@ class CircleText extends StatefulWidget {
 
 class _CircleTextState extends State<CircleText>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
   @override
   void initState() {
     super.initState();
@@ -41,9 +41,9 @@ class _CircleTextState extends State<CircleText>
 }
 
 class DrawCircleText extends CustomPainter {
-  Map<String, double> center;
-  double radius;
-  String text;
+  Map<String, double?>? center;
+  double? radius;
+  String? text;
   DrawCircleText({this.center, this.radius, this.text});
   @override
   void paint(Canvas canvas, Size size) {
@@ -53,9 +53,9 @@ class DrawCircleText extends CustomPainter {
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(
-        Offset(center["x"], center["y"]), radius, paintCircle);
+        Offset(center!["x"]!, center!["y"]!), radius!, paintCircle);
     canvas.drawCircle(
-        Offset(center["x"], center["y"]), radius, paintBorder);
+        Offset(center!["x"]!, center!["y"]!), radius!, paintBorder);
     final textSpan = TextSpan(
       text: text,
       style: TextStyle(color: ColorHelpers.colorRed, fontSize: 12)
@@ -68,7 +68,7 @@ class DrawCircleText extends CustomPainter {
       minWidth: 0,
       maxWidth: 30,
     );
-    final offset = Offset(center["x"] - 7, center["y"] - 8);
+    final offset = Offset(center!["x"]! - 7, center!["y"]! - 8);
     textPainter.paint(canvas, offset);
   }
 
@@ -80,9 +80,9 @@ class DrawCircleText extends CustomPainter {
 }
 
 class DrawCircleTextAnchor extends CustomPainter {
-  Map<String, double> center;
-  double radius;
-  String text;
+  Map<String, double>? center;
+  double? radius;
+  String? text;
   DrawCircleTextAnchor({this.center, this.radius, this.text});
   @override
   void paint(Canvas canvas, Size size) {
@@ -92,9 +92,9 @@ class DrawCircleTextAnchor extends CustomPainter {
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
     canvas.drawCircle(
-        Offset(center["x"], center["y"]), radius, paintCircle);
+        Offset(center!["x"]!, center!["y"]!), radius!, paintCircle);
     canvas.drawCircle(
-        Offset(center["x"], center["y"]), radius, paintBorder);
+        Offset(center!["x"]!, center!["y"]!), radius!, paintBorder);
     final textSpan = TextSpan(
       text: text,
       style: TextStyle(color: ColorHelpers.colorRed, fontSize: 11)
@@ -107,7 +107,7 @@ class DrawCircleTextAnchor extends CustomPainter {
       minWidth: 0,
       maxWidth: 20,
     );
-    final offset = Offset(center["x"] - 5, center["y"] - 7);
+    final offset = Offset(center!["x"]! - 5, center!["y"]! - 7);
     textPainter.paint(canvas, offset);
   }
 

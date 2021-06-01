@@ -27,7 +27,7 @@ class DownloadImageBloc extends Bloc<DownloadImageEvent, DownloadImageState> {
         String formattedDate = DateFormat('yyyy-MM-dd').format(now);
 
         var response = await Dio()
-            .get(event.image, options: Options(responseType: ResponseType.bytes));
+            .get(event.image!, options: Options(responseType: ResponseType.bytes));
         final result = await ImageGallerySaver.saveImage(
             Uint8List.fromList(response.data),
             quality: 60,

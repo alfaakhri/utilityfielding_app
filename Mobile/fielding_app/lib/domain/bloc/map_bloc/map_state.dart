@@ -7,12 +7,12 @@ class MapInitial extends MapState {}
 
 class GetJobNumberLoading extends MapState {}
 class GetJobNumberSuccess extends MapState {
-  final List<JobNumberLocModel> jobNumberLocModel;
+  final List<JobNumberLocModel>? jobNumberLocModel;
 
   GetJobNumberSuccess(this.jobNumberLocModel);
 }
 class GetJobNumberFailed extends MapState {
-  final String message;
+  final String? message;
 
   GetJobNumberFailed(this.message);
 }

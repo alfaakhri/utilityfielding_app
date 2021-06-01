@@ -1,13 +1,13 @@
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
-import 'package:fielding_app/domain/provider/user_provider.dart';
-import 'package:fielding_app/external/color_helpers.dart';
-import 'package:fielding_app/external/ui_helpers.dart';
-import 'package:fielding_app/presentation/ui/fielding/list_fielding_page.dart';
-import 'package:fielding_app/presentation/widgets/loading_widget.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'fielding/fielding.exports.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -27,9 +27,9 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
-  AuthBloc authBloc;
+  late AuthBloc authBloc;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
-  var node;
+  late var node;
 
   @override
   void initState() {
@@ -42,17 +42,16 @@ class _LoginPageState extends State<LoginPage> {
     node = FocusScope.of(context);
 
     return BlocListener<AuthBloc, AuthState>(
-        cubit: authBloc,
         listener: (context, state) {
           if (state is DoLoginSuccess) {
-            Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+            Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
             context.read<UserProvider>().setUserModel(state.userModel);
             Get.offAll(ListFieldingPage());
           } else if (state is DoLoginLoading) {
             LoadingWidget.showLoadingDialog(context, _keyLoader);
           } else if (state is DoLoginFailed) {
-            Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
-            Fluttertoast.showToast(msg: state.message);
+            Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+            Fluttertoast.showToast(msg: state.message!);
           }
         },
         child: Scaffold(
@@ -65,12 +64,10 @@ class _LoginPageState extends State<LoginPage> {
     return SingleChildScrollView(
       child: Stack(
         children: [
-          Image.asset(
-            'assets/bg_login.png',
-            fit: BoxFit.cover,
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width
-          ),
+          Image.asset('assets/bg_login.png',
+              fit: BoxFit.cover,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width),
           Container(
             padding: EdgeInsets.symmetric(
                 // vertical: MediaQuery.of(context).size.height / 12,
@@ -123,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               obscureText: _obscureText,
               controller: _password,
-              validator: (value) => _validator(value, 'password'),
+              validator: (value) => _validator(value!, 'password'),
               decoration: InputDecoration(
                 suffixIcon: GestureDetector(
                   onTap: () {
@@ -131,10 +128,8 @@ class _LoginPageState extends State<LoginPage> {
                       _obscureText = !_obscureText;
                     });
                   },
-                  child: Icon(
-                      _obscureText ? Icons.lock : Icons.lock_open,
-                      color: ColorHelpers.colorGrey,
-                      size: 26),
+                  child: Icon(_obscureText ? Icons.lock : Icons.lock_open,
+                      color: ColorHelpers.colorGrey, size: 26),
                 ),
                 filled: true,
                 fillColor: ColorHelpers.colorWhite,
@@ -168,12 +163,11 @@ class _LoginPageState extends State<LoginPage> {
             UIHelper.verticalSpaceVerySmall,
             TextFormField(
               controller: _username,
-              validator: (value) => _validator(value, 'email'),
+              validator: (value) => _validator(value!, 'email'),
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               onEditingComplete: () => node.nextFocus(),
               decoration: InputDecoration(
-               
                 filled: true,
                 suffixIcon: Icon(
                   Icons.account_circle,
@@ -183,8 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                 fillColor: ColorHelpers.colorWhite,
                 isDense: true,
                 focusedBorder: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: ColorHelpers.colorGrey)),
+                    borderSide: BorderSide(color: ColorHelpers.colorGrey)),
                 border: OutlineInputBorder(
                     borderSide: BorderSide(color: ColorHelpers.colorWhite)),
                 enabledBorder: OutlineInputBorder(
@@ -200,7 +193,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget showPrimaryButton() {
     return InkWell(
       onTap: () {
-        if (formKey.currentState.validate()) {
+        if (formKey.currentState!.validate()) {
           authBloc.add(DoLogin(_username.text, _password.text));
         }
       },

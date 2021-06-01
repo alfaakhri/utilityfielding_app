@@ -4,7 +4,7 @@ part of 'map_bloc.dart';
 abstract class MapEvent {}
 
 class GetJobNumberLoc extends MapEvent {
-  final String token;
+  final String? token;
 
   GetJobNumberLoc(this.token);
 }

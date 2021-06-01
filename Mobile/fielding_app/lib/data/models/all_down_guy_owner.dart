@@ -1,6 +1,6 @@
 class AllDownGuyOwnerModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   AllDownGuyOwnerModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class AllDownGuyOwnerModel {
     return data;
   }
 
-  static List<AllDownGuyOwnerModel> fromJsonList(jsonList) {
+  static List<AllDownGuyOwnerModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllDownGuyOwnerModel>((obj) => AllDownGuyOwnerModel.fromJson(obj))
         .toList();

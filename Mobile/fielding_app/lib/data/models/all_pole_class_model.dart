@@ -1,6 +1,6 @@
 class AllPoleClassModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   AllPoleClassModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class AllPoleClassModel {
     return data;
   }
 
-  static List<AllPoleClassModel> fromJsonList(jsonList) {
+  static List<AllPoleClassModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllPoleClassModel>((obj) => AllPoleClassModel.fromJson(obj))
         .toList();

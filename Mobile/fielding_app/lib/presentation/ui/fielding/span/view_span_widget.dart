@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -39,15 +40,15 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
 
   Future<void> _capturePng() async {
     RenderRepaintBoundary boundary =
-        globalKey.currentContext.findRenderObject() as RenderRepaintBoundary;
+        globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
     ui.Image image = await boundary.toImage();
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    ByteData byteData = await (image.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
     Uint8List pngBytes = byteData.buffer.asUint8List();
     String base64Image = base64Encode(pngBytes);
 
     print(pngBytes);
     Map<dynamic, dynamic> result =
-        await ImageGallerySaver.saveImage(pngBytes, quality: 100, name: "1234");
+        await (ImageGallerySaver.saveImage(pngBytes, quality: 100, name: "1234") as FutureOr<Map<dynamic, dynamic>>);
     print(result);
     context.read<SpanProvider>().uploadImage(
         Uuid().v1() + ".png", base64Image, result["filePath"], "span");
@@ -149,23 +150,23 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                                     MediaQuery.of(context).size.height;
 
                                 if (e.lineData != "null") {
-                                  double aX = double.parse(e.lineData
+                                  double aX = double.parse(e.lineData!
                                       .replaceAll("[", "")
                                       .replaceAll("]", "")
                                       .split(",")[0]);
-                                  double aY = double.parse(e.lineData
+                                  double aY = double.parse(e.lineData!
                                       .replaceAll("[]", "")
                                       .replaceAll("]", "")
                                       .split(",")[1]);
-                                  double bX = double.parse(e.lineData
+                                  double bX = double.parse(e.lineData!
                                       .replaceAll("[]", "")
                                       .replaceAll("]", "")
                                       .split(",")[2]);
-                                  double bY = double.parse(e.lineData
+                                  double bY = double.parse(e.lineData!
                                       .replaceAll("[]", "")
                                       .replaceAll("]", "")
                                       .split(",")[3]);
-                                  Color color = HexColor.fromHex(e.color);
+                                  Color color = HexColor.fromHex(e.color!);
                                   var fielding =
                                       Provider.of<FieldingProvider>(context);
                                   double newAX =
@@ -220,7 +221,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                             Color color;
                             var e = data.listSpanData[index];
                             if (e.color != null) {
-                              color = HexColor.fromHex(e.color);
+                              color = HexColor.fromHex(e.color!);
                             } else {
                               color = ColorHelpers.colorBlackText;
                             }
@@ -251,7 +252,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                                                 color: color,
                                               ),
                                               UIHelper.horizontalSpaceVerySmall,
-                                              Text(e.length.toString() ?? "-"),
+                                              Text(e.length.toString() ),
                                             ],
                                           ),
                                           Text("ft"),

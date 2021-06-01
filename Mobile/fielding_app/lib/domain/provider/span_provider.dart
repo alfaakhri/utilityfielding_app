@@ -3,19 +3,19 @@ import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:flutter/material.dart';
 
 class SpanProvider extends ChangeNotifier {
-  List<SpanDirectionList> _listSpanData = List<SpanDirectionList>();
+  List<SpanDirectionList> _listSpanData = <SpanDirectionList>[];
   List<SpanDirectionList> get listSpanData => _listSpanData;
   void addListSpanData(SpanDirectionList spanData) {
     _listSpanData.add(spanData);
     notifyListeners();
   }
 
-  addAllListSpanData(List<SpanDirectionList> data) {
+  addAllListSpanData(List<SpanDirectionList>? data) {
     _listSpanData.clear();
     if (data != null) {
       _listSpanData.addAll(data);
     } else {
-      _listSpanData = List<SpanDirectionList>();
+      _listSpanData = <SpanDirectionList>[];
     }
 
     notifyListeners();
@@ -33,7 +33,7 @@ class SpanProvider extends ChangeNotifier {
   }
 
   void uploadImage(
-      String filename, String base64, String imagePath, String location) async {
+      String filename, String base64, String? imagePath, String location) async {
     try {
       ApiProvider _apiProvider = ApiProvider();
 
@@ -61,8 +61,8 @@ class SpanProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int _imageType;
-  int get imageType => _imageType;
+  int? _imageType;
+  int? get imageType => _imageType;
   void setImageType(int imageType) {
     _imageType = imageType;
     notifyListeners();

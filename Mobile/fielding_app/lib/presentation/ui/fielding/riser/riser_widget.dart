@@ -127,9 +127,9 @@ class _RiserWidgetState extends State<RiserWidget> {
                             var fielding =
                                 Provider.of<FieldingProvider>(context);
                             double newX =
-                                ((newWidth * e.shapeX) / fielding.baseWidth);
+                                ((newWidth * e.shapeX!) / fielding.baseWidth);
                             double newY =
-                                ((newHeight * e.shapeY) / fielding.baseHeight);
+                                ((newHeight * e.shapeY!) / fielding.baseHeight);
 
                             if (e.value == 4) {
                               if (e.imageType == 1) {
@@ -156,7 +156,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                                     : {"x": newX, "y": newY},
                                 radius: 10,
                                 text:
-                                    "R$value-${Constants.alphabet[e.sequence - 1]}",
+                                    "R$value-${Constants.alphabet[e.sequence! - 1]}",
                               );
                             }
                           }).toList(),
@@ -181,14 +181,14 @@ class _RiserWidgetState extends State<RiserWidget> {
                             decoration: kDecorationDropdown(),
                             items: data.listRiserData.map((value) {
                               return DropdownMenuItem<String>(
-                                child: Text(value.name,
+                                child: Text(value.name!,
                                     style: TextStyle(fontSize: 12)),
                                 value: value.name,
                               );
                             }).toList(),
-                            onChanged: (String value) {
+                            onChanged: (String? value) {
                               setState(() {
-                                this.selectActivePoint.text = value;
+                                this.selectActivePoint.text = value!;
                                 data.searchTypeByPointName(value);
                               });
                             },
@@ -215,7 +215,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                                         DropdownButtonFormField<String>(
                                           isDense: true,
                                           decoration: kDecorationDropdown(),
-                                          items: data.listDownGuyOwner
+                                          items: data.listDownGuyOwner!
                                               .map((value) {
                                             return DropdownMenuItem<String>(
                                               child: Text(value.text.toString(),
@@ -224,10 +224,10 @@ class _RiserWidgetState extends State<RiserWidget> {
                                               value: value.text.toString(),
                                             );
                                           }).toList(),
-                                          onChanged: (String value) {
+                                          onChanged: (String? value) {
                                             setState(() {
                                               data.setDownGuySelected(value);
-                                              this.type.text = value;
+                                              this.type.text = value!;
                                             });
                                           },
                                           value:
@@ -360,14 +360,14 @@ class _RiserWidgetState extends State<RiserWidget> {
                             return null;
                           },
                           decoration: kDecorationDropdown(),
-                          items: data.listRiser.map((value) {
+                          items: data.listRiser!.map((value) {
                             return DropdownMenuItem<String>(
                               child: Text(value.text.toString() + " Inch",
                                   style: TextStyle(fontSize: 12)),
                               value: value.text.toString(),
                             );
                           }).toList(),
-                          onChanged: (String value) {
+                          onChanged: (String? value) {
                             setState(() {
                               data.setRiserVGRSelected(value);
                             });
@@ -393,14 +393,14 @@ class _RiserWidgetState extends State<RiserWidget> {
                             return null;
                           },
                           decoration: kDecorationDropdown(),
-                          items: data.listDownGuyOwner.map((value) {
+                          items: data.listDownGuyOwner!.map((value) {
                             return DropdownMenuItem<String>(
                               child: Text(value.text.toString(),
                                   style: TextStyle(fontSize: 12)),
                               value: value.text.toString(),
                             );
                           }).toList(),
-                          onChanged: (String value) {
+                          onChanged: (String? value) {
                             setState(() {
                               data.setDownGuySelected(value);
                             });
@@ -418,8 +418,9 @@ class _RiserWidgetState extends State<RiserWidget> {
                         child:
                             Text("Save", style: TextStyle(color: Colors.white)),
                         onPressed: () {
-                          if (formKey.currentState.validate()) {
-                            data.setListActivePoint(data.riserVGRSelected.text);
+                          if (formKey.currentState!.validate()) {
+                            data.setListActivePoint(
+                                data.riserVGRSelected.text!);
                             Navigator.of(context).pop();
                             // Fluttertoast.showToast(msg: "Please tap Riser/VGR in canvas");
                             Get.to(InsertRiserWidget());

@@ -7,18 +7,18 @@ import 'dart:async';
 import 'package:image/image.dart' as IMG;
 
 class TriangleText extends StatefulWidget {
-  final double x;
-  final double y;
-  final String text;
+  final double? x;
+  final double? y;
+  final String? text;
 
-  const TriangleText({Key key, this.x, this.y, this.text}) : super(key: key);
+  const TriangleText({Key? key, this.x, this.y, this.text}) : super(key: key);
 
   @override
   _TriangleTextState createState() => _TriangleTextState();
 }
 
 class _TriangleTextState extends State<TriangleText> {
-  ui.Image image;
+  ui.Image? image;
   bool isImageloaded = false;
   void initState() {
     super.initState();
@@ -31,13 +31,13 @@ class _TriangleTextState extends State<TriangleText> {
   }
 
   Future<ui.Image> loadImage(List<int> img) async {
-    final IMG.Image image = IMG.decodeImage(img);
-    final IMG.Image resized = IMG.copyResize(image, width: 100);
+    final IMG.Image? image = IMG.decodeImage(img);
+    final IMG.Image resized = IMG.copyResize(image!, width: 100);
     final List<int> resizedBytes = IMG.encodePng(resized);
     final Completer<ui.Image> completer = new Completer();
 
     ui.decodeImageFromList(
-        resizedBytes, (ui.Image img) => completer.complete(img));
+        resizedBytes as Uint8List, (ui.Image img) => completer.complete(img));
     return completer.future;
   }
 
@@ -47,15 +47,15 @@ class _TriangleTextState extends State<TriangleText> {
     return CustomPaint(
       size: Size(350, 250),
       painter: DrawTriangle(
-          x: (width > 360) ? (widget.x + 10) : widget.x, y: widget.y, text: widget.text),
+          x: (width > 360) ? (widget.x! + 10) : widget.x, y: widget.y, text: widget.text),
     );
   }
 }
 
 class DrawTriangle extends CustomPainter {
-  double x;
-  double y;
-  String text;
+  double? x;
+  double? y;
+  String? text;
 
   DrawTriangle({this.x, this.y, this.text});
   @override
@@ -73,7 +73,7 @@ class DrawTriangle extends CustomPainter {
       minWidth: 0,
       maxWidth: 50,
     );
-    final offset = Offset(x + 10, y + 5);
+    final offset = Offset(x! + 10, y! + 5);
     textPainter.paint(canvas, offset);
     Paint paintTriangle = Paint()..color = Colors.white;
     Paint paintBorder = Paint()
@@ -82,9 +82,9 @@ class DrawTriangle extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     var path = Path();
-    path.moveTo(x, y);
-    path.lineTo(x - 10, y + 20);
-    path.lineTo(x + 10, y + 20);
+    path.moveTo(x!, y!);
+    path.lineTo(x! - 10, y! + 20);
+    path.lineTo(x! + 10, y! + 20);
     path.close();
     canvas.drawPath(path, paintTriangle);
     canvas.drawPath(path, paintBorder);

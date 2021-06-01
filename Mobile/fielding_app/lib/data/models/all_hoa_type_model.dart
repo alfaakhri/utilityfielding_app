@@ -1,6 +1,6 @@
 class AllHoaTypeModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   AllHoaTypeModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class AllHoaTypeModel {
     return data;
   }
 
-  static List<AllHoaTypeModel> fromJsonList(jsonList) {
+  static List<AllHoaTypeModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllHoaTypeModel>((obj) => AllHoaTypeModel.fromJson(obj))
         .toList();

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
@@ -10,17 +12,14 @@ import 'package:fielding_app/presentation/widgets/line_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:random_color/random_color.dart';
 import 'package:provider/provider.dart';
 
 class InsertSpanWidget extends StatefulWidget {
-  final SpanDirectionList spanData;
-  final int index;
-  final double bXCoor;
+  final SpanDirectionList? spanData;
+  final int? index;
+  final double? bXCoor;
 
-  const InsertSpanWidget({Key key, this.spanData, this.index, this.bXCoor})
+  const InsertSpanWidget({Key? key, this.spanData, this.index, this.bXCoor})
       : super(key: key);
 
   @override
@@ -28,59 +27,51 @@ class InsertSpanWidget extends StatefulWidget {
 }
 
 class _InsertSpanWidgetState extends State<InsertSpanWidget> {
-  double _aX;
-  double _aY;
+  double? _aX;
+  double? _aY;
 
-  double _bX;
+  double? _bX;
   double _bY = 250 / 2;
-  int imageType = 0;
+  int? imageType = 0;
 
   GlobalKey globalKey = GlobalKey();
   final formKey = new GlobalKey<FormState>();
 
   TextEditingController sizeController = TextEditingController();
-  Color randomColor;
+  Color? randomColor;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     this._bX = widget.bXCoor;
-    RandomColor _randomColor = RandomColor();
     if (widget.spanData != null) {
-      imageType = widget.spanData.imageType;
-      this.randomColor = HexColor.fromHex(widget.spanData.color);
-      this.sizeController.text = widget.spanData.length.toString();
-      _aX = double.parse(widget.spanData.lineData
+      imageType = widget.spanData!.imageType;
+      this.randomColor = HexColor.fromHex(widget.spanData!.color!);
+      this.sizeController.text = widget.spanData!.length.toString();
+      _aX = double.parse(widget.spanData!.lineData!
           .replaceAll("[", "")
           .replaceAll("]", "")
           .split(",")[0]);
-      _aY = double.parse(widget.spanData.lineData
+      _aY = double.parse(widget.spanData!.lineData!
           .replaceAll("[", "")
           .replaceAll("]", "")
           .split(",")[1]);
-      _bX = double.parse(widget.spanData.lineData
+      _bX = double.parse(widget.spanData!.lineData!
           .replaceAll("[", "")
           .replaceAll("]", "")
           .split(",")[2]);
-      _bY = double.parse(widget.spanData.lineData
+      _bY = double.parse(widget.spanData!.lineData!
           .replaceAll("[", "")
           .replaceAll("]", "")
           .split(",")[3]);
     } else {
-      randomColor = _randomColor.randomColor(
-          colorHue: ColorHue.multiple(colorHues: [
-        ColorHue.red,
-        ColorHue.blue,
-        ColorHue.green,
-        ColorHue.orange,
-        ColorHue.purple
-      ]));
+      randomColor = Colors.primaries[Random().nextInt(Colors.primaries.length)];
     }
   }
 
   Future<bool> _onWillPop() async {
-    return (await showDialog(
+    return (await (showDialog(
           context: context,
           builder: (context) => new AlertDialog(
             title: new Text('Are you sure?'),
@@ -99,7 +90,7 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
               ),
             ],
           ),
-        )) ??
+        ) as FutureOr<bool>?)) ??
         false;
   }
 
@@ -132,8 +123,8 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
               padding: EdgeInsets.all(15),
               child: RaisedButton(
                 onPressed: () {
-                  if (formKey.currentState.validate()) {
-                    List<double> lineData;
+                  if (formKey.currentState!.validate()) {
+                    List<double?> lineData;
 
                     lineData = [this._aX, this._aY, this._bX, this._bY];
 
@@ -141,12 +132,12 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
                         length: double.parse(this.sizeController.text),
                         lineData: lineData.toString(),
                         imageType: 0,
-                        color: randomColor.toHex());
+                        color: randomColor!.generateRandomHexColor());
                     print(json.encode(data));
                     if (widget.spanData != null) {
                       context
                           .read<SpanProvider>()
-                          .editListSpanData(data, widget.index);
+                          .editListSpanData(data, widget.index!);
                     } else {
                       context.read<SpanProvider>().addListSpanData(data);
                     }

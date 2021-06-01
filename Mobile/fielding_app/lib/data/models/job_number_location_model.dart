@@ -1,7 +1,7 @@
 class JobNumberLocModel {
-  String jobNumber;
-  String latitude;
-  String longitude;
+  String? jobNumber;
+  String? latitude;
+  String? longitude;
 
   JobNumberLocModel({this.jobNumber, this.latitude, this.longitude});
 
@@ -19,7 +19,7 @@ class JobNumberLocModel {
     return data;
   }
 
-  static List<JobNumberLocModel> fromJsonList(jsonList) {
+  static List<JobNumberLocModel>? fromJsonList(jsonList) {
     return jsonList
         .map<JobNumberLocModel>(
             (obj) => JobNumberLocModel.fromJson(obj))

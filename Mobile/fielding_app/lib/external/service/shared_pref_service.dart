@@ -15,7 +15,7 @@ class SharedPrefService {
 
   Future getUserModel() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String prefsValue = prefs.getString(USER_MODEL);
+    String? prefsValue = prefs.getString(USER_MODEL);
     if (prefsValue == null) {
       return null;
     } else {
@@ -39,7 +39,7 @@ class SharedPrefService {
 
   Future getFirstInstall() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String prefsValue = prefs.getString(FIRST_MODEL);
+    String? prefsValue = prefs.getString(FIRST_MODEL);
     if (prefsValue == null) {
       return null;
     } else {

@@ -2,7 +2,6 @@ import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/constants.dart';
-import 'package:fielding_app/external/service/location_service.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/ui/login_page.dart';
 import 'package:fielding_app/presentation/widgets/open_intro_webview.dart';
@@ -11,9 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:location/location.dart';
 
 class IntroductionPage extends StatefulWidget {
   @override
@@ -22,7 +19,7 @@ class IntroductionPage extends StatefulWidget {
 
 class _IntroductionPageState extends State<IntroductionPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
-  AuthBloc authBloc;
+  late AuthBloc authBloc;
 
   @override
   void initState() {
@@ -30,7 +27,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
     authBloc = BlocProvider.of<AuthBloc>(context);
   }
 
-  int _page;
+  int? _page;
 
   void _onIntroEnd(context) {
     Get.offAll(LoginPage());

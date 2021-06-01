@@ -1,30 +1,31 @@
 import 'package:fielding_app/data/models/pole_by_id_model.dart';
 
 class AddPoleModel {
-  String token;
-  String id;
-  String layerId;
-  String street;
-  String vAPTerminal;
-  String poleNumber;
-  String osmose;
-  String latitude;
-  String longitude;
-  int poleHeight;
-  String groundCircumference;
-  int poleClass;
-  String poleYear;
-  int poleSpecies;
-  int poleCondition;
-  String otherNumber;
-  bool poleStamp;
-  String notes;
-  bool isRadioAntenna;
-  List<HOAList> hOAList;
-  List<TransformerList> transformerList;
-  List<SpanDirectionList> spanDirectionList;
-  List<AnchorList> anchorList;
-  List<RiserAndVGRList> riserAndVGRList;
+  String? token;
+  String? id;
+  String? layerId;
+  String? street;
+  String? vAPTerminal;
+  String? poleNumber;
+  String? osmose;
+  String? latitude;
+  String? longitude;
+  int? poleHeight;
+  String? groundCircumference;
+  int? poleClass;
+  String? poleYear;
+  int? poleSpecies;
+  int? poleCondition;
+  String? otherNumber;
+  bool? poleStamp;
+  String? notes;
+  bool? isRadioAntenna;
+  List<HOAList>? hOAList;
+  List<TransformerList>? transformerList;
+  List<SpanDirectionList>? spanDirectionList;
+  List<AnchorList>? anchorList;
+  List<RiserAndVGRList>? riserAndVGRList;
+  int? fieldingType;
 
   AddPoleModel(
       {this.token,
@@ -50,7 +51,8 @@ class AddPoleModel {
       this.transformerList,
       this.spanDirectionList,
       this.anchorList,
-      this.riserAndVGRList});
+      this.riserAndVGRList,
+      this.fieldingType});
 
   AddPoleModel.fromJson(Map<String, dynamic> json) {
     token = json['Token'];
@@ -73,35 +75,36 @@ class AddPoleModel {
     notes = json['Notes'];
     isRadioAntenna = json['IsRadioAntenna'];
     if (json['HOAList'] != null) {
-      hOAList = new List<HOAList>();
+      hOAList = <HOAList>[];
       json['HOAList'].forEach((v) {
-        hOAList.add(new HOAList.fromJson(v));
+        hOAList!.add(new HOAList.fromJson(v));
       });
     }
     if (json['TransformerList'] != null) {
-      transformerList = new List<TransformerList>();
+      transformerList = <TransformerList>[];
       json['TransformerList'].forEach((v) {
-        transformerList.add(new TransformerList.fromJson(v));
+        transformerList!.add(new TransformerList.fromJson(v));
       });
     }
     if (json['SpanDirectionList'] != null) {
-      spanDirectionList = new List<SpanDirectionList>();
+      spanDirectionList = <SpanDirectionList>[];
       json['SpanDirectionList'].forEach((v) {
-        spanDirectionList.add(new SpanDirectionList.fromJson(v));
+        spanDirectionList!.add(new SpanDirectionList.fromJson(v));
       });
     }
     if (json['AnchorList'] != null) {
-      anchorList = new List<AnchorList>();
+      anchorList = <AnchorList>[];
       json['AnchorList'].forEach((v) {
-        anchorList.add(new AnchorList.fromJson(v));
+        anchorList!.add(new AnchorList.fromJson(v));
       });
     }
     if (json['RiserAndVGRList'] != null) {
-      riserAndVGRList = new List<RiserAndVGRList>();
+      riserAndVGRList = <RiserAndVGRList>[];
       json['RiserAndVGRList'].forEach((v) {
-        riserAndVGRList.add(new RiserAndVGRList.fromJson(v));
+        riserAndVGRList!.add(new RiserAndVGRList.fromJson(v));
       });
     }
+    fieldingType = json['FieldingType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -126,23 +129,25 @@ class AddPoleModel {
     data['Note'] = this.notes;
     data['IsRadioAntenna'] = this.isRadioAntenna;
     if (this.hOAList != null) {
-      data['HOAList'] = this.hOAList.map((v) => v.toJson()).toList();
+      data['HOAList'] = this.hOAList!.map((v) => v.toJson()).toList();
     }
     if (this.transformerList != null) {
       data['TransformerList'] =
-          this.transformerList.map((v) => v.toJson()).toList();
+          this.transformerList!.map((v) => v.toJson()).toList();
     }
     if (this.spanDirectionList != null) {
       data['SpanDirectionList'] =
-          this.spanDirectionList.map((v) => v.toJson()).toList();
+          this.spanDirectionList!.map((v) => v.toJson()).toList();
     }
     if (this.anchorList != null) {
-      data['AnchorList'] = this.anchorList.map((v) => v.toJson()).toList();
+      data['AnchorList'] = this.anchorList!.map((v) => v.toJson()).toList();
     }
     if (this.riserAndVGRList != null) {
       data['RiserAndVGRList'] =
-          this.riserAndVGRList.map((v) => v.toJson()).toList();
+          this.riserAndVGRList!.map((v) => v.toJson()).toList();
     }
+    data['FieldingType'] = this.fieldingType;
+
     return data;
   }
 }

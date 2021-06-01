@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class EditDownguyWidget extends StatefulWidget {
-  final bool type;
+  final bool? type;
 
   const EditDownguyWidget({this.type});
 
@@ -27,11 +27,11 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
   TextEditingController textInsulated = TextEditingController();
   final formKey = new GlobalKey<FormState>();
 
-  bool isPictureAnchor;
-  bool isInsulated;
+  bool? isPictureAnchor;
+  bool? isInsulated;
 
-  List<DownGuyList> downGuyList = List<DownGuyList>();
-  List<DownGuyList> brokenDownGuyList = List<DownGuyList>();
+  List<DownGuyList> downGuyList = <DownGuyList>[];
+  List<DownGuyList> brokenDownGuyList = <DownGuyList>[];
   List<String> listChoice = ['Yes', 'No'];
 
   @override
@@ -50,7 +50,7 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
     // }
   }
 
-  _validator(String value, String textWarning) {
+  _validator(String? value, String textWarning) {
     if (value == null) {
       return 'Please insert $textWarning';
     } else if (value.isEmpty) {
@@ -72,13 +72,13 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  (!widget.type) ? "DG" : "Broken DG",
+                  (!widget.type!) ? "DG" : "Broken DG",
                   style: textDefault,
                 ),
               ),
               InkWell(
                 onTap: () {
-                  if (!widget.type) {
+                  if (!widget.type!) {
                     dialogDg(0);
                   } else {
                     dialogDg(1);
@@ -94,7 +94,7 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                     ),
                     UIHelper.horizontalSpaceVerySmall,
                     Text(
-                      (!widget.type) ? "Add DG" : "Add Broken DG",
+                      (!widget.type!) ? "Add DG" : "Add Broken DG",
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: ColorHelpers.colorBlueNumber,
@@ -107,10 +107,10 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
           ),
           (Provider.of<AnchorProvider>(context)
                       .anchorActiveSelected
-                      .downGuyList
+                      .downGuyList!
                       .length !=
                   0)
-              ? (!widget.type)
+              ? (!widget.type!)
                   ? _listDownGuy(false)
                   : _listDownGuy(true)
               : Container(),
@@ -124,11 +124,11 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
       builder: (context, riser, _) => Consumer<AnchorProvider>(
         builder: (context, anchor, _) => ListView.builder(
           itemCount: (!type)
-              ? anchor.anchorActiveSelected.downGuyList
+              ? anchor.anchorActiveSelected.downGuyList!
                   .where((element) => element.type == 0)
                   .toList()
                   .length
-              : anchor.anchorActiveSelected.downGuyList
+              : anchor.anchorActiveSelected.downGuyList!
                   .where((element) => element.type == 1)
                   .toList()
                   .length,
@@ -140,11 +140,11 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
             DownGuyList dataDownGuy;
             //Filtering untuk menampilkan list type == 0 & type == 1 (broken)
             if (type) {
-              dataDownGuy = anchor.anchorActiveSelected.downGuyList
+              dataDownGuy = anchor.anchorActiveSelected.downGuyList!
                   .where((element) => element.type == 1)
                   .toList()[index];
             } else {
-              dataDownGuy = anchor.anchorActiveSelected.downGuyList
+              dataDownGuy = anchor.anchorActiveSelected.downGuyList!
                   .where((element) => element.type == 0)
                   .toList()[index];
             }
@@ -265,17 +265,17 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                                       FocusScope.of(context).unfocus();
                                     },
                                     decoration: kDecorationDropdown(),
-                                    items: anchor.listDownGuySize.map((value) {
+                                    items: anchor.listDownGuySize!.map((value) {
                                       return DropdownMenuItem<String>(
-                                        child: Text(value.text,
+                                        child: Text(value.text!,
                                             style: TextStyle(fontSize: 12)),
                                         value: value.text,
                                       );
                                     }).toList(),
-                                    onChanged: (String value) {
+                                    onChanged: (String? value) {
                                       setState(() {
                                         anchor.setDownGuySelected(value);
-                                        this.sizeDg.text = value;
+                                        this.sizeDg.text = value!;
                                       });
                                     },
                                     value: anchor.downGuySelected.text == null
@@ -290,18 +290,18 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                                       FocusScope.of(context).unfocus();
                                     },
                                     decoration: kDecorationDropdown(),
-                                    items: anchor.listBrokenDownGuySize
+                                    items: anchor.listBrokenDownGuySize!
                                         .map((value) {
                                       return DropdownMenuItem<String>(
-                                        child: Text(value.text,
+                                        child: Text(value.text!,
                                             style: TextStyle(fontSize: 12)),
                                         value: value.text,
                                       );
                                     }).toList(),
-                                    onChanged: (String value) {
+                                    onChanged: (String? value) {
                                       setState(() {
                                         anchor.setBrokenDownGuySelected(value);
-                                        this.sizeDg.text = value;
+                                        this.sizeDg.text = value!;
                                       });
                                     },
                                     value: anchor.brokendownGuySelected.text ==
@@ -365,17 +365,17 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                             FocusScope.of(context).unfocus();
                           },
                           decoration: kDecorationDropdown(),
-                          items: data.listDownGuyOwner.map((value) {
+                          items: data.listDownGuyOwner!.map((value) {
                             return DropdownMenuItem<String>(
-                              child: Text(value.text,
+                              child: Text(value.text!,
                                   style: TextStyle(fontSize: 12)),
                               value: value.text,
                             );
                           }).toList(),
-                          onChanged: (String value) {
+                          onChanged: (String? value) {
                             setState(() {
                               data.setDownGuySelected(value);
-                              this.hoaOwner.text = value;
+                              this.hoaOwner.text = value!;
                             });
                           },
                           value: data.downGuySelected.text == null
@@ -401,9 +401,9 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                               value: value,
                             );
                           }).toList(),
-                          onChanged: (String value) {
+                          onChanged: (String? value) {
                             setState(() {
-                              this.textInsulated.text = value;
+                              this.textInsulated.text = value!;
                               if (value == "Yes") {
                                 this.isInsulated = true;
                               } else {
@@ -423,15 +423,15 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                             child: Text("Save",
                                 style: TextStyle(color: Colors.white)),
                             onPressed: () {
-                              if (formKey.currentState.validate()) {
+                              if (formKey.currentState!.validate()) {
                                 anchor.addDownGuyByAnchor(DownGuyList(
-                                    size: (widget.type)
+                                    size: widget.type!
                                         ? anchor.brokendownGuySelected.id
                                         : anchor.downGuySelected.id,
                                     owner: data.downGuySelected.id,
                                     isInsulated: this.isInsulated,
                                     hOA: double.parse(this.hoa.text),
-                                    type: (widget.type) ? 1 : 0));
+                                    type: widget.type! ? 1 : 0));
                                 data.clearRiserAndtype();
                                 this.sizeDg.clear();
                                 this.hoa.clear();

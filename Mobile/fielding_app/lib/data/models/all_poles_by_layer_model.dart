@@ -1,13 +1,13 @@
 class AllPolesByLayerModel {
-  String id;
-  String latitude;
-  String longitude;
-  String fieldingCompletedDate;
-  String fieldingBy;
-  int fieldingStatus;
-  int poleSequence;
-  String poleNumber;
-  bool startPolePicture;
+  String? id;
+  String? latitude;
+  String? longitude;
+  String? fieldingCompletedDate;
+  String? fieldingBy;
+  int? fieldingStatus;
+  int? poleSequence;
+  String? poleNumber;
+  bool? startPolePicture;
 
   AllPolesByLayerModel(
       {this.id,
@@ -46,7 +46,7 @@ class AllPolesByLayerModel {
     return data;
   }
 
-  static List<AllPolesByLayerModel> fromJsonList(jsonList) {
+  static List<AllPolesByLayerModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllPolesByLayerModel>((obj) => AllPolesByLayerModel.fromJson(obj))
         .toList();

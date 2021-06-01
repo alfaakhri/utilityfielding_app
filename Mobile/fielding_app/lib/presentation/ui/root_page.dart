@@ -1,15 +1,8 @@
-import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
-import 'package:fielding_app/domain/provider/anchor_provider.dart';
-import 'package:fielding_app/domain/provider/fielding_provider.dart';
-import 'package:fielding_app/domain/provider/intro_provider.dart';
-import 'package:fielding_app/domain/provider/riser_provider.dart';
-import 'package:fielding_app/domain/provider/span_provider.dart';
-import 'package:fielding_app/domain/provider/user_provider.dart';
-import 'package:fielding_app/external/color_helpers.dart';
-import 'package:fielding_app/presentation/ui/login_page.dart';
-import 'package:fielding_app/presentation/ui/splash_page.dart';
-import 'package:fielding_app/presentation/widgets/introduction_page.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/presentation/ui/ui.exports.dart';
+import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -22,7 +15,7 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  AuthBloc authBloc;
+  late AuthBloc authBloc;
 
   @override
   void initState() {
@@ -39,6 +32,7 @@ class _RootPageState extends State<RootPage> {
     context.read<AnchorProvider>().getBrokenDownGuySize();
     context.read<AnchorProvider>().getDownGuySize();
     context.read<IntroProvider>().getPrivacyPolicy();
+    context.read<FieldingProvider>().getFieldingType();
     authBloc = BlocProvider.of<AuthBloc>(context);
     authBloc.add(StartApp());
   }

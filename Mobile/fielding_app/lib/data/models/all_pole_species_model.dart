@@ -1,6 +1,6 @@
 class AllPoleSpeciesModel {
-  int id;
-  String text;
+  int? id;
+  String? text;
 
   AllPoleSpeciesModel({this.id, this.text});
 
@@ -16,7 +16,7 @@ class AllPoleSpeciesModel {
     return data;
   }
 
-  static List<AllPoleSpeciesModel> fromJsonList(jsonList) {
+  static List<AllPoleSpeciesModel>? fromJsonList(jsonList) {
     return jsonList
         .map<AllPoleSpeciesModel>((obj) => AllPoleSpeciesModel.fromJson(obj))
         .toList();

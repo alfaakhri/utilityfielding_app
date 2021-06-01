@@ -1,5 +1,6 @@
 import 'package:fielding_app/data/models/add_pole_model.dart';
 import 'package:fielding_app/data/models/add_transformer_model.dart';
+import 'package:fielding_app/data/models/all_fielding_type_model.dart';
 import 'package:fielding_app/data/models/all_hoa_type_model.dart';
 import 'package:fielding_app/data/models/all_pole_class_model.dart';
 import 'package:fielding_app/data/models/all_pole_condition_model.dart';
@@ -18,17 +19,17 @@ import 'package:location/location.dart';
 class FieldingProvider extends ChangeNotifier {
   ApiProvider _apiProvider = ApiProvider();
 
-  double baseWidth;
-  double baseHeight;
+  late double baseWidth;
+  late double baseHeight;
   setBaseSize(double width, double height) {
     baseWidth = width;
     baseHeight = height;
     notifyListeners();
   }
 
-  List<AllPolesByLayerModel> _allPolesByLayer = List<AllPolesByLayerModel>();
-  List<AllPolesByLayerModel> get allPolesByLayer => _allPolesByLayer;
-  void setAllPolesByLayer(List<AllPolesByLayerModel> allPolesByLayer) {
+  List<AllPolesByLayerModel>? _allPolesByLayer = <AllPolesByLayerModel>[];
+  List<AllPolesByLayerModel>? get allPolesByLayer => _allPolesByLayer;
+  void setAllPolesByLayer(List<AllPolesByLayerModel>? allPolesByLayer) {
     _allPolesByLayer = allPolesByLayer;
     notifyListeners();
   }
@@ -40,15 +41,15 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  LocationData _currentLocationData;
-  LocationData get currentLocationData => _currentLocationData;
+  LocationData? _currentLocationData;
+  LocationData? get currentLocationData => _currentLocationData;
   void setCurrentLocationData(LocationData currentLocationData) {
     _currentLocationData = currentLocationData;
     notifyListeners();
   }
 
-  LatLng _currentPosition;
-  LatLng get currentPosition => _currentPosition;
+  LatLng? _currentPosition;
+  LatLng? get currentPosition => _currentPosition;
   void setCurrentPosition(LatLng currentPosition) {
     _currentPosition = currentPosition;
     notifyListeners();
@@ -58,13 +59,13 @@ class FieldingProvider extends ChangeNotifier {
   CurrentAddress get currentAddress => _currentAddress;
   void setCurrentAddress(CurrentAddress currentAddress) {
     _currentAddress = currentAddress;
-    _streetName = _currentAddress.results.first.formattedAddress;
+    _streetName = _currentAddress.results!.first.formattedAddress;
     notifyListeners();
   }
 
-  String _streetName;
-  String get streetName => _streetName;
-  void setStreetName(String streetName) {
+  String? _streetName;
+  String? get streetName => _streetName;
+  void setStreetName(String? streetName) {
     _streetName = streetName;
     notifyListeners();
   }
@@ -82,39 +83,39 @@ class FieldingProvider extends ChangeNotifier {
     }
   }
 
-  double _latitude;
-  double get latitude => _latitude;
-  void setLatitude(double latitude) {
+  double? _latitude;
+  double? get latitude => _latitude;
+  void setLatitude(double? latitude) {
     _latitude = latitude;
     notifyListeners();
   }
 
-  double _longitude;
-  double get longitude => _longitude;
-  void setLongitude(double longitude) {
+  double? _longitude;
+  double? get longitude => _longitude;
+  void setLongitude(double? longitude) {
     _longitude = longitude;
     notifyListeners();
   }
 
   //--------------------------------------------------------------------------------------------
-  List<AllPoleSpeciesModel> _listAllPoleSpecies = List<AllPoleSpeciesModel>();
-  List<AllPoleSpeciesModel> get listAllPoleSpecies => _listAllPoleSpecies;
-  void setListAllPoleSpecies(List<AllPoleSpeciesModel> listAllPoleSpecies) {
+  List<AllPoleSpeciesModel>? _listAllPoleSpecies = <AllPoleSpeciesModel>[];
+  List<AllPoleSpeciesModel>? get listAllPoleSpecies => _listAllPoleSpecies;
+  void setListAllPoleSpecies(List<AllPoleSpeciesModel>? listAllPoleSpecies) {
     _listAllPoleSpecies = listAllPoleSpecies;
     notifyListeners();
   }
 
   AllPoleSpeciesModel _poleSpeciesSelected = AllPoleSpeciesModel();
   AllPoleSpeciesModel get poleSpeciesSelected => _poleSpeciesSelected;
-  void setPoleSpeciesSelected(String value) {
-    _poleSpeciesSelected = _listAllPoleSpecies
-        .firstWhere((element) => element.text.contains(value));
+  void setPoleSpeciesSelected(String? value) {
+    _poleSpeciesSelected = _listAllPoleSpecies!
+        .firstWhere((element) => element.text!.contains(value!));
     notifyListeners();
   }
 
-  void setPoleSpeciesAssign(int value) {
+  void setPoleSpeciesAssign(int? value) {
     if (value != null) {
-      _listAllPoleSpecies.forEach((element) {
+      _listAllPoleSpecies!.forEach((element) {
         if (element.id == value) {
           _poleSpeciesSelected = element;
         }
@@ -140,24 +141,24 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   //--------------------------------------------------------------------------------------------
-  List<AllPoleClassModel> _listAllPoleClass = List<AllPoleClassModel>();
-  List<AllPoleClassModel> get listAllPoleClass => _listAllPoleClass;
-  void setListAllPoleClass(List<AllPoleClassModel> listAllPoleClass) {
+  List<AllPoleClassModel>? _listAllPoleClass = <AllPoleClassModel>[];
+  List<AllPoleClassModel>? get listAllPoleClass => _listAllPoleClass;
+  void setListAllPoleClass(List<AllPoleClassModel>? listAllPoleClass) {
     _listAllPoleClass = listAllPoleClass;
     notifyListeners();
   }
 
   AllPoleClassModel _poleClassSelected = AllPoleClassModel();
   AllPoleClassModel get poleClassSelected => _poleClassSelected;
-  void setPoleClassSelected(String value) {
+  void setPoleClassSelected(String? value) {
     _poleClassSelected =
-        _listAllPoleClass.firstWhere((element) => element.text.contains(value));
+        _listAllPoleClass!.firstWhere((element) => element.text!.contains(value!));
     notifyListeners();
   }
 
-  void setPoleClassAssign(int value) {
+  void setPoleClassAssign(int? value) {
     if (value != null) {
-      _listAllPoleClass.forEach((element) {
+      _listAllPoleClass!.forEach((element) {
         if (element.id == value) {
           _poleClassSelected = element;
         }
@@ -183,24 +184,24 @@ class FieldingProvider extends ChangeNotifier {
   }
 
 //--------------------------------------------------------------------------------------------
-  List<AllPoleHeightModel> _listAllPoleHeight = List<AllPoleHeightModel>();
-  List<AllPoleHeightModel> get listAllPoleHeight => _listAllPoleHeight;
-  void setListAllPoleHeight(List<AllPoleHeightModel> listAllPoleHeight) {
+  List<AllPoleHeightModel>? _listAllPoleHeight = <AllPoleHeightModel>[];
+  List<AllPoleHeightModel>? get listAllPoleHeight => _listAllPoleHeight;
+  void setListAllPoleHeight(List<AllPoleHeightModel>? listAllPoleHeight) {
     _listAllPoleHeight = listAllPoleHeight;
     notifyListeners();
   }
 
   AllPoleHeightModel _poleHeightSelected = AllPoleHeightModel();
   AllPoleHeightModel get poleHeightSelected => _poleHeightSelected;
-  void setPoleHeightSelected(String value) {
-    _poleHeightSelected = _listAllPoleHeight
-        .firstWhere((element) => element.text == int.parse(value));
+  void setPoleHeightSelected(String? value) {
+    _poleHeightSelected = _listAllPoleHeight!
+        .firstWhere((element) => element.text == int.parse(value!));
     notifyListeners();
   }
 
-  void setPoleHeightAssign(int value) {
+  void setPoleHeightAssign(int? value) {
     if (value != null) {
-      _listAllPoleHeight.forEach((element) {
+      _listAllPoleHeight!.forEach((element) {
         if (element.id == value) {
           _poleHeightSelected = element;
         }
@@ -226,26 +227,26 @@ class FieldingProvider extends ChangeNotifier {
   }
 
 //--------------------------------------------------------------------------------------------
-  List<AllPoleConditionModel> _listAllPoleCondition =
-      List<AllPoleConditionModel>();
-  List<AllPoleConditionModel> get listAllPoleCondition => _listAllPoleCondition;
+  List<AllPoleConditionModel>? _listAllPoleCondition =
+      <AllPoleConditionModel>[];
+  List<AllPoleConditionModel>? get listAllPoleCondition => _listAllPoleCondition;
   void setListAllPoleCondition(
-      List<AllPoleConditionModel> listAllPoleCondition) {
+      List<AllPoleConditionModel>? listAllPoleCondition) {
     _listAllPoleCondition = listAllPoleCondition;
     notifyListeners();
   }
 
   AllPoleConditionModel _poleConditionSelected = AllPoleConditionModel();
   AllPoleConditionModel get poleConditionSelected => _poleConditionSelected;
-  void setPoleConditionSelected(String value) {
-    _poleConditionSelected = _listAllPoleCondition
-        .firstWhere((element) => element.text.contains(value));
+  void setPoleConditionSelected(String? value) {
+    _poleConditionSelected = _listAllPoleCondition!
+        .firstWhere((element) => element.text!.contains(value!));
     notifyListeners();
   }
 
-  void setPoleConditionAssign(int value) {
+  void setPoleConditionAssign(int? value) {
     if (value != null) {
-      _listAllPoleCondition.forEach((element) {
+      _listAllPoleCondition!.forEach((element) {
         if (element.id == value) {
           _poleConditionSelected = element;
         }
@@ -271,9 +272,9 @@ class FieldingProvider extends ChangeNotifier {
   }
 
 //--------------------------------------------------------------------------------------------
-  List<AllHoaTypeModel> _listAllHoaType = List<AllHoaTypeModel>();
-  List<AllHoaTypeModel> get listAllHoaType => _listAllHoaType;
-  void setListAllHoaType(List<AllHoaTypeModel> listAllHoaType) {
+  List<AllHoaTypeModel>? _listAllHoaType = <AllHoaTypeModel>[];
+  List<AllHoaTypeModel>? get listAllHoaType => _listAllHoaType;
+  void setListAllHoaType(List<AllHoaTypeModel>? listAllHoaType) {
     _listAllHoaType = listAllHoaType;
     notifyListeners();
   }
@@ -293,9 +294,9 @@ class FieldingProvider extends ChangeNotifier {
 
   AllHoaTypeModel _hoaSelected = AllHoaTypeModel();
   AllHoaTypeModel get hoaSelected => _hoaSelected;
-  void setHoaSelected(String value) {
+  void setHoaSelected(String? value) {
     _hoaSelected =
-        listAllHoaType.firstWhere((element) => element.text == value);
+        listAllHoaType!.firstWhere((element) => element.text == value);
     notifyListeners();
   }
 
@@ -311,7 +312,7 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<HOAList> _hoaList = List<HOAList>();
+  List<HOAList> _hoaList = <HOAList>[];
   List<HOAList> get hoaList => _hoaList;
   addHoaList(HOAList hoaList) {
     _hoaList.add(hoaList);
@@ -324,12 +325,12 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addAllHoaList(List<HOAList> data) {
+  addAllHoaList(List<HOAList>? data) {
     _hoaList.clear();
     if (data != null) {
       _hoaList.addAll(data);
     } else {
-      _hoaList = List<HOAList>();
+      _hoaList = <HOAList>[];
     }
 
     notifyListeners();
@@ -341,7 +342,7 @@ class FieldingProvider extends ChangeNotifier {
   }
 
 //--------------------------------------------------------------------------------------------
-  List<TransformerList> _listTransformer = List<TransformerList>();
+  List<TransformerList> _listTransformer = <TransformerList>[];
   List<TransformerList> get listTransformer => _listTransformer;
   addlistTransformer(TransformerList transformer) {
     _listTransformer.add(transformer);
@@ -354,12 +355,12 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addAllListTransformer(List<TransformerList> data) {
+  addAllListTransformer(List<TransformerList>? data) {
     _listTransformer.clear();
     if (data != null) {
       _listTransformer.addAll(data);
     } else {
-      _listTransformer = List<TransformerList>();
+      _listTransformer = <TransformerList>[];
     }
 
     notifyListeners();
@@ -391,21 +392,62 @@ class FieldingProvider extends ChangeNotifier {
 
   //------------------------------------------------------------------------------
 
-  List<JobNumberAttachModel> _jobNumberAttachModel =
-      List<JobNumberAttachModel>();
-  List<JobNumberAttachModel> get jobNumberAttachModel => _jobNumberAttachModel;
+  List<JobNumberAttachModel>? _jobNumberAttachModel =
+      <JobNumberAttachModel>[];
+  List<JobNumberAttachModel>? get jobNumberAttachModel => _jobNumberAttachModel;
   void setJobNumberAttachModel(
       List<JobNumberAttachModel> jobNumberAttachModel) {
     _jobNumberAttachModel = jobNumberAttachModel;
     notifyListeners();
   }
 
-  void getJobNumberAttachModel(String layerId) async {
+  void getJobNumberAttachModel(String? layerId) async {
     try {
       var response = await _apiProvider.getJobNumberAttach(layerId);
       if (response.statusCode == 200) {
         _jobNumberAttachModel =
             JobNumberAttachModel.fromJsonList(response.data);
+      }
+    } catch (e) {
+      print("JOB NUMBER ATTACH " + e.toString());
+    }
+  }
+
+  //------------------------------------------------------------------------------
+
+  List<AllFieldingTypeModel>? _allFieldingType;
+  List<AllFieldingTypeModel>? get allFieldingType => _allFieldingType;
+  void setAllFieldingType(List<AllFieldingTypeModel> allFieldingType) {
+    _allFieldingType = allFieldingType;
+  }
+
+  AllFieldingTypeModel? _fieldingTypeSelected;
+  AllFieldingTypeModel? get fieldingTypeSelected => _fieldingTypeSelected;
+  void setFieldingTypeSelected(String? value) {
+    _fieldingTypeSelected = _allFieldingType!.firstWhere((element) => element.text == value);
+    notifyListeners();
+  }
+
+  void setFieldingTypeAssign(int? value) {
+    if (value != null) {
+      _allFieldingType!.forEach((element) {
+        if (element.id == value) {
+          _fieldingTypeSelected = element;
+        }
+      });
+    } else {
+      _fieldingTypeSelected = AllFieldingTypeModel();
+    }
+
+    notifyListeners();
+  }
+
+  void getFieldingType() async {
+    try {
+      var response = await _apiProvider.getFieldingType();
+      if (response.statusCode == 200) {
+        _allFieldingType =
+            AllFieldingTypeModel.fromJsonList(response.data);
       }
     } catch (e) {
       print("JOB NUMBER ATTACH " + e.toString());

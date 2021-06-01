@@ -1,5 +1,5 @@
 class ResponseCheckToken {
-  String message;
+  String? message;
 
   ResponseCheckToken({this.message});
 
