@@ -8,7 +8,7 @@ class AuthInitial extends AuthState {}
 class GetAuthLoading extends AuthState {}
 
 class GetAuthSuccess extends AuthState {
-  final UserModel userModel;
+  final UserModel? userModel;
 
   GetAuthSuccess(this.userModel);
 }

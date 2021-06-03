@@ -2,6 +2,7 @@ import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/constants.dart';
+import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/ui/login_page.dart';
 import 'package:fielding_app/presentation/widgets/open_intro_webview.dart';
@@ -63,12 +64,12 @@ class _IntroductionPageState extends State<IntroductionPage> {
                     alignment: Alignment.centerLeft,
                     child: RichText(
                       text: TextSpan(
-                          text: Constants.bodyIntro1,
+                          text: bodyIntro1,
                           style: TextStyle(
                               fontSize: 16, color: ColorHelpers.colorGreyIntro),
                           children: [
                             TextSpan(
-                                text: Constants.privacyPolicy,
+                                text: privacyPolicy,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -76,10 +77,10 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Get.to(OpenIntroWebview(
-                                      url: Constants.urlPrivacy,
+                                      url: urlPrivacy,
                                     ));
                                   }),
-                            TextSpan(text: Constants.bodySubIntro1),
+                            TextSpan(text: bodySubIntro1),
                           ]),
                     ),
                   ),
@@ -92,12 +93,12 @@ class _IntroductionPageState extends State<IntroductionPage> {
                     alignment: Alignment.centerLeft,
                     child: RichText(
                       text: TextSpan(
-                          text: Constants.bodyIntro2,
+                          text: bodyIntro2,
                           style: TextStyle(
                               fontSize: 16, color: ColorHelpers.colorGreyIntro),
                           children: [
                             TextSpan(
-                                text: Constants.privacyPolicy,
+                                text: privacyPolicy,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -105,10 +106,10 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Get.to(OpenIntroWebview(
-                                      url: Constants.urlPrivacy,
+                                      url: urlPrivacy,
                                     ));
                                   }),
-                            TextSpan(text: Constants.bodySubIntro2),
+                            TextSpan(text: bodySubIntro2),
                           ]),
                     ),
                   ),
@@ -125,7 +126,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                               fontSize: 16, color: ColorHelpers.colorGreyIntro),
                           children: [
                             TextSpan(
-                                text: Constants.eula,
+                                text: eula,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -133,11 +134,11 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Get.to(OpenIntroWebview(
-                                        url: Constants.urlEula));
+                                        url: urlEula));
                                   }),
-                            TextSpan(text: Constants.bodyIntro3),
+                            TextSpan(text: bodyIntro3),
                             TextSpan(
-                                text: Constants.terms,
+                                text: terms,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -145,12 +146,12 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Get.to(OpenIntroWebview(
-                                      url: Constants.urlTerms,
+                                      url: urlTerms,
                                     ));
                                   }),
-                            TextSpan(text: Constants.bodySubIntro3),
+                            TextSpan(text: bodySubIntro3),
                             TextSpan(
-                                text: Constants.disclaimer + ".",
+                                text: disclaimer + ".",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -158,7 +159,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Get.to(OpenIntroWebview(
-                                      url: Constants.urlDisclaimer,
+                                      url: urlDisclaimer,
                                     ));
                                   }),
                           ]),

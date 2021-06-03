@@ -1,11 +1,5 @@
-import 'package:fielding_app/data/models/add_pole_model.dart';
-import 'package:fielding_app/data/models/pole_by_id_model.dart';
-import 'package:fielding_app/domain/provider/fielding_provider.dart';
-import 'package:fielding_app/domain/provider/riser_provider.dart';
-import 'package:fielding_app/external/color_helpers.dart';
-import 'package:fielding_app/external/constants.dart';
-import 'package:fielding_app/external/ui_helpers.dart';
-import 'package:fielding_app/presentation/ui/fielding/riser/riser_widget.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/widgets/circle_and_text_painter.dart';
 import 'package:fielding_app/presentation/widgets/triangle_and_text_painter.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +122,7 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                     : {"x": newX, "y": newY},
                                 radius: 10,
                                 text:
-                                    "R$value-${Constants.alphabet[e.sequence! - 1]}",
+                                    "R$value-${alphabet[e.sequence! - 1]}",
                               );
                             }
                           }).toList(),
@@ -150,7 +144,7 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                   },
                                   radius: 10,
                                   text: data.activePointName! +
-                                      "-${Constants.alphabet[data.sequenceCurrent! - 1]}",
+                                      "-${alphabet[data.sequenceCurrent! - 1]}",
                                 ),
                               )
                       ],

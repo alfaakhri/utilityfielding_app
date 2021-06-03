@@ -19,3 +19,22 @@ kDecorationDropdown() {
     errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.red)),
   );
 }
+
+kDecorationDefault(String title) {
+  return InputDecoration(
+    border: InputBorder.none,
+    isDense: true,
+    hintText: "$title...",
+    hintStyle: TextStyle(
+        color: ColorHelpers.colorBlackText.withOpacity(0.3), fontSize: 12),
+    disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
+    enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
+    focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
+  );
+}

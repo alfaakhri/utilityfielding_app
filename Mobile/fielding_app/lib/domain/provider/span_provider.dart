@@ -1,4 +1,4 @@
-import 'package:fielding_app/data/models/pole_by_id_model.dart';
+import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:flutter/material.dart';
 

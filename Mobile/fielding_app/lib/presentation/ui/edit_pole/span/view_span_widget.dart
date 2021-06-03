@@ -2,15 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:fielding_app/data/models/add_pole_model.dart';
-import 'package:fielding_app/data/models/pole_by_id_model.dart';
-import 'package:fielding_app/domain/provider/fielding_provider.dart';
-import 'package:fielding_app/domain/provider/span_provider.dart';
-import 'package:fielding_app/external/color_helpers.dart';
-import 'package:fielding_app/external/service/hex_color.dart';
-import 'package:fielding_app/external/ui_helpers.dart';
-import 'package:fielding_app/presentation/ui/fielding/span/insert_span_widget.dart';
-import 'package:fielding_app/presentation/widgets/circle_painter.dart';
+import 'package:fielding_app/data/models/models.exports.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:fielding_app/presentation/widgets/line_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -21,6 +16,8 @@ import 'dart:ui' as ui;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+
+import '../edit_pole.exports.dart';
 
 class ViewSpanWidget extends StatefulWidget {
   @override

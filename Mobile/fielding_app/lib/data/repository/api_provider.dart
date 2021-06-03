@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:fielding_app/external/constants.dart';
+import 'package:fielding_app/external/external.exports.dart';
 
 const String BASE_URL = "http://utilityfielding.com/";
 
@@ -200,7 +200,7 @@ class ApiProvider {
   Future<Response> getLocationByLatLng(double lat, double lng) async {
     try {
       var response = await _dio.get(
-          "${Constants.baseGoogleApi}/maps/api/geocode/json?key=${Constants.apiKey}&latlng=$lat,$lng");
+          "${baseGoogleApi}/maps/api/geocode/json?key=${apiKey}&latlng=$lat,$lng");
       return response;
     } catch (e) {
       throw e;

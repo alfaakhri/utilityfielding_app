@@ -1,6 +1,6 @@
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
-import 'package:fielding_app/external/constants.dart';
+import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/widgets/preview_image.dart';
 import 'package:flutter/material.dart';
@@ -56,11 +56,11 @@ class SupportingDocsWidget extends StatelessWidget {
                                         format.toLowerCase() == "png") {
                                       Navigator.pop(context);
                                       Get.to(PreviewImage(
-                                        image: Constants.baseURL + e.filePath!,
+                                        image: baseURL + e.filePath!,
                                       ));
                                     } else {
                                       String url =
-                                          Constants.baseURL + e.filePath!;
+                                          baseURL + e.filePath!;
                                       if (await canLaunch(url)) {
                                         Navigator.pop(context);
                                         await launch(url);

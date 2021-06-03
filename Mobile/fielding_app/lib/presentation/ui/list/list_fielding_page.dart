@@ -1,19 +1,23 @@
+import 'dart:async';
+
+import 'package:connectivity/connectivity.dart';
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
-import 'package:fielding_app/presentation/ui/fielding/fielding.exports.dart';
+import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
+import 'package:fielding_app/presentation/ui/list/list.exports.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:intl/intl.dart';
 import 'package:skeleton_text/skeleton_text.dart';
-
-import 'detail_fielding_page.dart';
 
 class ListFieldingPage extends StatefulWidget {
   @override
@@ -21,6 +25,9 @@ class ListFieldingPage extends StatefulWidget {
 }
 
 class _ListFieldingPageState extends State<ListFieldingPage> {
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
   void getCurrentLocation() async {
     LocationService location = LocationService();
     LocationData data = await location.getCurrentLocation();
@@ -31,10 +38,54 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     context.read<FieldingProvider>().setCurrentLocationData(data);
   }
 
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    switch (result) {
+      case ConnectivityResult.wifi:
+        Fluttertoast.showToast(msg: "Internet available");
+        context.read<ConnectionProvider>().setIsConnected(true);
+        break;
+      case ConnectivityResult.mobile:
+        Fluttertoast.showToast(msg: "Internet available");
+        context.read<ConnectionProvider>().setIsConnected(true);
+        break;
+      case ConnectivityResult.none:
+        Fluttertoast.showToast(msg: "Internet not available");
+        context.read<ConnectionProvider>().setIsConnected(false);
+        break;
+      default:
+        Fluttertoast.showToast(msg: "Internet not available");
+        context.read<ConnectionProvider>().setIsConnected(false);
+        break;
+    }
+  }
+
+   // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initConnectivity() async {
+    ConnectivityResult result = ConnectivityResult.none;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
   late FieldingBloc fieldingBloc;
   @override
   void initState() {
     super.initState();
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     fieldingBloc.add(
         GetAllProjects(context.read<UserProvider>().userModel.data!.token));

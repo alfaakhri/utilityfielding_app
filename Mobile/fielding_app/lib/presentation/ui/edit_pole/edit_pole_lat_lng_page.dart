@@ -1,4 +1,4 @@
-import 'package:fielding_app/data/models/all_poles_by_layer_model.dart';
+import 'package:fielding_app/data/models/detail_fielding/all_poles_by_layer_model.dart';
 
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 

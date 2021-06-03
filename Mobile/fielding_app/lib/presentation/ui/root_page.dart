@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'fielding/list_fielding_page.dart';
+import 'list/list_fielding_page.dart';
 
 class RootPage extends StatefulWidget {
   @override
@@ -43,7 +43,7 @@ class _RootPageState extends State<RootPage> {
       listener: (context, state) {
         if (state is GetAuthSuccess) {
           Get.offAll(ListFieldingPage());
-          context.read<UserProvider>().setUserModel(state.userModel);
+          context.read<UserProvider>().setUserModel(state.userModel!);
         } else if (state is GetAuthFailed) {
           Get.offAll(LoginPage());
         } else if (state is GetAuthMustLogin) {

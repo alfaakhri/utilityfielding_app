@@ -38,6 +38,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AnchorProvider()),
         ChangeNotifierProvider(create: (_) => IntroProvider()),
         ChangeNotifierProvider(create: (_) => MapProvider()),
+        ChangeNotifierProvider(create: (_) => ConnectionProvider()),
       ],
       child: MultiBlocProvider(
         providers: [

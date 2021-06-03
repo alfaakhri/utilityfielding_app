@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:fielding_app/data/models/add_pole_model.dart';
-import 'package:fielding_app/data/models/all_down_guy_owner.dart';
-import 'package:fielding_app/data/models/pole_by_id_model.dart';
-import 'package:fielding_app/data/models/riser_active.dart';
-import 'package:fielding_app/data/models/riser_and_vgr_type_model.dart';
+import 'package:fielding_app/data/models/edit_pole/add_pole_model.dart';
+import 'package:fielding_app/data/models/edit_pole/all_down_guy_owner.dart';
+import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
+import 'package:fielding_app/data/models/edit_pole/riser_active.dart';
+import 'package:fielding_app/data/models/edit_pole/riser_and_vgr_type_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
-import 'package:fielding_app/external/constants.dart';
+import 'package:fielding_app/external/external.exports.dart';
 import 'package:flutter/material.dart';
 
 class RiserProvider extends ChangeNotifier {
@@ -133,7 +133,7 @@ class RiserProvider extends ChangeNotifier {
       _listRiserActive.forEach((element) {
         String numberRiser = element!.replaceAll("R", "");
         numberRiser = numberRiser.split("-")[0];
-        int sequence = Constants.alphabet
+        int sequence = alphabet
                 .indexWhere((note) => note.startsWith(element.split("-")[1])) +
             1;
         if (numberRiser.contains(value)) {
@@ -151,7 +151,7 @@ class RiserProvider extends ChangeNotifier {
         _sequenceCurrent = 1;
       } else {
         String data =
-            "R$tempNumberRiser-${Constants.alphabet[tempSequenceEqualNumber]}";
+            "R$tempNumberRiser-${alphabet[tempSequenceEqualNumber]}";
         _activePointName = "R" + tempNumberRiser;
         _listRiserActive.add(data);
         _sequenceCurrent = tempSequenceEqualNumber + 1;
@@ -192,7 +192,7 @@ class RiserProvider extends ChangeNotifier {
         textY: shapeY,
         name: (activePointName == "VGR")
             ? activePointName! + "-" + sequenceCurrent.toString()
-            : activePointName! + "-" + Constants.alphabet[sequenceCurrent! - 1],
+            : activePointName! + "-" + alphabet[sequenceCurrent! - 1],
         value: riserVGRSelected.id,
         type: downGuySelected.id,
         sequence: sequenceCurrent,
@@ -216,7 +216,7 @@ class RiserProvider extends ChangeNotifier {
       removeOneListVGRActive(activePointName! + "-$sequenceCurrent");
     } else {
       removeOneListRiserActive(
-          activePointName! + "-${Constants.alphabet[sequenceCurrent! - 1]}");
+          activePointName! + "-${alphabet[sequenceCurrent! - 1]}");
     }
   }
 

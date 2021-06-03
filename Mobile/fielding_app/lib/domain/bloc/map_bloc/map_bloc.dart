@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:fielding_app/data/models/job_number_location_model.dart';
+import 'package:fielding_app/data/models/list_fielding/job_number_location_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:meta/meta.dart';
 

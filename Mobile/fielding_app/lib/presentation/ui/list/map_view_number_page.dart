@@ -31,7 +31,7 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
     mapBloc = BlocProvider.of<MapBloc>(context);
     authBloc = BlocProvider.of<AuthBloc>(context);
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-    mapBloc.add(GetJobNumberLoc(authBloc.userModel.data!.token));
+    mapBloc.add(GetJobNumberLoc(authBloc.userModel!.data!.token));
   }
 
   Future<Uint8List> getBytesFromCanvas(

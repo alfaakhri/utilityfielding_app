@@ -43,8 +43,9 @@ class UpdateLocation extends FieldingEvent {
 
 class AddPole extends FieldingEvent {
   final AddPoleModel addPoleModel;
+  final bool? isConnected;
 
-  AddPole(this.addPoleModel);
+  AddPole(this.addPoleModel, this.isConnected);
 }
 
 class GetPoleById extends FieldingEvent {

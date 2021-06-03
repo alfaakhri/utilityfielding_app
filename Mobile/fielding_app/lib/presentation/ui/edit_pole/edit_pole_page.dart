@@ -3,20 +3,13 @@ import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
-import 'package:fielding_app/presentation/ui/fielding/riser/riser.exports.dart';
+import 'package:fielding_app/presentation/ui/edit_pole/edit_pole.exports.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-
-import 'anchor/anchor_widget.dart';
-import 'component/component.exports.dart';
-import 'component/edit_hoa_widget.dart';
-import 'component/note_widget.dart';
-import 'span/view_span_widget.dart';
-import 'edit_pole_lat_lng_page.dart';
 
 class EditPolePage extends StatefulWidget {
   final AllProjectsModel? allProjectsModel;
@@ -32,12 +25,6 @@ class EditPolePage extends StatefulWidget {
 }
 
 class _EditPolePageState extends State<EditPolePage> {
-  var textDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12);
-  var textBoldDefault = TextStyle(
-      color: ColorHelpers.colorBlackText,
-      fontSize: 12,
-      fontWeight: FontWeight.bold);
-
   TextEditingController _fieldingType = TextEditingController();
   TextEditingController _vapTerminal = TextEditingController();
   TextEditingController _poleNumber = TextEditingController();
@@ -88,6 +75,50 @@ class _EditPolePageState extends State<EditPolePage> {
     this._notes.clear();
   }
 
+  void doneAddPole() {
+    var provider = context.read<FieldingProvider>();
+    AddPoleModel data = AddPoleModel(
+        token: authBloc.userModel!.data!.token,
+        id: (widget.poles == null) ? null : widget.poles!.id,
+        layerId: widget.allProjectsModel!.iD,
+        street: (provider.streetName == null) ? null : provider.streetName,
+        fieldingType: (provider.fieldingTypeSelected!.id == null)
+            ? null
+            : provider.fieldingTypeSelected!.id,
+        vAPTerminal: this._vapTerminal.text,
+        poleNumber: this._poleNumber.text,
+        osmose: this._osmoseNumber.text,
+        latitude:
+            (provider.latitude == null) ? null : provider.latitude.toString(),
+        longitude:
+            (provider.longitude == null) ? null : provider.longitude.toString(),
+        poleHeight: (provider.poleHeightSelected.id == null)
+            ? null
+            : provider.poleHeightSelected.id,
+        groundCircumference: this._groundLine.text,
+        poleClass: (provider.poleClassSelected.id == null)
+            ? null
+            : provider.poleClassSelected.id,
+        poleYear: this._year.text,
+        poleSpecies: (provider.poleSpeciesSelected.id == null)
+            ? null
+            : provider.poleSpeciesSelected.id,
+        poleCondition: (provider.poleConditionSelected.id == null)
+            ? null
+            : provider.poleConditionSelected.id,
+        otherNumber: this._otherNumber.text,
+        poleStamp: (this._poleStamp.text == "-") ? null : this._isStamp,
+        notes: this._notes.text,
+        isRadioAntenna: (this._radioAntena.text == "-") ? null : this._isAntena,
+        hOAList: provider.hoaList,
+        transformerList: provider.listTransformer,
+        spanDirectionList: context.read<SpanProvider>().listSpanData,
+        anchorList: context.read<AnchorProvider>().listAnchorData,
+        riserAndVGRList: context.read<RiserProvider>().listRiserData);
+    fieldingBloc
+        .add(AddPole(data, context.read<ConnectionProvider>().isConnected));
+  }
+
   Widget spaceForm() {
     return Column(
       children: [
@@ -107,7 +138,7 @@ class _EditPolePageState extends State<EditPolePage> {
     authBloc = BlocProvider.of<AuthBloc>(context);
     if (widget.poles != null) {
       fieldingBloc
-          .add(GetPoleById(widget.poles!.id, authBloc.userModel.data!.token));
+          .add(GetPoleById(widget.poles!.id, authBloc.userModel!.data!.token));
     }
   }
 
@@ -175,59 +206,11 @@ class _EditPolePageState extends State<EditPolePage> {
                   padding: EdgeInsets.all(10),
                   child: RaisedButton(
                     onPressed: () {
-                      var provider = context.read<FieldingProvider>();
-                      AddPoleModel data = AddPoleModel(
-                          token: authBloc.userModel.data!.token,
-                          id: (widget.poles == null) ? null : widget.poles!.id,
-                          layerId: widget.allProjectsModel!.iD,
-                          street: (provider.streetName == null)
-                              ? null
-                              : provider.streetName,
-                          fieldingType:
-                              (provider.fieldingTypeSelected!.id == null)
-                                  ? null
-                                  : provider.fieldingTypeSelected!.id,
-                          vAPTerminal: this._vapTerminal.text,
-                          poleNumber: this._poleNumber.text,
-                          osmose: this._osmoseNumber.text,
-                          latitude: (provider.latitude == null)
-                              ? null
-                              : provider.latitude.toString(),
-                          longitude: (provider.longitude == null)
-                              ? null
-                              : provider.longitude.toString(),
-                          poleHeight: (provider.poleHeightSelected.id == null)
-                              ? null
-                              : provider.poleHeightSelected.id,
-                          groundCircumference: this._groundLine.text,
-                          poleClass: (provider.poleClassSelected.id == null)
-                              ? null
-                              : provider.poleClassSelected.id,
-                          poleYear: this._year.text,
-                          poleSpecies: (provider.poleSpeciesSelected.id == null)
-                              ? null
-                              : provider.poleSpeciesSelected.id,
-                          poleCondition:
-                              (provider.poleConditionSelected.id == null)
-                                  ? null
-                                  : provider.poleConditionSelected.id,
-                          otherNumber: this._otherNumber.text,
-                          poleStamp: (this._poleStamp.text == "-")
-                              ? null
-                              : this._isStamp,
-                          notes: this._notes.text,
-                          isRadioAntenna: (this._radioAntena.text == "-")
-                              ? null
-                              : this._isAntena,
-                          hOAList: provider.hoaList,
-                          transformerList: provider.listTransformer,
-                          spanDirectionList:
-                              context.read<SpanProvider>().listSpanData,
-                          anchorList:
-                              context.read<AnchorProvider>().listAnchorData,
-                          riserAndVGRList:
-                              context.read<RiserProvider>().listRiserData);
-                      fieldingBloc.add(AddPole(data));
+                      if (context.read<ConnectionProvider>().isConnected) {
+                        doneAddPole();
+                      } else {
+
+                      }
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(10),
@@ -257,23 +240,20 @@ class _EditPolePageState extends State<EditPolePage> {
                         ? state.poleByIdModel.poleYear.toString()
                         : "";
                     this._otherNumber.text = state.poleByIdModel.otherNumber!;
-                    this._isStamp = state.poleByIdModel.poleStamp!;
-                    if (this._isStamp == null) {
-                      this._poleStamp.text = "-";
-                    } else if (this._isStamp!) {
+                    this._isStamp = state.poleByIdModel.poleStamp ?? false;
+                    if (this._isStamp!) {
                       this._poleStamp.text = "Yes";
                     } else {
                       this._poleStamp.text = "No";
                     }
-                    this._isAntena = state.poleByIdModel.isRadioAntenna!;
-                    if (this._isAntena == null) {
-                      this._radioAntena.text = "-";
-                    } else if (!this._isAntena!) {
+                    this._isAntena =
+                        state.poleByIdModel.isRadioAntenna ?? false;
+                    if (!this._isAntena!) {
                       this._radioAntena.text = "No";
                     } else {
                       this._radioAntena.text = "Yes";
                     }
-                    this._notes.text = state.poleByIdModel.note!;
+                    this._notes.text = state.poleByIdModel.note ?? "-";
                     provider
                         .setPoleClassAssign(state.poleByIdModel.poleClass ?? 0);
 
@@ -391,7 +371,7 @@ class _EditPolePageState extends State<EditPolePage> {
                       children: [
                         Text(
                           "GPS",
-                          style: textBoldDefault,
+                          style: ThemeFonts.textBoldDefault,
                         ),
                         Row(
                           children: [
@@ -442,45 +422,7 @@ class _EditPolePageState extends State<EditPolePage> {
                       ],
                     ),
                   ),
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(color: ColorHelpers.colorWhite),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Street Name",
-                          style: textBoldDefault,
-                        ),
-                        UIHelper.horizontalSpaceLarge,
-                        (context.watch<FieldingProvider>().streetName != null)
-                            ? Expanded(
-                                child: Text(
-                                  (context
-                                              .watch<FieldingProvider>()
-                                              .streetName !=
-                                          null)
-                                      ? context
-                                          .watch<FieldingProvider>()
-                                          .streetName!
-                                      : "-",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: ColorHelpers.colorBlackText,
-                                      fontSize: 12),
-                                ),
-                              )
-                            : Text(
-                                "-",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: ColorHelpers.colorBlackText,
-                                    fontSize: 12),
-                              ),
-                      ],
-                    ),
-                  ),
+                  StreetNameItem(),
                   _contentFormText("Fielding Type", _fieldingType.text,
                       _fieldingType, true, true),
                   _contentFormText("FAP / Terminal Address", _vapTerminal.text,
@@ -508,86 +450,33 @@ class _EditPolePageState extends State<EditPolePage> {
                       this._radioAntena, true, false),
                   EditTransformerWidget(),
                   EditHoaWidget(),
-                  _contentFormSpan(
-                      "Span Direction and Distance",
-                      Provider.of<SpanProvider>(context).listSpanData.length,
-                      ViewSpanWidget(),
-                      true),
-                  _contentFormSpan(
-                      "Anchor",
-                      Provider.of<AnchorProvider>(context)
-                          .listAnchorData
-                          .length,
-                      AnchorWidget(),
-                      false),
-                  _contentFormSpan(
-                      "Riser and VGR Location",
-                      Provider.of<RiserProvider>(context).listRiserData.length,
-                      RiserWidget(),
-                      true),
+                  FormDrawingItem(
+                    isBlueColor: true,
+                    title: "Span Direction and Distance",
+                    lengthValue:
+                        context.watch<SpanProvider>().listSpanData.length,
+                    classname: ViewSpanWidget(),
+                  ),
+                  FormDrawingItem(
+                    isBlueColor: false,
+                    title: "Anchor",
+                    lengthValue:
+                        context.watch<AnchorProvider>().listAnchorData.length,
+                    classname: AnchorWidget(),
+                  ),
+                  FormDrawingItem(
+                    isBlueColor: true,
+                    title: "Riser and VGR Location",
+                    lengthValue:
+                        context.watch<RiserProvider>().listRiserData.length,
+                    classname: RiserWidget(),
+                  ),
                   NoteWidget(
                     title: "Note",
                     controller: _notes,
                   ),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _contentFormSpan(
-      String title, int lengthValue, Widget classname, bool isBlueColor) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          color: isBlueColor
-              ? ColorHelpers.colorBlueIntro
-              : ColorHelpers.colorWhite),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            flex: 4,
-            child: Text(
-              title,
-              overflow: TextOverflow.ellipsis,
-              style: textBoldDefault,
-            ),
-          ),
-          (lengthValue != 0)
-              ? Expanded(
-                  flex: 2,
-                  child: Text(lengthValue.toString(),
-                      style: TextStyle(
-                          color: ColorHelpers.colorBlackText, fontSize: 14)),
-                )
-              : Container(),
-          InkWell(
-            onTap: () {
-              double width = MediaQuery.of(context).size.width;
-              double height = MediaQuery.of(context).size.height;
-
-              print("WIDTH : $width, HEIGHT : $height");
-              context.read<FieldingProvider>().baseWidth = width;
-              context.read<FieldingProvider>().baseHeight = height;
-              Get.to(classname);
-            },
-            child: Container(
-              width: 50,
-              height: 30,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: (lengthValue == 0)
-                    ? ColorHelpers.colorBlueNumber
-                    : ColorHelpers.colorGreen,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Text((lengthValue == 0) ? 'Enter' : "Edit",
-                  style:
-                      TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
             ),
           ),
         ],
@@ -612,7 +501,7 @@ class _EditPolePageState extends State<EditPolePage> {
             child: Text(
               title,
               overflow: TextOverflow.ellipsis,
-              style: textBoldDefault,
+              style: ThemeFonts.textBoldDefault,
             ),
           ),
           Expanded(
@@ -671,7 +560,7 @@ class _EditPolePageState extends State<EditPolePage> {
                 children: <Widget>[
                   Text(
                     title,
-                    style: textDefault,
+                    style: ThemeFonts.textDefault,
                   ),
                   UIHelper.verticalSpaceSmall,
                   Row(
@@ -680,30 +569,7 @@ class _EditPolePageState extends State<EditPolePage> {
                         child: TextFormField(
                           maxLines: null,
                           controller: controller,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            isDense: true,
-                            hintText: "$title...",
-                            hintStyle: TextStyle(
-                                color: ColorHelpers.colorBlackText
-                                    .withOpacity(0.3),
-                                fontSize: 12),
-                            disabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide(
-                                    color: ColorHelpers.colorGrey
-                                        .withOpacity(0.3))),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide(
-                                    color: ColorHelpers.colorGrey
-                                        .withOpacity(0.3))),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide(
-                                    color: ColorHelpers.colorGrey
-                                        .withOpacity(0.3))),
-                          ),
+                          decoration: kDecorationDefault(title)
                         ),
                       ),
                       (title.toLowerCase().contains("ground line"))
@@ -750,7 +616,7 @@ class _EditPolePageState extends State<EditPolePage> {
                 children: <Widget>[
                   Text(
                     title,
-                    style: textDefault,
+                    style: ThemeFonts.textDefault,
                   ),
                   UIHelper.verticalSpaceSmall,
                   (title.toLowerCase() == "pole height")
@@ -915,6 +781,85 @@ class _EditPolePageState extends State<EditPolePage> {
                   ),
                 ],
               ),
+            ),
+          );
+        });
+  }
+
+  Future dialogSaveLocal() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                UIHelper.verticalSpaceMedium,
+                Text(
+                  'Information',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: ColorHelpers.colorGrey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
+                UIHelper.verticalSpaceMedium,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    "Internet not available, data will be saved and send anytime when internet is available",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: ColorHelpers.colorGrey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                UIHelper.verticalSpaceMedium,
+                UIHelper.verticalSpaceMedium,
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.pop(context);
+                    doneAddPole();
+                  },
+                  child: Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: ColorHelpers.colorBlue,
+                        border: Border.all(color: ColorHelpers.colorBlue),
+                      ),
+                      child: Text(
+                        "SAVE",
+                        style: TextStyle(
+                            color: ColorHelpers.colorWhite,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      )),
+                ),
+                UIHelper.verticalSpaceMedium,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: ColorHelpers.colorRed,
+                      ),
+                      child: Text(
+                        "CANCEL",
+                        style: TextStyle(
+                            color: ColorHelpers.colorWhite,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      )),
+                ),
+              ],
             ),
           );
         });

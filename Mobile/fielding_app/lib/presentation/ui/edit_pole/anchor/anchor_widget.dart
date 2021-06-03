@@ -1,11 +1,11 @@
-import 'package:fielding_app/data/models/add_pole_model.dart';
-import 'package:fielding_app/data/models/pole_by_id_model.dart';
+import 'package:fielding_app/data/models/edit_pole/add_pole_model.dart';
+import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
-import 'package:fielding_app/presentation/ui/fielding/anchor/edit_downguy_widget.dart';
+import 'package:fielding_app/presentation/ui/edit_pole/anchor/anchor.exports.dart';
 import 'package:fielding_app/presentation/widgets/circle_and_text_painter.dart';
 import 'package:fielding_app/presentation/widgets/circle_painter.dart';
 import 'package:fielding_app/presentation/widgets/constants_widget.dart';

@@ -4,6 +4,7 @@ import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
+import 'package:fielding_app/presentation/ui/edit_pole/edit_pole.exports.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,8 +14,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import 'component/supporting_docs_widget.dart';
-import 'edit_pole_page.dart';
+import 'supporting_docs_widget.dart';
 
 class DetailFieldingPage extends StatefulWidget {
   final AllProjectsModel? allProjectsModel;

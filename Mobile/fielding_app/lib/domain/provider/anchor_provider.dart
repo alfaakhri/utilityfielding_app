@@ -1,9 +1,9 @@
-import 'package:fielding_app/data/models/add_pole_model.dart';
-import 'package:fielding_app/data/models/all_anchor_eyes_model.dart';
-import 'package:fielding_app/data/models/all_anchor_size_model.dart';
-import 'package:fielding_app/data/models/broken_down_guy_size_model.dart';
-import 'package:fielding_app/data/models/down_guy_size_model.dart';
-import 'package:fielding_app/data/models/pole_by_id_model.dart';
+import 'package:fielding_app/data/models/edit_pole/add_pole_model.dart';
+import 'package:fielding_app/data/models/edit_pole/all_anchor_eyes_model.dart';
+import 'package:fielding_app/data/models/edit_pole/all_anchor_size_model.dart';
+import 'package:fielding_app/data/models/edit_pole/broken_down_guy_size_model.dart';
+import 'package:fielding_app/data/models/edit_pole/down_guy_size_model.dart';
+import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:flutter/material.dart';
 

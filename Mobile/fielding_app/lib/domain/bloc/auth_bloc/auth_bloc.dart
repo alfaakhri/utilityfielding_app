@@ -17,8 +17,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ApiProvider _apiProvider = ApiProvider();
   SharedPrefService _sharedPref = SharedPrefService();
 
-  UserModel _userModel = UserModel();
-  UserModel get userModel => _userModel;
+  UserModel? _userModel = UserModel();
+  UserModel? get userModel => _userModel;
 
   ResponseCheckToken _responseToken = ResponseCheckToken();
 
@@ -33,12 +33,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (firstInstall == null) {
           yield FirstInstall();
         } else {
-          _userModel = await (_sharedPref.getUserModel() as FutureOr<UserModel>);
+          _userModel = await _sharedPref.getUserModel();
           if (_userModel == null) {
             yield GetAuthMustLogin();
           } else {
-            var response = await (_apiProvider.checkToken(_userModel.data!.token) as FutureOr<Response<dynamic>>);
-            if (response.statusCode == 200) {
+            var response = await _apiProvider.checkToken(_userModel!.data!.token);
+            if (response!.statusCode == 200) {
               yield GetAuthSuccess(_userModel);
             } else
               yield GetAuthMustLogin();
@@ -54,10 +54,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             await _apiProvider.doLogin(event.username, event.password);
         _userModel = UserModel.fromJson(response!.data);
         if (response.statusCode == 200) {
-          _sharedPref.saveUserModel(_userModel);
-          yield DoLoginSuccess(_userModel);
+          _sharedPref.saveUserModel(_userModel!);
+          yield DoLoginSuccess(_userModel!);
         } else {
-          yield DoLoginFailed(_userModel.message);
+          yield DoLoginFailed(_userModel!.message);
         }
       } catch (e) {
         yield DoLoginFailed(e.toString());
