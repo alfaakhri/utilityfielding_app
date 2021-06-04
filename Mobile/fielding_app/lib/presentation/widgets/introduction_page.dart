@@ -47,7 +47,10 @@ class _IntroductionPageState extends State<IntroductionPage> {
 
     return Container(
       color: ColorHelpers.colorWhite,
+      // height: MediaQuery.of(context).size.height,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
             child: IntroductionScreen(
@@ -61,7 +64,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 PageViewModel(
                   titleWidget: _titleWidget("Location Data Access"),
                   bodyWidget: Container(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.topCenter,
                     child: RichText(
                       text: TextSpan(
                           text: bodyIntro1,
@@ -90,7 +93,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 PageViewModel(
                   titleWidget: _titleWidget("Privacy Policy"),
                   bodyWidget: Container(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.topCenter,
                     child: RichText(
                       text: TextSpan(
                           text: bodyIntro2,
@@ -119,7 +122,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
                 PageViewModel(
                   titleWidget: _titleWidget("EULA & Terms"),
                   bodyWidget: Container(
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.topCenter,
                     child: RichText(
                       text: TextSpan(
                           style: TextStyle(
@@ -260,7 +263,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
     return Container(
       color: ColorHelpers.colorBlueIntro,
       width: double.infinity,
-      height: MediaQuery.of(context).size.height / 3,
+      // height: MediaQuery.of(context).size.height / 3,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -269,7 +272,7 @@ class _IntroductionPageState extends State<IntroductionPage> {
           ),
           Positioned(
             right: 25,
-            top: 50,
+            top: 25,
             child: InkWell(
               onTap: () {
                 SystemNavigator.pop();

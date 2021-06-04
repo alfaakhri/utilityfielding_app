@@ -1,9 +1,9 @@
 import 'package:fielding_app/data/models/models.exports.dart';
-import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
+import 'package:fielding_app/presentation/ui/detail/widgets/widgets_detail_exports.dart';
 import 'package:fielding_app/presentation/ui/edit_pole/edit_pole.exports.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,6 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
-import 'supporting_docs_widget.dart';
 
 class DetailFieldingPage extends StatefulWidget {
   final AllProjectsModel? allProjectsModel;
@@ -78,6 +76,12 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     });
   }
 
+  void getAllPoleById() {
+    fieldingBloc.add(GetAllPolesByID(
+        context.read<UserProvider>().userModel.data!.token,
+        widget.allProjectsModel!.iD));
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -116,9 +120,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             } else if (state is StartPolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is StartPolePictureFailed) {
-              fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data!.token,
-                  widget.allProjectsModel!.iD));
+              getAllPoleById();
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: state.message!);
@@ -128,9 +130,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
 
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data!.token,
-                  widget.allProjectsModel!.iD));
+              getAllPoleById();
               this.poleModelSelected = AllPolesByLayerModel();
               this._tempMarkerSelected = null;
             } else if (state is CompletePolePictureLoading) {
@@ -139,18 +139,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: state.message!);
-              fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data!.token,
-                  widget.allProjectsModel!.iD));
+              getAllPoleById();
             } else if (state is CompletePolePictureSuccess) {
               setState(() {});
               Fluttertoast.showToast(msg: "Complete pole pictures success");
 
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data!.token,
-                  widget.allProjectsModel!.iD));
+              getAllPoleById();
               this.poleModelSelected = AllPolesByLayerModel();
               this._tempMarkerSelected = null;
             } else if (state is StartFieldingLoading) {
@@ -159,9 +155,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: state.message!);
-              fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data!.token,
-                  widget.allProjectsModel!.iD));
+              getAllPoleById();
             } else if (state is StartFieldingSuccess) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
@@ -176,7 +170,10 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             if (state is GetAllPolesByIdLoading) {
               return _loading();
             } else if (state is GetAllPolesByIdFailed) {
-              return ErrorHandlingWidget(title: state.message);
+              return ErrorHandlingWidget(
+                title: state.message,
+                subTitle: "Please come back in a moment.",
+              );
             } else if (state is GetAllPolesByIdSuccess) {
               return _content(state.allPolesByLayer);
             }
@@ -192,59 +189,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   Widget _content(List<AllPolesByLayerModel>? allPoles) {
+    double newWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
         Container(
           color: Colors.white,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Fielded Request",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: ColorHelpers.colorBlackText),
-                  ),
-                  UIHelper.horizontalSpaceSmall,
-                  InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return SupportingDocsWidget();
-                          });
-                    },
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: ColorHelpers.colorGreen2,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: Text(
-                          "Supporting Docs",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        )),
-                  ),
-                ],
-              ),
-              InkWell(
-                  onTap: () {
-                    Get.to(EditPolePage(
-                        allProjectsModel: widget.allProjectsModel,
-                        isAddPole: true));
-                  },
-                  child: Icon(Icons.add, color: ColorHelpers.colorBlackText)),
-            ],
-          ),
+          child:
+              (newWidth > 360) ? _itemTitleMapLarge() : _itemTitleMapDefault(),
         ),
         Expanded(
           child: Stack(
@@ -283,15 +235,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     setState(() {
                       this.poleModelSelected = AllPolesByLayerModel();
                       this._tempMarkerSelected = null;
-                      // id: null,
-                      // latitude: null,
-                      // longitude: null,
-                      // fieldingBy: null,
-                      // fieldingCompletedDate: null,
-                      // fieldingStatus: null,
-                      // poleSequence: null,
-                      // poleNumber: null,
-                      // startPolePicture: null);
+
                       showPinsOnMap(allPoles);
                     });
                   },
@@ -341,167 +285,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 children: <Widget>[
                   (_tempMarkerSelected == null)
                       ? Container()
-                      : Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                          child: Card(
-                            color: ColorHelpers.colorYellowCard,
-                            child: Padding(
-                              padding: EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Pole Sequences",
-                                            style: TextStyle(
-                                                color:
-                                                    ColorHelpers.colorBlackText,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                          (poleModelSelected!.poleSequence ==
-                                                  null)
-                                              ? "-"
-                                              : poleModelSelected!.poleSequence
-                                                  .toString(),
-                                          style: TextStyle(
-                                              color: ColorHelpers.colorOrange,
-                                              fontSize: 24)),
-                                    ],
-                                  ),
-                                  (poleModelSelected!.fieldingStatus == 2)
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                Get.to(EditPolePage(
-                                                  allProjectsModel:
-                                                      widget.allProjectsModel,
-                                                  poles: poleModelSelected,
-                                                ));
-                                              },
-                                              child: Container(
-                                                  width: 150,
-                                                  decoration: BoxDecoration(
-                                                    color: ColorHelpers
-                                                        .colorOrange,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                  ),
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 10),
-                                                  child: Text(
-                                                    "Edit Pole Information",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12,
-                                                    ),
-                                                  )),
-                                            ),
-                                            UIHelper.verticalSpaceSmall,
-                                            InkWell(
-                                              onTap: () {
-                                                if (poleModelSelected!
-                                                    .startPolePicture!) {
-                                                  dialogAlert(poleModelSelected,
-                                                      "complete pictures");
-                                                } else {
-                                                  dialogAlert(poleModelSelected,
-                                                      "additional pictures");
-                                                }
-                                              },
-                                              child: Container(
-                                                  width: 150,
-                                                  decoration: BoxDecoration(
-                                                      color: poleModelSelected!
-                                                              .startPolePicture!
-                                                          ? ColorHelpers
-                                                              .colorButtonDefault
-                                                          : ColorHelpers
-                                                              .colorYellowCard,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      border: Border.all(
-                                                          color: poleModelSelected!
-                                                                  .startPolePicture!
-                                                              ? ColorHelpers
-                                                                  .colorButtonDefault
-                                                              : ColorHelpers
-                                                                  .colorOrange)),
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 5,
-                                                      horizontal: 10),
-                                                  child: Text(
-                                                    poleModelSelected!
-                                                            .startPolePicture!
-                                                        ? "Complete Pictures"
-                                                        : "Additional Pictures",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      color: poleModelSelected!
-                                                              .startPolePicture!
-                                                          ? ColorHelpers
-                                                              .colorWhite
-                                                          : ColorHelpers
-                                                              .colorOrange,
-                                                      fontSize: 12,
-                                                    ),
-                                                  )),
-                                            ),
-                                          ],
-                                        )
-                                      : InkWell(
-                                          onTap: () {
-                                            fieldingBloc.add(StartFielding(
-                                                context
-                                                    .read<UserProvider>()
-                                                    .userModel
-                                                    .data!
-                                                    .token,
-                                                poleModelSelected!.id,
-                                                true,
-                                                widget.allProjectsModel!.iD));
-                                          },
-                                          child: Container(
-                                              decoration: BoxDecoration(
-                                                color: ColorHelpers.colorOrange,
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 5, horizontal: 10),
-                                              child: Text(
-                                                "Start",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 12,
-                                                ),
-                                              )),
-                                        ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                      : PoleSequenceSelectedItem(
+                          poleModelSelected: poleModelSelected),
                   UIHelper.verticalSpaceSmall,
                   Container(
                     alignment: Alignment.centerLeft,
@@ -520,143 +305,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     children: allPoles
                         .map(
                           (data) => (data.fieldingStatus == 2)
-                              ? Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                  child: Card(
-                                    color: ColorHelpers.colorGreenCard,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(10),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Pole Sequences",
-                                                    style: TextStyle(
-                                                        color: ColorHelpers
-                                                            .colorBlackText,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                              Text(
-                                                  (data.poleSequence == null)
-                                                      ? "-"
-                                                      : data.poleSequence
-                                                          .toString(),
-                                                  style: TextStyle(
-                                                      color: ColorHelpers
-                                                          .colorGreen2,
-                                                      fontSize: 24)),
-                                            ],
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              InkWell(
-                                                onTap: () {
-                                                  Get.to(EditPolePage(
-                                                    allProjectsModel:
-                                                        widget.allProjectsModel,
-                                                    poles: data,
-                                                  ));
-                                                },
-                                                child: Container(
-                                                    width: 150,
-                                                    decoration: BoxDecoration(
-                                                      color: ColorHelpers
-                                                          .colorGreen2,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                    ),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 5,
-                                                            horizontal: 10),
-                                                    child: Text(
-                                                      "Edit Pole Information",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 12,
-                                                      ),
-                                                    )),
-                                              ),
-                                              UIHelper.verticalSpaceSmall,
-                                              InkWell(
-                                                onTap: () {
-                                                  if (data.startPolePicture!) {
-                                                    dialogAlert(data,
-                                                        "complete pictures");
-                                                  } else {
-                                                    dialogAlert(data,
-                                                        "additional pictures");
-                                                  }
-                                                },
-                                                child: Container(
-                                                    width: 150,
-                                                    decoration: BoxDecoration(
-                                                        color: data
-                                                                .startPolePicture!
-                                                            ? ColorHelpers
-                                                                .colorButtonDefault
-                                                            : ColorHelpers
-                                                                .colorGreenCard,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        border: Border.all(
-                                                            color: data
-                                                                    .startPolePicture!
-                                                                ? ColorHelpers
-                                                                    .colorButtonDefault
-                                                                : ColorHelpers
-                                                                    .colorGreen2)),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 5,
-                                                            horizontal: 10),
-                                                    child: Text(
-                                                      data.startPolePicture!
-                                                          ? "Complete Pictures"
-                                                          : "Additional Pictures",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: data
-                                                                .startPolePicture!
-                                                            ? ColorHelpers
-                                                                .colorWhite
-                                                            : ColorHelpers
-                                                                .colorGreen2,
-                                                        fontSize: 12,
-                                                      ),
-                                                    )),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )
+                              ? PoleSequenceItem(allPolesByLayerModel: data)
                               : Container(),
                         )
                         .toList(),
@@ -674,8 +323,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     if (list.length != 0) {
       list.forEach((data) {
         if (data.latitude != null && data.longitude != null) {
-          var fieldingPosition =
-              LatLng(double.parse(data.latitude!), double.parse(data.longitude!));
+          var fieldingPosition = LatLng(
+              double.parse(data.latitude!), double.parse(data.longitude!));
 
           // add the initial source location pin
           if (data.fieldingStatus == null ||
@@ -755,88 +404,98 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     });
   }
 
-  Future dialogAlert(
-      AllPolesByLayerModel? allPolesByLayerModel, String valueAlert) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-            content: Container(
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    'Are you sure $valueAlert?',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                    textAlign: TextAlign.center,
-                  ),
-                  UIHelper.verticalSpaceMedium,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          child: FlatButton(
-                            color: ColorHelpers.colorGrey.withOpacity(0.2),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Cancel",
-                              style:
-                                  TextStyle(color: ColorHelpers.colorBlackText),
-                            ),
-                          ),
-                        ),
-                      ),
-                      UIHelper.horizontalSpaceSmall,
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          child: FlatButton(
-                            color: ColorHelpers.colorGreen,
-                            onPressed: () {
-                              if (allPolesByLayerModel!.startPolePicture!) {
-                                fieldingBloc.add(CompletePolePicture(
-                                  context
-                                      .read<UserProvider>()
-                                      .userModel
-                                      .data!
-                                      .token,
-                                  allPolesByLayerModel.id,
-                                  widget.allProjectsModel!.iD,
-                                ));
-                              } else {
-                                fieldingBloc.add(StartPolePicture(
-                                  context
-                                      .read<UserProvider>()
-                                      .userModel
-                                      .data!
-                                      .token,
-                                  allPolesByLayerModel.id,
-                                  widget.allProjectsModel!.iD,
-                                ));
-                              }
-
-                              Navigator.of(context).pop();
-                            },
-                            child: Text(
-                              "Confirm",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
+  Widget _itemTitleMapDefault() {
+    var fielding = context.read<FieldingProvider>();
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Fielded Request",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: ColorHelpers.colorBlackText),
               ),
+              InkWell(
+                  onTap: () {
+                    Get.to(EditPolePage(
+                        allProjectsModel: widget.allProjectsModel,
+                        isAddPole: true));
+                  },
+                  child: Icon(Icons.add, color: ColorHelpers.colorBlackText)),
+            ],
+          ),
+          UIHelper.verticalSpaceVerySmall,
+          Row(
+            children: [
+              SupportingDocsButton(),
+              UIHelper.horizontalSpaceSmall,
+              itemFieldingType(fielding),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Row _itemTitleMapLarge() {
+    var fielding = context.read<FieldingProvider>();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Text(
+              "Fielded Request",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: ColorHelpers.colorBlackText),
             ),
+            UIHelper.horizontalSpaceSmall,
+            SupportingDocsButton(),
+            UIHelper.horizontalSpaceSmall,
+            itemFieldingType(fielding),
+          ],
+        ),
+        InkWell(
+            onTap: () {
+              Get.to(EditPolePage(
+                  allProjectsModel: widget.allProjectsModel, isAddPole: true));
+            },
+            child: Icon(Icons.add, color: ColorHelpers.colorBlackText)),
+      ],
+    );
+  }
+
+  Container itemFieldingType(FieldingProvider fielding) {
+    return Container(
+      alignment: Alignment.center,
+      width: 100,
+      height: 25.0,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: ColorHelpers.colorBlue,
+      ),
+      child: DropdownButton<String>(
+        underline: Container(),
+        items: fielding.allFieldingType!.map((value) {
+          return DropdownMenuItem<String>(
+            child: Text(value.text.toString(), style: TextStyle(fontSize: 12)),
+            value: value.text.toString(),
           );
-        });
+        }).toList(),
+        onChanged: (String? value) {
+          setState(() {});
+        },
+        value: (fielding.fieldingTypeSelected!.id == null)
+            ? null
+            : fielding.fieldingTypeSelected!.text.toString(),
+      ),
+    );
   }
 }

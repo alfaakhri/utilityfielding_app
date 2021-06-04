@@ -187,9 +187,9 @@ class RiserProvider extends ChangeNotifier {
   setResultDataRiser(double shapeX, double shapeY) {
     _resultDataRiser = RiserAndVGRList(
         shapeX: shapeX,
-        shapeY: shapeY,
+        shapeY: shapeY - 25,
         textX: shapeX,
-        textY: shapeY,
+        textY: shapeY - 25,
         name: (activePointName == "VGR")
             ? activePointName! + "-" + sequenceCurrent.toString()
             : activePointName! + "-" + alphabet[sequenceCurrent! - 1],

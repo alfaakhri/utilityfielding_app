@@ -177,15 +177,18 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
 
           //Save to local
           List<AddPoleLocal>? addPoleLocal = <AddPoleLocal>[];
-          AddPoleLocal tempAddPole =
-              AddPoleLocal(id: Uuid().v1(), addPoleModel: event.addPoleModel);
+          AddPoleLocal tempAddPole = AddPoleLocal(
+              id: Uuid().v1(),
+              allProjectsModel: event.allProjectsModel,
+              allPolesByLayerModel: event.allPolesByLayerModel,
+              addPoleModel: event.addPoleModel);
           final dataBox = await _hiveService.openAndGetDataFromHiveBox(
               getHiveEditPole, listEditPole);
           if (dataBox != null) {
-            addPoleLocal = AddPoleLocal.fromJsonList(jsonDecode(dataBox))!;
+            addPoleLocal = AddPoleLocal.fromJsonList(jsonDecode(dataBox));
             //Check if data is added and doing removal
-            addPoleLocal.removeWhere(
-                (element) => element.addPoleModel!.id == event.addPoleModel.id);
+            addPoleLocal!
+                .removeWhere((element) => element.addPoleModel!.id == event.addPoleModel.id);
             addPoleLocal.add(tempAddPole);
             //Saving to local
             _hiveService.saveDataToBox(

@@ -41,6 +41,13 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  AllPolesByLayerModel _polesByLayerSelected = AllPolesByLayerModel();
+  AllPolesByLayerModel get polesByLayerSelected => _polesByLayerSelected;
+  void setPolesByLayerSelected(AllPolesByLayerModel polesByLayerSelected) {
+    _polesByLayerSelected = polesByLayerSelected;
+    notifyListeners();
+  }
+
   LocationData? _currentLocationData;
   LocationData? get currentLocationData => _currentLocationData;
   void setCurrentLocationData(LocationData currentLocationData) {
@@ -450,7 +457,7 @@ class FieldingProvider extends ChangeNotifier {
             AllFieldingTypeModel.fromJsonList(response.data);
       }
     } catch (e) {
-      print("JOB NUMBER ATTACH " + e.toString());
+      print("Fielding Type " + e.toString());
     }
   }
 }

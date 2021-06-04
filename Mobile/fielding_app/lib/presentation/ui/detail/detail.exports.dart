@@ -1,2 +1,2 @@
 export 'detail_fielding_page.dart';
-export 'supporting_docs_widget.dart';
+export 'widgets/supporting_docs_widget.dart';

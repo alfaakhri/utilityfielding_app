@@ -26,6 +26,8 @@ class AddPoleModel {
   List<AnchorList>? anchorList;
   List<RiserAndVGRList>? riserAndVGRList;
   int? fieldingType;
+  List<dynamic>? anchorFenceList;
+  List<dynamic>? anchorStreetList;
 
   AddPoleModel(
       {this.token,
@@ -52,7 +54,7 @@ class AddPoleModel {
       this.spanDirectionList,
       this.anchorList,
       this.riserAndVGRList,
-      this.fieldingType});
+      this.fieldingType, this.anchorFenceList, this.anchorStreetList});
 
   AddPoleModel.fromJson(Map<String, dynamic> json) {
     token = json['Token'];
@@ -105,6 +107,8 @@ class AddPoleModel {
       });
     }
     fieldingType = json['FieldingType'];
+    anchorFenceList = json['AnchorFenceList'];
+    anchorStreetList = json['AnchorStreetList'];
   }
 
   Map<String, dynamic> toJson() {
@@ -147,7 +151,15 @@ class AddPoleModel {
           this.riserAndVGRList!.map((v) => v.toJson()).toList();
     }
     data['FieldingType'] = this.fieldingType;
+    data['AnchorFenceList'] = this.anchorFenceList;
+    data['AnchorStreetList'] = this.anchorStreetList;
 
     return data;
+  }
+
+  static List<AddPoleModel>? fromJsonList(jsonList) {
+    return jsonList
+        .map<AddPoleModel>((obj) => AddPoleModel.fromJson(obj))
+        .toList();
   }
 }

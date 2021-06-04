@@ -55,99 +55,100 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
               children: [
                 Container(
                   height: 250,
+                  width: 350,
                   alignment: Alignment.center,
                   margin: EdgeInsets.all(15),
-                  child: GestureDetector(
-                    onTapDown: (detail) {
-                      data.setResultDataRiser(
-                          detail.localPosition.dx, detail.localPosition.dy);
-                    },
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                            borderRadius: BorderRadius.circular(10),
+                  child: CustomPaint(
+                    size: Size(350, 250),
+                    child: GestureDetector(
+                      onTapDown: (detail) {
+                        data.setResultDataRiser(
+                            detail.localPosition.dx, detail.localPosition.dy + 15);
+                      },
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color:
+                                      ColorHelpers.colorGrey.withOpacity(0.2)),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            width: 350,
+                            height: 250,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/riser.png',
+                                  width: 199,
+                                  height: 199,
+                                ),
+                              ],
+                            ),
                           ),
-                          width: 350,
-                          height: 250,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'assets/riser.png',
-                                width: 199,
-                                height: 199,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Stack(
-                          alignment: Alignment.center,
-                          children: data.listRiserData.map((e) {
-                            double newWidth = MediaQuery.of(context).size.width;
-                            double newHeight =
-                                MediaQuery.of(context).size.height;
-                            var fielding =
-                                Provider.of<FieldingProvider>(context);
-                            double newX =
-                                ((newWidth * e.shapeX!) / fielding.baseWidth);
-                            double newY =
-                                ((newHeight * e.shapeY!) / fielding.baseHeight);
+                          Stack(
+                            alignment: Alignment.center,
+                            children: data.listRiserData.map((e) {
+                              double newWidth =
+                                  MediaQuery.of(context).size.width;
+                              double newHeight =
+                                  MediaQuery.of(context).size.height;
+                              var fielding =
+                                  Provider.of<FieldingProvider>(context);
+                              double newX =
+                                  ((newWidth * e.shapeX!) / fielding.baseWidth);
+                              double newY = ((newHeight * e.shapeY!) /
+                                  fielding.baseHeight);
 
-                            if (e.value == 4) {
-                              if (e.imageType == 1) {
-                                return TriangleText(
-                                  x: newX + 15,
-                                  y: newY + 15,
-                                  text: "VGR-${e.sequence}",
-                                );
+                              if (e.value == 4) {
+                                if (e.imageType == 1) {
+                                  return TriangleText(
+                                    x: newX + 15,
+                                    y: newY + 15,
+                                    text: "VGR-${e.sequence}",
+                                  );
+                                } else {
+                                  return TriangleText(
+                                    x: newX,
+                                    y: newY,
+                                    text: "VGR-${e.sequence}",
+                                  );
+                                }
                               } else {
-                                return TriangleText(
-                                  x: newX,
-                                  y: newY,
-                                  text: "VGR-${e.sequence}",
+                                var value = Provider.of<RiserProvider>(context)
+                                    .valueType(e.value);
+                                return CircleText(
+                                  center: (e.imageType == 1)
+                                      ? (newWidth > 360)
+                                          ? {"x": newX + 25, "y": newY + 25}
+                                          : {"x": newX + 15, "y": newY + 25}
+                                      : {"x": newX, "y": newY},
+                                  radius: 10,
+                                  text: "R$value-${alphabet[e.sequence! - 1]}",
                                 );
                               }
-                            } else {
-                              var value = Provider.of<RiserProvider>(context)
-                                  .valueType(e.value);
-                              return CircleText(
-                                center: (e.imageType == 1)
-                                    ? (newWidth > 360)
-                                        ? {"x": newX + 25, "y": newY + 25}
-                                        : {"x": newX + 15, "y": newY + 25}
-                                    : {"x": newX, "y": newY},
+                            }).toList(),
+                          ),
+                          (data.activePointName!.contains("VGR"))
+                              ? TriangleText(
+                                x: data.resultDataRiser.shapeX,
+                                y: data.resultDataRiser.shapeY,
+                                text: data.activePointName! +
+                                    "-${data.sequenceCurrent}",
+                              )
+                              : CircleText(
+                                center: {
+                                  "x": data.resultDataRiser.shapeX,
+                                  "y": data.resultDataRiser.shapeY
+                                },
                                 radius: 10,
-                                text:
-                                    "R$value-${alphabet[e.sequence! - 1]}",
-                              );
-                            }
-                          }).toList(),
-                        ),
-                        (data.activePointName!.contains("VGR"))
-                            ? GestureDetector(
-                                child: TriangleText(
-                                  x: data.resultDataRiser.shapeX,
-                                  y: data.resultDataRiser.shapeY,
-                                  text: data.activePointName! +
-                                      "-${data.sequenceCurrent}",
-                                ),
+                                text: data.activePointName! +
+                                    "-${alphabet[data.sequenceCurrent! - 1]}",
                               )
-                            : GestureDetector(
-                                child: CircleText(
-                                  center: {
-                                    "x": data.resultDataRiser.shapeX,
-                                    "y": data.resultDataRiser.shapeY
-                                  },
-                                  radius: 10,
-                                  text: data.activePointName! +
-                                      "-${alphabet[data.sequenceCurrent! - 1]}",
-                                ),
-                              )
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

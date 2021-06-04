@@ -114,9 +114,15 @@ class _EditPolePageState extends State<EditPolePage> {
         transformerList: provider.listTransformer,
         spanDirectionList: context.read<SpanProvider>().listSpanData,
         anchorList: context.read<AnchorProvider>().listAnchorData,
-        riserAndVGRList: context.read<RiserProvider>().listRiserData);
-    fieldingBloc
-        .add(AddPole(data, context.read<ConnectionProvider>().isConnected));
+        riserAndVGRList: context.read<RiserProvider>().listRiserData,
+        anchorFenceList: [],
+        anchorStreetList: []);
+
+    fieldingBloc.add(AddPole(
+        data,
+        provider.allProjectsSelected,
+        provider.polesByLayerSelected,
+        context.read<ConnectionProvider>().isConnected));
   }
 
   Widget spaceForm() {
@@ -162,21 +168,21 @@ class _EditPolePageState extends State<EditPolePage> {
         child: BlocListener<FieldingBloc, FieldingState>(
           listener: (context, state) {
             if (state is AddPoleLoading) {
-              LoadingWidget.showLoadingDialog(context, _keyLoader);
+              // LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is AddPoleFailed) {
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
+              // Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+              // .pop();
               Fluttertoast.showToast(msg: state.message!);
             } else if (state is AddPoleSuccess) {
               clearFormController();
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
+              // Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+              // .pop();
               Fluttertoast.showToast(msg: "Success");
 
-              fieldingBloc.add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data!.token,
-                  context.read<FieldingProvider>().allProjectsSelected.iD));
-              Get.back();
+              // fieldingBloc.add(GetAllPolesByID(
+              //     context.read<UserProvider>().userModel.data!.token,
+              //     context.read<FieldingProvider>().allProjectsSelected.iD));
+              // Get.back();
             }
           },
           child: Scaffold(
@@ -209,7 +215,7 @@ class _EditPolePageState extends State<EditPolePage> {
                       if (context.read<ConnectionProvider>().isConnected) {
                         doneAddPole();
                       } else {
-
+                        dialogSaveLocal();
                       }
                     },
                     child: Padding(
@@ -230,16 +236,29 @@ class _EditPolePageState extends State<EditPolePage> {
                   var anchor = context.read<AnchorProvider>();
                   var riser = context.read<RiserProvider>();
                   setState(() {
-                    this._poleNumber.text = state.poleByIdModel.poleNumber!;
-                    this._vapTerminal.text = state.poleByIdModel.vAPTerminal!;
+                    provider
+                        .setPoleClassAssign(state.poleByIdModel.poleClass ?? 0);
+                    provider.setPoleConditionAssign(
+                        state.poleByIdModel.poleCondition ?? 0);
+                    provider.setPoleHeightAssign(
+                        state.poleByIdModel.poleHeight ?? 0);
+                    provider.setFieldingTypeAssign(
+                        state.poleByIdModel.fieldingType ?? 0);
+                    provider
+                        .setPoleSpeciesAssign(state.poleByIdModel.poleSpecies);
+                    this._poleNumber.text =
+                        state.poleByIdModel.poleNumber ?? "-";
+                    this._vapTerminal.text =
+                        state.poleByIdModel.vAPTerminal ?? "-";
 
-                    this._osmoseNumber.text = state.poleByIdModel.osmose!;
+                    this._osmoseNumber.text = state.poleByIdModel.osmose ?? "-";
                     this._groundLine.text =
-                        state.poleByIdModel.groundCircumference!;
+                        state.poleByIdModel.groundCircumference ?? "-";
                     this._year.text = (state.poleByIdModel.poleYear != null)
                         ? state.poleByIdModel.poleYear.toString()
                         : "";
-                    this._otherNumber.text = state.poleByIdModel.otherNumber!;
+                    this._otherNumber.text =
+                        state.poleByIdModel.otherNumber ?? "-";
                     this._isStamp = state.poleByIdModel.poleStamp ?? false;
                     if (this._isStamp!) {
                       this._poleStamp.text = "Yes";
@@ -254,25 +273,22 @@ class _EditPolePageState extends State<EditPolePage> {
                       this._radioAntena.text = "Yes";
                     }
                     this._notes.text = state.poleByIdModel.note ?? "-";
-                    provider
-                        .setPoleClassAssign(state.poleByIdModel.poleClass ?? 0);
-
-                    this._poleClass.text = provider.poleClassSelected.text!;
-                    provider.setPoleConditionAssign(
-                        state.poleByIdModel.poleCondition ?? 0);
-                    this._condition.text = provider.poleConditionSelected.text!;
-                    provider.setPoleHeightAssign(
-                        state.poleByIdModel.poleHeight ?? 0);
+                    this._poleClass.text =
+                        (provider.poleClassSelected.text != null)
+                            ? provider.poleClassSelected.text.toString()
+                            : "";
+                    this._condition.text =
+                        (provider.poleConditionSelected.text != null)
+                            ? provider.poleConditionSelected.text!
+                            : "";
                     this._poleHeight.text =
                         (provider.poleHeightSelected.text != null)
                             ? provider.poleHeightSelected.text.toString()
                             : "";
-                    provider.setFieldingTypeAssign(
-                        state.poleByIdModel.fieldingType ?? 0);
                     this._fieldingType.text =
-                        provider.fieldingTypeSelected!.text!;
-                    provider
-                        .setPoleSpeciesAssign(state.poleByIdModel.poleSpecies);
+                        (provider.fieldingTypeSelected!.text != null)
+                            ? provider.fieldingTypeSelected!.text!
+                            : "";
                     this._species.text = provider.poleSpeciesSelected.text!;
 
                     provider.setLatitude(
@@ -333,7 +349,9 @@ class _EditPolePageState extends State<EditPolePage> {
                     ),
                     Text(
                       (widget.poles != null)
-                          ? widget.poles!.poleSequence.toString()
+                          ? (widget.poles!.poleSequence != null)
+                              ? widget.poles!.poleSequence.toString()
+                              : "-"
                           : "-",
                       style: TextStyle(
                           color: ColorHelpers.colorBlackText, fontSize: 14),
@@ -550,54 +568,7 @@ class _EditPolePageState extends State<EditPolePage> {
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0))),
-            content: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    title,
-                    style: ThemeFonts.textDefault,
-                  ),
-                  UIHelper.verticalSpaceSmall,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          maxLines: null,
-                          controller: controller,
-                          decoration: kDecorationDefault(title)
-                        ),
-                      ),
-                      (title.toLowerCase().contains("ground line"))
-                          ? Padding(
-                              padding: EdgeInsets.only(left: 10),
-                              child:
-                                  Text("Inch", style: TextStyle(fontSize: 12)),
-                            )
-                          : Container()
-                    ],
-                  ),
-                  UIHelper.verticalSpaceSmall,
-                  Container(
-                    width: double.infinity,
-                    child: FlatButton(
-                      child:
-                          Text("Save", style: TextStyle(color: Colors.white)),
-                      onPressed: () {
-                        setState(() {});
-                        Navigator.of(context).pop();
-                      },
-                      color: ColorHelpers.colorButtonDefault,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+          return FormAlertItem(title: title, controller: controller);
         });
   }
 
@@ -829,8 +800,8 @@ class _EditPolePageState extends State<EditPolePage> {
                       height: 50,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: ColorHelpers.colorBlue,
-                        border: Border.all(color: ColorHelpers.colorBlue),
+                        color: ColorHelpers.colorBlueNumber,
+                        border: Border.all(color: ColorHelpers.colorBlueNumber),
                       ),
                       child: Text(
                         "SAVE",

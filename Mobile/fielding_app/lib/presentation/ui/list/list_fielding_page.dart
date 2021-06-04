@@ -8,6 +8,8 @@ import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
 import 'package:fielding_app/presentation/ui/list/list.exports.dart';
+import 'package:fielding_app/presentation/ui/list/widgets/item_fielding_request.dart';
+import 'package:fielding_app/presentation/ui/list/widgets/notes_request_item.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -59,7 +61,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     }
   }
 
-   // Platform messages are asynchronous, so we initialize in an async method.
+  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initConnectivity() async {
     ConnectivityResult result = ConnectivityResult.none;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -222,177 +224,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             children: allProjects
-                .map((data) => GestureDetector(
-                      onTap: () {
-                        context
-                            .read<FieldingProvider>()
-                            .setAllProjectsSelected(data);
-                        context
-                            .read<FieldingProvider>()
-                            .getJobNumberAttachModel(data.iD);
-                        Get.to(DetailFieldingPage(allProjectsModel: data));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                        child: Card(
-                          color: ColorHelpers.colorBlue,
-                          child: Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          data.projectName!,
-                                          style: TextStyle(
-                                              color:
-                                                  ColorHelpers.colorBlackText,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          data.layerName!,
-                                          style: TextStyle(
-                                              color:
-                                                  ColorHelpers.colorBlackText,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                                (data.totalPoles != null)
-                                                    ? data.totalPoles.toString()
-                                                    : "0",
-                                                style: TextStyle(
-                                                    color: ColorHelpers
-                                                        .colorBlueNumber,
-                                                    fontSize: 24)),
-                                            UIHelper.horizontalSpaceSmall,
-                                            Text("Poles",
-                                                style: TextStyle(
-                                                    color: ColorHelpers
-                                                        .colorBlackText,
-                                                    fontSize: 14)),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                UIHelper.verticalSpaceSmall,
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          (data.dueDate != null)
-                                              ? "Due Date ${DateFormat("dd MMM yyyy").format(DateTime.parse(data.dueDate!))}"
-                                              : "Due Date -",
-                                          // "Due Date ${data.dueDate  }",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color:
-                                                  ColorHelpers.colorBlackText),
-                                        ),
-                                        Text(
-                                          (data.approx != null)
-                                              ? "Approx ${data.approx} Poles"
-                                              : "Approx 0 Poles",
-                                          style: TextStyle(
-                                              fontSize: 12,
-                                              color:
-                                                  ColorHelpers.colorBlackText),
-                                        )
-                                      ],
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                5.0))),
-                                                content: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      "Notes",
-                                                      style: TextStyle(
-                                                          color: ColorHelpers
-                                                              .colorBlackText,
-                                                          fontSize: 12),
-                                                    ),
-                                                    UIHelper.verticalSpaceSmall,
-                                                    Container(
-                                                      width: double.infinity,
-                                                      decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color: ColorHelpers
-                                                                .colorGrey),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                      ),
-                                                      padding:
-                                                          EdgeInsets.all(10),
-                                                      child: Text(data.note!,
-                                                          softWrap: true),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            });
-                                      },
-                                      child: Container(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            "Notes",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12),
-                                          ),
-                                        ),
-                                        decoration: BoxDecoration(
-                                            color:
-                                                ColorHelpers.colorButtonDefault,
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ))
+                .map((data) => ItemFieldingRequest(dataProject: data))
                 .toList(),
           ),
         ],

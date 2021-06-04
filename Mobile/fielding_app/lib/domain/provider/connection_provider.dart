@@ -10,5 +10,6 @@ class ConnectionProvider extends ChangeNotifier {
   bool get isConnected => _isConnected;
   void setIsConnected(bool isConnected) async {
     _isConnected = isConnected;
+    notifyListeners();
   }
 }

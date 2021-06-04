@@ -6,6 +6,7 @@ import 'package:fielding_app/data/models/user_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/external/service/shared_pref_service.dart';
 import 'package:fielding_app/presentation/ui/login_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 
@@ -66,6 +67,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield* _startAppToState();
     } else if (event is DoLogout) {
       _sharedPref.deleteUserModel();
+      Fluttertoast.showToast(msg: "Logout Success");
       Get.offAll(LoginPage());
     } else if (event is SaveFirstInstall) {
       _sharedPref.saveFirstInstall();
