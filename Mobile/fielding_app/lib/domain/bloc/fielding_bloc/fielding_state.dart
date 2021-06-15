@@ -71,19 +71,6 @@ class CompletePolePictureSuccess extends FieldingState {
   CompletePolePictureSuccess(this.allPolesByLayerModel);
 }
 
-class UpdateLocationLoading extends FieldingState {}
-
-class UpdateLocationSuccess extends FieldingState {
-  final AllPolesByLayerModel allPolesByLayerModel;
-
-  UpdateLocationSuccess(this.allPolesByLayerModel);
-}
-
-class UpdateLocationFailed extends FieldingState {
-  final String? message;
-  UpdateLocationFailed(this.message);
-}
-
 class GetPoleByIdLoading extends FieldingState {}
 class GetPoleByIdFailed extends FieldingState {
   final String? message;
@@ -96,18 +83,6 @@ class GetPoleByIdSuccess extends FieldingState {
   GetPoleByIdSuccess(this.poleByIdModel);
 }
 
-class GetCurrentAddressLoading extends FieldingState {}
-class GetCurrentAddressSuccess extends FieldingState {
-  final CurrentAddress currentAddress;
-
-  GetCurrentAddressSuccess(this.currentAddress);
-}
-class GetCurrentAddressFailed extends FieldingState {
-  final String? message;
-
-  GetCurrentAddressFailed(this.message);
-}
-
 class StartFieldingLoading extends FieldingState {}
 class StartFieldingFailed extends FieldingState {
   final String? message;
@@ -116,3 +91,11 @@ class StartFieldingFailed extends FieldingState {
 }
 
 class StartFieldingSuccess extends FieldingState {}
+
+class CompleteMultiPoleLoading extends FieldingState {}
+class CompleteMultiPoleSuccess extends FieldingState {}
+class CompleteMultiPoleFailed extends FieldingState {
+  final String? message;
+
+  CompleteMultiPoleFailed(this.message);
+}

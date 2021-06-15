@@ -356,4 +356,14 @@ class ApiProvider {
       throw e;
     }
   }
+
+  Future<Response> completeMultiPole(dynamic data) async {
+    try {
+      var response =
+          await _dio.post(BASE_URL + "/api/MobileProject/CompleteMultiPoleFielding", data: data);
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
 }

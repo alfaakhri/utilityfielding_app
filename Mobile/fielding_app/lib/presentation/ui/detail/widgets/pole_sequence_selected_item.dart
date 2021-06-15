@@ -11,10 +11,12 @@ import 'alert_picture_item.dart';
 
 class PoleSequenceSelectedItem extends StatelessWidget {
   final AllPolesByLayerModel? poleModelSelected;
+  final VoidCallback? callback;
 
   const PoleSequenceSelectedItem({
     Key? key,
     required this.poleModelSelected,
+    required this.callback,
   }) : super(key: key);
 
   @override
@@ -59,6 +61,10 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
+                            callback!();
+                            fielding
+                                .setPolesByLayerSelected(poleModelSelected!);
+
                             Get.to(EditPolePage(
                               allProjectsModel: fielding.allProjectsSelected,
                               poles: poleModelSelected,
@@ -99,9 +105,10 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                                       : ColorHelpers.colorYellowCard,
                                   borderRadius: BorderRadius.circular(5),
                                   border: Border.all(
-                                      color: poleModelSelected!.startPolePicture!
-                                          ? ColorHelpers.colorButtonDefault
-                                          : ColorHelpers.colorOrange)),
+                                      color:
+                                          poleModelSelected!.startPolePicture!
+                                              ? ColorHelpers.colorButtonDefault
+                                              : ColorHelpers.colorOrange)),
                               padding: EdgeInsets.symmetric(
                                   vertical: 5, horizontal: 10),
                               child: Text(

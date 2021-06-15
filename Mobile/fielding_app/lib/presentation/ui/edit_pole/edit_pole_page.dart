@@ -52,8 +52,7 @@ class _EditPolePageState extends State<EditPolePage> {
   List<String> _listChoice = ["-", "Yes", "No"];
 
   void clearFormController() {
-    context.read<FieldingProvider>().setLatitude(0.00);
-    context.read<FieldingProvider>().setLongitude(0.00);
+    context.read<FieldingProvider>().setLatLng(0.00, 0.00);
     context.read<FieldingProvider>().setStreetName("");
     context.read<FieldingProvider>().clearAll();
     context.read<SpanProvider>().clearAll();
@@ -115,8 +114,9 @@ class _EditPolePageState extends State<EditPolePage> {
         spanDirectionList: context.read<SpanProvider>().listSpanData,
         anchorList: context.read<AnchorProvider>().listAnchorData,
         riserAndVGRList: context.read<RiserProvider>().listRiserData,
-        anchorFenceList: [],
-        anchorStreetList: []);
+        anchorFences: [],
+        anchorStreets: [],
+        riserFences: []);
 
     fieldingBloc.add(AddPole(
         data,
@@ -155,34 +155,37 @@ class _EditPolePageState extends State<EditPolePage> {
     clearFormController();
   }
 
+  void getAllPoles() {
+    fieldingBloc.add(GetAllPolesByID(
+        context.read<UserProvider>().userModel.data!.token,
+        context.read<FieldingProvider>().allProjectsSelected.iD,
+        context.read<ConnectionProvider>().isConnected));
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () {
-          fieldingBloc.add(GetAllPolesByID(
-              context.read<UserProvider>().userModel.data!.token,
-              context.read<FieldingProvider>().allProjectsSelected.iD));
+          getAllPoles();
           Get.back();
           return Future.value(false);
         },
         child: BlocListener<FieldingBloc, FieldingState>(
           listener: (context, state) {
             if (state is AddPoleLoading) {
-              // LoadingWidget.showLoadingDialog(context, _keyLoader);
+              LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is AddPoleFailed) {
-              // Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-              // .pop();
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                  .pop();
               Fluttertoast.showToast(msg: state.message!);
             } else if (state is AddPoleSuccess) {
               clearFormController();
-              // Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-              // .pop();
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                  .pop();
               Fluttertoast.showToast(msg: "Success");
 
-              // fieldingBloc.add(GetAllPolesByID(
-              //     context.read<UserProvider>().userModel.data!.token,
-              //     context.read<FieldingProvider>().allProjectsSelected.iD));
-              // Get.back();
+              getAllPoles();
+              Get.back();
             }
           },
           child: Scaffold(
@@ -198,9 +201,7 @@ class _EditPolePageState extends State<EditPolePage> {
                 onPressed: () {
                   clearFormController();
 
-                  fieldingBloc.add(GetAllPolesByID(
-                      context.read<UserProvider>().userModel.data!.token,
-                      context.read<FieldingProvider>().allProjectsSelected.iD));
+                  getAllPoles();
                   Get.back();
                 },
               ),
@@ -291,9 +292,8 @@ class _EditPolePageState extends State<EditPolePage> {
                             : "";
                     this._species.text = provider.poleSpeciesSelected.text!;
 
-                    provider.setLatitude(
-                        double.parse(state.poleByIdModel.latitude ?? "0"));
-                    provider.setLongitude(
+                    provider.setLatLng(
+                        double.parse(state.poleByIdModel.latitude ?? "0"),
                         double.parse(state.poleByIdModel.longitude ?? "0"));
                     provider.getCurrentAddress(
                         double.parse(state.poleByIdModel.latitude ?? "0"),
@@ -407,7 +407,9 @@ class _EditPolePageState extends State<EditPolePage> {
                             InkWell(
                               onTap: () {
                                 Get.to(EditLatLngPage(
-                                  polesLayerModel: widget.poles,
+                                  polesLayerModel: context
+                                      .read<FieldingProvider>()
+                                      .polesByLayerSelected,
                                 ));
                               },
                               child: Container(

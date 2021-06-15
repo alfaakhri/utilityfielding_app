@@ -5,15 +5,17 @@ abstract class FieldingEvent {}
 
 class GetAllProjects extends FieldingEvent {
   final String? token;
+  final bool? isConnected;
 
-  GetAllProjects(this.token);
+  GetAllProjects(this.token, this.isConnected);
 }
 
 class GetAllPolesByID extends FieldingEvent {
   final String? token;
   final String? layerId;
+  final bool? isConnected;
 
-  GetAllPolesByID(this.token, this.layerId);
+  GetAllPolesByID(this.token, this.layerId, this.isConnected);
 }
 
 class StartPolePicture extends FieldingEvent {
@@ -30,15 +32,6 @@ class CompletePolePicture extends FieldingEvent {
   final String? layerId;
 
   CompletePolePicture(this.token, this.poleId, this.layerId);
-}
-
-class UpdateLocation extends FieldingEvent {
-  final String? token;
-  final String? poleId;
-  final String? latitude;
-  final String? longitude;
-
-  UpdateLocation(this.token, this.poleId, this.latitude, this.longitude);
 }
 
 class AddPole extends FieldingEvent {
@@ -58,13 +51,6 @@ class GetPoleById extends FieldingEvent {
   GetPoleById(this.id, this.token);
 }
 
-class GetCurrentAddress extends FieldingEvent {
-  final double latitude;
-  final double longitude;
-
-  GetCurrentAddress(this.latitude, this.longitude);
-}
-
 class StartFielding extends FieldingEvent {
   final String? token;
   final String? poleId;
@@ -72,4 +58,12 @@ class StartFielding extends FieldingEvent {
   final String? layerId;
 
   StartFielding(this.token, this.poleId, this.isStartAdditional, this.layerId);
+}
+
+class CompleteMultiPole extends FieldingEvent {
+  final String? token;
+  final String? layerId;
+  final List<AllPolesByLayerModel>? allPolesByLayerModel;
+
+  CompleteMultiPole(this.token, this.layerId, this.allPolesByLayerModel);
 }

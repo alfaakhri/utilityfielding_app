@@ -1,6 +1,7 @@
 import 'package:fielding_app/data/models/detail_fielding/all_poles_by_layer_model.dart';
 
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/domain/bloc/location_bloc/location_bloc.dart';
 
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
@@ -41,7 +42,6 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   // bool _editLocation = false;
   String? _latitude;
   String? _longitude;
-  late FieldingBloc fieldingBloc;
   // LocationBloc locationBloc;
   GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
@@ -54,8 +54,8 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     super.initState();
     var fielding = context.read<FieldingProvider>();
     if (widget.polesLayerModel != null) {
-      _latitude = widget.polesLayerModel!.latitude;
-      _longitude = widget.polesLayerModel!.longitude;
+      _latitude = fielding.latitude!.toString();
+      _longitude = fielding.longitude!.toString();
       print("_latitude0" + _latitude.toString());
     } else {
       if (fielding.allPolesByLayer!.length != 0) {
@@ -73,8 +73,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
         }
       }
     }
-    fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-    // locationBloc = BlocProvider.of<LocationBloc>(context);
+
     setPoleIcons();
     locationService.locationStream.listen((location) {
       currentLocation = location;
@@ -166,7 +165,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
           ),
           backgroundColor: Colors.white,
         ),
-        body: BlocListener<FieldingBloc, FieldingState>(
+        body: BlocListener<LocationBloc, LocationState>(
           listener: (context, state) {
             if (state is UpdateLocationLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
@@ -174,24 +173,31 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: state.message!);
-            } else if (state is UpdateLocationSuccess) {
-              setState(() {
-                _latitude = state.allPolesByLayerModel.latitude;
-                _longitude = state.allPolesByLayerModel.longitude;
-                // _editLocation = false;
-              });
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
-              Fluttertoast.showToast(msg: "Update location success");
-              fieldingBloc.add(GetCurrentAddress(
-                  double.parse(_latitude!), double.parse(_longitude!)));
-            } else if (state is GetCurrentAddressLoading) {
-              LoadingWidget.showLoadingDialog(context, _keyLoader);
+              // } else if (state is UpdateLocationSuccess) {
+              // setState(() {
+              //   _latitude = state.allPolesByLayerModel.latitude;
+              //   _longitude = state.allPolesByLayerModel.longitude;
+              //   // _editLocation = false;
+              // });
+              // Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+              //     .pop();
+              // Fluttertoast.showToast(msg: "Update location success");
+              // context.read<LocationBloc>().add(GetCurrentAddress(
+              //     double.parse(_latitude!), double.parse(_longitude!)));
+              // } else if (state is GetCurrentAddressLoading) {
+              //   LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is GetCurrentAddressFailed) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: state.message!);
+              Fluttertoast.showToast(msg: state.message);
             } else if (state is GetCurrentAddressSuccess) {
+              var fielding = context.read<FieldingProvider>();
+              AllPolesByLayerModel poles = fielding.polesByLayerSelected;
+              poles.latitude = _latitude!.toString();
+              poles.longitude = _longitude!.toString();
+              fielding.setPolesByLayerSelected(poles);
+              fielding.setLatLng(
+                  double.parse(_latitude!), double.parse(_longitude!));
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: "Update location success");
@@ -206,6 +212,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   }
 
   Widget _content() {
+    var fielding = context.read<FieldingProvider>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -263,8 +270,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             .allPolesByLayer!
                             .length !=
                         0) {
-                      showPinsOnMapAllPoles(
-                          context.read<FieldingProvider>().allPolesByLayer!);
+                      showPinsOnMapAllPoles(fielding.allPolesByLayer!);
                     }
                   },
                   onMapCreated: (GoogleMapController controller) {
@@ -273,11 +279,9 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
 
                     if (widget.polesLayerModel != null) {
                       showPinsOnMap(widget.polesLayerModel!);
-                    } else if (context.read<FieldingProvider>().latitude !=
-                        null) {
+                    } else if (fielding.latitude != null) {
                       showPinsOnMapDefault(
-                          context.read<FieldingProvider>().latitude!,
-                          context.read<FieldingProvider>().longitude!);
+                          fielding.latitude!, fielding.longitude!);
                     }
 
                     if (context
@@ -285,8 +289,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             .allPolesByLayer!
                             .length !=
                         0) {
-                      showPinsOnMapAllPoles(
-                          context.read<FieldingProvider>().allPolesByLayer!);
+                      showPinsOnMapAllPoles(fielding.allPolesByLayer!);
                     }
                     Fluttertoast.showToast(
                         msg: "Tap & drag to add pole in map",
@@ -298,7 +301,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(50),
                     topRight: Radius.circular(25)),
-                panel: _buildListAllPoles(),
+                panel: _bottomPanel(),
                 body: Container(),
               ),
             ],
@@ -308,7 +311,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     );
   }
 
-  Widget _buildListAllPoles() {
+  Widget _bottomPanel() {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
@@ -582,23 +585,11 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             color: ColorHelpers.colorGreen,
                             onPressed: () {
                               if (widget.polesLayerModel == null) {
-                                context
-                                    .read<FieldingProvider>()
-                                    .setLatitude(double.parse(_latitude!));
-                                context
-                                    .read<FieldingProvider>()
-                                    .setLongitude(double.parse(_longitude!));
-                                fieldingBloc.add(GetCurrentAddress(
-                                    double.parse(_latitude!),
-                                    double.parse(_longitude!)));
+                                context.read<LocationBloc>().add(
+                                    GetCurrentAddress(double.parse(_latitude!),
+                                        double.parse(_longitude!)));
                               } else {
-                                context.read<FieldingProvider>().setLatitude(
-                                    double.parse(
-                                        widget.polesLayerModel!.latitude!));
-                                context.read<FieldingProvider>().setLongitude(
-                                    double.parse(
-                                        widget.polesLayerModel!.longitude!));
-                                fieldingBloc.add(UpdateLocation(
+                                context.read<LocationBloc>().add(UpdateLocation(
                                     context
                                         .read<UserProvider>()
                                         .userModel

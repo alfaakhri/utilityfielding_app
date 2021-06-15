@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fielding_app/data/models/edit_pole/add_pole_model.dart';
 import 'package:fielding_app/data/models/edit_pole/add_transformer_model.dart';
 import 'package:fielding_app/data/models/edit_pole/all_fielding_type_model.dart';
@@ -12,12 +14,15 @@ import 'package:fielding_app/data/models/edit_pole/current_address.dart';
 import 'package:fielding_app/data/models/detail_fielding/job_number_attachment_model.dart';
 import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
+import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/external/service/hive_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class FieldingProvider extends ChangeNotifier {
   ApiProvider _apiProvider = ApiProvider();
+  HiveService _hiveService = HiveService();
 
   late double baseWidth;
   late double baseHeight;
@@ -92,14 +97,11 @@ class FieldingProvider extends ChangeNotifier {
 
   double? _latitude;
   double? get latitude => _latitude;
-  void setLatitude(double? latitude) {
-    _latitude = latitude;
-    notifyListeners();
-  }
-
   double? _longitude;
   double? get longitude => _longitude;
-  void setLongitude(double? longitude) {
+
+  void setLatLng(double? latitude, double? longitude) {
+    _latitude = latitude;
     _longitude = longitude;
     notifyListeners();
   }
@@ -135,15 +137,25 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllPoleSpecies() async {
-    ApiProvider _repository = ApiProvider();
-    try {
-      var response = await _repository.getAllPoleSpecies();
-      if (response.statusCode == 200) {
-        setListAllPoleSpecies(AllPoleSpeciesModel.fromJsonList(response.data));
-        print("all pole species: ${response.data}");
-      } else {}
-    } catch (e) {
-      print(e.toString());
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHivePolesSpecies, listPolesSpecies);
+    if (dataBox != null) {
+      setListAllPoleSpecies(
+          AllPoleSpeciesModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _apiProvider.getAllPoleSpecies();
+        if (response.statusCode == 200) {
+          setListAllPoleSpecies(
+              AllPoleSpeciesModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHivePolesSpecies, listPolesSpecies);
+          _hiveService.saveDataToBox(getHivePolesSpecies, listPolesSpecies,
+              json.encode(listAllPoleSpecies));
+          print("all pole species: ${response.data}");
+        } else {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
@@ -158,8 +170,8 @@ class FieldingProvider extends ChangeNotifier {
   AllPoleClassModel _poleClassSelected = AllPoleClassModel();
   AllPoleClassModel get poleClassSelected => _poleClassSelected;
   void setPoleClassSelected(String? value) {
-    _poleClassSelected =
-        _listAllPoleClass!.firstWhere((element) => element.text!.contains(value!));
+    _poleClassSelected = _listAllPoleClass!
+        .firstWhere((element) => element.text!.contains(value!));
     notifyListeners();
   }
 
@@ -178,15 +190,23 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllPoleClass() async {
-    ApiProvider _repository = ApiProvider();
-    try {
-      var response = await _repository.getAllPoleClass();
-      if (response.statusCode == 200) {
-        setListAllPoleClass(AllPoleClassModel.fromJsonList(response.data));
-        print("all pole class: ${response.data}");
-      } else {}
-    } catch (e) {
-      print(e.toString());
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHivePolesClass, listPolesClass);
+    if (dataBox != null) {
+      setListAllPoleClass(AllPoleClassModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _apiProvider.getAllPoleClass();
+        if (response.statusCode == 200) {
+          setListAllPoleClass(AllPoleClassModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHivePolesClass, listPolesClass);
+          _hiveService.saveDataToBox(
+              getHivePolesClass, listPolesClass, json.encode(listAllPoleClass));
+          print("all pole class: ${response.data}");
+        } else {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
@@ -221,22 +241,32 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllPoleHeight() async {
-    ApiProvider _repository = ApiProvider();
-    try {
-      var response = await _repository.getAllPoleHeight();
-      if (response.statusCode == 200) {
-        setListAllPoleHeight(AllPoleHeightModel.fromJsonList(response.data));
-        print("all pole height: ${response.data}");
-      } else {}
-    } catch (e) {
-      print(e.toString());
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHivePolesHeight, listPolesHeight);
+    if (dataBox != null) {
+      setListAllPoleHeight(
+          AllPoleHeightModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _apiProvider.getAllPoleHeight();
+        if (response.statusCode == 200) {
+          setListAllPoleHeight(AllPoleHeightModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHivePolesHeight, listPolesHeight);
+          _hiveService.saveDataToBox(getHivePolesHeight, listPolesHeight,
+              json.encode(listAllPoleHeight));
+          print("all pole height: ${response.data}");
+        } else {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
 //--------------------------------------------------------------------------------------------
   List<AllPoleConditionModel>? _listAllPoleCondition =
       <AllPoleConditionModel>[];
-  List<AllPoleConditionModel>? get listAllPoleCondition => _listAllPoleCondition;
+  List<AllPoleConditionModel>? get listAllPoleCondition =>
+      _listAllPoleCondition;
   void setListAllPoleCondition(
       List<AllPoleConditionModel>? listAllPoleCondition) {
     _listAllPoleCondition = listAllPoleCondition;
@@ -265,16 +295,26 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllPoleCondition() async {
-    ApiProvider _repository = ApiProvider();
-    try {
-      var response = await _repository.getAllPoleCondition();
-      if (response.statusCode == 200) {
-        setListAllPoleCondition(
-            AllPoleConditionModel.fromJsonList(response.data));
-        print("all pole condition: ${response.data}");
-      } else {}
-    } catch (e) {
-      print(e.toString());
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHivePolesCondition, listPolesCondition);
+    if (dataBox != null) {
+      setListAllPoleCondition(
+          AllPoleConditionModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _apiProvider.getAllPoleCondition();
+        if (response.statusCode == 200) {
+          setListAllPoleCondition(
+              AllPoleConditionModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(
+              getHivePolesCondition, listPolesCondition);
+          _hiveService.saveDataToBox(getHivePolesCondition, listPolesCondition,
+              json.encode(listAllPoleCondition));
+          print("all pole condition: ${response.data}");
+        } else {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
@@ -287,15 +327,23 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllHoaType() async {
-    ApiProvider _repository = ApiProvider();
-    try {
-      var response = await _repository.getAllHoaType();
-      if (response.statusCode == 200) {
-        setListAllHoaType(AllHoaTypeModel.fromJsonList(response.data));
-        print("all hoa type: ${response.data}");
-      } else {}
-    } catch (e) {
-      print(e.toString());
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveHoaType, listHoaType);
+    if (dataBox != null) {
+      setListAllHoaType(AllHoaTypeModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _apiProvider.getAllHoaType();
+        if (response.statusCode == 200) {
+          setListAllHoaType(AllHoaTypeModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHiveHoaType, listHoaType);
+          _hiveService.saveDataToBox(
+              getHiveHoaType, listHoaType, json.encode(listAllHoaType));
+          print("all hoa type: ${response.data}");
+        } else {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
@@ -399,8 +447,7 @@ class FieldingProvider extends ChangeNotifier {
 
   //------------------------------------------------------------------------------
 
-  List<JobNumberAttachModel>? _jobNumberAttachModel =
-      <JobNumberAttachModel>[];
+  List<JobNumberAttachModel>? _jobNumberAttachModel = <JobNumberAttachModel>[];
   List<JobNumberAttachModel>? get jobNumberAttachModel => _jobNumberAttachModel;
   void setJobNumberAttachModel(
       List<JobNumberAttachModel> jobNumberAttachModel) {
@@ -431,7 +478,8 @@ class FieldingProvider extends ChangeNotifier {
   AllFieldingTypeModel? _fieldingTypeSelected;
   AllFieldingTypeModel? get fieldingTypeSelected => _fieldingTypeSelected;
   void setFieldingTypeSelected(String? value) {
-    _fieldingTypeSelected = _allFieldingType!.firstWhere((element) => element.text == value);
+    _fieldingTypeSelected =
+        _allFieldingType!.firstWhere((element) => element.text == value);
     notifyListeners();
   }
 
@@ -450,14 +498,30 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getFieldingType() async {
-    try {
-      var response = await _apiProvider.getFieldingType();
-      if (response.statusCode == 200) {
-        _allFieldingType =
-            AllFieldingTypeModel.fromJsonList(response.data);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveFieldingType, listFieldingType);
+    if (dataBox != null) {
+      _allFieldingType =
+          AllFieldingTypeModel.fromJsonList(json.decode(dataBox));
+      _allFieldingType!
+          .insertAll(0, [AllFieldingTypeModel(id: 3, text: "Fielding Type")]);
+      setFieldingTypeAssign(3);
+    } else {
+      try {
+        var response = await _apiProvider.getFieldingType();
+        if (response.statusCode == 200) {
+          _allFieldingType = AllFieldingTypeModel.fromJsonList(response.data);
+          _hiveService.deleteDataFromBox(getHiveFieldingType, listFieldingType);
+          _hiveService.saveDataToBox(getHiveFieldingType, listFieldingType,
+              json.encode(_allFieldingType));
+          _allFieldingType!.insertAll(
+              0, [AllFieldingTypeModel(id: 3, text: "Fielding Type")]);
+
+          setFieldingTypeAssign(3);
+        }
+      } catch (e) {
+        print("Fielding Type " + e.toString());
       }
-    } catch (e) {
-      print("Fielding Type " + e.toString());
     }
   }
 }

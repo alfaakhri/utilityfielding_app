@@ -14,3 +14,13 @@ class SaveImageError extends DownloadImageState {
 
   SaveImageError(this.message);
 }
+
+class SaveFileLoading extends DownloadImageState {}
+
+class SaveFileSuccess extends DownloadImageState {}
+
+class SaveFileFailed extends DownloadImageState {
+  final String? message;
+
+  SaveFileFailed(this.message);
+}

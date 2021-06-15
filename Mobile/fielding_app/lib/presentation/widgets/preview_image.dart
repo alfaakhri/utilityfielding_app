@@ -50,7 +50,7 @@ class _PreviewImageState extends State<PreviewImage> {
 
   Scaffold _buildScaffold() {
     return Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0.0,

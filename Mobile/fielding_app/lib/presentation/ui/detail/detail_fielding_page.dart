@@ -29,6 +29,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   Marker? _tempMarkerSelected;
   Set<Marker> _markers = Set<Marker>();
   double pinPillPosition = -100;
+  bool showButtonCompleteMulti = false;
   late LocationData currentLocation;
   late BitmapDescriptor poleIcon;
   late BitmapDescriptor poleSelected;
@@ -40,9 +41,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   void initState() {
     super.initState();
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-    fieldingBloc.add(GetAllPolesByID(
-        context.read<UserProvider>().userModel.data!.token,
-        widget.allProjectsModel!.iD));
+    getAllPoleById();
     getCurrentLocation();
     setPoleIcons();
   }
@@ -79,15 +78,40 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   void getAllPoleById() {
     fieldingBloc.add(GetAllPolesByID(
         context.read<UserProvider>().userModel.data!.token,
-        widget.allProjectsModel!.iD));
+        widget.allProjectsModel!.iD,
+        context.read<ConnectionProvider>().isConnected));
+  }
+
+  void searchPolesByStatus() {
+    context.read<FieldingProvider>().allPolesByLayer!.forEach((element) {
+      if (element.fieldingStatus != 2) {
+        setState(() {
+          showButtonCompleteMulti = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    this.poleModelSelected = AllPolesByLayerModel();
+    this._tempMarkerSelected = null;
+  }
+
+  void callback() {
+    this.poleModelSelected = AllPolesByLayerModel();
+    this._tempMarkerSelected = null;
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        fieldingBloc.add(
-            GetAllProjects(context.read<UserProvider>().userModel.data!.token));
+        fieldingBloc.add(GetAllProjects(
+            context.read<UserProvider>().userModel.data!.token,
+            context.read<ConnectionProvider>().isConnected));
         Get.back();
         return Future.value(false);
       },
@@ -101,7 +125,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
           leading: IconButton(
             onPressed: () {
               fieldingBloc.add(GetAllProjects(
-                  context.read<UserProvider>().userModel.data!.token));
+                  context.read<UserProvider>().userModel.data!.token,
+                  context.read<ConnectionProvider>().isConnected));
               Get.back();
             },
             icon: Icon(
@@ -117,6 +142,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               context
                   .read<FieldingProvider>()
                   .setAllPolesByLayer(state.allPolesByLayer);
+              searchPolesByStatus();
             } else if (state is StartPolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is StartPolePictureFailed) {
@@ -164,6 +190,22 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 poles: poleModelSelected,
                 allProjectsModel: widget.allProjectsModel,
               ));
+            } else if (state is CompleteMultiPoleLoading) {
+              LoadingWidget.showLoadingDialog(context, _keyLoader);
+            } else if (state is CompleteMultiPoleSuccess) {
+              setState(() {});
+              Fluttertoast.showToast(msg: "Complete Multi pole success");
+
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                  .pop();
+              getAllPoleById();
+              this.poleModelSelected = AllPolesByLayerModel();
+              this._tempMarkerSelected = null;
+            } else if (state is CompleteMultiPoleFailed) {
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                  .pop();
+              Fluttertoast.showToast(msg: state.message!);
+              getAllPoleById();
             }
           },
           builder: (context, state) {
@@ -175,7 +217,22 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 subTitle: "Please come back in a moment.",
               );
             } else if (state is GetAllPolesByIdSuccess) {
-              return _content(state.allPolesByLayer);
+              List<AllPolesByLayerModel>? allPolesByFilter;
+              if (context.read<FieldingProvider>().fieldingTypeSelected!.id !=
+                  3) {
+                allPolesByFilter = state.allPolesByLayer!
+                    .where((element) =>
+                        element.fieldingType ==
+                        context
+                            .read<FieldingProvider>()
+                            .fieldingTypeSelected!
+                            .id)
+                    .toList();
+              } else {
+                allPolesByFilter = state.allPolesByLayer;
+              }
+
+              return _content(allPolesByFilter);
             }
             return Container();
           },
@@ -282,11 +339,24 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
           Expanded(
             child: SingleChildScrollView(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   (_tempMarkerSelected == null)
                       ? Container()
                       : PoleSequenceSelectedItem(
-                          poleModelSelected: poleModelSelected),
+                          poleModelSelected: poleModelSelected,
+                          callback: callback),
+                  UIHelper.verticalSpaceSmall,
+                  (showButtonCompleteMulti)
+                      ? CompleteMultiPoleButton(
+                          token: context
+                              .read<UserProvider>()
+                              .userModel
+                              .data!
+                              .token,
+                          layerId: widget.allProjectsModel!.iD,
+                        )
+                      : Container(),
                   UIHelper.verticalSpaceSmall,
                   Container(
                     alignment: Alignment.centerLeft,
@@ -490,7 +560,23 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
           );
         }).toList(),
         onChanged: (String? value) {
-          setState(() {});
+          setState(() {
+            fielding.setFieldingTypeSelected(value);
+            _markers.clear();
+            List<AllPolesByLayerModel> allPolesByFilter;
+            if (context.read<FieldingProvider>().fieldingTypeSelected!.id !=
+                3) {
+              allPolesByFilter = fielding.allPolesByLayer!
+                  .where((element) =>
+                      element.fieldingType ==
+                      context.read<FieldingProvider>().fieldingTypeSelected!.id)
+                  .toList();
+            } else {
+              allPolesByFilter = fielding.allPolesByLayer!;
+            }
+
+            showPinsOnMap(allPolesByFilter);
+          });
         },
         value: (fielding.fieldingTypeSelected!.id == null)
             ? null

@@ -8,3 +8,10 @@ class SaveImage extends DownloadImageEvent {
 
   SaveImage(this.image);
 }
+
+class SaveFile extends DownloadImageEvent {
+  final List<JobNumberAttachModel>? jobNumberAttach;
+  final String? localPath;
+
+  SaveFile(this.jobNumberAttach, this.localPath);
+}

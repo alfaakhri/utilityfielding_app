@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'package:device_preview/device_preview.dart';
 import 'package:fielding_app/domain/bloc/download_image_bloc/download_image_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -13,12 +16,16 @@ import 'package:provider/provider.dart';
 
 import 'domain/bloc/auth_bloc/auth_bloc.dart';
 import 'domain/bloc/local_bloc/local_bloc.dart';
+import 'domain/bloc/location_bloc/location_bloc.dart';
 import 'domain/bloc/map_bloc/map_bloc.dart';
 import 'domain/provider/provider.exports.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize(
+    debug: true // optional: set false to disable printing logs to console
+  );
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   SystemChrome.setPreferredOrientations(
@@ -54,6 +61,7 @@ class MyApp extends StatelessWidget {
               create: (context) => DownloadImageBloc()),
           BlocProvider<MapBloc>(create: (context) => MapBloc()),
           BlocProvider<LocalBloc>(create: (context) => LocalBloc()),
+          BlocProvider<LocationBloc>(create: (context) => LocationBloc()),
         ],
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,

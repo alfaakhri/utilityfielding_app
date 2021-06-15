@@ -60,8 +60,8 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
         Offset((width * 0.5) - painter.width * 0.5,
             (height * 0.5) - painter.height * 0.5));
     final img = await pictureRecorder.endRecording().toImage(width, height);
-    final data = await (img.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
-    return data.buffer.asUint8List();
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    return data!.buffer.asUint8List();
   }
 
   @override
@@ -76,7 +76,8 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
         leading: IconButton(
           onPressed: () {
             fieldingBloc.add(GetAllProjects(
-                context.read<UserProvider>().userModel.data!.token));
+                context.read<UserProvider>().userModel.data!.token,
+                context.read<ConnectionProvider>().isConnected));
             Get.back();
           },
           icon: Icon(
@@ -148,14 +149,13 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
         TextPainter _textPainter = TextPainter(
             text: longestParagraphTest,
             textDirection: TextDirection.ltr,
-            
             maxLines: 1)
           ..layout(minWidth: 0.0, maxWidth: double.infinity);
         double width = _textPainter.width; //This is the width it requires
         double height = _textPainter.height; //This is the height it requires
 
-        final Uint8List markerIcon = await getBytesFromCanvas(
-            width.toInt() + 40, 80, data.jobNumber);
+        final Uint8List markerIcon =
+            await getBytesFromCanvas(width.toInt() + 40, 80, data.jobNumber);
 
         var fieldingPosition =
             LatLng(double.parse(data.latitude!), double.parse(data.longitude!));

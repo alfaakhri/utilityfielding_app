@@ -26,8 +26,9 @@ class AddPoleModel {
   List<AnchorList>? anchorList;
   List<RiserAndVGRList>? riserAndVGRList;
   int? fieldingType;
-  List<dynamic>? anchorFenceList;
-  List<dynamic>? anchorStreetList;
+  List<AnchorFences>? anchorFences;
+  List<AnchorFences>? anchorStreets;
+  List<AnchorFences>? riserFences;
 
   AddPoleModel(
       {this.token,
@@ -54,7 +55,10 @@ class AddPoleModel {
       this.spanDirectionList,
       this.anchorList,
       this.riserAndVGRList,
-      this.fieldingType, this.anchorFenceList, this.anchorStreetList});
+      this.fieldingType,
+      this.anchorFences,
+      this.anchorStreets,
+      this.riserFences});
 
   AddPoleModel.fromJson(Map<String, dynamic> json) {
     token = json['Token'];
@@ -107,8 +111,24 @@ class AddPoleModel {
       });
     }
     fieldingType = json['FieldingType'];
-    anchorFenceList = json['AnchorFenceList'];
-    anchorStreetList = json['AnchorStreetList'];
+    if (json['AnchorFenceList'] != null) {
+      anchorFences = <AnchorFences>[];
+      json['AnchorFenceList'].forEach((v) {
+        anchorFences?.add(new AnchorFences.fromJson(v));
+      });
+    }
+    if (json['AnchorStreetList'] != null) {
+      anchorStreets = <AnchorFences>[];
+      json['AnchorStreetList'].forEach((v) {
+        anchorStreets?.add(new AnchorFences.fromJson(v));
+      });
+    }
+    if (json['RiserFenceList'] != null) {
+      riserFences = <AnchorFences>[];
+      json['RiserFenceList'].forEach((v) {
+        riserFences?.add(new AnchorFences.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -151,8 +171,16 @@ class AddPoleModel {
           this.riserAndVGRList!.map((v) => v.toJson()).toList();
     }
     data['FieldingType'] = this.fieldingType;
-    data['AnchorFenceList'] = this.anchorFenceList;
-    data['AnchorStreetList'] = this.anchorStreetList;
+    if (this.anchorFences != null) {
+      data['AnchorFenceList'] = this.anchorFences!.map((v) => v.toJson()).toList();
+    }
+    if (this.anchorStreets != null) {
+      data['AnchorStreetList'] =
+          this.anchorStreets!.map((v) => v.toJson()).toList();
+    }
+    if (this.riserFences != null) {
+      data['RiserFenceList'] = this.riserFences!.map((v) => v.toJson()).toList();
+    }
 
     return data;
   }
@@ -161,5 +189,21 @@ class AddPoleModel {
     return jsonList
         .map<AddPoleModel>((obj) => AddPoleModel.fromJson(obj))
         .toList();
+  }
+}
+
+class AnchorFences {
+  String? points;
+
+  AnchorFences({this.points});
+
+  AnchorFences.fromJson(Map<String, dynamic> json) {
+    points = json['Points'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['Points'] = this.points;
+    return data;
   }
 }

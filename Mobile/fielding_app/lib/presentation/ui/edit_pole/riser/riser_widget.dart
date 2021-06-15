@@ -215,7 +215,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                                         DropdownButtonFormField<String>(
                                           isDense: true,
                                           decoration: kDecorationDropdown(),
-                                          items: data.listDownGuyOwner!
+                                          items: data.getListDownGuyOwner!
                                               .map((value) {
                                             return DropdownMenuItem<String>(
                                               child: Text(value.text.toString(),
@@ -393,7 +393,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                             return null;
                           },
                           decoration: kDecorationDropdown(),
-                          items: data.listDownGuyOwner!.map((value) {
+                          items: data.getListDownGuyOwner!.map((value) {
                             return DropdownMenuItem<String>(
                               child: Text(value.text.toString(),
                                   style: TextStyle(fontSize: 12)),

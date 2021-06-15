@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fielding_app/data/models/edit_pole/add_pole_model.dart';
 import 'package:fielding_app/data/models/edit_pole/all_anchor_eyes_model.dart';
 import 'package:fielding_app/data/models/edit_pole/all_anchor_size_model.dart';
@@ -5,10 +7,13 @@ import 'package:fielding_app/data/models/edit_pole/broken_down_guy_size_model.da
 import 'package:fielding_app/data/models/edit_pole/down_guy_size_model.dart';
 import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
+import 'package:fielding_app/external/constants.dart';
+import 'package:fielding_app/external/service/hive_service.dart';
 import 'package:flutter/material.dart';
 
 class AnchorProvider extends ChangeNotifier {
   ApiProvider _repository = ApiProvider();
+  HiveService _hiveService = HiveService();
 
   List<AllAnchorSizeModel>? _listAllAnchorSize = <AllAnchorSizeModel>[];
   List<AllAnchorSizeModel>? get listAllAnchorSize => _listAllAnchorSize;
@@ -26,14 +31,24 @@ class AnchorProvider extends ChangeNotifier {
   }
 
   void getAllAnchorSize() async {
-    try {
-      var response = await _repository.getAllAnchorSize();
-      if (response.statusCode == 200) {
-        setListAllAnchorSize(AllAnchorSizeModel.fromJsonList(response.data));
-        print("all anchor size : ${response.data}");
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveAnchorSize, listAnchorSize);
+    if (dataBox != null) {
+      setListAllAnchorSize(
+          AllAnchorSizeModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _repository.getAllAnchorSize();
+        if (response.statusCode == 200) {
+          setListAllAnchorSize(AllAnchorSizeModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHiveAnchorSize, listAnchorSize);
+          _hiveService.saveDataToBox(getHiveAnchorSize, listAnchorSize,
+              json.encode(listAllAnchorSize));
+          print("all anchor size : ${response.data}");
+        }
+      } catch (e) {
+        print(e.toString());
       }
-    } catch (e) {
-      print(e.toString());
     }
   }
 
@@ -55,14 +70,25 @@ class AnchorProvider extends ChangeNotifier {
   }
 
   void getAllAnchorEyes() async {
-    try {
-      var response = await _repository.getAllAnchorEyes();
-      if (response.statusCode == 200) {
-        setListAnchorEyesModel(AllAnchorEyesModel.fromJsonList(response.data));
-        print("all anchor eyes : ${response.data}");
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveAnchorEyes, listAnchorEyes);
+    if (dataBox != null) {
+      setListAnchorEyesModel(
+          AllAnchorEyesModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _repository.getAllAnchorEyes();
+        if (response.statusCode == 200) {
+          setListAnchorEyesModel(
+              AllAnchorEyesModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHiveAnchorEyes, listAnchorEyes);
+          _hiveService.saveDataToBox(getHiveAnchorEyes, listAnchorEyes,
+              json.encode(listAnchorEyesModel));
+          print("all anchor eyes : ${response.data}");
+        }
+      } catch (e) {
+        print(e.toString());
       }
-    } catch (e) {
-      print(e.toString());
     }
   }
 
@@ -84,14 +110,24 @@ class AnchorProvider extends ChangeNotifier {
   }
 
   void getDownGuySize() async {
-    try {
-      var response = await _repository.getDownGuySize();
-      if (response.statusCode == 200) {
-        setListDownGuySize(DownGuySizeModel.fromJsonList(response.data));
-        print("down guy size : ${response.data}");
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveDownGuySize, listHiveDownGuySize);
+    if (dataBox != null) {
+      setListDownGuySize(DownGuySizeModel.fromJsonList(jsonDecode(dataBox)));
+    } else {
+      try {
+        var response = await _repository.getDownGuySize();
+        if (response.statusCode == 200) {
+          setListDownGuySize(DownGuySizeModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(
+              getHiveDownGuySize, listHiveDownGuySize);
+          _hiveService.saveDataToBox(getHiveDownGuySize, listHiveDownGuySize,
+              json.encode(listDownGuySize));
+          print("down guy size : ${response.data}");
+        }
+      } catch (e) {
+        print(e.toString());
       }
-    } catch (e) {
-      print(e.toString());
     }
   }
 
@@ -116,15 +152,25 @@ class AnchorProvider extends ChangeNotifier {
   }
 
   void getBrokenDownGuySize() async {
-    try {
-      var response = await _repository.getBrokenDownGuySize();
-      if (response.statusCode == 200) {
-        setListBrokenDownGuySize(
-            BrokenDownGuySizeModel.fromJsonList(response.data));
-        print("down guy size : ${response.data}");
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveBrokenDownGuy, listBrokenDownGuy);
+    if (dataBox != null) {
+      setListDownGuySize(DownGuySizeModel.fromJsonList(jsonDecode(dataBox)));
+    } else {
+      try {
+        var response = await _repository.getBrokenDownGuySize();
+        if (response.statusCode == 200) {
+          setListBrokenDownGuySize(
+              BrokenDownGuySizeModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(
+              getHiveBrokenDownGuy, listBrokenDownGuy);
+          _hiveService.saveDataToBox(getHiveBrokenDownGuy, listBrokenDownGuy,
+              json.encode(listBrokenDownGuySize));
+          print("down guy size : ${response.data}");
+        }
+      } catch (e) {
+        print(e.toString());
       }
-    } catch (e) {
-      print(e.toString());
     }
   }
 
@@ -136,7 +182,8 @@ class AnchorProvider extends ChangeNotifier {
     _listAnchorData.clear();
     if (listAnchorData != null) {
       _listAnchorData = listAnchorData;
-      _listAnchorData.sort((a, b) => a.text!.toLowerCase().compareTo(b.text!.toLowerCase()));
+      _listAnchorData.sort(
+          (a, b) => a.text!.toLowerCase().compareTo(b.text!.toLowerCase()));
     } else {
       _listAnchorData = <AnchorList>[];
     }

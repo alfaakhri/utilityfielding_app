@@ -67,6 +67,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await _connectivity.checkConnectivity();
+      fieldingBloc.add(GetAllProjects(
+          context.read<UserProvider>().userModel.data!.token,
+          (result.index == 2) ? false : true));
     } on PlatformException catch (e) {
       print(e.toString());
     }
@@ -89,8 +92,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-    fieldingBloc.add(
-        GetAllProjects(context.read<UserProvider>().userModel.data!.token));
+
     getCurrentLocation();
   }
 
@@ -137,7 +139,8 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
           child: InkWell(
             onTap: () {
               fieldingBloc.add(GetAllProjects(
-                  context.read<UserProvider>().userModel.data!.token));
+                  context.read<UserProvider>().userModel.data!.token,
+                  context.read<ConnectionProvider>().isConnected));
             },
             child: Container(
               color: ColorHelpers.colorBlueIntro,

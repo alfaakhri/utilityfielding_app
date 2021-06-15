@@ -7,13 +7,16 @@ import 'package:fielding_app/data/models/edit_pole/riser_active.dart';
 import 'package:fielding_app/data/models/edit_pole/riser_and_vgr_type_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:flutter/material.dart';
 
 class RiserProvider extends ChangeNotifier {
   ApiProvider _apiProvider = ApiProvider();
+  HiveService _hiveService = HiveService();
+
   //-----------------------------------------------------------------------------------------
   List<AllDownGuyOwnerModel>? _listDownGuyOwner = <AllDownGuyOwnerModel>[];
-  List<AllDownGuyOwnerModel>? get listDownGuyOwner => _listDownGuyOwner;
+  List<AllDownGuyOwnerModel>? get getListDownGuyOwner => _listDownGuyOwner;
   void setListDownGuyOwner(List<AllDownGuyOwnerModel>? listDownGuyOwner) {
     _listDownGuyOwner = listDownGuyOwner;
     notifyListeners();
@@ -40,14 +43,24 @@ class RiserProvider extends ChangeNotifier {
   }
 
   void getAllDownGuyOwner() async {
-    try {
-      var response = await _apiProvider.getAllDownGuyOwner();
-      if (response.statusCode == 200) {
-        setListDownGuyOwner(AllDownGuyOwnerModel.fromJsonList(response.data));
-        print("all down guy: ${response.data}");
-      } else {}
-    } catch (e) {
-      print(e.toString());
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveDownGuyOwner, listDownGuyOwner);
+    if (dataBox != null) {
+      setListDownGuyOwner(
+          AllDownGuyOwnerModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _apiProvider.getAllDownGuyOwner();
+        if (response.statusCode == 200) {
+          setListDownGuyOwner(AllDownGuyOwnerModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHiveDownGuyOwner, listDownGuyOwner);
+          _hiveService.saveDataToBox(getHiveDownGuyOwner, listDownGuyOwner,
+              json.encode(getListDownGuyOwner));
+          print("all down guy: ${response.data}");
+        } else {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
@@ -68,14 +81,23 @@ class RiserProvider extends ChangeNotifier {
   }
 
   void getRiserAndVGR() async {
-    try {
-      var response = await _apiProvider.getRiserAndVGR();
-      if (response.statusCode == 200) {
-        setListTypeRiser(RiserAndVGRTypeModel.fromJsonList(response.data));
-        print("riser and vgr: ${response.data}");
-      } else {}
-    } catch (e) {
-      print(e.toString());
+    final dataBox =
+        await _hiveService.openAndGetDataFromHiveBox(getHiveRiserVGR, listRiserVGR);
+    if (dataBox != null) {
+      setListTypeRiser(RiserAndVGRTypeModel.fromJsonList(json.decode(dataBox)));
+    } else {
+      try {
+        var response = await _apiProvider.getRiserAndVGR();
+        if (response.statusCode == 200) {
+          setListTypeRiser(RiserAndVGRTypeModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHiveRiserVGR, listRiserVGR);
+          _hiveService.saveDataToBox(
+              getHiveRiserVGR, listRiserVGR, json.encode(listRiser));
+          print("riser and vgr: ${response.data}");
+        } else {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 
@@ -150,8 +172,7 @@ class RiserProvider extends ChangeNotifier {
         _activePointName = "R" + value;
         _sequenceCurrent = 1;
       } else {
-        String data =
-            "R$tempNumberRiser-${alphabet[tempSequenceEqualNumber]}";
+        String data = "R$tempNumberRiser-${alphabet[tempSequenceEqualNumber]}";
         _activePointName = "R" + tempNumberRiser;
         _listRiserActive.add(data);
         _sequenceCurrent = tempSequenceEqualNumber + 1;
@@ -265,8 +286,8 @@ class RiserProvider extends ChangeNotifier {
     _listVGRActive.clear();
     if (data != null) {
       _listRiserData.addAll(data);
-      _listRiserData
-          .sort((a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+      _listRiserData.sort(
+          (a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
       print(_listRiserData.toList());
       for (var riser in _listRiserData) {
         if (riser.name != null) {

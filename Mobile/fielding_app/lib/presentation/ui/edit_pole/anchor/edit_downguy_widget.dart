@@ -365,7 +365,7 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                             FocusScope.of(context).unfocus();
                           },
                           decoration: kDecorationDropdown(),
-                          items: data.listDownGuyOwner!.map((value) {
+                          items: data.getListDownGuyOwner!.map((value) {
                             return DropdownMenuItem<String>(
                               child: Text(value.text!,
                                   style: TextStyle(fontSize: 12)),

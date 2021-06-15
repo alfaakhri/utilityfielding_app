@@ -6,8 +6,8 @@ class ConnectionProvider extends ChangeNotifier {
   HiveService _hiveService = HiveService();
   ApiProvider _apiProvider = ApiProvider();
 
-  late bool _isConnected;
-  bool get isConnected => _isConnected;
+  bool? _isConnected;
+  bool get isConnected => _isConnected!;
   void setIsConnected(bool isConnected) async {
     _isConnected = isConnected;
     notifyListeners();
