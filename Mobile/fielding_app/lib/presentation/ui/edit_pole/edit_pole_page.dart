@@ -39,6 +39,7 @@ class _EditPolePageState extends State<EditPolePage> {
   TextEditingController _poleStamp = TextEditingController();
   TextEditingController _radioAntena = TextEditingController();
   TextEditingController _notes = TextEditingController();
+  TextEditingController _poleSequence = TextEditingController();
 
   TextEditingController kvController = TextEditingController();
   final formKey = new GlobalKey<FormState>();
@@ -52,9 +53,11 @@ class _EditPolePageState extends State<EditPolePage> {
   List<String> _listChoice = ["-", "Yes", "No"];
 
   void clearFormController() {
-    context.read<FieldingProvider>().setLatLng(0.00, 0.00);
-    context.read<FieldingProvider>().setStreetName("");
-    context.read<FieldingProvider>().clearAll();
+    var fielding = context.read<FieldingProvider>();
+    fielding.setFieldingTypeAssign(3);
+    fielding.setLatLng(0.00, 0.00);
+    fielding.setStreetName("");
+    fielding.clearAll();
     context.read<SpanProvider>().clearAll();
     context.read<RiserProvider>().clearAll();
     context.read<AnchorProvider>().clearAll();
@@ -116,7 +119,10 @@ class _EditPolePageState extends State<EditPolePage> {
         riserAndVGRList: context.read<RiserProvider>().listRiserData,
         anchorFences: [],
         anchorStreets: [],
-        riserFences: []);
+        riserFences: [],
+        poleSequence: (this._poleSequence.text.isNotEmpty)
+            ? int.parse(this._poleSequence.text)
+            : null);
 
     fieldingBloc.add(AddPole(
         data,
@@ -166,6 +172,7 @@ class _EditPolePageState extends State<EditPolePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () {
+          clearFormController();
           getAllPoles();
           Get.back();
           return Future.value(false);
@@ -237,16 +244,29 @@ class _EditPolePageState extends State<EditPolePage> {
                   var anchor = context.read<AnchorProvider>();
                   var riser = context.read<RiserProvider>();
                   setState(() {
-                    provider
-                        .setPoleClassAssign(state.poleByIdModel.poleClass ?? 0);
-                    provider.setPoleConditionAssign(
-                        state.poleByIdModel.poleCondition ?? 0);
-                    provider.setPoleHeightAssign(
-                        state.poleByIdModel.poleHeight ?? 0);
+                    this._poleClass.text = provider
+                            .setPoleClassAssign(
+                                state.poleByIdModel.poleClass ?? 0)
+                            .text ??
+                        "-";
+                    this._condition.text = provider
+                            .setPoleConditionAssign(
+                                state.poleByIdModel.poleCondition ?? 0)
+                            .text ??
+                        "-";
+                    this._poleHeight.text = provider
+                        .setPoleHeightAssign(
+                            state.poleByIdModel.poleHeight ?? 0)
+                        .text
+                        .toString();
+
                     provider.setFieldingTypeAssign(
                         state.poleByIdModel.fieldingType ?? 0);
-                    provider
-                        .setPoleSpeciesAssign(state.poleByIdModel.poleSpecies);
+                    this._species.text = provider
+                            .setPoleSpeciesAssign(
+                                state.poleByIdModel.poleSpecies)
+                            .text ??
+                        "-";
                     this._poleNumber.text =
                         state.poleByIdModel.poleNumber ?? "-";
                     this._vapTerminal.text =
@@ -274,23 +294,15 @@ class _EditPolePageState extends State<EditPolePage> {
                       this._radioAntena.text = "Yes";
                     }
                     this._notes.text = state.poleByIdModel.note ?? "-";
-                    this._poleClass.text =
-                        (provider.poleClassSelected.text != null)
-                            ? provider.poleClassSelected.text.toString()
-                            : "";
-                    this._condition.text =
-                        (provider.poleConditionSelected.text != null)
-                            ? provider.poleConditionSelected.text!
-                            : "";
-                    this._poleHeight.text =
-                        (provider.poleHeightSelected.text != null)
-                            ? provider.poleHeightSelected.text.toString()
-                            : "";
+                    
                     this._fieldingType.text =
                         (provider.fieldingTypeSelected!.text != null)
                             ? provider.fieldingTypeSelected!.text!
                             : "";
-                    this._species.text = provider.poleSpeciesSelected.text!;
+                    this._poleSequence.text =
+                        (state.poleByIdModel.poleSequence != null)
+                            ? state.poleByIdModel.poleSequence.toString()
+                            : "-";
 
                     provider.setLatLng(
                         double.parse(state.poleByIdModel.latitude ?? "0"),
@@ -350,7 +362,7 @@ class _EditPolePageState extends State<EditPolePage> {
                     Text(
                       (widget.poles != null)
                           ? (widget.poles!.poleSequence != null)
-                              ? widget.poles!.poleSequence.toString()
+                              ? this._poleSequence.text
                               : "-"
                           : "-",
                       style: TextStyle(
@@ -443,8 +455,10 @@ class _EditPolePageState extends State<EditPolePage> {
                     ),
                   ),
                   StreetNameItem(),
+                  _contentFormText("Pole Sequence", _poleSequence.text,
+                      _poleSequence, false, true),
                   _contentFormText("Fielding Type", _fieldingType.text,
-                      _fieldingType, true, true),
+                      _fieldingType, true, false),
                   _contentFormText("FAP / Terminal Address", _vapTerminal.text,
                       _vapTerminal, false, true),
                   _contentFormText("Pole Number", _poleNumber.text, _poleNumber,
@@ -455,10 +469,10 @@ class _EditPolePageState extends State<EditPolePage> {
                       _otherNumber, false, false),
                   _contentFormText(
                       "Pole Height", _poleHeight.text, _poleHeight, true, true),
-                  _contentFormText("Ground Line Circumference",
-                      _groundLine.text, _groundLine, false, false),
                   _contentFormText(
-                      "Pole Class", _poleClass.text, _poleClass, true, true),
+                      "Pole Class", _poleClass.text, _poleClass, true, false),
+                  _contentFormText("Ground Line Circumference",
+                      _groundLine.text, _groundLine, false, true),
                   _contentFormText("Year", _year.text, _year, false, false),
                   _contentFormText(
                       "Species", _species.text, _species, true, true),
@@ -566,11 +580,23 @@ class _EditPolePageState extends State<EditPolePage> {
     );
   }
 
+  void callbackRefresh() {
+    setState(() {});
+  }
+
   Future dialogAlertDefault(String title, TextEditingController controller) {
     return showDialog(
         context: context,
         builder: (context) {
-          return FormAlertItem(title: title, controller: controller);
+          return FormAlertItem(
+              title: title,
+              controller: controller,
+              onController: (value) {
+                setState(() {
+                  controller.text = value;
+                });
+              },
+              callback: callbackRefresh);
         });
   }
 

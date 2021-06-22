@@ -6,9 +6,11 @@ import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
+import 'package:fielding_app/presentation/ui/detail/widgets/sample_download.dart';
 import 'package:fielding_app/presentation/widgets/preview_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,7 +39,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
       }
     } else {
       return true;
-    }  
+    }
 
     return false;
   }
@@ -45,6 +47,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
   @override
   void initState() {
     super.initState();
+    
     _bindBackgroundIsolate();
 
     FlutterDownloader.registerCallback(downloadCallback);
@@ -140,38 +143,39 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
             style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
           ),
           UIHelper.verticalSpaceMedium,
-          // InkWell(
-          //     onTap: () async {
+          InkWell(
+              onTap: () async {
                 // context.read<DownloadImageBloc>().add(SaveFile(
                 //     context.read<FieldingProvider>().jobNumberAttachModel!,
                 //     _localPath));
-          //       await FlutterDownloader.enqueue(
-          //           url: baseURLnew +
-          //               context
-          //                   .read<FieldingProvider>()
-          //                   .jobNumberAttachModel!.elementAt(0).filePath!
-          //                   ,
-          //           savedDir: _localPath,
-          //           showNotification: true,
-          //           openFileFromNotification: true);
-          //     },
-          //     child: Container(
-          //       width: 100,
-          //       decoration: BoxDecoration(
-          //         color: ColorHelpers.colorGreen2,
-          //         borderRadius: BorderRadius.circular(5),
-          //       ),
-          //       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          //       child: Text(
-          //         "Download All",
-          //         textAlign: TextAlign.center,
-          //         style: TextStyle(
-          //           color: Colors.white,
-          //           fontSize: 12,
-          //         ),
-          //       ),
-          //     )),
-          // UIHelper.verticalSpaceSmall,
+                for (var list
+                    in context.read<FieldingProvider>().jobNumberAttachModel!) {
+                  await FlutterDownloader.enqueue(
+                      url: baseURLnew + list.filePath!,
+                      savedDir: _localPath,
+                      showNotification: true,
+                      openFileFromNotification: true);
+                  Fluttertoast.showToast(msg: "Downloading...");
+                }
+                // Get.to(MyHomePage());
+              },
+              child: Container(
+                width: 100,
+                decoration: BoxDecoration(
+                  color: ColorHelpers.colorGreen2,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: Text(
+                  "Download All",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              )),
+          UIHelper.verticalSpaceSmall,
           Expanded(
             child: ListView(
               children: context
@@ -205,10 +209,10 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
                                         format.toLowerCase() == "png") {
                                       Navigator.pop(context);
                                       Get.to(PreviewImage(
-                                        image: baseURL + e.filePath!,
+                                        image: baseURLnew + e.filePath!,
                                       ));
                                     } else {
-                                      String url = baseURL + e.filePath!;
+                                      String url = baseURLnew + e.filePath!;
                                       if (await canLaunch(url)) {
                                         Navigator.pop(context);
                                         await launch(url);

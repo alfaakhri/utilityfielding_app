@@ -4,6 +4,7 @@ import 'package:device_preview/device_preview.dart';
 import 'package:fielding_app/domain/bloc/download_image_bloc/download_image_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/presentation/ui/ui.exports.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'domain/bloc/auth_bloc/auth_bloc.dart';
 import 'domain/bloc/local_bloc/local_bloc.dart';
@@ -24,8 +26,8 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize(
-    debug: true // optional: set false to disable printing logs to console
-  );
+      debug: true // optional: set false to disable printing logs to console
+      );
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
   SystemChrome.setPreferredOrientations(
@@ -39,6 +41,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  static FirebaseAnalytics analytics = FirebaseAnalytics();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -65,6 +68,9 @@ class MyApp extends StatelessWidget {
         ],
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,
+          navigatorObservers: [
+            FirebaseAnalyticsObserver(analytics: analytics),
+          ],
           locale: DevicePreview.locale(context), // Add the locale here
           builder: DevicePreview.appBuilder,
           theme: ThemeData(

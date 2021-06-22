@@ -36,6 +36,8 @@ class _AnchorWidgetState extends State<AnchorWidget> {
   List<DownGuyList> downGuyList = <DownGuyList>[];
   List<DownGuyList> brokenDownGuyList = <DownGuyList>[];
   List<String> listChoice = ['Yes', 'No'];
+  bool isAddAnchor = false;
+  bool isShowActiveAnchor = false;
 
   void assignValueForm(AnchorList data) {
     setState(() {
@@ -95,9 +97,14 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                         // if (data.listAnchorData.length > 2) {
                         //   Fluttertoast.showToast(msg: "Anchor max 3");
                         // } else {
-                        data.checkListAnchorData(
-                            detail.localPosition.dx, detail.localPosition.dy);
-                        // }
+                        if (isAddAnchor) {
+                          data.checkListAnchorData(
+                              detail.localPosition.dx, detail.localPosition.dy);
+                          // }
+                          setState(() {
+                            isAddAnchor = false;
+                          });
+                        }
                       },
                       child: Stack(
                         alignment: Alignment.center,
@@ -111,12 +118,15 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                             ),
                             width: 350,
                             height: 250,
-                            child: CustomPaint(
-                              size: Size(350, 250),
-                              painter: DrawCircle(
-                                  width: _width,
-                                  center: {"x": 350, "y": 250},
-                                  radius: 10),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/anchor.png',
+                                  width: 99,
+                                  height: 99,
+                                ),
+                              ],
                             ),
                           ),
                           Stack(
@@ -127,8 +137,8 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                   MediaQuery.of(context).size.height;
                               var fielding =
                                   Provider.of<FieldingProvider>(context);
-                              double newX =
-                                  ((newWidth * e.circleX!) / fielding.baseWidth);
+                              double newX = ((newWidth * e.circleX!) /
+                                  fielding.baseWidth);
                               double newY = ((newHeight * e.circleY!) /
                                   fielding.baseHeight);
 
@@ -154,216 +164,245 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                     padding: const EdgeInsets.all(15.0),
                     child: ListView(
                       children: [
-                        Text("Select Active Anchor",
-                            style: TextStyle(
-                                fontSize: 14, color: ColorHelpers.colorGrey)),
-                        UIHelper.verticalSpaceSmall,
-                        DropdownButtonFormField<String>(
-                          isDense: true,
-                          decoration: kDecorationDropdown(),
-                          items: data.listAnchorData.map((value) {
-                            return DropdownMenuItem<String>(
-                              child: Text(value.text!,
-                                  style: TextStyle(fontSize: 12)),
-                              value: value.text,
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            setState(() {
-                              this.activeAnchor.text = value!;
-                              AnchorList _anchor =
-                                  data.getDataAnchorList(value);
-                              assignValueForm(_anchor);
-                              data.setAnchorActiveSelected(value);
-                            });
-                          },
-                          value: (this.activeAnchor.text == null ||
-                                  this.activeAnchor.text == "")
-                              ? null
-                              : this.activeAnchor.text.toString(),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AnchorButton(onItemClick: (bool) {
+                              setState(() {
+                                isAddAnchor = true;
+                                isShowActiveAnchor = true;
+                                Fluttertoast.showToast(
+                                    msg: "Tap on the box layer to add Anchor",
+                                    toastLength: Toast.LENGTH_LONG);
+                              });
+                            }),
+                            Row(children: [
+                              FenceButton(),
+                              UIHelper.horizontalSpaceSmall,
+                              StreetButton(),
+                            ]),
+                          ],
                         ),
-                        (this.activeAnchor.text != "")
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  UIHelper.verticalSpaceSmall,
-                                  _textFormWidget(
-                                      this.distance, "Distance from Pole"),
-                                  UIHelper.verticalSpaceSmall,
-                                  Text("Anchor Size",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: ColorHelpers.colorGrey)),
-                                  UIHelper.verticalSpaceSmall,
-                                  DropdownButtonFormField<String>(
-                                    isDense: true,
-                                    decoration: kDecorationDropdown(),
-                                    items: data.listAllAnchorSize!.map((value) {
-                                      return DropdownMenuItem<String>(
-                                        child: Text(value.text!,
-                                            style: TextStyle(fontSize: 12)),
-                                        value: value.text,
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        this.size.text = value!;
+                        UIHelper.verticalSpaceSmall,
+                        (!isShowActiveAnchor) ? Container() : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                          Text("Select Active Anchor",
+                              style: TextStyle(
+                                  fontSize: 14, color: ColorHelpers.colorGrey)),
+                          UIHelper.verticalSpaceSmall,
+                          DropdownButtonFormField<String>(
+                            isDense: true,
+                            decoration: kDecorationDropdown(),
+                            items: data.listAnchorData.map((value) {
+                              return DropdownMenuItem<String>(
+                                child: Text(value.text!,
+                                    style: TextStyle(fontSize: 12)),
+                                value: value.text,
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              setState(() {
+                                this.activeAnchor.text = value!;
+                                AnchorList _anchor =
+                                    data.getDataAnchorList(value);
+                                assignValueForm(_anchor);
+                                data.setAnchorActiveSelected(value);
+                              });
+                            },
+                            value: (this.activeAnchor.text == null ||
+                                    this.activeAnchor.text == "")
+                                ? null
+                                : this.activeAnchor.text.toString(),
+                          ),
+                          (this.activeAnchor.text != "")
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    UIHelper.verticalSpaceSmall,
+                                    _textFormWidget(
+                                        this.distance, "Distance from Pole"),
+                                    UIHelper.verticalSpaceSmall,
+                                    Text("Anchor Size",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: ColorHelpers.colorGrey)),
+                                    UIHelper.verticalSpaceSmall,
+                                    DropdownButtonFormField<String>(
+                                      isDense: true,
+                                      decoration: kDecorationDropdown(),
+                                      items:
+                                          data.listAllAnchorSize!.map((value) {
+                                        return DropdownMenuItem<String>(
+                                          child: Text(value.text!,
+                                              style: TextStyle(fontSize: 12)),
+                                          value: value.text,
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          this.size.text = value!;
 
-                                        data.setAnchorSizeSelected(value);
-                                      });
-                                    },
-                                    value:
-                                        (data.anchorSizeSelected.text == null)
-                                            ? null
-                                            : data.anchorSizeSelected.text,
-                                  ),
-                                  UIHelper.verticalSpaceSmall,
-                                  Text("Anchor Eyes",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: ColorHelpers.colorGrey)),
-                                  UIHelper.verticalSpaceSmall,
-                                  DropdownButtonFormField<String>(
-                                    isDense: true,
-                                    decoration: kDecorationDropdown(),
-                                    items:
-                                        data.listAnchorEyesModel!.map((value) {
-                                      return DropdownMenuItem<String>(
-                                        child: Text(value.text!,
-                                            style: TextStyle(fontSize: 12)),
-                                        value: value.text,
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        this.eyes.text = value!;
+                                          data.setAnchorSizeSelected(value);
+                                        });
+                                      },
+                                      value:
+                                          (data.anchorSizeSelected.text == null)
+                                              ? null
+                                              : data.anchorSizeSelected.text,
+                                    ),
+                                    UIHelper.verticalSpaceSmall,
+                                    Text("Anchor Eyes",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: ColorHelpers.colorGrey)),
+                                    UIHelper.verticalSpaceSmall,
+                                    DropdownButtonFormField<String>(
+                                      isDense: true,
+                                      decoration: kDecorationDropdown(),
+                                      items: data.listAnchorEyesModel!
+                                          .map((value) {
+                                        return DropdownMenuItem<String>(
+                                          child: Text(value.text!,
+                                              style: TextStyle(fontSize: 12)),
+                                          value: value.text,
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          this.eyes.text = value!;
 
-                                        data.setAnchorEyesSelected(value);
-                                      });
-                                    },
-                                    value: (data.anchorEyesSelected.text == null)
-                                        ? null
-                                        : data.anchorEyesSelected.text,
-                                  ),
-                                  UIHelper.verticalSpaceSmall,
-                                  Text("Picture of anchor eyes",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: ColorHelpers.colorGrey)),
-                                  UIHelper.verticalSpaceSmall,
-                                  DropdownButtonFormField<String>(
-                                    isDense: true,
-                                    decoration: kDecorationDropdown(),
-                                    items: listChoice.map((value) {
-                                      return DropdownMenuItem<String>(
-                                        child: Text(value,
-                                            style: TextStyle(fontSize: 12)),
-                                        value: value,
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        this.textPictureAnchorEye.text = value!;
-                                        if (value == "Yes") {
-                                          this.isPictureAnchor = true;
-                                        } else {
-                                          this.isPictureAnchor = false;
-                                        }
-                                      });
-                                    },
-                                    value: (this.textPictureAnchorEye.text ==
-                                                null ||
-                                            this.textPictureAnchorEye.text ==
-                                                "")
-                                        ? null
-                                        : this
-                                            .textPictureAnchorEye
-                                            .text
-                                            .toString(),
-                                  ),
-                                  UIHelper.verticalSpaceSmall,
-                                  EditDownguyWidget(
-                                    type: false,
-                                  ),
-                                  UIHelper.verticalSpaceSmall,
-                                  EditDownguyWidget(
-                                    type: true,
-                                  ),
-                                  UIHelper.verticalSpaceSmall,
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          width: double.infinity,
-                                          child: RaisedButton(
+                                          data.setAnchorEyesSelected(value);
+                                        });
+                                      },
+                                      value:
+                                          (data.anchorEyesSelected.text == null)
+                                              ? null
+                                              : data.anchorEyesSelected.text,
+                                    ),
+                                    UIHelper.verticalSpaceSmall,
+                                    Text("Picture of anchor eyes",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: ColorHelpers.colorGrey)),
+                                    UIHelper.verticalSpaceSmall,
+                                    DropdownButtonFormField<String>(
+                                      isDense: true,
+                                      decoration: kDecorationDropdown(),
+                                      items: listChoice.map((value) {
+                                        return DropdownMenuItem<String>(
+                                          child: Text(value,
+                                              style: TextStyle(fontSize: 12)),
+                                          value: value,
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? value) {
+                                        setState(() {
+                                          this.textPictureAnchorEye.text =
+                                              value!;
+                                          if (value == "Yes") {
+                                            this.isPictureAnchor = true;
+                                          } else {
+                                            this.isPictureAnchor = false;
+                                          }
+                                        });
+                                      },
+                                      value: (this.textPictureAnchorEye.text ==
+                                                  null ||
+                                              this.textPictureAnchorEye.text ==
+                                                  "")
+                                          ? null
+                                          : this
+                                              .textPictureAnchorEye
+                                              .text
+                                              .toString(),
+                                    ),
+                                    UIHelper.verticalSpaceSmall,
+                                    EditDownguyWidget(
+                                      type: false,
+                                    ),
+                                    UIHelper.verticalSpaceSmall,
+                                    EditDownguyWidget(
+                                      type: true,
+                                    ),
+                                    UIHelper.verticalSpaceSmall,
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            width: double.infinity,
+                                            child: RaisedButton(
+                                                padding: EdgeInsets.all(10),
+                                                onPressed: () {
+                                                  dialogDelete(data);
+                                                },
+                                                child: Text(
+                                                  "DELETE",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: ColorHelpers
+                                                          .colorWhite),
+                                                ),
+                                                color: ColorHelpers.colorRed),
+                                          ),
+                                        ),
+                                        UIHelper.horizontalSpaceSmall,
+                                        Expanded(
+                                          child: Container(
+                                            width: double.infinity,
+                                            child: RaisedButton(
                                               padding: EdgeInsets.all(10),
                                               onPressed: () {
-                                                dialogDelete(data);
+                                                data.updateDataAnchorList(
+                                                    distance:
+                                                        this.distance.text,
+                                                    size: data
+                                                        .anchorSizeSelected.id,
+                                                    eyes: data
+                                                        .anchorEyesSelected.id,
+                                                    isPicture:
+                                                        this.isPictureAnchor);
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "Anchor have been updated");
+                                                setState(() {
+                                                  this.activeAnchor.clear();
+                                                });
                                               },
                                               child: Text(
-                                                "DELETE",
+                                                "SAVE",
                                                 style: TextStyle(
                                                     fontSize: 14,
                                                     color: ColorHelpers
                                                         .colorWhite),
                                               ),
-                                              color: ColorHelpers.colorRed),
-                                        ),
-                                      ),
-                                      UIHelper.horizontalSpaceSmall,
-                                      Expanded(
-                                        child: Container(
-                                          width: double.infinity,
-                                          child: RaisedButton(
-                                            padding: EdgeInsets.all(10),
-                                            onPressed: () {
-                                              data.updateDataAnchorList(
-                                                  distance: this.distance.text,
-                                                  size: data
-                                                      .anchorSizeSelected.id,
-                                                  eyes: data
-                                                      .anchorEyesSelected.id,
-                                                  isPicture:
-                                                      this.isPictureAnchor);
-                                              Fluttertoast.showToast(
-                                                  msg:
-                                                      "Anchor have been updated");
-                                              setState(() {
-                                                this.activeAnchor.clear();
-                                              });
-                                            },
-                                            child: Text(
-                                              "SAVE",
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  color:
-                                                      ColorHelpers.colorWhite),
+                                              color: ColorHelpers.colorGreen,
                                             ),
-                                            color: ColorHelpers.colorGreen,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              )
-                            : Container(),
-                        UIHelper.verticalSpaceMedium,
-                        Container(
-                          width: double.infinity,
-                          child: RaisedButton(
-                              padding: EdgeInsets.all(10),
-                              onPressed: () {
-                                Get.back();
-                              },
-                              child: Text(
-                                "DONE",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: ColorHelpers.colorWhite),
-                              ),
-                              color: ColorHelpers.colorButtonDefault),
-                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              : Container(),
+                          UIHelper.verticalSpaceMedium,
+                          Container(
+                            width: double.infinity,
+                            child: RaisedButton(
+                                padding: EdgeInsets.all(10),
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                child: Text(
+                                  "DONE",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: ColorHelpers.colorWhite),
+                                ),
+                                color: ColorHelpers.colorButtonDefault),
+                          ),
+                        ]),
                       ],
                     )),
               ),

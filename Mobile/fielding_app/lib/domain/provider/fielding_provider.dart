@@ -16,6 +16,7 @@ import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/hive_service.dart';
+import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -50,6 +51,34 @@ class FieldingProvider extends ChangeNotifier {
   AllPolesByLayerModel get polesByLayerSelected => _polesByLayerSelected;
   void setPolesByLayerSelected(AllPolesByLayerModel polesByLayerSelected) {
     _polesByLayerSelected = polesByLayerSelected;
+    notifyListeners();
+  }
+
+  void getCurrentLocation(bool isConnected) async {
+    LocationService location = LocationService();
+    LocationData data;
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveCurrentLocation, locationDataLocal);
+    if (isConnected) {
+      data = await location.getCurrentLocation();
+      var mapLocation = {
+        "latitude": data.latitude!,
+        "longitude": data.longitude!
+      };
+      print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
+      _hiveService.deleteDataFromBox(getHiveCurrentLocation, locationDataLocal);
+      _hiveService.saveDataToBox(
+          getHiveCurrentLocation, locationDataLocal, mapLocation);
+      setCurrentPosition(LatLng(data.latitude!, data.longitude!));
+      setCurrentLocationData(data);
+    } else {
+      if (dataBox != null) {
+        var mapLocation = Map<String, double>.from(dataBox);
+        data = LocationData.fromMap(mapLocation);
+        setCurrentPosition(LatLng(data.latitude!, data.longitude!));
+        setCurrentLocationData(data);
+      }
+    }
     notifyListeners();
   }
 
@@ -122,7 +151,7 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPoleSpeciesAssign(int? value) {
+  AllPoleSpeciesModel setPoleSpeciesAssign(int? value) {
     if (value != null) {
       _listAllPoleSpecies!.forEach((element) {
         if (element.id == value) {
@@ -132,8 +161,7 @@ class FieldingProvider extends ChangeNotifier {
     } else {
       _poleSpeciesSelected = AllPoleSpeciesModel();
     }
-
-    notifyListeners();
+    return _poleSpeciesSelected;
   }
 
   void getListAllPoleSpecies() async {
@@ -175,7 +203,7 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPoleClassAssign(int? value) {
+  AllPoleClassModel setPoleClassAssign(int? value) {
     if (value != null) {
       _listAllPoleClass!.forEach((element) {
         if (element.id == value) {
@@ -186,7 +214,7 @@ class FieldingProvider extends ChangeNotifier {
       _poleClassSelected = AllPoleClassModel();
     }
 
-    notifyListeners();
+    return _poleClassSelected;
   }
 
   void getListAllPoleClass() async {
@@ -226,7 +254,7 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPoleHeightAssign(int? value) {
+  AllPoleHeightModel setPoleHeightAssign(int? value) {
     if (value != null) {
       _listAllPoleHeight!.forEach((element) {
         if (element.id == value) {
@@ -236,8 +264,7 @@ class FieldingProvider extends ChangeNotifier {
     } else {
       _poleHeightSelected = AllPoleHeightModel();
     }
-
-    notifyListeners();
+    return _poleHeightSelected;
   }
 
   void getListAllPoleHeight() async {
@@ -281,7 +308,7 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setPoleConditionAssign(int? value) {
+  AllPoleConditionModel setPoleConditionAssign(int? value) {
     if (value != null) {
       _listAllPoleCondition!.forEach((element) {
         if (element.id == value) {
@@ -291,7 +318,7 @@ class FieldingProvider extends ChangeNotifier {
     } else {
       _poleConditionSelected = AllPoleConditionModel();
     }
-    notifyListeners();
+    return _poleConditionSelected;
   }
 
   void getListAllPoleCondition() async {

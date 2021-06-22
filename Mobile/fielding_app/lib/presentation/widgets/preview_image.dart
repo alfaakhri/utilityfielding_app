@@ -29,8 +29,7 @@ class _PreviewImageState extends State<PreviewImage> {
   void initState() {
     super.initState();
     downloadBloc = BlocProvider.of<DownloadImageBloc>(context);
-        _requestPermission();
-
+    _requestPermission();
   }
 
   @override
@@ -77,6 +76,19 @@ class _PreviewImageState extends State<PreviewImage> {
             child: PhotoView(
               imageProvider: NetworkImage(
                 widget.image!,
+              ),
+              loadingBuilder: (context, event) => Center(
+                child: Container(
+                  width: 40.0,
+                  height: 40.0,
+                  child: CircularProgressIndicator(
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.blue),
+                    value: event == null
+                        ? 0
+                        : event.cumulativeBytesLoaded /
+                            event.expectedTotalBytes!,
+                  ),
+                ),
               ),
               // Contained = the smallest possible size to fit one dimension of the screen
               minScale: PhotoViewComputedScale.contained * 1,

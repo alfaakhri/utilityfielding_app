@@ -98,6 +98,7 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                             Stack(
                               alignment: Alignment.center,
                               children: data.listRiserData.map((e) {
+                                var index = data.listRiserData.indexOf(e) + 1;
                                 double newX = ((newWidth * e.shapeX!) /
                                     fielding.baseWidth);
                                 double newY = ((newHeight * e.shapeY!) /
@@ -108,13 +109,13 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                     return TriangleText(
                                       x: newX + 15,
                                       y: newY + 15,
-                                      text: "VGR-${e.sequence}",
+                                      text: "$index.VGR ${e.sequence}",
                                     );
                                   } else {
                                     return TriangleText(
                                       x: newX,
                                       y: newY,
-                                      text: "VGR-${e.sequence}",
+                                      text: "$index.VGR ${e.sequence}",
                                     );
                                   }
                                 } else {
@@ -129,7 +130,7 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                         : {"x": newX, "y": newY},
                                     radius: 10,
                                     text:
-                                        "R$value-${alphabet[e.sequence! - 1]}",
+                                        "$index.${alphabet[e.sequence! - 1]}-R$value in",
                                   );
                                 }
                               }).toList(),
@@ -141,7 +142,7 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                         x: data.resultDataRiser.shapeX!,
                                         y: data.resultDataRiser.shapeY!,
                                         text: data.activePointName! +
-                                            "-${data.sequenceCurrent}",
+                                            " ${data.sequenceCurrent}",
                                       )
                                 : CircleText(
                                     center: {
@@ -149,8 +150,10 @@ class _InsertRiserWidgetState extends State<InsertRiserWidget> {
                                       "y": data.resultDataRiser.shapeY,
                                     },
                                     radius: 10,
-                                    text: data.activePointName! +
-                                        "-${alphabet[data.sequenceCurrent! - 1]}",
+                                    text:
+                                        "${alphabet[data.sequenceCurrent! - 1]}-" +
+                                            data.activePointName! +
+                                            " in",
                                   ),
                           ],
                         ),

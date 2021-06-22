@@ -64,7 +64,7 @@ class DrawTriangle extends CustomPainter {
 
     final textSpan = TextSpan(
         text: text,
-        style: TextStyle(color: ColorHelpers.colorRed, fontSize: 12));
+        style: TextStyle(color: ColorHelpers.colorRed, fontSize: 11));
     final textPainter = TextPainter(
       text: textSpan,
       textDirection: TextDirection.ltr,

@@ -121,6 +121,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                         Stack(
                           alignment: Alignment.center,
                           children: data.listRiserData.map((e) {
+                            var index = data.listRiserData.indexOf(e) + 1;
                             double newWidth = MediaQuery.of(context).size.width;
                             double newHeight =
                                 MediaQuery.of(context).size.height;
@@ -136,13 +137,13 @@ class _RiserWidgetState extends State<RiserWidget> {
                                 return TriangleText(
                                   x: newX + 15,
                                   y: newY + 15,
-                                  text: "VGR-${e.sequence}",
+                                  text: "$index.VGR ${e.sequence}",
                                 );
                               } else {
                                 return TriangleText(
                                   x: newX,
                                   y: newY,
-                                  text: "VGR-${e.sequence}",
+                                  text: "$index.VGR ${e.sequence}",
                                 );
                               }
                             } else {
@@ -156,7 +157,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                                     : {"x": newX, "y": newY},
                                 radius: 10,
                                 text:
-                                    "R$value-${alphabet[e.sequence! - 1]}",
+                                    "$index.${alphabet[e.sequence! - 1]}-R$value in",
                               );
                             }
                           }).toList(),
@@ -180,8 +181,15 @@ class _RiserWidgetState extends State<RiserWidget> {
                             isDense: true,
                             decoration: kDecorationDropdown(),
                             items: data.listRiserData.map((value) {
+                              //Hasil revisi penamaan :) mesti gini
+                              var index = data.listRiserData.indexOf(value) + 1;
+                              var sequence = value.name!.split("-").last;
+                              var name = value.name!.split("-").first;
                               return DropdownMenuItem<String>(
-                                child: Text(value.name!,
+                                child: Text(
+                                    (value.name!.contains("VGR"))
+                                        ? "$index." + name + " $sequence"
+                                        : "$index." + "$sequence-" + "$name in",
                                     style: TextStyle(fontSize: 12)),
                                 value: value.name,
                               );

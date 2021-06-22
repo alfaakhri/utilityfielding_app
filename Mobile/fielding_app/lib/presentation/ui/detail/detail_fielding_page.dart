@@ -29,7 +29,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   Marker? _tempMarkerSelected;
   Set<Marker> _markers = Set<Marker>();
   double pinPillPosition = -100;
-  bool showButtonCompleteMulti = false;
+  bool showButtonCompleteMulti = true;
   late LocationData currentLocation;
   late BitmapDescriptor poleIcon;
   late BitmapDescriptor poleSelected;
@@ -47,12 +47,19 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   void getCurrentLocation() async {
-    LocationService location = LocationService();
-    LocationData data = await location.getCurrentLocation();
-    setState(() {
-      print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
-      currentLocation = data;
-    });
+    if (context.read<ConnectionProvider>().isConnected) {
+      LocationService location = LocationService();
+      LocationData data = await location.getCurrentLocation();
+      setState(() {
+        print(
+            "latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
+        currentLocation = data;
+      });
+    } else {
+      setState(() {
+        currentLocation =  context.read<FieldingProvider>().currentLocationData!;
+      });
+    }
   }
 
   void setPoleIcons() async {

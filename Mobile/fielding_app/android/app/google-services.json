@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "493045838198",
+    "project_id": "utility-fielding",
+    "storage_bucket": "utility-fielding.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:493045838198:android:0f36c44adcf17b1fc14a57",
+        "android_client_info": {
+          "package_name": "com.utility.fielding_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "493045838198-mbb5ntorrjjpoc7fenq18qridl8fkqpv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq3NwmSnWO9AJMpML-GmeBbOUYF68KSyo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "493045838198-mbb5ntorrjjpoc7fenq18qridl8fkqpv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

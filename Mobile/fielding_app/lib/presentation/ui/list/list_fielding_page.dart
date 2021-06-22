@@ -30,16 +30,6 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
-  void getCurrentLocation() async {
-    LocationService location = LocationService();
-    LocationData data = await location.getCurrentLocation();
-    print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
-    context
-        .read<FieldingProvider>()
-        .setCurrentPosition(LatLng(data.latitude!, data.longitude!));
-    context.read<FieldingProvider>().setCurrentLocationData(data);
-  }
-
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     switch (result) {
       case ConnectivityResult.wifi:
@@ -67,6 +57,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await _connectivity.checkConnectivity();
+      context.read<FieldingProvider>().getCurrentLocation((result.index == 2) ? false : true);
       fieldingBloc.add(GetAllProjects(
           context.read<UserProvider>().userModel.data!.token,
           (result.index == 2) ? false : true));
@@ -93,7 +84,6 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
 
-    getCurrentLocation();
   }
 
   @override

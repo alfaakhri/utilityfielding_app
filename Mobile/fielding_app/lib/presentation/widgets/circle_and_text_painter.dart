@@ -58,7 +58,7 @@ class DrawCircleText extends CustomPainter {
         Offset(center!["x"]!, center!["y"]!), radius!, paintBorder);
     final textSpan = TextSpan(
       text: text,
-      style: TextStyle(color: ColorHelpers.colorRed, fontSize: 12)
+      style: TextStyle(color: ColorHelpers.colorRed, fontSize: 11)
     );
     final textPainter = TextPainter(
       text: textSpan,
@@ -66,7 +66,7 @@ class DrawCircleText extends CustomPainter {
     );
     textPainter.layout(
       minWidth: 0,
-      maxWidth: 30,
+      maxWidth: 50,
     );
     final offset = Offset(center!["x"]! - 7, center!["y"]! - 8);
     textPainter.paint(canvas, offset);
