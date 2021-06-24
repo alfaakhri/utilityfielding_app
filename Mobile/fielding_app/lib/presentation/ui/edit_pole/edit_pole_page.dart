@@ -254,14 +254,20 @@ class _EditPolePageState extends State<EditPolePage> {
                                 state.poleByIdModel.poleCondition ?? 0)
                             .text ??
                         "-";
-                    this._poleHeight.text = provider
-                        .setPoleHeightAssign(
-                            state.poleByIdModel.poleHeight ?? 0)
-                        .text
-                        .toString();
+                    this._poleHeight.text = (provider
+                                .setPoleHeightAssign(
+                                    state.poleByIdModel.poleHeight ?? 0)
+                                .text ==
+                            null)
+                        ? "-"
+                        : provider
+                            .setPoleHeightAssign(
+                                state.poleByIdModel.poleHeight ?? 0)
+                            .text
+                            .toString();
 
                     provider.setFieldingTypeAssign(
-                        state.poleByIdModel.fieldingType ?? 0);
+                        state.poleByIdModel.fieldingType ?? 2);
                     this._species.text = provider
                             .setPoleSpeciesAssign(
                                 state.poleByIdModel.poleSpecies)
@@ -294,7 +300,7 @@ class _EditPolePageState extends State<EditPolePage> {
                       this._radioAntena.text = "Yes";
                     }
                     this._notes.text = state.poleByIdModel.note ?? "-";
-                    
+
                     this._fieldingType.text =
                         (provider.fieldingTypeSelected!.text != null)
                             ? provider.fieldingTypeSelected!.text!
@@ -360,10 +366,8 @@ class _EditPolePageState extends State<EditPolePage> {
                           color: ColorHelpers.colorBlueNumber, fontSize: 14),
                     ),
                     Text(
-                      (widget.poles != null)
-                          ? (widget.poles!.poleSequence != null)
-                              ? this._poleSequence.text
-                              : "-"
+                      (this._poleSequence.text.isNotEmpty)
+                          ? this._poleSequence.text
                           : "-",
                       style: TextStyle(
                           color: ColorHelpers.colorBlackText, fontSize: 14),

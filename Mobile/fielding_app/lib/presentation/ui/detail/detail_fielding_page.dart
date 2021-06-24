@@ -57,7 +57,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
       });
     } else {
       setState(() {
-        currentLocation =  context.read<FieldingProvider>().currentLocationData!;
+        currentLocation = context.read<FieldingProvider>().currentLocationData!;
       });
     }
   }
@@ -114,6 +114,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
 
   @override
   Widget build(BuildContext context) {
+    var fielding = context.read<FieldingProvider>();
     return WillPopScope(
       onWillPop: () {
         fieldingBloc.add(GetAllProjects(
@@ -146,9 +147,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         body: BlocConsumer<FieldingBloc, FieldingState>(
           listener: (context, state) {
             if (state is GetAllPolesByIdSuccess) {
-              context
-                  .read<FieldingProvider>()
-                  .setAllPolesByLayer(state.allPolesByLayer);
+              fielding.setAllPolesByLayer(state.allPolesByLayer);
+              fielding.setFieldingTypeAssign(3);
               searchPolesByStatus();
             } else if (state is StartPolePictureLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
@@ -225,15 +225,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               );
             } else if (state is GetAllPolesByIdSuccess) {
               List<AllPolesByLayerModel>? allPolesByFilter;
-              if (context.read<FieldingProvider>().fieldingTypeSelected!.id !=
-                  3) {
+              if (fielding.fieldingTypeSelected!.id != 3) {
                 allPolesByFilter = state.allPolesByLayer!
                     .where((element) =>
                         element.fieldingType ==
-                        context
-                            .read<FieldingProvider>()
-                            .fieldingTypeSelected!
-                            .id)
+                        fielding.fieldingTypeSelected!.id)
                     .toList();
               } else {
                 allPolesByFilter = state.allPolesByLayer;

@@ -32,7 +32,7 @@ class PoleSequenceItem extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Pole Sequences",
+                        "Pole Sequence",
                         style: TextStyle(
                             color: ColorHelpers.colorBlackText,
                             fontSize: 12,
