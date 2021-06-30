@@ -6,23 +6,26 @@ import 'package:fielding_app/presentation/ui/local/widgets/item_pole_local.dart'
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
 class ListLocalPage extends StatefulWidget {
-  const ListLocalPage({ Key? key }) : super(key: key);
+  const ListLocalPage({Key? key}) : super(key: key);
 
   @override
   _ListLocalPageState createState() => _ListLocalPageState();
 }
 
 class _ListLocalPageState extends State<ListLocalPage> {
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     context.read<LocalBloc>().add(GetEditPole());
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,18 +38,29 @@ class _ListLocalPageState extends State<ListLocalPage> {
         backgroundColor: Colors.white,
       ),
       backgroundColor: Colors.white,
-      body: BlocBuilder<LocalBloc, LocalState>(
+      body: BlocConsumer<LocalBloc, LocalState>(
+        listener: (context, state) {
+       if (state is PostEditPoleFailed) {
+            Fluttertoast.showToast(msg: state.message!);
+          }  else if (state is DeletePoleFailed) {
+            Fluttertoast.showToast(msg: state.message!);
+          }
+        },
         builder: (context, state) {
           if (state is GetEditPoleLoading) {
             return _skeletonLoading();
           } else if (state is GetEditPoleFailed) {
             return _handlingWidget(state.message);
           } else if (state is GetEditPoleSuccess) {
-            return _content(state.listAddPoleLocal!);
+            return _content();
           } else if (state is GetEditPoleEmpty) {
             return _handlingWidget("Fielding Request Empty");
+          } else if (state is PostEditPoleSuccess) {
+            return _content();
+          } else if (state is DeletePoleSuccess) {
+            return _content();
           }
-          return _skeletonLoading();
+          return _content();
         },
       ),
     );
@@ -64,7 +78,7 @@ class _ListLocalPageState extends State<ListLocalPage> {
         FittedBox(
           child: InkWell(
             onTap: () {
-              
+              context.read<LocalBloc>().add(GetEditPole());
             },
             child: Container(
               color: ColorHelpers.colorBlueIntro,
@@ -109,29 +123,35 @@ class _ListLocalPageState extends State<ListLocalPage> {
     );
   }
 
-  Widget _content(List<AddPoleLocal> poleLocal) {
-    return Container(
-      color: Colors.white,
-      padding: EdgeInsets.all(16),
-      child: ListView(
-        children: [
-          Text(
-            "Edit Pole Local Storage",
-            style: TextStyle(
-                color: ColorHelpers.colorBlackText,
-                fontSize: 16,
-                fontWeight: FontWeight.bold),
-          ),
-          UIHelper.verticalSpaceSmall,
-          ListView(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            children: poleLocal
-                .map((data) => ItemLocalPole(addPoleLocal: data,))
-                .toList(),
-          ),
-        ],
-      ),
-    );
+  Widget _content() {
+    return (context.read<LocalBloc>().listAddPoleLocal!.length == 0)
+        ? _handlingWidget("List pole an empty")
+        : Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(16),
+            child: ListView(
+              children: [
+                Text(
+                  "Edit Pole Local Storage",
+                  style: TextStyle(
+                      color: ColorHelpers.colorBlackText,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
+                UIHelper.verticalSpaceSmall,
+                ListView(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: context
+                      .read<LocalBloc>()
+                      .listAddPoleLocal!
+                      .map((data) => ItemLocalPole(
+                            addPoleLocal: data,
+                          ))
+                      .toList(),
+                ),
+              ],
+            ),
+          );
   }
 }

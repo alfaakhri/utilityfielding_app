@@ -9,6 +9,7 @@ import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class RiserProvider extends ChangeNotifier {
   ApiProvider _apiProvider = ApiProvider();
@@ -81,8 +82,8 @@ class RiserProvider extends ChangeNotifier {
   }
 
   void getRiserAndVGR() async {
-    final dataBox =
-        await _hiveService.openAndGetDataFromHiveBox(getHiveRiserVGR, listRiserVGR);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveRiserVGR, listRiserVGR);
     if (dataBox != null) {
       setListTypeRiser(RiserAndVGRTypeModel.fromJsonList(json.decode(dataBox)));
     } else {
@@ -326,6 +327,31 @@ class RiserProvider extends ChangeNotifier {
   }
 
   //-----------------------------------------------------------------------------------------
+
+  List<AnchorFences> _listRiserFence = <AnchorFences>[];
+  List<AnchorFences> get listRiserFence => _listRiserFence;
+  setAllRiserFence(List<AnchorFences> listRiserFence) {
+    _listRiserFence = listRiserFence;
+    notifyListeners();
+  }
+
+  addRiserFence(Offset a, Offset b) {
+    List<double> points = [a.dx, a.dy, b.dx, b.dy];
+    _listRiserFence.add(AnchorFences(
+      points: points.toString(),
+      stroke: "brown",
+      data: "fence",
+    ));
+    notifyListeners();
+  }
+
+  void removeLastRiserFence() {
+    _listRiserFence.removeLast();
+    notifyListeners();
+  }
+
+  //-----------------------------------------------------------------------------------------
+
   void clearAll() {
     _listRiserData.clear();
     _listActivePoint.clear();

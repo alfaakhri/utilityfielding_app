@@ -1,4 +1,6 @@
+import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class StreetButton extends StatelessWidget {
@@ -33,7 +35,7 @@ class StreetButton extends StatelessWidget {
         UIHelper.verticalSpaceSmall,
         InkWell(
           onTap: () {
-            onItemClick!(true);
+            context.read<AnchorProvider>().removeLastStreet();
           },
           child: Container(
               width: 80,

@@ -54,10 +54,10 @@ class GetPoleById extends FieldingEvent {
 class StartFielding extends FieldingEvent {
   final String? token;
   final String? poleId;
-  final bool isStartAdditional;
+  final bool? isStartAdditional;
   final String? layerId;
 
-  StartFielding(this.token, this.poleId, this.isStartAdditional, this.layerId);
+  StartFielding({this.token, this.poleId, this.isStartAdditional, this.layerId});
 }
 
 class CompleteMultiPole extends FieldingEvent {

@@ -129,10 +129,14 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                   : InkWell(
                       onTap: () {
                         context.read<FieldingBloc>().add(StartFielding(
-                            context.read<UserProvider>().userModel.data!.token,
-                            poleModelSelected!.id,
-                            true,
-                            fielding.allProjectsSelected.iD));
+                            token: context
+                                .read<UserProvider>()
+                                .userModel
+                                .data!
+                                .token,
+                            poleId: poleModelSelected!.id,
+                            isStartAdditional: true,
+                            layerId: fielding.allProjectsSelected.iD));
                       },
                       child: Container(
                           decoration: BoxDecoration(

@@ -131,7 +131,7 @@ class AddPoleModel {
         riserFences?.add(new AnchorFences.fromJson(v));
       });
     }
-    poleSequence = json['PoleSequence']; 
+    poleSequence = json['PoleSequence'];
   }
 
   Map<String, dynamic> toJson() {
@@ -200,16 +200,51 @@ class AddPoleModel {
 
 class AnchorFences {
   String? points;
+  String? stroke;
+  String? data;
+  String? globalCompositeOperation;
 
-  AnchorFences({this.points});
+  AnchorFences(
+      {this.points, this.stroke, this.data, this.globalCompositeOperation});
 
   AnchorFences.fromJson(Map<String, dynamic> json) {
     points = json['Points'];
+    stroke = json['Stroke'];
+    data = json['Data'];
+    globalCompositeOperation = json['GlobalCompositeOperation'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['Points'] = this.points;
+    data['Stroke'] = this.stroke;
+    data['Data'] = this.data;
+    data['GlobalCompositeOperation'] = this.globalCompositeOperation;
+    return data;
+  }
+}
+
+class Points {
+  String? id;
+  String? stroke;
+  String? data;
+  List<int>? points;
+
+  Points({this.id, this.stroke, this.data, this.points});
+
+  Points.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    stroke = json['stroke'];
+    data = json['data'];
+    points = json['points'].cast<int>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['stroke'] = this.stroke;
+    data['data'] = this.data;
+    data['points'] = this.points;
     return data;
   }
 }

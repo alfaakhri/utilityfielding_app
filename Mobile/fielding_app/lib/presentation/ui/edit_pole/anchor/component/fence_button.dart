@@ -1,4 +1,6 @@
+import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 class FenceButton extends StatelessWidget {
@@ -33,7 +35,7 @@ class FenceButton extends StatelessWidget {
         UIHelper.verticalSpaceSmall,
         InkWell(
           onTap: () {
-            onItemClick!(true);
+            context.read<AnchorProvider>().removeLastFence();
           },
           child: Container(
               width: 80,

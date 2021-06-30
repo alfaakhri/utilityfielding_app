@@ -79,6 +79,7 @@ const String listFieldingType = "list_fielding_type";
 const String listAllProject = "list_all_project";
 const String listAllPoles = "list_all_poles";
 const String locationDataLocal = "current_location";
+const String listAllAnchorCondition = "list_all_anchor_condition";
 
 const String _edit_pole = "edit_pole";
 const String _detail_poles_by_layer = "detail_poles_by_layer";
@@ -98,6 +99,7 @@ const String _fielding_type = "fielding_type";
 const String _all_project = "all_project";
 const String _all_poles = "all_poles";
 const String _current_location = "current_location";
+const String _all_anchor_condition = "all_anchor_condition";
 
 String get getHiveEditPole => _edit_pole;
 String get getHiveDetailPoles => _detail_poles_by_layer;
@@ -117,6 +119,7 @@ String get getHiveFieldingType => _fielding_type;
 String get getHiveAllProject => _all_project;
 String get getHiveAllPoles => _all_poles;
 String get getHiveCurrentLocation => _current_location;
+String get getHiveAnchorCondition => _all_anchor_condition;
 
 
 

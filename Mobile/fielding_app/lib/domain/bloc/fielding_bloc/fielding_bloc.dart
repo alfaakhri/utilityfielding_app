@@ -243,7 +243,7 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield StartFieldingLoading();
       try {
         var response = await (_apiProvider.startFielding(
-            event.token, event.poleId, event.isStartAdditional, event.layerId));
+            event.token, event.poleId, event.isStartAdditional!, event.layerId));
         if (response!.statusCode == 200) {
           yield StartFieldingSuccess();
         } else if (response.data['Message'] == messageTokenExpired) {

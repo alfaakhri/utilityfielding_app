@@ -21,4 +21,6 @@ class ColorHelpers {
   static const colorGreenCard = Color(0xFFE5FFF0);
   static const colorGreyIntro = Color(0xFFA0A0A0);
   static const colorBlackLine = Color(0xFFC0C0C0);
+  static const colorBrown =  Color(0xFF997950);
+
 }

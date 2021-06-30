@@ -2,6 +2,7 @@ import 'package:fielding_app/data/models/user_model.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
+import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/ui/local/list_local_page.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,22 @@ class DrawerWidget extends StatelessWidget {
         color: Colors.white,
         child: ListView(
           children: <Widget>[
-            Image.asset('assets/logo.png', scale: 2,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  scale: 2,
+                ),
+                Container(
+                    margin: EdgeInsets.only(left: 50),
+                    child: Text("Versi 2.5.8",
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: ColorHelpers.colorBlueNumber))),
+              ],
+            ),
             Divider(
               color: Colors.black,
             ),
@@ -41,7 +57,8 @@ class DrawerWidget extends StatelessWidget {
                   UIHelper.verticalSpaceVerySmall,
                   Text(
                     userModel.data!.user!.email!,
-                    style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 12),
+                    style:
+                        TextStyle(color: ColorHelpers.colorGrey, fontSize: 12),
                   ),
                 ],
               ),

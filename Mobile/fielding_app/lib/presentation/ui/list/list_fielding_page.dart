@@ -32,7 +32,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     switch (result) {
-      case ConnectivityResult.wifi:
+      case ConnectivityResult.wifi: 
         Fluttertoast.showToast(msg: "Internet available");
         context.read<ConnectionProvider>().setIsConnected(true);
         break;

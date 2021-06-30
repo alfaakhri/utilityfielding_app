@@ -327,6 +327,16 @@ class ApiProvider {
     }
   }
 
+  Future<Response> getAllAnchorCondition() async {
+    try {
+      var response =
+          await _dio.get(BASE_URL + "/api/MobileProject/GetAllAnchorCondition");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<Response> getJobNumberAttach(String? layerId) async {
     try {
       var response =

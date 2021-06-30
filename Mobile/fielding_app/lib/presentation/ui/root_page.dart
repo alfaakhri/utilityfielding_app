@@ -31,6 +31,7 @@ class _RootPageState extends State<RootPage> {
     context.read<AnchorProvider>().getAllAnchorSize();
     context.read<AnchorProvider>().getBrokenDownGuySize();
     context.read<AnchorProvider>().getDownGuySize();
+    context.read<AnchorProvider>().getAllAnchorCondition();
     context.read<IntroProvider>().getPrivacyPolicy();
     context.read<FieldingProvider>().getFieldingType();
     authBloc = BlocProvider.of<AuthBloc>(context);

@@ -1,3 +1,5 @@
+import '../models.exports.dart';
+
 class PoleByIdModel {
   String? id;
   String? layerID;
@@ -27,8 +29,11 @@ class PoleByIdModel {
   List<TransformerList>? transformerList;
   List<SpanDirectionList>? spanDirectionList;
   List<AnchorList>? anchorList;
-  List<RiserAndVGRList>? riseAndVGRList;
+  List<RiserAndVGRList>? riserAndVGRList;
   int? fieldingType;
+  List<AnchorFences>? anchorFences;
+  List<AnchorFences>? anchorStreets;
+  List<AnchorFences>? riserFences;
 
   PoleByIdModel(
       {this.id,
@@ -59,8 +64,11 @@ class PoleByIdModel {
       this.transformerList,
       this.spanDirectionList,
       this.anchorList,
-      this.riseAndVGRList,
-      this.fieldingType});
+      this.riserAndVGRList,
+      this.fieldingType,
+      this.anchorFences,
+      this.anchorStreets,
+      this.riserFences});
 
   PoleByIdModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -112,12 +120,30 @@ class PoleByIdModel {
       });
     }
     if (json['RiserAndVGRList'] != null) {
-      riseAndVGRList = <RiserAndVGRList>[];
+      riserAndVGRList = <RiserAndVGRList>[];
       json['RiserAndVGRList'].forEach((v) {
-        riseAndVGRList!.add(new RiserAndVGRList.fromJson(v));
+        riserAndVGRList!.add(new RiserAndVGRList.fromJson(v));
       });
     }
     fieldingType = json['FieldingType'];
+    if (json['AnchorFences'] != null) {
+      anchorFences = <AnchorFences>[];
+      json['AnchorFences'].forEach((v) {
+        anchorFences?.add(new AnchorFences.fromJson(v));
+      });
+    }
+    if (json['AnchorStreets'] != null) {
+      anchorStreets = <AnchorFences>[];
+      json['AnchorStreets'].forEach((v) {
+        anchorStreets?.add(new AnchorFences.fromJson(v));
+      });
+    }
+    if (json['RiserFences'] != null) {
+      riserFences = <AnchorFences>[];
+      json['RiserFences'].forEach((v) {
+        riserFences?.add(new AnchorFences.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -160,12 +186,23 @@ class PoleByIdModel {
     if (this.anchorList != null) {
       data['AnchorList'] = this.anchorList!.map((v) => v.toJson()).toList();
     }
-    if (this.riseAndVGRList != null) {
+    if (this.riserAndVGRList != null) {
       data['RiserAndVGRList'] =
-          this.riseAndVGRList!.map((v) => v.toJson()).toList();
+          this.riserAndVGRList!.map((v) => v.toJson()).toList();
     }
     data['FieldingType'] = this.fieldingType;
-
+    if (this.anchorFences != null) {
+      data['AnchorFences'] =
+          this.anchorFences!.map((v) => v.toJson()).toList();
+    }
+    if (this.anchorStreets != null) {
+      data['AnchorStreets'] =
+          this.anchorStreets!.map((v) => v.toJson()).toList();
+    }
+    if (this.riserFences != null) {
+      data['RiserFences'] =
+          this.riserFences!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
@@ -278,6 +315,7 @@ class AnchorList {
   bool? eyesPict;
   String? poleID;
   int? imageType;
+  int? anchorCondition;
   List<DownGuyList>? downGuyList;
 
   AnchorList(
@@ -293,6 +331,7 @@ class AnchorList {
       this.eyesPict,
       this.poleID,
       this.imageType,
+      this.anchorCondition,
       this.downGuyList});
 
   AnchorList.fromJson(Map<String, dynamic> json) {
@@ -308,6 +347,7 @@ class AnchorList {
     eyesPict = json['EyesPict'];
     poleID = json['PoleID'];
     imageType = json['ImageType'];
+    anchorCondition = json['AnchorCondition'];
     if (json['DownGuyList'] != null) {
       downGuyList = <DownGuyList>[];
       json['DownGuyList'].forEach((v) {
@@ -330,6 +370,7 @@ class AnchorList {
     data['EyesPict'] = this.eyesPict;
     data['PoleID'] = this.poleID;
     data['ImageType'] = this.imageType;
+    data['AnchorCondition'] = this.anchorCondition;
     if (this.downGuyList != null) {
       data['DownGuyList'] = this.downGuyList!.map((v) => v.toJson()).toList();
     }

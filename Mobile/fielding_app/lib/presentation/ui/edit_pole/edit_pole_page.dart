@@ -79,6 +79,8 @@ class _EditPolePageState extends State<EditPolePage> {
 
   void doneAddPole() {
     var provider = context.read<FieldingProvider>();
+    var anchor = context.read<AnchorProvider>();
+    var riser = context.read<RiserProvider>();
     AddPoleModel data = AddPoleModel(
         token: authBloc.userModel!.data!.token,
         id: (widget.poles == null) ? null : widget.poles!.id,
@@ -115,11 +117,11 @@ class _EditPolePageState extends State<EditPolePage> {
         hOAList: provider.hoaList,
         transformerList: provider.listTransformer,
         spanDirectionList: context.read<SpanProvider>().listSpanData,
-        anchorList: context.read<AnchorProvider>().listAnchorData,
-        riserAndVGRList: context.read<RiserProvider>().listRiserData,
-        anchorFences: [],
-        anchorStreets: [],
-        riserFences: [],
+        anchorList: anchor.listAnchorData,
+        riserAndVGRList: riser.listRiserData,
+        anchorFences: anchor.listAnchorFences,
+        anchorStreets: anchor.listAnchorStreet,
+        riserFences: riser.listRiserFence,
         poleSequence: (this._poleSequence.text.isNotEmpty)
             ? int.parse(this._poleSequence.text)
             : null);
@@ -324,8 +326,13 @@ class _EditPolePageState extends State<EditPolePage> {
                         state.poleByIdModel.spanDirectionList);
 
                     anchor.setListAnchorData(state.poleByIdModel.anchorList);
+                    anchor.setAllListAnchorFence(
+                        state.poleByIdModel.anchorFences!);
+                    anchor
+                        .setAllAnchorStreet(state.poleByIdModel.anchorStreets!);
+                    riser.setAllRiserFence(state.poleByIdModel.riserFences!);
                     riser.addAllListRiserData(
-                        state.poleByIdModel.riseAndVGRList);
+                        state.poleByIdModel.riserAndVGRList);
                   });
                 }
               },

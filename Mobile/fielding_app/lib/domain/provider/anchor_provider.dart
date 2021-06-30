@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:fielding_app/data/models/edit_pole/add_pole_model.dart';
+import 'package:fielding_app/data/models/edit_pole/all_anchor_condition_model.dart';
 import 'package:fielding_app/data/models/edit_pole/all_anchor_eyes_model.dart';
 import 'package:fielding_app/data/models/edit_pole/all_anchor_size_model.dart';
 import 'package:fielding_app/data/models/edit_pole/broken_down_guy_size_model.dart';
@@ -10,6 +11,7 @@ import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/external/constants.dart';
 import 'package:fielding_app/external/service/hive_service.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class AnchorProvider extends ChangeNotifier {
   ApiProvider _repository = ApiProvider();
@@ -176,6 +178,46 @@ class AnchorProvider extends ChangeNotifier {
 
   //-------------------------------------------------------------------------------------------------------
 
+  List<AllAnchorConditionModel>? _listAnchorCondition =
+      <AllAnchorConditionModel>[];
+  List<AllAnchorConditionModel> get listAnchorCondition =>
+      _listAnchorCondition!;
+
+  AllAnchorConditionModel? _anchorConditionSelected;
+  AllAnchorConditionModel? get anchorConditionSelected =>
+      _anchorConditionSelected;
+  void setAnchorConditionSelected(String? value) {
+    _anchorConditionSelected =
+        _listAnchorCondition!.firstWhere((element) => element.text == value);
+    notifyListeners();
+  }
+
+  void getAllAnchorCondition() async {
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        getHiveAnchorCondition, listAllAnchorCondition);
+    if (dataBox != null) {
+      _listAnchorCondition =
+          AllAnchorConditionModel.fromJsonList(jsonDecode(dataBox));
+    } else {
+      try {
+        var response = await _repository.getAllAnchorCondition();
+        if (response.statusCode == 200) {
+          _listAnchorCondition =
+              AllAnchorConditionModel.fromJsonList(response.data);
+          _hiveService.deleteDataFromBox(
+              getHiveAnchorCondition, listAllAnchorCondition);
+          _hiveService.saveDataToBox(getHiveAnchorCondition,
+              listAllAnchorCondition, json.encode(_listAnchorCondition));
+          print("all anchor condition : ${response.data}");
+        }
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+  }
+
+  //-------------------------------------------------------------------------------------------------------
+
   List<AnchorList> _listAnchorData = <AnchorList>[];
   List<AnchorList> get listAnchorData => _listAnchorData;
   void setListAnchorData(List<AnchorList>? listAnchorData) {
@@ -232,6 +274,7 @@ class AnchorProvider extends ChangeNotifier {
         anchorEye: 0,
         text: text,
         eyesPict: true,
+        anchorCondition: 0,
         imageType: 0,
         downGuyList: []));
 
@@ -248,7 +291,8 @@ class AnchorProvider extends ChangeNotifier {
         .firstWhere((element) => element.id == _anchorActiveSelected.anchorEye);
     _anchorSizeSelected = _listAllAnchorSize!
         .firstWhere((element) => element.id == _anchorActiveSelected.size);
-    notifyListeners();
+    _anchorConditionSelected = _listAnchorCondition!.firstWhere(
+        (element) => element.id == _anchorActiveSelected.anchorCondition);
   }
 
   AnchorList getDataAnchorList(String? anchorText) {
@@ -263,13 +307,18 @@ class AnchorProvider extends ChangeNotifier {
   }
 
   void updateDataAnchorList(
-      {String? distance, int? size, int? eyes, bool? isPicture}) {
+      {String? distance,
+      int? size,
+      int? eyes,
+      bool? isPicture,
+      int? anchorCondition}) {
     _listAnchorData.forEach((element) {
       if (element.text == _anchorActiveSelected.text) {
         element.distance = double.parse(distance!);
         element.size = size;
         element.anchorEye = eyes;
         element.eyesPict = isPicture;
+        element.anchorCondition = anchorCondition;
       }
     });
   }
@@ -307,6 +356,56 @@ class AnchorProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  //----------------------------------------------------------------------------------------------
+
+  List<AnchorFences> _listAnchorFences = <AnchorFences>[];
+  List<AnchorFences> get listAnchorFences => _listAnchorFences;
+  void setAllListAnchorFence(List<AnchorFences> anchorFence) {
+    _listAnchorFences = anchorFence;
+    notifyListeners();
+  }
+
+  void addAnchorFences(Offset a, Offset b) {
+    List<double> points = [a.dx, a.dy, b.dx, b.dy];
+    _listAnchorFences.add(AnchorFences(
+      points: points.toString(),
+      stroke: "brown",
+      data: "fence",
+    ));
+    notifyListeners();
+  }
+
+  void removeLastFence() {
+    _listAnchorFences.removeLast();
+    notifyListeners();
+  }
+
+  //----------------------------------------------------------------------------------------------
+
+  List<AnchorFences> _listAnchorStreet = <AnchorFences>[];
+  List<AnchorFences> get listAnchorStreet => _listAnchorStreet;
+  void setAllAnchorStreet(List<AnchorFences> anchorStreet) {
+    _listAnchorStreet = _listAnchorStreet;
+    notifyListeners();
+  }
+
+  void addAnchorStreet(Offset a, Offset b) {
+    List<double> points = [a.dx, a.dy, b.dx, b.dy];
+    _listAnchorStreet.add(AnchorFences(
+      points: points.toString(),
+      stroke: "black",
+      data: "street",
+    ));
+    notifyListeners();
+  }
+
+  void removeLastStreet() {
+    _listAnchorStreet.removeLast();
+    notifyListeners();
+  }
+
+  //----------------------------------------------------------------------------------------------
 
   void clearAll() {
     _listAnchorData.clear();

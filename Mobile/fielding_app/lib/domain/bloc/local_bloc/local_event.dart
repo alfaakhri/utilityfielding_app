@@ -12,3 +12,8 @@ class PostEditPole extends LocalEvent {
   PostEditPole(this.token, this.addPole);
 }
 
+class DeletePole extends LocalEvent {
+  final AddPoleLocal addPole;
+
+  DeletePole(this.addPole);
+}
