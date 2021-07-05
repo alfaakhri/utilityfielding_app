@@ -25,6 +25,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
   ApiProvider _apiProvider = ApiProvider();
   HiveService _hiveService = HiveService();
 
+  List<FieldingRequestByJobModel>? _fieldingRequestByJob;
+  List<FieldingRequestByJobModel>? get fieldingRequestByJob =>
+      _fieldingRequestByJob;
+
   List<AllProjectsModel>? _allProjects;
   List<AllProjectsModel>? get allProjects => _allProjects;
 
@@ -44,7 +48,46 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
   Stream<FieldingState> mapEventToState(
     FieldingEvent event,
   ) async* {
-    if (event is GetAllProjects) {
+    if (event is GetFieldingRequest) {
+      yield GetFieldingRequestLoading();
+      if (event.isConnected!) {
+        try {
+          var response = await _apiProvider.getFieldingRequest(event.token);
+          if (response!.statusCode == 200) {
+            _fieldingRequestByJob =
+                FieldingRequestByJobModel.fromJsonList(response.data);
+
+            if (_fieldingRequestByJob!.length == 0) {
+              yield GetFieldingRequestEmpty();
+            } else {
+              _hiveService.deleteDataFromBox(
+                  getHiveFieldingRequest, listFieldingRequest);
+              _hiveService.saveDataToBox(getHiveFieldingRequest,
+                  listFieldingRequest, json.encode(_fieldingRequestByJob));
+              yield GetFieldingRequestSuccess(_fieldingRequestByJob!);
+            }
+          } else if (response.data['Message'] == messageTokenExpired) {
+            Get.offAll(LoginPage());
+          } else
+            yield GetFieldingRequestFailed(response.data['Message']);
+        } catch (e) {
+          yield GetFieldingRequestFailed(e.toString());
+        }
+      } else {
+        try {
+          var dataBox = await _hiveService.openAndGetDataFromHiveBox(
+              getHiveFieldingRequest, listFieldingRequest);
+          if (dataBox != null) {
+            _fieldingRequestByJob = FieldingRequestByJobModel.fromJsonList(json.decode(dataBox));
+            yield GetFieldingRequestSuccess(_fieldingRequestByJob!);
+          } else {
+            yield GetFieldingRequestEmpty();
+          }
+        } catch (e) {
+          yield GetFieldingRequestFailed(e.toString());
+        }
+      }
+    } else if (event is GetAllProjects) {
       yield GetAllProjectsLoading();
       if (event.isConnected!) {
         try {
@@ -242,8 +285,8 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is StartFielding) {
       yield StartFieldingLoading();
       try {
-        var response = await (_apiProvider.startFielding(
-            event.token, event.poleId, event.isStartAdditional!, event.layerId));
+        var response = await (_apiProvider.startFielding(event.token,
+            event.poleId, event.isStartAdditional!, event.layerId));
         if (response!.statusCode == 200) {
           yield StartFieldingSuccess();
         } else if (response.data['Message'] == messageTokenExpired) {

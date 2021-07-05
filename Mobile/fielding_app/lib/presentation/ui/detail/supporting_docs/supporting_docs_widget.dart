@@ -6,7 +6,6 @@ import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
-import 'package:fielding_app/presentation/ui/detail/widgets/sample_download.dart';
 import 'package:fielding_app/presentation/widgets/preview_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';

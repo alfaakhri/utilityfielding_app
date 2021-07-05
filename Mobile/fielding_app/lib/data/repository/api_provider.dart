@@ -56,6 +56,21 @@ class ApiProvider {
     }
   }
 
+  Future<Response?> getFieldingRequest(String? token) async {
+    print(token);
+    try {
+      _response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetAssignedFieldingRequestsGroupedByJob?token=$token");
+      return _response;
+    } on DioError catch (e) {
+      if (e.response!.statusCode == 400) {
+        return e.response;
+      } else {
+        throw e;
+      }
+    }
+  }
+
   Future<Response?> getAllProject(String? token) async {
     print(token);
     try {
@@ -281,6 +296,36 @@ class ApiProvider {
     try {
       var response = await _dio
           .post(BASE_URL + "/api/MobileProject/UploadImage", data: data);
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> uploadImageByPole(dynamic data, String poleId) async {
+    try {
+      var response = await _dio
+          .post(BASE_URL + "/api/MobileProject/UploadPoleImages?poleId", data: data);
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> deleteImage(dynamic data) async {
+    try {
+      var response = await _dio
+          .post(BASE_URL + "/api/MobileProject/DeletePoleImageData", data: data);
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getPoleImagesData(String token, String poleId) async {
+    try {
+      var response = await _dio
+          .get(BASE_URL + "/api/MobileProject/GetPoleImagesData?token=$token&poleId=$poleId");
       return response;
     } catch (e) {
       throw e;

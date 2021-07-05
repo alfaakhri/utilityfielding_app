@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const String version = "V2.5.9";
+
 const String baseGoogleApi = "https://maps.googleapis.com";
 const String apiKey = 'AIzaSyDQ-aesOz_ut1yBv_d6FG-0N60uqDwgLZs';
 const String messageTokenExpired = "Token has expired. Plese re login.";
@@ -61,6 +63,7 @@ const List<String> alphabet = [
   "Z"
 ];
 
+const String listFieldingRequest = "list_fielding_request";
 const String listEditPole = "list_edit_pole";
 const String listDetailPolesByLayer = "list_detail_poles_by_layer";
 const String listLayerFielding = "list_layer_fielding";
@@ -81,6 +84,7 @@ const String listAllPoles = "list_all_poles";
 const String locationDataLocal = "current_location";
 const String listAllAnchorCondition = "list_all_anchor_condition";
 
+const String _fielding_request = "fieldign_request";
 const String _edit_pole = "edit_pole";
 const String _detail_poles_by_layer = "detail_poles_by_layer";
 const String _layer_fielding = "layer_fielding";
@@ -101,6 +105,7 @@ const String _all_poles = "all_poles";
 const String _current_location = "current_location";
 const String _all_anchor_condition = "all_anchor_condition";
 
+String get getHiveFieldingRequest => _fielding_request;
 String get getHiveEditPole => _edit_pole;
 String get getHiveDetailPoles => _detail_poles_by_layer;
 String get getHiveLayerFielding => _layer_fielding;

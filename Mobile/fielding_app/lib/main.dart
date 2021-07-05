@@ -18,6 +18,7 @@ import 'domain/bloc/auth_bloc/auth_bloc.dart';
 import 'domain/bloc/local_bloc/local_bloc.dart';
 import 'domain/bloc/location_bloc/location_bloc.dart';
 import 'domain/bloc/map_bloc/map_bloc.dart';
+import 'domain/bloc/picture_bloc/picture_bloc.dart';
 import 'domain/provider/provider.exports.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<MapBloc>(create: (context) => MapBloc()),
           BlocProvider<LocalBloc>(create: (context) => LocalBloc()),
           BlocProvider<LocationBloc>(create: (context) => LocationBloc()),
+          BlocProvider<PictureBloc>(create: (context) => PictureBloc()),
         ],
         child: GetMaterialApp(
           debugShowCheckedModeBanner: false,

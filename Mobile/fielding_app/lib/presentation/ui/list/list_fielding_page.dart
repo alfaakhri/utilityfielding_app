@@ -8,6 +8,7 @@ import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
 import 'package:fielding_app/presentation/ui/list/list.exports.dart';
+import 'package:fielding_app/presentation/ui/list/widgets/dropdown_fielding_request.dart';
 import 'package:fielding_app/presentation/ui/list/widgets/item_fielding_request.dart';
 import 'package:fielding_app/presentation/ui/list/widgets/notes_request_item.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
@@ -20,6 +21,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:intl/intl.dart';
 import 'package:skeleton_text/skeleton_text.dart';
+
+import 'widgets/item_fielding_request_new.dart';
 
 class ListFieldingPage extends StatefulWidget {
   @override
@@ -58,7 +61,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     try {
       result = await _connectivity.checkConnectivity();
       context.read<FieldingProvider>().getCurrentLocation((result.index == 2) ? false : true);
-      fieldingBloc.add(GetAllProjects(
+      fieldingBloc.add(GetFieldingRequest(
           context.read<UserProvider>().userModel.data!.token,
           (result.index == 2) ? false : true));
     } on PlatformException catch (e) {
@@ -83,7 +86,6 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-
   }
 
   @override
@@ -101,13 +103,13 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
       backgroundColor: Colors.white,
       body: BlocBuilder<FieldingBloc, FieldingState>(
         builder: (context, state) {
-          if (state is GetAllProjectsLoading) {
+          if (state is GetFieldingRequestLoading) {
             return _skeletonLoading();
-          } else if (state is GetAllProjectsFailed) {
+          } else if (state is GetFieldingRequestFailed) {
             return _handlingWidget(state.message);
-          } else if (state is GetAllProjectsSuccess) {
-            return _content(state.allProjectsModel!);
-          } else if (state is GetAllProjectsEmpty) {
+          } else if (state is GetFieldingRequestSuccess) {
+            return _content(state.fieldingRequest);
+          } else if (state is GetFieldingRequestEmpty) {
             return _handlingWidget("Fielding Request Empty");
           }
           return _skeletonLoading();
@@ -128,7 +130,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
         FittedBox(
           child: InkWell(
             onTap: () {
-              fieldingBloc.add(GetAllProjects(
+              fieldingBloc.add(GetFieldingRequest(
                   context.read<UserProvider>().userModel.data!.token,
                   context.read<ConnectionProvider>().isConnected));
             },
@@ -169,13 +171,13 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
               )),
             );
           },
-          itemCount: 5,
+          itemCount: 10,
         ),
       ),
     );
   }
 
-  Widget _content(List<AllProjectsModel> allProjects) {
+  Widget _content(List<FieldingRequestByJobModel> fieldingRequest) {
     return Container(
       color: Colors.white,
       padding: EdgeInsets.all(16),
@@ -184,13 +186,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                "Fielding Request",
-                style: TextStyle(
-                    color: ColorHelpers.colorBlackText,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
-              ),
+              DropdownFieldingRequest(),
               InkWell(
                 onTap: () {
                   Get.to(MapViewNumberPage());
@@ -216,8 +212,8 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
           ListView(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
-            children: allProjects
-                .map((data) => ItemFieldingRequest(dataProject: data))
+            children: fieldingRequest
+                .map((data) => ItemFieldingRequestNew(fieldingRequest: data))
                 .toList(),
           ),
         ],

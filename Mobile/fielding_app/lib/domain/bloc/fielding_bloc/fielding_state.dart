@@ -5,6 +5,20 @@ abstract class FieldingState {}
 
 class FieldingInitial extends FieldingState {}
 
+class GetFieldingRequestLoading extends FieldingState {}
+class GetFieldingRequestFailed extends FieldingState {
+  final String message;
+
+  GetFieldingRequestFailed(this.message);
+}
+class GetFieldingRequestEmpty extends FieldingState {}
+
+class GetFieldingRequestSuccess extends FieldingState {
+  final List<FieldingRequestByJobModel> fieldingRequest;
+
+  GetFieldingRequestSuccess(this.fieldingRequest);
+}
+
 class GetAllProjectsLoading extends FieldingState {}
 
 class GetAllProjectsFailed extends FieldingState {

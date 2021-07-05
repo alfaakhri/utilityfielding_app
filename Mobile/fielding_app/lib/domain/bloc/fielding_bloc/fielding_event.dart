@@ -3,6 +3,13 @@ part of 'fielding_bloc.dart';
 @immutable
 abstract class FieldingEvent {}
 
+class GetFieldingRequest extends FieldingEvent {
+  final String? token;
+  final bool? isConnected;
+
+  GetFieldingRequest(this.token, this.isConnected);
+}
+
 class GetAllProjects extends FieldingEvent {
   final String? token;
   final bool? isConnected;

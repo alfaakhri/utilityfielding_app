@@ -3,6 +3,7 @@ import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
+import 'package:fielding_app/presentation/ui/detail/supporting_docs/supporting_docs_exports.dart';
 import 'package:fielding_app/presentation/ui/detail/widgets/widgets_detail_exports.dart';
 import 'package:fielding_app/presentation/ui/edit_pole/edit_pole.exports.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
@@ -117,7 +118,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     var fielding = context.read<FieldingProvider>();
     return WillPopScope(
       onWillPop: () {
-        fieldingBloc.add(GetAllProjects(
+        fieldingBloc.add(GetFieldingRequest(
             context.read<UserProvider>().userModel.data!.token,
             context.read<ConnectionProvider>().isConnected));
         Get.back();
@@ -132,7 +133,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
           ),
           leading: IconButton(
             onPressed: () {
-              fieldingBloc.add(GetAllProjects(
+              fieldingBloc.add(GetFieldingRequest(
                   context.read<UserProvider>().userModel.data!.token,
                   context.read<ConnectionProvider>().isConnected));
               Get.back();

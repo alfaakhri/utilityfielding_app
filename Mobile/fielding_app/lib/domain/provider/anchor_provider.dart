@@ -414,6 +414,8 @@ class AnchorProvider extends ChangeNotifier {
     _brokenDownGuySelected = BrokenDownGuySizeModel();
     _anchorEyesSelected = AllAnchorEyesModel();
     _anchorSizeSelected = AllAnchorSizeModel();
+    _listAnchorFences.clear();
+    _listAnchorStreet.clear();
     notifyListeners();
   }
 }

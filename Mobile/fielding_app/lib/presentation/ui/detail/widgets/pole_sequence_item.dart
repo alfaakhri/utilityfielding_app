@@ -1,6 +1,7 @@
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/presentation/ui/detail/upload_picture/upload_picture_page.dart';
 import 'package:fielding_app/presentation/ui/edit_pole/edit_pole.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,7 +24,7 @@ class PoleSequenceItem extends StatelessWidget {
           padding: EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,6 +114,34 @@ class PoleSequenceItem extends StatelessWidget {
                           ),
                         )),
                   ),
+                  UIHelper.verticalSpaceSmall,
+                  InkWell(
+                    onTap: () {
+                      var fielding = context.read<FieldingProvider>();
+
+                      fielding.setPolesByLayerSelected(allPolesByLayerModel);
+                      Get.to(UploadPicturePage(
+                        pole: allPolesByLayerModel,
+                      ));
+                    },
+                    child: Container(
+                        width: 150,
+                        decoration: BoxDecoration(
+                            color: ColorHelpers.colorGreenCard,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                                color: ColorHelpers.colorButtonDefault)),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        child: Text(
+                          "Take Close Up Picture",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: ColorHelpers.colorButtonDefault,
+                            fontSize: 12,
+                          ),
+                        )),
+                  ),
                 ],
               ),
             ],
@@ -129,7 +158,8 @@ class PoleSequenceItem extends StatelessWidget {
           return AlertPictureItem(
             valueAlert: valueAlert,
             allPolesByLayerModel: allPolesByLayerModel,
-            allProjectsModel: context.read<FieldingProvider>().allProjectsSelected,
+            allProjectsModel:
+                context.read<FieldingProvider>().allProjectsSelected,
           );
         });
   }

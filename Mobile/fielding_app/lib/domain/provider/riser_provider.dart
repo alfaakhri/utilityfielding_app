@@ -359,6 +359,7 @@ class RiserProvider extends ChangeNotifier {
     _listVGRActive.clear();
     _riserVGRSelected = RiserAndVGRTypeModel();
     _downGuySelected = AllDownGuyOwnerModel();
+    _listRiserFence.clear();
     notifyListeners();
   }
 

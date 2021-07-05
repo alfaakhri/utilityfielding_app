@@ -1,4 +1,5 @@
 import 'package:fielding_app/external/external.exports.dart';
+import 'package:fielding_app/presentation/ui/detail/supporting_docs/supporting_docs_exports.dart';
 import 'package:flutter/material.dart';
 
 import '../detail.exports.dart';

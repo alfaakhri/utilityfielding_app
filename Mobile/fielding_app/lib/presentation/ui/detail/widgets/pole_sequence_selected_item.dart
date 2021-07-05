@@ -1,4 +1,5 @@
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/presentation/ui/detail/upload_picture/upload_picture_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
@@ -120,6 +121,35 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                                   color: poleModelSelected!.startPolePicture!
                                       ? ColorHelpers.colorWhite
                                       : ColorHelpers.colorOrange,
+                                  fontSize: 12,
+                                ),
+                              )),
+                        ),
+                        UIHelper.verticalSpaceSmall,
+                        InkWell(
+                          onTap: () {
+                            var fielding = context.read<FieldingProvider>();
+
+                            fielding
+                                .setPolesByLayerSelected(poleModelSelected!);
+                            Get.to(UploadPicturePage(
+                              pole: poleModelSelected!,
+                            ));
+                          },
+                          child: Container(
+                              width: 150,
+                              decoration: BoxDecoration(
+                                  color: ColorHelpers.colorGreenCard,
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(
+                                      color: ColorHelpers.colorButtonDefault)),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              child: Text(
+                                "Take Close Up Picture",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: ColorHelpers.colorButtonDefault,
                                   fontSize: 12,
                                 ),
                               )),
