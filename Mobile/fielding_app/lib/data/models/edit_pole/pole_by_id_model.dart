@@ -24,7 +24,7 @@ class PoleByIdModel {
   String? fieldingById;
   String? fieldingBy;
   int? fieldingStatus;
-  int? poleSequence;
+  String? poleSequence;
   List<HOAList>? hOAList;
   List<TransformerList>? transformerList;
   List<SpanDirectionList>? spanDirectionList;
@@ -192,16 +192,14 @@ class PoleByIdModel {
     }
     data['FieldingType'] = this.fieldingType;
     if (this.anchorFences != null) {
-      data['AnchorFences'] =
-          this.anchorFences!.map((v) => v.toJson()).toList();
+      data['AnchorFences'] = this.anchorFences!.map((v) => v.toJson()).toList();
     }
     if (this.anchorStreets != null) {
       data['AnchorStreets'] =
           this.anchorStreets!.map((v) => v.toJson()).toList();
     }
     if (this.riserFences != null) {
-      data['RiserFences'] =
-          this.riserFences!.map((v) => v.toJson()).toList();
+      data['RiserFences'] = this.riserFences!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -421,6 +419,7 @@ class RiserAndVGRList {
   int? value;
   int? type;
   int? imageType;
+  int? generalRVGRSeq;
 
   RiserAndVGRList(
       {this.iD,
@@ -432,7 +431,8 @@ class RiserAndVGRList {
       this.name,
       this.value,
       this.type,
-      this.imageType});
+      this.imageType,
+      this.generalRVGRSeq});
 
   RiserAndVGRList.fromJson(Map<String, dynamic> json) {
     iD = json['ID'];
@@ -445,6 +445,7 @@ class RiserAndVGRList {
     value = json['Value'];
     type = json['Type'];
     imageType = json['ImageType'];
+    generalRVGRSeq = json["generalRVGRSequence"];
   }
 
   Map<String, dynamic> toJson() {
@@ -459,6 +460,7 @@ class RiserAndVGRList {
     data['Value'] = this.value;
     data['Type'] = this.type;
     data['ImageType'] = this.imageType;
+    data["generalRVGRSequence"] = this.generalRVGRSeq;
     return data;
   }
 }

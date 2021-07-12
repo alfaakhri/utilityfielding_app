@@ -1,14 +1,21 @@
+import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/download_image_bloc/download_image_bloc.dart';
+import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/domain/bloc/picture_bloc/picture_bloc.dart';
+import 'package:fielding_app/domain/provider/fielding_provider.dart';
+import 'package:fielding_app/external/external.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PreviewImage extends StatefulWidget {
   final String? image;
+  final bool? functionDelete;
 
-  const PreviewImage({this.image});
+  const PreviewImage({this.image, this.functionDelete});
   @override
   _PreviewImageState createState() => _PreviewImageState();
 }
@@ -54,14 +61,27 @@ class _PreviewImageState extends State<PreviewImage> {
           backgroundColor: Colors.transparent,
           elevation: 0.0,
           actions: <Widget>[
-            IconButton(
-                icon: Icon(
-                  Icons.file_download,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  downloadBloc.add(SaveImage(widget.image!));
-                })
+            (widget.functionDelete!)
+                ? IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return alertDelete();
+                          });
+                    })
+                : IconButton(
+                    icon: Icon(
+                      Icons.file_download,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      downloadBloc.add(SaveImage(widget.image!));
+                    })
           ],
         ),
         body: Center(
@@ -97,5 +117,69 @@ class _PreviewImageState extends State<PreviewImage> {
             ),
           ),
         )));
+  }
+
+  Widget alertDelete() {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      content: Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              'Are you sure delete this picture?',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+            ),
+            UIHelper.verticalSpaceMedium,
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    child: FlatButton(
+                      color: ColorHelpers.colorGrey.withOpacity(0.2),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(color: ColorHelpers.colorBlackText),
+                      ),
+                    ),
+                  ),
+                ),
+                UIHelper.horizontalSpaceSmall,
+                Expanded(
+                  child: Container(
+                    width: double.infinity,
+                    child: FlatButton(
+                      color: ColorHelpers.colorRed,
+                      onPressed: () {
+                        var user = context.read<AuthBloc>();
+                        var fielding = context.read<FieldingProvider>();
+                        context.read<PictureBloc>().add(DeleteImage(
+                            user.userModel!.data!.token!,
+                            fielding.polesByLayerSelected.id!,
+                            widget.image!));
+                        Navigator.pop(context);
+                        Get.back();
+                      },
+                      child: Text(
+                        "Confirm",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

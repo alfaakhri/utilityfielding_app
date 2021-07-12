@@ -143,13 +143,13 @@ class _RiserWidgetState extends State<RiserWidget> {
                                 return TriangleText(
                                   x: newX + 15,
                                   y: newY + 15,
-                                  text: "$index.VGR ${e.sequence}",
+                                  text: "${e.generalRVGRSeq}.VGR ${e.sequence}",
                                 );
                               } else {
                                 return TriangleText(
                                   x: newX,
                                   y: newY,
-                                  text: "$index.VGR ${e.sequence}",
+                                  text: "${e.generalRVGRSeq}.VGR ${e.sequence}",
                                 );
                               }
                             } else {
@@ -163,7 +163,7 @@ class _RiserWidgetState extends State<RiserWidget> {
                                     : {"x": newX, "y": newY},
                                 radius: 10,
                                 text:
-                                    "$index.${alphabet[e.sequence! - 1]}-R$value in",
+                                    "${e.generalRVGRSeq}.${alphabet[e.sequence! - 1]}-R$value in",
                               );
                             }
                           }).toList(),

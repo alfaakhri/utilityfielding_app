@@ -53,7 +53,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     // TODO: implement initState
     super.initState();
     var fielding = context.read<FieldingProvider>();
-    if (widget.polesLayerModel != null) {
+    if (widget.polesLayerModel!.latitude != null) {
       _latitude = fielding.latitude!.toString();
       _longitude = fielding.longitude!.toString();
       print("_latitude0" + _latitude.toString());
@@ -173,19 +173,19 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: state.message!);
-              // } else if (state is UpdateLocationSuccess) {
-              // setState(() {
-              //   _latitude = state.allPolesByLayerModel.latitude;
-              //   _longitude = state.allPolesByLayerModel.longitude;
-              //   // _editLocation = false;
-              // });
-              // Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-              //     .pop();
-              // Fluttertoast.showToast(msg: "Update location success");
-              // context.read<LocationBloc>().add(GetCurrentAddress(
-              //     double.parse(_latitude!), double.parse(_longitude!)));
-              // } else if (state is GetCurrentAddressLoading) {
-              //   LoadingWidget.showLoadingDialog(context, _keyLoader);
+              } else if (state is UpdateLocationSuccess) {
+              setState(() {
+                _latitude = state.allPolesByLayerModel.latitude;
+                _longitude = state.allPolesByLayerModel.longitude;
+                // _editLocation = false;
+              });
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                  .pop();
+              Fluttertoast.showToast(msg: "Update location success");
+              context.read<LocationBloc>().add(GetCurrentAddress(
+                  double.parse(_latitude!), double.parse(_longitude!)));
+              } else if (state is GetCurrentAddressLoading) {
+                LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is GetCurrentAddressFailed) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
@@ -229,7 +229,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                     TextStyle(fontSize: 14, color: ColorHelpers.colorBlackText),
               ),
               Text(
-                  (widget.polesLayerModel == null)
+                  (widget.polesLayerModel!.id == null)
                       ? "-"
                       : widget.polesLayerModel!.poleSequence.toString(),
                   style: TextStyle(
@@ -254,7 +254,9 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                   ].toSet(),
                   initialCameraPosition: CameraPosition(
                     target: LatLng(
-                        double.parse(_latitude!), double.parse(_longitude!)),
+                        double.parse(fielding.allPolesByLayer!.first.latitude!),
+                        double.parse(
+                            fielding.allPolesByLayer!.first.longitude!)),
                     zoom: 16,
                   ),
                   onTap: (LatLng loc) {
@@ -277,18 +279,14 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                     googleMapController = controller;
                     _controller.complete(controller);
 
-                    if (widget.polesLayerModel != null) {
+                    if (widget.polesLayerModel!.latitude != null) {
                       showPinsOnMap(widget.polesLayerModel!);
                     } else if (fielding.latitude != null) {
                       showPinsOnMapDefault(
                           fielding.latitude!, fielding.longitude!);
                     }
 
-                    if (context
-                            .read<FieldingProvider>()
-                            .allPolesByLayer!
-                            .length !=
-                        0) {
+                    if (fielding.allPolesByLayer!.length != 0) {
                       showPinsOnMapAllPoles(fielding.allPolesByLayer!);
                     }
                     Fluttertoast.showToast(
@@ -584,7 +582,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                           child: FlatButton(
                             color: ColorHelpers.colorGreen,
                             onPressed: () {
-                              if (widget.polesLayerModel == null) {
+                              if (widget.polesLayerModel!.id == null) {
                                 context.read<LocationBloc>().add(
                                     GetCurrentAddress(double.parse(_latitude!),
                                         double.parse(_longitude!)));

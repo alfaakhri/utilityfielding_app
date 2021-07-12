@@ -17,6 +17,7 @@ class SplashPage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(0, 100, 0, 0),
               child: Image.asset(
                 'assets/logo.png',
+                scale: 2,
               ),
             ),
           ),

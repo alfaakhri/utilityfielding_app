@@ -208,17 +208,18 @@ class RiserProvider extends ChangeNotifier {
   RiserAndVGRList get resultDataRiser => _resultDataRiser;
   setResultDataRiser(double shapeX, double shapeY) {
     _resultDataRiser = RiserAndVGRList(
-        shapeX: shapeX,
-        shapeY: shapeY - 25,
-        textX: shapeX,
-        textY: shapeY - 25,
-        name: (activePointName == "VGR")
-            ? activePointName! + "-" + sequenceCurrent.toString()
-            : activePointName! + "-" + alphabet[sequenceCurrent! - 1],
-        value: riserVGRSelected.id,
-        type: downGuySelected.id,
-        sequence: sequenceCurrent,
-        imageType: 0);
+      shapeX: shapeX,
+      shapeY: shapeY - 25,
+      textX: shapeX,
+      textY: shapeY - 25,
+      name: (activePointName == "VGR")
+          ? activePointName! + "-" + sequenceCurrent.toString()
+          : activePointName! + "-" + alphabet[sequenceCurrent! - 1],
+      value: riserVGRSelected.id,
+      type: downGuySelected.id,
+      sequence: sequenceCurrent,
+      imageType: 0,
+    );
     notifyListeners();
   }
 
@@ -265,6 +266,9 @@ class RiserProvider extends ChangeNotifier {
     }
     _listActivePoint.remove(pointName);
     _listRiserData.removeWhere((element) => element.name == pointName);
+    for (var index = 0; index < _listRiserData.length; index++) {
+      _listRiserData[index].generalRVGRSeq = index + 1;
+    }
     notifyListeners();
   }
 
@@ -275,6 +279,9 @@ class RiserProvider extends ChangeNotifier {
     _listRiserData.add(data);
     _listRiserData
         .sort((a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
+    for (var index = 0; index < _listRiserData.length; index++) {
+      _listRiserData[index].generalRVGRSeq = index + 1;
+    }
 
     print(json.encode(_listRiserData.map((e) => e.toJson()).toList()));
     notifyListeners();

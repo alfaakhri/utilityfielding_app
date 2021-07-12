@@ -26,7 +26,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     LocationEvent event,
   ) async* {
     if (event is GetCurrentAddress) {
-      // yield GetCurrentAddressLoading();
+      yield GetCurrentAddressLoading();
       try {
         var response = await _apiProvider.getLocationByLatLng(
             event.latitude!, event.longitude!);
@@ -48,9 +48,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
         if (response!.statusCode == 200) {
           _responsePolePicture = AllPolesByLayerModel.fromJson(response.data);
-          // yield UpdateLocationSuccess(_responsePolePicture);
-          add(GetCurrentAddress(double.parse(_responsePolePicture.latitude!),
-              double.parse(_responsePolePicture.longitude!)));
+          yield UpdateLocationSuccess(_responsePolePicture);
+        
         } else if (response.data['Message'] == messageTokenExpired) {
           Get.offAll(LoginPage());
         } else {

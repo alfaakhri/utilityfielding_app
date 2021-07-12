@@ -1,14 +1,33 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../external.exports.dart';
 
 class ImagePickerService {
   File? imageFile;
+  LostData? _fileLost;
   var resultList;
   ImagePickerService({this.imageFile, this.resultList});
+
+  Future<PickedFile?> retrieveLostData() async {
+    final picker = ImagePicker();
+    final LostData? response = await picker.getLostData();
+    if (response == null) {
+      return null;
+    }
+    if (response.file != null) {
+      return response.file;
+    } else {
+      if (response.exception != null) {
+        return null;
+      } else {
+        print('didn\'t know what happend!');
+      }
+    }
+  }
 
   _openGallery(BuildContext context) async {
     final picker = ImagePicker();
@@ -18,9 +37,18 @@ class ImagePickerService {
     if (status.isDenied) return;
 
     var picture = await picker.getImage(source: ImageSource.gallery);
+    // PickedFile lostData = retrieveLostData() as PickedFile;
+    // print("LOST DATA " + lostData.path);
+
     imageFile = File(picture!.path);
+    print("SEBELUM KOMPRES " + imageFile!.lengthSync().toString());
+    File compressedFile = await FlutterNativeImage.compressImage(
+        imageFile!.path,
+        quality: 100,
+        percentage: 80);
+    print("HASIL KOMPRES " + compressedFile.lengthSync().toString());
     if (imageFile != null) {
-      Navigator.of(context).pop(imageFile);
+      Navigator.of(context).pop(compressedFile);
     } else {
       Navigator.of(context).pop(null);
     }
@@ -34,9 +62,16 @@ class ImagePickerService {
     if (status.isDenied) return;
 
     var picture = await picker.getImage(source: ImageSource.camera);
+    // PickedFile lostData = retrieveLostData() as PickedFile;
+    // print("LOST DATA " + lostData.path);
     imageFile = File(picture!.path);
+    File compressedFile = await FlutterNativeImage.compressImage(
+        imageFile!.path,
+        quality: 100,
+        percentage: 80);
+    print("HASIL KOMPRES " + compressedFile.lengthSync().toString());
     if (imageFile != null) {
-      Navigator.of(context).pop(imageFile);
+      Navigator.of(context).pop(compressedFile);
     } else {
       Navigator.of(context).pop(null);
     }

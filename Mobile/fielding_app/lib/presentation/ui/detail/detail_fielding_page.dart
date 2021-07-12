@@ -188,7 +188,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             } else if (state is StartFieldingFailed) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: state.message!);
+              Fluttertoast.showToast(
+                  msg: state.message!, toastLength: Toast.LENGTH_LONG);
               getAllPoleById();
             } else if (state is StartFieldingSuccess) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
@@ -212,7 +213,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             } else if (state is CompleteMultiPoleFailed) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: state.message!);
+              Fluttertoast.showToast(
+                  msg: state.message!, toastLength: Toast.LENGTH_LONG);
               getAllPoleById();
             }
           },
@@ -496,6 +498,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               ),
               InkWell(
                   onTap: () {
+                    fielding.setLatLng(0, 0);
                     Get.to(EditPolePage(
                         allProjectsModel: widget.allProjectsModel,
                         isAddPole: true));
@@ -538,6 +541,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         ),
         InkWell(
             onTap: () {
+              fielding.setLatLng(0, 0);
               Get.to(EditPolePage(
                   allProjectsModel: widget.allProjectsModel, isAddPole: true));
             },
@@ -549,7 +553,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   Container itemFieldingType(FieldingProvider fielding) {
     return Container(
       alignment: Alignment.center,
-      width: 100,
+      width: MediaQuery.of(context).size.width / 3.5,
       height: 25.0,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),

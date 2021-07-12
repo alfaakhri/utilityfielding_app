@@ -55,7 +55,7 @@ class PoleSequenceItem extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       var fielding = context.read<FieldingProvider>();
-
+                      fielding.setLatLng(0, 0);
                       fielding.setPolesByLayerSelected(allPolesByLayerModel);
                       Get.to(EditPolePage(
                         allProjectsModel: fielding.allProjectsSelected,
@@ -75,6 +75,34 @@ class PoleSequenceItem extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        )),
+                  ),
+                  UIHelper.verticalSpaceSmall,
+                  InkWell(
+                    onTap: () {
+                      var fielding = context.read<FieldingProvider>();
+
+                      fielding.setPolesByLayerSelected(allPolesByLayerModel);
+                      Get.to(UploadPicturePage(
+                        pole: allPolesByLayerModel,
+                      ));
+                    },
+                    child: Container(
+                        width: 150,
+                        decoration: BoxDecoration(
+                            color: ColorHelpers.colorGreenCard,
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                                color: ColorHelpers.colorButtonDefault)),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        child: Text(
+                          "Take Close Up Picture",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: ColorHelpers.colorButtonDefault,
                             fontSize: 12,
                           ),
                         )),
@@ -110,34 +138,6 @@ class PoleSequenceItem extends StatelessWidget {
                             color: allPolesByLayerModel.startPolePicture!
                                 ? ColorHelpers.colorWhite
                                 : ColorHelpers.colorGreen2,
-                            fontSize: 12,
-                          ),
-                        )),
-                  ),
-                  UIHelper.verticalSpaceSmall,
-                  InkWell(
-                    onTap: () {
-                      var fielding = context.read<FieldingProvider>();
-
-                      fielding.setPolesByLayerSelected(allPolesByLayerModel);
-                      Get.to(UploadPicturePage(
-                        pole: allPolesByLayerModel,
-                      ));
-                    },
-                    child: Container(
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: ColorHelpers.colorGreenCard,
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(
-                                color: ColorHelpers.colorButtonDefault)),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                        child: Text(
-                          "Take Close Up Picture",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: ColorHelpers.colorButtonDefault,
                             fontSize: 12,
                           ),
                         )),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:fielding_app/data/models/detail_fielding/detail_fielding.exports.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,21 @@ part 'picture_state.dart';
 class PictureBloc extends Bloc<PictureEvent, PictureState> {
   PictureBloc() : super(PictureInitial());
   ApiProvider _apiProvider = ApiProvider();
+
+  List<ImageByPoleModel>? _imageByPoleModel = <ImageByPoleModel>[];
+  List<ImageByPoleModel> get imageByPoleModel => _imageByPoleModel!;
+
+  Future<String> uploadImage(dynamic data) async {
+    try {
+      ApiProvider _apiProvider = ApiProvider();
+
+      var response = await _apiProvider.uploadImage(data);
+
+      return response.data['imagepath'];
+    } catch (e) {
+      throw e;
+    }
+  }
 
   @override
   Stream<PictureState> mapEventToState(
@@ -28,26 +44,35 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
           List<int> imageBytes = file.readAsBytesSync();
           String base64Image = base64Encode(imageBytes);
 
-          // var data = {
-          //   "file_name": file.path.split('/').last,
-          //   "base64url": base64Image,
-          //   "imagepath": file.path,
-          //   "location": "quotation"
-          // };
-          var data = {
-            "files": file,
+          var dataImage = {
+            "file_name": file.path.split('/').last,
+            "base64url": base64Image,
+            "imagepath": file.path,
+            "location": "quotation"
           };
-          print(json.encode(data).toString());
+
+          print(json.encode(dataImage).toString());
           print(base64Image);
           print(json.encode(file.path).toString());
 
-          var response =
-              await _apiProvider.uploadImageByPole(data, event.poleId);
+          String path = await uploadImage(dataImage);
+          
+          var dataAttachPole = {
+            "files": [
+              {
+                "FileName": file.path.split('/').last,
+                "FilePath": path,
+              }
+            ],
+            "poleId": event.poleId
+          };
+
+          print(dataAttachPole);
+
+          var response = await _apiProvider.uploadImageByPole(json.encode(dataAttachPole));
           if (response.statusCode == 200) {
-            // setListFilenameAttachment(response.data['imagepath']);
-            List<dynamic> data = [];
-            data.add(response.data['imagepath']);
-            yield UploadImageSuccess(data);
+            print(response.data);
+            yield UploadImageSuccess();
           } else {
             yield UploadImageFailed("Failed upload image");
           }
@@ -64,6 +89,8 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
             await _apiProvider.getPoleImagesData(event.token, event.poleId);
         if (response.statusCode == 200) {
           print(response.data);
+          _imageByPoleModel = ImageByPoleModel.fromJsonList(response.data);
+          yield GetImageByPoleSuccess(imageByPoleModel);
         } else {
           yield GetImageByPoleFailed("Failed load image data");
         }
@@ -78,6 +105,8 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
           'PoleId': event.poleId,
           'TargetImagePath': event.filePath
         };
+
+        print("Delete " + json.encode(data));
 
         var response = await _apiProvider.deleteImage(data);
         if (response.statusCode == 200) {

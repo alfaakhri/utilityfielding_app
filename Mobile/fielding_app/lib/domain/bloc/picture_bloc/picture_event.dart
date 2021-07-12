@@ -5,9 +5,10 @@ abstract class PictureEvent {}
 
 class UploadImage extends PictureEvent {
   final BuildContext context;
+  final String token;
   final String poleId;
 
-  UploadImage(this.context, this.poleId);
+  UploadImage(this.context, this.poleId, this.token);
 }
 
 class GetImageByPole extends PictureEvent {

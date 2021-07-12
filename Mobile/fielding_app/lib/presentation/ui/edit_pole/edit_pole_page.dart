@@ -54,8 +54,9 @@ class _EditPolePageState extends State<EditPolePage> {
 
   void clearFormController() {
     var fielding = context.read<FieldingProvider>();
+    fielding.setPolesByLayerSelected(AllPolesByLayerModel());
     fielding.setFieldingTypeAssign(3);
-    fielding.setLatLng(0.00, 0.00);
+    fielding.setLatLng(0, 0);
     fielding.setStreetName("");
     fielding.clearAll();
     context.read<SpanProvider>().clearAll();
@@ -123,7 +124,7 @@ class _EditPolePageState extends State<EditPolePage> {
         anchorStreets: anchor.listAnchorStreet,
         riserFences: riser.listRiserFence,
         poleSequence: (this._poleSequence.text.isNotEmpty)
-            ? int.parse(this._poleSequence.text)
+            ? this._poleSequence.text
             : null);
 
     fieldingBloc.add(AddPole(
@@ -248,20 +249,20 @@ class _EditPolePageState extends State<EditPolePage> {
                   setState(() {
                     this._poleClass.text = provider
                             .setPoleClassAssign(
-                                state.poleByIdModel.poleClass ?? 0)
+                                state.poleByIdModel.poleClass ?? 13)
                             .text ??
-                        "-";
+                        unknownValue;
                     this._condition.text = provider
                             .setPoleConditionAssign(
                                 state.poleByIdModel.poleCondition ?? 0)
                             .text ??
-                        "-";
+                        unknownValue;
                     this._poleHeight.text = (provider
                                 .setPoleHeightAssign(
                                     state.poleByIdModel.poleHeight ?? 0)
                                 .text ==
                             null)
-                        ? "-"
+                        ? unknownValue
                         : provider
                             .setPoleHeightAssign(
                                 state.poleByIdModel.poleHeight ?? 0)
@@ -274,20 +275,25 @@ class _EditPolePageState extends State<EditPolePage> {
                             .setPoleSpeciesAssign(
                                 state.poleByIdModel.poleSpecies)
                             .text ??
-                        "-";
+                        unknownValue;
                     this._poleNumber.text =
-                        state.poleByIdModel.poleNumber ?? "-";
+                        state.poleByIdModel.poleNumber ?? unknownValue;
                     this._vapTerminal.text =
-                        state.poleByIdModel.vAPTerminal ?? "-";
+                        state.poleByIdModel.vAPTerminal ?? unknownValue;
 
-                    this._osmoseNumber.text = state.poleByIdModel.osmose ?? "-";
+                    this._osmoseNumber.text =
+                        (state.poleByIdModel.osmose == "-")
+                            ? unknownValue
+                            : state.poleByIdModel.osmose ?? unknownValue;
                     this._groundLine.text =
-                        state.poleByIdModel.groundCircumference ?? "-";
+                        state.poleByIdModel.groundCircumference ?? unknownValue;
                     this._year.text = (state.poleByIdModel.poleYear != null)
                         ? state.poleByIdModel.poleYear.toString()
-                        : "";
+                        : unknownValue;
                     this._otherNumber.text =
-                        state.poleByIdModel.otherNumber ?? "-";
+                        (state.poleByIdModel.otherNumber == "-")
+                            ? unknownValue
+                            : state.poleByIdModel.otherNumber ?? unknownValue;
                     this._isStamp = state.poleByIdModel.poleStamp ?? false;
                     if (this._isStamp!) {
                       this._poleStamp.text = "Yes";
@@ -301,7 +307,7 @@ class _EditPolePageState extends State<EditPolePage> {
                     } else {
                       this._radioAntena.text = "Yes";
                     }
-                    this._notes.text = state.poleByIdModel.note ?? "-";
+                    this._notes.text = state.poleByIdModel.note ?? unknownValue;
 
                     this._fieldingType.text =
                         (provider.fieldingTypeSelected!.text != null)
@@ -310,14 +316,18 @@ class _EditPolePageState extends State<EditPolePage> {
                     this._poleSequence.text =
                         (state.poleByIdModel.poleSequence != null)
                             ? state.poleByIdModel.poleSequence.toString()
-                            : "-";
+                            : unknownValue;
 
                     provider.setLatLng(
-                        double.parse(state.poleByIdModel.latitude ?? "0"),
-                        double.parse(state.poleByIdModel.longitude ?? "0"));
+                        double.parse(state.poleByIdModel.latitude ??
+                            provider.allPolesByLayer!.first.latitude!),
+                        double.parse(state.poleByIdModel.longitude ??
+                            provider.allPolesByLayer!.first.longitude!));
                     provider.getCurrentAddress(
-                        double.parse(state.poleByIdModel.latitude ?? "0"),
-                        double.parse(state.poleByIdModel.longitude ?? "0"));
+                        double.parse(state.poleByIdModel.latitude ??
+                            provider.allPolesByLayer!.first.latitude!),
+                        double.parse(state.poleByIdModel.longitude ??
+                            provider.allPolesByLayer!.first.longitude!));
 
                     provider.addAllHoaList(state.poleByIdModel.hOAList);
                     provider.addAllListTransformer(
@@ -410,57 +420,58 @@ class _EditPolePageState extends State<EditPolePage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "GPS",
-                          style: ThemeFonts.textBoldDefault,
+                        Expanded(
+                          flex: 4,
+                          child: Text(
+                            "GPS",
+                            style: ThemeFonts.textBoldDefault,
+                          ),
                         ),
-                        Row(
-                          children: [
-                            Text(
-                              (context.watch<FieldingProvider>().latitude ==
-                                      null)
-                                  ? ""
-                                  : "${context.watch<FieldingProvider>().latitude!.toStringAsFixed(6)}, ${context.watch<FieldingProvider>().longitude!.toStringAsFixed(6)}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorHelpers.colorBlackText,
-                                  fontSize: 12),
-                            ),
-                            UIHelper.horizontalSpaceSmall,
-                            InkWell(
-                              onTap: () {
-                                Get.to(EditLatLngPage(
-                                  polesLayerModel: context
-                                      .read<FieldingProvider>()
-                                      .polesByLayerSelected,
-                                ));
-                              },
-                              child: Container(
-                                width: 50,
-                                height: 30,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: (context
-                                              .watch<FieldingProvider>()
-                                              .latitude ==
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            (context
+                                        .read<FieldingProvider>()
+                                        .latitude!
+                                        .toInt() ==
+                                    0)
+                                ? unknownValue
+                                : "${context.watch<FieldingProvider>().latitude!.toStringAsFixed(6)}, ${context.watch<FieldingProvider>().longitude!.toStringAsFixed(6)}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: ColorHelpers.colorBlackText,
+                                fontSize: 12),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Get.to(EditLatLngPage(
+                              polesLayerModel: context
+                                  .read<FieldingProvider>()
+                                  .polesByLayerSelected,
+                            ));
+                          },
+                          child: Container(
+                            width: 50,
+                            height: 30,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color:
+                                  (context.watch<FieldingProvider>().latitude ==
                                           null)
                                       ? ColorHelpers.colorBlueNumber
                                       : ColorHelpers.colorGreen,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Text(
-                                    (context
-                                                .watch<FieldingProvider>()
-                                                .latitude ==
-                                            null)
-                                        ? 'Enter'
-                                        : "Edit",
-                                    style: TextStyle(
-                                        color: ColorHelpers.colorWhite,
-                                        fontSize: 12)),
-                              ),
+                              borderRadius: BorderRadius.circular(5),
                             ),
-                          ],
+                            child: Text(
+                                (context.watch<FieldingProvider>().latitude ==
+                                        null)
+                                    ? 'Enter'
+                                    : "Edit",
+                                style: TextStyle(
+                                    color: ColorHelpers.colorWhite,
+                                    fontSize: 12)),
+                          ),
                         ),
                       ],
                     ),
@@ -479,7 +490,7 @@ class _EditPolePageState extends State<EditPolePage> {
                   _contentFormText("Other Number", _otherNumber.text,
                       _otherNumber, false, false),
                   _contentFormText(
-                      "Pole Height", _poleHeight.text, _poleHeight, true, true),
+                      "Pole Length", _poleHeight.text, _poleHeight, true, true),
                   _contentFormText(
                       "Pole Class", _poleClass.text, _poleClass, true, false),
                   _contentFormText("Ground Line Circumference",
@@ -553,12 +564,14 @@ class _EditPolePageState extends State<EditPolePage> {
             flex: 2,
             child: Text(
               (controller.text.isEmpty)
-                  ? "-"
-                  : (title.toLowerCase().contains("pole height"))
+                  ? unknownValue
+                  : (title.toLowerCase().contains("pole length"))
                       ? controller.text + " ft"
                       : (title.toLowerCase().contains("ground line"))
                           ? controller.text + " inch"
-                          : controller.text,
+                          : (controller.text == "-")
+                              ? unknownValue
+                              : controller.text,
               style:
                   TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12),
             ),
@@ -629,7 +642,7 @@ class _EditPolePageState extends State<EditPolePage> {
                     style: ThemeFonts.textDefault,
                   ),
                   UIHelper.verticalSpaceSmall,
-                  (title.toLowerCase() == "pole height")
+                  (title.toLowerCase() == "pole length")
                       ? Row(
                           children: [
                             Expanded(

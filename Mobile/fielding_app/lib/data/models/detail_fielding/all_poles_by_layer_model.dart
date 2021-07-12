@@ -5,7 +5,7 @@ class AllPolesByLayerModel {
   String? fieldingCompletedDate;
   String? fieldingBy;
   int? fieldingStatus;
-  int? poleSequence;
+  String? poleSequence;
   String? poleNumber;
   bool? startPolePicture;
   int? fieldingType;

@@ -17,6 +17,7 @@ class ItemFieldingRequestNew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var fielding = context.watch<FieldingProvider>();
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: ConfigurableExpansionTile(
@@ -29,7 +30,8 @@ class ItemFieldingRequestNew extends StatelessWidget {
           fieldingRequest: fieldingRequest,
         ),
         children: [
-          for (var item in fieldingRequest.details!)
+          for (var item in fieldingRequest.details!
+              .where((element) => element.layerStatus == fielding.layerStatus).toList())
             TileItem(
               detailItem: item,
             )
@@ -51,7 +53,7 @@ class TileTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       child: Card(
-        color: ColorHelpers.colorBlue,
+        color: ColorHelpers.colorGrey2,
         child: Padding(
           padding: EdgeInsets.all(10),
           child: Row(
@@ -174,7 +176,7 @@ class TileItem extends StatelessWidget {
                         ),
                         Text(
                           (detailItem.totalPoles != null)
-                              ? "Total ${detailItem.totalPoles} Poles"
+                              ? "Total ${detailItem.approx} Poles"
                               : "Total 0 Poles",
                           style: TextStyle(
                               fontSize: 12, color: ColorHelpers.colorBlackText),

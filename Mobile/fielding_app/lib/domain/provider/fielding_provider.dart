@@ -551,4 +551,13 @@ class FieldingProvider extends ChangeNotifier {
       }
     }
   }
+
+  //------------------------------------------------------------------------------
+
+  int? _layerStatus = 0;
+  int get layerStatus => _layerStatus!;
+  void setLayerStatus(int layerStatus) {
+    _layerStatus = layerStatus;
+    notifyListeners();
+  }
 }

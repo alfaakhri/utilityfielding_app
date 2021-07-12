@@ -209,6 +209,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
                                       Navigator.pop(context);
                                       Get.to(PreviewImage(
                                         image: baseURLnew + e.filePath!,
+                                        functionDelete: false,
                                       ));
                                     } else {
                                       String url = baseURLnew + e.filePath!;

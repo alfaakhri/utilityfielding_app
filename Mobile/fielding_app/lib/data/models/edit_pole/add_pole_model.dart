@@ -29,7 +29,7 @@ class AddPoleModel {
   List<AnchorFences>? anchorFences;
   List<AnchorFences>? anchorStreets;
   List<AnchorFences>? riserFences;
-  int? poleSequence;
+  String? poleSequence;
 
   AddPoleModel(
       {this.token,

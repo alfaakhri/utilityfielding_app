@@ -315,7 +315,7 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("HOA Size",
+                            Text("HOA",
                                 style: TextStyle(
                                     fontSize: 14,
                                     color: ColorHelpers.colorGrey)),
@@ -354,13 +354,13 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                         ),
                         UIHelper.verticalSpaceSmall,
                         Text(
-                          "DG HOA Owner",
+                          "DG Owner",
                           style: textDefault,
                         ),
                         UIHelper.verticalSpaceSmall,
                         DropdownButtonFormField<String>(
                           isDense: true,
-                          validator: (value) => _validator(value, "hoa owner"),
+                          validator: (value) => _validator(value, "DG Owner"),
                           onTap: () {
                             FocusScope.of(context).unfocus();
                           },

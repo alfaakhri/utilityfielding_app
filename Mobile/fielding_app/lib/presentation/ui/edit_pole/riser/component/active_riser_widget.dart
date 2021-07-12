@@ -35,14 +35,14 @@ class _ActiveRiserWidgetState extends State<ActiveRiserWidget> {
             decoration: kDecorationDropdown(),
             items: data.listRiserData.map((value) {
               //Hasil revisi penamaan :) mesti gini
-              var index = data.listRiserData.indexOf(value) + 1;
+              // var index = data.listRiserData.indexOf(value) + 1;
               var sequence = value.name!.split("-").last;
               var name = value.name!.split("-").first;
               return DropdownMenuItem<String>(
                 child: Text(
                     (value.name!.contains("VGR"))
-                        ? "$index." + name + " $sequence"
-                        : "$index." + "$sequence-" + "$name in",
+                        ? "${value.generalRVGRSeq}." + name + " $sequence"
+                        : "${value.generalRVGRSeq}." + "$sequence-" + "$name in",
                     style: TextStyle(fontSize: 12)),
                 value: value.name,
               );

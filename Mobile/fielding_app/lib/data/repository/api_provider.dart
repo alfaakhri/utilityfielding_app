@@ -302,10 +302,10 @@ class ApiProvider {
     }
   }
 
-  Future<Response> uploadImageByPole(dynamic data, String poleId) async {
+  Future<Response> uploadImageByPole(dynamic data) async {
     try {
       var response = await _dio
-          .post(BASE_URL + "/api/MobileProject/UploadPoleImages?poleId", data: data);
+          .post(BASE_URL + "/api/MobileProject/AttachPoleImages", data: data);
       return response;
     } catch (e) {
       throw e;
@@ -315,7 +315,7 @@ class ApiProvider {
   Future<Response> deleteImage(dynamic data) async {
     try {
       var response = await _dio
-          .post(BASE_URL + "/api/MobileProject/DeletePoleImageData", data: data);
+          .delete(BASE_URL + "/api/MobileProject/DeletePoleImageData", data: data);
       return response;
     } catch (e) {
       throw e;

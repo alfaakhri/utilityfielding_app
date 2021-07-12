@@ -13,17 +13,17 @@ class UploadImageFailed extends PictureState {
   UploadImageFailed(this.message);
 }
 
-class UploadImageSuccess extends PictureState {
-  final List<dynamic> pathFile;
-
-  UploadImageSuccess(this.pathFile);
-}
+class UploadImageSuccess extends PictureState {}
 
 class UploadImageCancel extends PictureState {}
 
 class GetImageByPoleLoading extends PictureState {}
 
-class GetImageByPoleSuccess extends PictureState {}
+class GetImageByPoleSuccess extends PictureState {
+  final List<ImageByPoleModel> imageByPole;
+
+  GetImageByPoleSuccess(this.imageByPole);
+}
 
 class GetImageByPoleFailed extends PictureState {
   final String message;
