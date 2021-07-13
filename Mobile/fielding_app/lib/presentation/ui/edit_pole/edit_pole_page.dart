@@ -50,6 +50,11 @@ class _EditPolePageState extends State<EditPolePage> {
   bool? _isStamp;
   bool? _isAntena;
 
+  bool? isFillPoleClass;
+  bool? isFillPoleLength;
+  bool? isFillGLC;
+  bool? isFillYear;
+
   List<String> _listChoice = ["-", "Yes", "No"];
 
   void clearFormController() {
@@ -112,7 +117,11 @@ class _EditPolePageState extends State<EditPolePage> {
             ? null
             : provider.poleConditionSelected.id,
         otherNumber: this._otherNumber.text,
-        poleStamp: (this._poleStamp.text == "-") ? null : this._isStamp,
+        poleStamp: (this._poleStamp.text == "-")
+            ? null
+            : (this._poleStamp.text == "Yes")
+                ? true
+                : false,
         notes: this._notes.text,
         isRadioAntenna: (this._radioAntena.text == "-") ? null : this._isAntena,
         hOAList: provider.hoaList,
@@ -223,11 +232,44 @@ class _EditPolePageState extends State<EditPolePage> {
                   padding: EdgeInsets.all(10),
                   child: RaisedButton(
                     onPressed: () {
-                      if (context.read<ConnectionProvider>().isConnected) {
-                        doneAddPole();
-                      } else {
-                        dialogSaveLocal();
-                      }
+                      setState(() {
+                        if (_poleHeight.text == "-" ||
+                            _poleHeight.text.isEmpty) {
+                          isFillPoleLength = true;
+                        } else {
+                          isFillPoleLength = false;
+                        }
+
+                        if (_poleClass.text.isEmpty || _poleClass.text == "-") {
+                          isFillPoleClass = true;
+                        } else {
+                          isFillPoleClass = false;
+                        }
+
+                        if (_groundLine.text == "-" ||
+                            _groundLine.text.isEmpty) {
+                          isFillGLC = true;
+                        } else {
+                          isFillGLC = false;
+                        }
+
+                        if (_year.text == "-" || _year.text.isEmpty) {
+                          isFillYear = true;
+                        } else {
+                          isFillYear = false;
+                        }
+
+                        if (!isFillPoleLength! &&
+                            !isFillPoleClass! &&
+                            !isFillGLC! &&
+                            !isFillYear!) {
+                          if (context.read<ConnectionProvider>().isConnected) {
+                            doneAddPole();
+                          } else {
+                            dialogSaveLocal();
+                          }
+                        }
+                      });
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(10),
@@ -366,183 +408,191 @@ class _EditPolePageState extends State<EditPolePage> {
   Container _buildBody(BuildContext context) {
     return Container(
       color: ColorHelpers.colorBackground,
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.white,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Pole Sequence",
-                      style: TextStyle(
-                          color: ColorHelpers.colorBlueNumber, fontSize: 14),
-                    ),
-                    Text(
-                      (this._poleSequence.text.isNotEmpty)
-                          ? this._poleSequence.text
-                          : "-",
-                      style: TextStyle(
-                          color: ColorHelpers.colorBlackText, fontSize: 14),
-                    ),
-                  ],
-                ),
-                Image.asset(
-                  'assets/pin_blue.png',
-                  scale: 4.5,
-                ),
-              ],
-            ),
-          ),
-          UIHelper.verticalSpaceSmall,
-          Expanded(
-            child: Container(
-              color: Colors.white,
+      child: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            Container(
               padding: EdgeInsets.all(16),
-              child: ListView(
+              color: Colors.white,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Pole Information",
-                    style: TextStyle(
-                        color: ColorHelpers.colorBlackText,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Pole Sequence",
+                        style: TextStyle(
+                            color: ColorHelpers.colorBlueNumber, fontSize: 14),
+                      ),
+                      Text(
+                        (this._poleSequence.text.isNotEmpty)
+                            ? this._poleSequence.text
+                            : "-",
+                        style: TextStyle(
+                            color: ColorHelpers.colorBlackText, fontSize: 14),
+                      ),
+                    ],
                   ),
-                  UIHelper.verticalSpaceSmall,
-                  Container(
-                    padding: EdgeInsets.all(10),
-                    decoration:
-                        BoxDecoration(color: ColorHelpers.colorBlueIntro),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          flex: 4,
-                          child: Text(
-                            "GPS",
-                            style: ThemeFonts.textBoldDefault,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            (context
-                                        .read<FieldingProvider>()
-                                        .latitude!
-                                        .toInt() ==
-                                    0)
-                                ? unknownValue
-                                : "${context.watch<FieldingProvider>().latitude!.toStringAsFixed(6)}, ${context.watch<FieldingProvider>().longitude!.toStringAsFixed(6)}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: ColorHelpers.colorBlackText,
-                                fontSize: 12),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Get.to(EditLatLngPage(
-                              polesLayerModel: context
-                                  .read<FieldingProvider>()
-                                  .polesByLayerSelected,
-                            ));
-                          },
-                          child: Container(
-                            width: 50,
-                            height: 30,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color:
-                                  (context.watch<FieldingProvider>().latitude ==
-                                          null)
-                                      ? ColorHelpers.colorBlueNumber
-                                      : ColorHelpers.colorGreen,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Text(
-                                (context.watch<FieldingProvider>().latitude ==
-                                        null)
-                                    ? 'Enter'
-                                    : "Edit",
-                                style: TextStyle(
-                                    color: ColorHelpers.colorWhite,
-                                    fontSize: 12)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  StreetNameItem(),
-                  _contentFormText("Pole Sequence", _poleSequence.text,
-                      _poleSequence, false, true),
-                  _contentFormText("Fielding Type", _fieldingType.text,
-                      _fieldingType, true, false),
-                  _contentFormText("FAP / Terminal Address", _vapTerminal.text,
-                      _vapTerminal, false, true),
-                  _contentFormText("Pole Number", _poleNumber.text, _poleNumber,
-                      false, false),
-                  _contentFormText("Osmose Number", _osmoseNumber.text,
-                      _osmoseNumber, false, true),
-                  _contentFormText("Other Number", _otherNumber.text,
-                      _otherNumber, false, false),
-                  _contentFormText(
-                      "Pole Length", _poleHeight.text, _poleHeight, true, true),
-                  _contentFormText(
-                      "Pole Class", _poleClass.text, _poleClass, true, false),
-                  _contentFormText("Ground Line Circumference",
-                      _groundLine.text, _groundLine, false, true),
-                  _contentFormText("Year", _year.text, _year, false, false),
-                  _contentFormText(
-                      "Species", _species.text, _species, true, true),
-                  _contentFormText(
-                      "Condition", _condition.text, _condition, true, false),
-                  _contentFormText(
-                      "Pole Stamp", _poleStamp.text, _poleStamp, true, true),
-                  _contentFormText("Radio Antena", this._radioAntena.text,
-                      this._radioAntena, true, false),
-                  EditTransformerWidget(),
-                  EditHoaWidget(),
-                  FormDrawingItem(
-                    isBlueColor: true,
-                    title: "Span Direction and Distance",
-                    lengthValue:
-                        context.watch<SpanProvider>().listSpanData.length,
-                    classname: ViewSpanWidget(),
-                  ),
-                  FormDrawingItem(
-                    isBlueColor: false,
-                    title: "Anchor",
-                    lengthValue:
-                        context.watch<AnchorProvider>().listAnchorData.length,
-                    classname: AnchorWidget(),
-                  ),
-                  FormDrawingItem(
-                    isBlueColor: true,
-                    title: "Riser and VGR Location",
-                    lengthValue:
-                        context.watch<RiserProvider>().listRiserData.length,
-                    classname: RiserWidget(),
-                  ),
-                  NoteWidget(
-                    title: "Note",
-                    controller: _notes,
+                  Image.asset(
+                    'assets/pin_blue.png',
+                    scale: 4.5,
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            UIHelper.verticalSpaceSmall,
+            Expanded(
+              child: Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(16),
+                child: ListView(
+                  children: [
+                    Text(
+                      "Pole Information",
+                      style: TextStyle(
+                          color: ColorHelpers.colorBlackText,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14),
+                    ),
+                    UIHelper.verticalSpaceSmall,
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration:
+                          BoxDecoration(color: ColorHelpers.colorBlueIntro),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 4,
+                            child: Text(
+                              "GPS",
+                              style: ThemeFonts.textBoldDefault,
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Text(
+                              (context
+                                          .read<FieldingProvider>()
+                                          .latitude!
+                                          .toInt() ==
+                                      0)
+                                  ? unknownValue
+                                  : "${context.watch<FieldingProvider>().latitude!.toStringAsFixed(6)}, ${context.watch<FieldingProvider>().longitude!.toStringAsFixed(6)}",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: ColorHelpers.colorBlackText,
+                                  fontSize: 12),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Get.to(EditLatLngPage(
+                                polesLayerModel: context
+                                    .read<FieldingProvider>()
+                                    .polesByLayerSelected,
+                              ));
+                            },
+                            child: Container(
+                              width: 50,
+                              height: 30,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: (context
+                                            .watch<FieldingProvider>()
+                                            .latitude ==
+                                        null)
+                                    ? ColorHelpers.colorBlueNumber
+                                    : ColorHelpers.colorGreen,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                  (context.watch<FieldingProvider>().latitude ==
+                                          null)
+                                      ? 'Enter'
+                                      : "Edit",
+                                  style: TextStyle(
+                                      color: ColorHelpers.colorWhite,
+                                      fontSize: 12)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    StreetNameItem(),
+                    _contentFormText("Pole Sequence", _poleSequence.text,
+                        _poleSequence, false, true),
+                    _contentFormText("Fielding Type", _fieldingType.text,
+                        _fieldingType, true, false),
+                    _contentFormText("FAP / Terminal Address",
+                        _vapTerminal.text, _vapTerminal, false, true),
+                    _contentFormText("Pole Number", _poleNumber.text,
+                        _poleNumber, false, false),
+                    _contentFormText("Osmose Number", _osmoseNumber.text,
+                        _osmoseNumber, false, true),
+                    _contentFormText("Other Number", _otherNumber.text,
+                        _otherNumber, false, false),
+                    _contentFormText("Pole Length", _poleHeight.text,
+                        _poleHeight, true, true,
+                        isValidation: isFillPoleLength),
+                    _contentFormText(
+                        "Pole Class", _poleClass.text, _poleClass, true, false,
+                        isValidation: isFillPoleClass),
+                    _contentFormText("Ground Line Circumference",
+                        _groundLine.text, _groundLine, false, true,
+                        isValidation: isFillGLC),
+                    _contentFormText("Year", _year.text, _year, false, false,
+                        isValidation: isFillYear),
+                    _contentFormText(
+                        "Species", _species.text, _species, true, true),
+                    _contentFormText(
+                        "Condition", _condition.text, _condition, true, false),
+                    _contentFormText(
+                        "Pole Stamp", _poleStamp.text, _poleStamp, true, true),
+                    _contentFormText("Radio Antena", this._radioAntena.text,
+                        this._radioAntena, true, false),
+                    EditTransformerWidget(),
+                    EditHoaWidget(),
+                    FormDrawingItem(
+                      isBlueColor: true,
+                      title: "Span Direction and Distance",
+                      lengthValue:
+                          context.watch<SpanProvider>().listSpanData.length,
+                      classname: ViewSpanWidget(),
+                    ),
+                    FormDrawingItem(
+                      isBlueColor: false,
+                      title: "Anchor",
+                      lengthValue:
+                          context.watch<AnchorProvider>().listAnchorData.length,
+                      classname: AnchorWidget(),
+                    ),
+                    FormDrawingItem(
+                      isBlueColor: true,
+                      title: "Riser and VGR Location",
+                      lengthValue:
+                          context.watch<RiserProvider>().listRiserData.length,
+                      classname: RiserWidget(),
+                    ),
+                    NoteWidget(
+                      title: "Note",
+                      controller: _notes,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Container _contentFormText(String title, String value,
       TextEditingController controller, bool isDropdown, bool isBlueColor,
-      {bool? valueDropdown}) {
+      {bool? isValidation}) {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -554,10 +604,19 @@ class _EditPolePageState extends State<EditPolePage> {
         children: [
           Expanded(
             flex: 4,
-            child: Text(
-              title,
-              overflow: TextOverflow.ellipsis,
-              style: ThemeFonts.textBoldDefault,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  style: ThemeFonts.textBoldDefault,
+                ),
+                (isValidation == null) ? Container() : isValidation ? Text(
+                  " *need to fill",
+                  style: TextStyle(color: Colors.red, fontSize: 12),
+                ) : Container()
+              ],
             ),
           ),
           Expanded(
@@ -566,7 +625,9 @@ class _EditPolePageState extends State<EditPolePage> {
               (controller.text.isEmpty)
                   ? unknownValue
                   : (title.toLowerCase().contains("pole length"))
-                      ? controller.text + " ft"
+                      ? (controller.text == "-")
+                          ? controller.text
+                          : "${controller.text} ft"
                       : (title.toLowerCase().contains("ground line"))
                           ? controller.text + " inch"
                           : (controller.text == "-")
@@ -579,7 +640,7 @@ class _EditPolePageState extends State<EditPolePage> {
           InkWell(
             onTap: () {
               if (isDropdown) {
-                dialogAlertDropdown(title, controller, valueDropdown);
+                dialogAlertDropdown(title, controller);
               } else {
                 dialogAlertDefault(title, controller);
               }
@@ -589,12 +650,15 @@ class _EditPolePageState extends State<EditPolePage> {
               height: 30,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: (controller.text.isEmpty)
+                color: (controller.text.isEmpty || controller.text == "-")
                     ? ColorHelpers.colorBlueNumber
                     : ColorHelpers.colorGreen,
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: Text((controller.text.isEmpty) ? 'Enter' : "Edit",
+              child: Text(
+                  (controller.text.isEmpty || controller.text == "-")
+                      ? 'Enter'
+                      : "Edit",
                   style:
                       TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
             ),
@@ -624,8 +688,7 @@ class _EditPolePageState extends State<EditPolePage> {
         });
   }
 
-  Future dialogAlertDropdown(
-      String title, TextEditingController controller, bool? valueDropdown) {
+  Future dialogAlertDropdown(String title, TextEditingController controller) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -779,11 +842,11 @@ class _EditPolePageState extends State<EditPolePage> {
                                           }).toList(),
                                           onChanged: (String? value) {
                                             setState(() {
-                                              if (value == "Yes") {
-                                                valueDropdown = true;
-                                              } else if (value == "No") {
-                                                valueDropdown = false;
-                                              }
+                                              // if (value == "Yes") {
+                                              //   valueDropdown = true;
+                                              // } else if (value == "No") {
+                                              //   valueDropdown = false;
+                                              // }
                                               controller.text = value!;
                                             });
                                           },

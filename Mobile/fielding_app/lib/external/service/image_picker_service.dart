@@ -122,7 +122,7 @@ class ImagePickerService {
                         color: ColorHelpers.colorButtonDefault,
                       ),
                       child: Text(
-                        "GALERI",
+                        "GALLERY",
                         style: TextStyle(
                             color: ColorHelpers.colorWhite,
                             fontSize: 14,
@@ -142,7 +142,7 @@ class ImagePickerService {
                         border: Border.all(color: ColorHelpers.colorBlue),
                       ),
                       child: Text(
-                        "KAMERA",
+                        "CAMERA",
                         style: TextStyle(
                             color: ColorHelpers.colorBlackText,
                             fontSize: 14,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const String unknownValue = "UNK";
+const String unknownValue = "-";
 const String version = "V2.6.1";
 
 const String baseGoogleApi = "https://maps.googleapis.com";
