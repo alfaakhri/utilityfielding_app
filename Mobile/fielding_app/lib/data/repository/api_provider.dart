@@ -315,10 +315,14 @@ class ApiProvider {
   Future<Response> deleteImage(dynamic data) async {
     try {
       var response = await _dio
-          .delete(BASE_URL + "/api/MobileProject/DeletePoleImageData", data: data);
+          .post(BASE_URL + "/api/MobileProject/RemovePoleImageData", data: data);
       return response;
-    } catch (e) {
-      throw e;
+    } on DioError catch (e) {
+      if (e.response!.statusCode == 400) {
+        return e.response!;
+      } else {
+        throw e;
+      }
     }
   }
 

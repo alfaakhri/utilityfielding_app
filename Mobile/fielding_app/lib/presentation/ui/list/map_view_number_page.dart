@@ -66,44 +66,52 @@ class _MapViewNumberPageState extends State<MapViewNumberPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          "Fielding Request",
-          style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            fieldingBloc.add(GetAllProjects(
-                context.read<UserProvider>().userModel.data!.token,
-                context.read<ConnectionProvider>().isConnected));
-            Get.back();
-          },
-          icon: Icon(
-            Icons.arrow_back,
-            color: ColorHelpers.colorBlackText,
+    return WillPopScope(
+      onWillPop: () {
+        fieldingBloc.add(GetFieldingRequest(
+            context.read<UserProvider>().userModel.data!.token,
+            context.read<ConnectionProvider>().isConnected));
+        return Future.value(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text(
+            "Fielding Request",
+            style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
+          ),
+          leading: IconButton(
+            onPressed: () {
+              fieldingBloc.add(GetFieldingRequest(
+                  context.read<UserProvider>().userModel.data!.token,
+                  context.read<ConnectionProvider>().isConnected));
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: ColorHelpers.colorBlackText,
+            ),
           ),
         ),
-      ),
-      body: BlocConsumer<MapBloc, MapState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-          if (state is GetJobNumberLoading) {
+        body: BlocConsumer<MapBloc, MapState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (state is GetJobNumberLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (state is GetJobNumberSuccess) {
+              return contentBody(state.jobNumberLocModel!);
+            } else if (state is GetJobNumberFailed) {
+              return Center(
+                child: Text(state.message!),
+              );
+            }
             return Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state is GetJobNumberSuccess) {
-            return contentBody(state.jobNumberLocModel!);
-          } else if (state is GetJobNumberFailed) {
-            return Center(
-              child: Text(state.message!),
-            );
-          }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+          },
+        ),
       ),
     );
   }

@@ -22,6 +22,7 @@ class DeleteImage extends PictureEvent {
   final String token;
   final String poleId;
   final String filePath;
+  final String attachmentId;
 
-  DeleteImage(this.token, this.poleId, this.filePath);
+  DeleteImage(this.token, this.poleId, this.filePath, this.attachmentId);
 }

@@ -57,9 +57,11 @@ class _UploadPicturePageState extends State<UploadPicturePage> {
       body: BlocConsumer<PictureBloc, PictureState>(
         listener: (context, state) {
           if (state is UploadImageSuccess) {
+            Fluttertoast.showToast(msg: "Upload Success");
             context.read<PictureBloc>().add(
                 GetImageByPole(user.userModel!.data!.token!, widget.pole.id!));
           } else if (state is DeleteImageSuccess) {
+            Fluttertoast.showToast(msg: "Delete Success");
             context.read<PictureBloc>().add(
                 GetImageByPole(user.userModel!.data!.token!, widget.pole.id!));
           }
@@ -164,7 +166,7 @@ class _UploadPicturePageState extends State<UploadPicturePage> {
         for (var image in listImage)
           GestureDetector(
             onTap: () {
-              Get.to(PreviewImage(image: BASE_URL + image.filePath!, functionDelete: true));
+              Get.to(PreviewImage(image: image.filePath!, functionDelete: true, attachmentId: image.id));
             },
             child: Card(
               elevation: 5.0,
@@ -180,6 +182,7 @@ class _UploadPicturePageState extends State<UploadPicturePage> {
                         ),
                       ),
                       width: double.infinity,
+                      height: double.infinity,
                       imageUrl: BASE_URL + image.filePath!,
                       fit: BoxFit.cover,
                     ),

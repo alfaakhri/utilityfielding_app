@@ -194,11 +194,15 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             } else if (state is StartFieldingSuccess) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
+
               Fluttertoast.showToast(msg: "Start fielding success");
               Get.to(EditPolePage(
                 poles: poleModelSelected,
                 allProjectsModel: widget.allProjectsModel,
               ));
+              fielding.setPolesByLayerSelected(poleModelSelected!);
+              fielding.setLatLng(0, 0);
+              callback();
             } else if (state is CompleteMultiPoleLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is CompleteMultiPoleSuccess) {

@@ -103,7 +103,8 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
         var data = {
           'token': event.token,
           'PoleId': event.poleId,
-          'TargetImagePath': event.filePath
+          'TargetImagePath': "${event.filePath}",
+          "AttachmentId": event.attachmentId
         };
 
         print("Delete " + json.encode(data));
@@ -112,7 +113,7 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
         if (response.statusCode == 200) {
           yield DeleteImageSuccess();
         } else {
-          yield DeleteImageFailed("Failed delete image");
+          yield DeleteImageFailed(response.data["message"]);
         }
       } catch (e) {
         yield DeleteImageFailed(e.toString());

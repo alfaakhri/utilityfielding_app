@@ -34,6 +34,19 @@ class PoleByIdModel {
   List<AnchorFences>? anchorFences;
   List<AnchorFences>? anchorStreets;
   List<AnchorFences>? riserFences;
+  bool? isFAPUnknown;
+  bool? isOsmoseUnknown;
+  bool? isOtherNumberUnknown;
+  bool? isPoleLengthUnknown;
+  bool? isPoleLengthEstimated;
+  bool? isPoleClassUnknown;
+  bool? isPoleClassEstimated;
+  bool? isGroundLineUnknown;
+  bool? isGroundLineEstimated;
+  bool? isYearUnknown;
+  bool? isYearEstimated;
+  bool? isSpeciesUnknown;
+  bool? isSpeciesEstimated;
 
   PoleByIdModel(
       {this.id,
@@ -68,7 +81,20 @@ class PoleByIdModel {
       this.fieldingType,
       this.anchorFences,
       this.anchorStreets,
-      this.riserFences});
+      this.riserFences,
+      this.isFAPUnknown,
+      this.isOsmoseUnknown,
+      this.isOtherNumberUnknown,
+      this.isPoleLengthUnknown,
+      this.isPoleLengthEstimated,
+      this.isPoleClassUnknown,
+      this.isPoleClassEstimated,
+      this.isGroundLineUnknown,
+      this.isGroundLineEstimated,
+      this.isYearUnknown,
+      this.isYearEstimated,
+      this.isSpeciesUnknown,
+      this.isSpeciesEstimated});
 
   PoleByIdModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -144,6 +170,19 @@ class PoleByIdModel {
         riserFences?.add(new AnchorFences.fromJson(v));
       });
     }
+    isFAPUnknown = json['IsFAPUnknown'];
+    isOsmoseUnknown = json['IsOsmoseUnknown'];
+    isOtherNumberUnknown = json['IsOtherNumberUnknown'];
+    isPoleLengthUnknown = json['IsPoleLengthUnknown'];
+    isPoleLengthEstimated = json['IsPoleLengthEstimated'];
+    isPoleClassUnknown = json['IsPoleClassUnknown'];
+    isPoleClassEstimated = json['IsPoleClassEstimated'];
+    isGroundLineUnknown = json['IsGroundLineUnknown'];
+    isGroundLineEstimated = json['IsGroundLineEstimated'];
+    isYearUnknown = json['IsYearUnknown'];
+    isYearEstimated = json['IsYearEstimated'];
+    isSpeciesUnknown = json['IsSpeciesUnknown'];
+    isSpeciesEstimated = json['IsSpeciesEstimated'];
   }
 
   Map<String, dynamic> toJson() {
@@ -201,6 +240,19 @@ class PoleByIdModel {
     if (this.riserFences != null) {
       data['RiserFences'] = this.riserFences!.map((v) => v.toJson()).toList();
     }
+    data['IsFAPUnknown'] = this.isFAPUnknown;
+    data['IsOsmoseUnknown'] = this.isOsmoseUnknown;
+    data['IsOtherNumberUnknown'] = this.isOtherNumberUnknown;
+    data['IsPoleLengthUnknown'] = this.isPoleLengthUnknown;
+    data['IsPoleLengthEstimated'] = this.isPoleLengthEstimated;
+    data['IsPoleClassUnknown'] = this.isPoleClassUnknown;
+    data['IsPoleClassEstimated'] = this.isPoleClassEstimated;
+    data['IsGroundLineUnknown'] = this.isGroundLineUnknown;
+    data['IsGroundLineEstimated'] = this.isGroundLineEstimated;
+    data['IsYearUnknown'] = this.isYearUnknown;
+    data['IsYearEstimated'] = this.isYearEstimated;
+    data['IsSpeciesUnknown'] = this.isSpeciesUnknown;
+    data['IsSpeciesEstimated'] = this.isSpeciesEstimated;
     return data;
   }
 }

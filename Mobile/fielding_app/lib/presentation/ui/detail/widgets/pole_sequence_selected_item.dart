@@ -158,8 +158,6 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                     )
                   : InkWell(
                       onTap: () {
-                        fielding.setPolesByLayerSelected(poleModelSelected!);
-                        fielding.setLatLng(0, 0);
                         context.read<FieldingBloc>().add(StartFielding(
                             token: context
                                 .read<UserProvider>()

@@ -208,7 +208,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
                                         format.toLowerCase() == "png") {
                                       Navigator.pop(context);
                                       Get.to(PreviewImage(
-                                        image: baseURLnew + e.filePath!,
+                                        image: e.filePath!,
                                         functionDelete: false,
                                       ));
                                     } else {

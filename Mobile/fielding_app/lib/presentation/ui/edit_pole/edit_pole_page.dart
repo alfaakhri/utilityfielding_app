@@ -47,13 +47,11 @@ class _EditPolePageState extends State<EditPolePage> {
   late AuthBloc authBloc;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
-  bool? _isStamp;
-  bool? _isAntena;
-
   bool? isFillPoleClass;
   bool? isFillPoleLength;
   bool? isFillGLC;
   bool? isFillYear;
+  bool? isFillGPS;
 
   List<String> _listChoice = ["-", "Yes", "No"];
 
@@ -87,6 +85,7 @@ class _EditPolePageState extends State<EditPolePage> {
     var provider = context.read<FieldingProvider>();
     var anchor = context.read<AnchorProvider>();
     var riser = context.read<RiserProvider>();
+    var pole = context.read<FieldingBloc>().poleByIdModel;
     AddPoleModel data = AddPoleModel(
         token: authBloc.userModel!.data!.token,
         id: (widget.poles == null) ? null : widget.poles!.id,
@@ -98,10 +97,8 @@ class _EditPolePageState extends State<EditPolePage> {
         vAPTerminal: this._vapTerminal.text,
         poleNumber: this._poleNumber.text,
         osmose: this._osmoseNumber.text,
-        latitude:
-            (provider.latitude == null) ? null : provider.latitude.toString(),
-        longitude:
-            (provider.longitude == null) ? null : provider.longitude.toString(),
+        latitude: provider.latitude.toString(),
+        longitude: provider.longitude.toString(),
         poleHeight: (provider.poleHeightSelected.id == null)
             ? null
             : provider.poleHeightSelected.id,
@@ -123,7 +120,11 @@ class _EditPolePageState extends State<EditPolePage> {
                 ? true
                 : false,
         notes: this._notes.text,
-        isRadioAntenna: (this._radioAntena.text == "-") ? null : this._isAntena,
+        isRadioAntenna: (this._radioAntena.text == "-")
+            ? null
+            : (this._radioAntena.text == "Yes")
+                ? true
+                : false,
         hOAList: provider.hoaList,
         transformerList: provider.listTransformer,
         spanDirectionList: context.read<SpanProvider>().listSpanData,
@@ -134,7 +135,20 @@ class _EditPolePageState extends State<EditPolePage> {
         riserFences: riser.listRiserFence,
         poleSequence: (this._poleSequence.text.isNotEmpty)
             ? this._poleSequence.text
-            : null);
+            : null,
+        isFAPUnknown: pole.isFAPUnknown,
+        isOsmoseUnknown: pole.isOsmoseUnknown,
+        isOtherNumberUnknown: pole.isOtherNumberUnknown,
+        isPoleClassUnknown: pole.isPoleClassUnknown,
+        isPoleClassEstimated: pole.isPoleClassEstimated,
+        isPoleLengthUnknown: pole.isPoleLengthUnknown,
+        isPoleLengthEstimated: pole.isPoleLengthEstimated,
+        isGroundLineUnknown: pole.isGroundLineUnknown,
+        isGroundLineEstimated: pole.isGroundLineEstimated,
+        isYearUnknown: pole.isYearUnknown,
+        isYearEstimated: pole.isYearEstimated,
+        isSpeciesUnknown: pole.isSpeciesUnknown,
+        isSpeciesEstimated: pole.isSpeciesEstimated);
 
     fieldingBloc.add(AddPole(
         data,
@@ -259,10 +273,19 @@ class _EditPolePageState extends State<EditPolePage> {
                           isFillYear = false;
                         }
 
+                        var fieldingProvider = context.read<FieldingProvider>();
+                        if (fieldingProvider.latitude!.toInt() == 0 ||
+                            fieldingProvider.longitude == null) {
+                          isFillGPS = true;
+                        } else {
+                          isFillGPS = false;
+                        }
+
                         if (!isFillPoleLength! &&
                             !isFillPoleClass! &&
                             !isFillGLC! &&
-                            !isFillYear!) {
+                            !isFillYear! &&
+                            !isFillGPS!) {
                           if (context.read<ConnectionProvider>().isConnected) {
                             doneAddPole();
                           } else {
@@ -336,19 +359,20 @@ class _EditPolePageState extends State<EditPolePage> {
                         (state.poleByIdModel.otherNumber == "-")
                             ? unknownValue
                             : state.poleByIdModel.otherNumber ?? unknownValue;
-                    this._isStamp = state.poleByIdModel.poleStamp ?? false;
-                    if (this._isStamp!) {
+                    if (state.poleByIdModel.poleStamp == null)
+                      this._poleStamp.text = "-";
+                    else if (state.poleByIdModel.poleStamp!)
                       this._poleStamp.text = "Yes";
-                    } else {
+                    else
                       this._poleStamp.text = "No";
-                    }
-                    this._isAntena =
-                        state.poleByIdModel.isRadioAntenna ?? false;
-                    if (!this._isAntena!) {
-                      this._radioAntena.text = "No";
-                    } else {
+
+                    if (state.poleByIdModel.isRadioAntenna == null)
+                      this._radioAntena.text = "-";
+                    else if (state.poleByIdModel.isRadioAntenna!)
                       this._radioAntena.text = "Yes";
-                    }
+                    else
+                      this._radioAntena.text = "No";
+
                     this._notes.text = state.poleByIdModel.note ?? unknownValue;
 
                     this._fieldingType.text =
@@ -406,6 +430,9 @@ class _EditPolePageState extends State<EditPolePage> {
   }
 
   Container _buildBody(BuildContext context) {
+    var fielding = context.read<FieldingBloc>();
+    var pole = context.read<FieldingBloc>().poleByIdModel;
+    var providerFielding = context.read<FieldingProvider>();
     return Container(
       color: ColorHelpers.colorBackground,
       child: Form(
@@ -466,9 +493,24 @@ class _EditPolePageState extends State<EditPolePage> {
                         children: [
                           Expanded(
                             flex: 4,
-                            child: Text(
-                              "GPS",
-                              style: ThemeFonts.textBoldDefault,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "GPS",
+                                  style: ThemeFonts.textBoldDefault,
+                                ),
+                                (isFillGPS == null)
+                                    ? Container()
+                                    : (isFillGPS!)
+                                        ? Text(
+                                            " *need to fill",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 12),
+                                          )
+                                        : Container()
+                              ],
                             ),
                           ),
                           Expanded(
@@ -502,15 +544,19 @@ class _EditPolePageState extends State<EditPolePage> {
                               decoration: BoxDecoration(
                                 color: (context
                                             .watch<FieldingProvider>()
-                                            .latitude ==
-                                        null)
+                                            .latitude!
+                                            .toInt() ==
+                                        0)
                                     ? ColorHelpers.colorBlueNumber
                                     : ColorHelpers.colorGreen,
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
-                                  (context.watch<FieldingProvider>().latitude ==
-                                          null)
+                                  (context
+                                              .watch<FieldingProvider>()
+                                              .latitude!
+                                              .toInt() ==
+                                          0)
                                       ? 'Enter'
                                       : "Edit",
                                   style: TextStyle(
@@ -523,36 +569,138 @@ class _EditPolePageState extends State<EditPolePage> {
                     ),
                     StreetNameItem(),
                     _contentFormText("Pole Sequence", _poleSequence.text,
-                        _poleSequence, false, true),
+                        _poleSequence, false, true,
+                        needUnk: false, needEst: false, result: () {
+                      setState(() {});
+                    }),
                     _contentFormText("Fielding Type", _fieldingType.text,
-                        _fieldingType, true, false),
+                        _fieldingType, true, false,
+                        needUnk: false, needEst: false, result: () {
+                      setState(() {});
+                    }),
                     _contentFormText("FAP / Terminal Address",
-                        _vapTerminal.text, _vapTerminal, false, true),
+                        _vapTerminal.text, _vapTerminal, false, true,
+                        needUnk: true, needEst: false, result: () {
+                      setState(() {
+                        pole.isFAPUnknown = providerFielding.isUnknownCurrent;
+                      });
+                    }, isUnk: pole.isFAPUnknown),
                     _contentFormText("Pole Number", _poleNumber.text,
-                        _poleNumber, false, false),
+                        _poleNumber, false, false,
+                        needUnk: false, needEst: false, result: () {
+                      setState(() {});
+                    }),
                     _contentFormText("Osmose Number", _osmoseNumber.text,
-                        _osmoseNumber, false, true),
+                        _osmoseNumber, false, true,
+                        needUnk: true,
+                        needEst: false,
+                        isUnk: pole.isOsmoseUnknown, result: () {
+                      setState(() {
+                        pole.isOsmoseUnknown =
+                            providerFielding.isUnknownCurrent;
+                      });
+                    }),
                     _contentFormText("Other Number", _otherNumber.text,
-                        _otherNumber, false, false),
+                        _otherNumber, false, false,
+                        needUnk: true,
+                        needEst: false,
+                        isUnk: pole.isOsmoseUnknown, result: () {
+                      setState(() {
+                        pole.isOsmoseUnknown =
+                            providerFielding.isUnknownCurrent;
+                      });
+                    }),
                     _contentFormText("Pole Length", _poleHeight.text,
                         _poleHeight, true, true,
-                        isValidation: isFillPoleLength),
+                        isValidation: isFillPoleLength,
+                        needUnk: true,
+                        needEst: true,
+                        isUnk: fieldingBloc.poleByIdModel.isPoleLengthUnknown ??
+                            false,
+                        isEst: fieldingBloc.poleByIdModel.isPoleLengthUnknown ??
+                            false, result: () {
+                      setState(() {
+                        pole.isPoleLengthUnknown =
+                            providerFielding.isUnknownCurrent;
+                        pole.isPoleLengthEstimated =
+                            providerFielding.isEstimateCurrent;
+                      });
+                    }),
                     _contentFormText(
                         "Pole Class", _poleClass.text, _poleClass, true, false,
-                        isValidation: isFillPoleClass),
+                        isValidation: isFillPoleClass,
+                        needUnk: true,
+                        needEst: true,
+                        isUnk: fieldingBloc.poleByIdModel.isPoleClassUnknown ??
+                            false,
+                        isEst:
+                            fieldingBloc.poleByIdModel.isPoleClassEstimated ??
+                                false, result: () {
+                      setState(() {
+                        pole.isPoleClassUnknown =
+                            providerFielding.isUnknownCurrent;
+                        pole.isPoleClassEstimated =
+                            providerFielding.isEstimateCurrent;
+                      });
+                    }),
                     _contentFormText("Ground Line Circumference",
                         _groundLine.text, _groundLine, false, true,
-                        isValidation: isFillGLC),
+                        isValidation: pole.isGroundLineEstimated,
+                        needUnk: true,
+                        needEst: true,
+                        isUnk: fieldingBloc.poleByIdModel.isGroundLineUnknown,
+                        isEst: fieldingBloc.poleByIdModel.isGroundLineEstimated,
+                        result: () {
+                      setState(() {
+                        pole.isGroundLineUnknown =
+                            providerFielding.isUnknownCurrent;
+                        pole.isGroundLineEstimated =
+                            providerFielding.isEstimateCurrent;
+                      });
+                    }),
                     _contentFormText("Year", _year.text, _year, false, false,
-                        isValidation: isFillYear),
+                        isValidation: isFillYear,
+                        needUnk: true,
+                        needEst: true,
+                        isUnk: fieldingBloc.poleByIdModel.isYearUnknown,
+                        isEst: fieldingBloc.poleByIdModel.isYearEstimated,
+                        result: () {
+                      setState(() {
+                        pole.isYearUnknown = providerFielding.isUnknownCurrent;
+                        pole.isYearEstimated =
+                            providerFielding.isEstimateCurrent;
+                      });
+                    }),
                     _contentFormText(
-                        "Species", _species.text, _species, true, true),
+                        "Species", _species.text, _species, true, true,
+                        needUnk: true,
+                        needEst: true,
+                        isUnk: fieldingBloc.poleByIdModel.isSpeciesUnknown ??
+                            false,
+                        isEst: fieldingBloc.poleByIdModel.isSpeciesEstimated ??
+                            false, result: () {
+                      setState(() {
+                        pole.isPoleLengthUnknown =
+                            providerFielding.isUnknownCurrent;
+                        pole.isPoleLengthEstimated =
+                            providerFielding.isEstimateCurrent;
+                      });
+                    }),
                     _contentFormText(
-                        "Condition", _condition.text, _condition, true, false),
+                        "Condition", _condition.text, _condition, true, false,
+                        needUnk: false, needEst: false, result: () {
+                      setState(() {});
+                    }),
                     _contentFormText(
-                        "Pole Stamp", _poleStamp.text, _poleStamp, true, true),
+                        "Pole Stamp", _poleStamp.text, _poleStamp, true, true,
+                        needUnk: false, needEst: false, result: () {
+                      setState(() {});
+                    }),
                     _contentFormText("Radio Antena", this._radioAntena.text,
-                        this._radioAntena, true, false),
+                        this._radioAntena, true, false,
+                        needUnk: false, needEst: false, result: () {
+                      setState(() {});
+                    }),
                     EditTransformerWidget(),
                     EditHoaWidget(),
                     FormDrawingItem(
@@ -592,7 +740,12 @@ class _EditPolePageState extends State<EditPolePage> {
 
   Container _contentFormText(String title, String value,
       TextEditingController controller, bool isDropdown, bool isBlueColor,
-      {bool? isValidation}) {
+      {bool? isValidation,
+      required bool needUnk,
+      required bool needEst,
+      Function()? result,
+      bool? isUnk,
+      bool? isEst}) {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -612,10 +765,14 @@ class _EditPolePageState extends State<EditPolePage> {
                   overflow: TextOverflow.ellipsis,
                   style: ThemeFonts.textBoldDefault,
                 ),
-                (isValidation == null) ? Container() : isValidation ? Text(
-                  " *need to fill",
-                  style: TextStyle(color: Colors.red, fontSize: 12),
-                ) : Container()
+                (isValidation == null)
+                    ? Container()
+                    : isValidation
+                        ? Text(
+                            " *need to fill",
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          )
+                        : Container()
               ],
             ),
           ),
@@ -640,9 +797,48 @@ class _EditPolePageState extends State<EditPolePage> {
           InkWell(
             onTap: () {
               if (isDropdown) {
-                dialogAlertDropdown(title, controller);
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return FormAlertDropdownItem(
+                          title: title,
+                          controller: controller,
+                          needUnknown: needUnk,
+                          needEstimate: needEst,
+                          isUnknown: isUnk,
+                          isEstimate: isEst,
+                          result: () {
+                            result!();
+                          },
+                          onChangeItem: (value) {
+                            setState(() {
+                              controller.text = value;
+                            });
+                          });
+                    });
               } else {
-                dialogAlertDefault(title, controller);
+                showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (context) {
+                      return FormAlertItem(
+                          title: title,
+                          controller: controller,
+                          onController: (value) {
+                            setState(() {
+                              controller.text = value;
+                            });
+                          },
+                          isUnknown: isUnk,
+                          isEstimate: isEst,
+                          needEst: needEst,
+                          needUnk: needUnk,
+                          result: () {
+                            setState(() {
+                              result!();
+                            });
+                          });
+                    });
               }
             },
             child: Container(
@@ -666,210 +862,6 @@ class _EditPolePageState extends State<EditPolePage> {
         ],
       ),
     );
-  }
-
-  void callbackRefresh() {
-    setState(() {});
-  }
-
-  Future dialogAlertDefault(String title, TextEditingController controller) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return FormAlertItem(
-              title: title,
-              controller: controller,
-              onController: (value) {
-                setState(() {
-                  controller.text = value;
-                });
-              },
-              callback: callbackRefresh);
-        });
-  }
-
-  Future dialogAlertDropdown(String title, TextEditingController controller) {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0))),
-            content: Consumer<FieldingProvider>(
-              builder: (context, data, _) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    title,
-                    style: ThemeFonts.textDefault,
-                  ),
-                  UIHelper.verticalSpaceSmall,
-                  (title.toLowerCase() == "pole length")
-                      ? Row(
-                          children: [
-                            Expanded(
-                              child: DropdownButtonFormField<String>(
-                                isDense: true,
-                                decoration: kDecorationDropdown(),
-                                items: data.listAllPoleHeight!.map((value) {
-                                  return DropdownMenuItem<String>(
-                                    child: Text(value.text.toString(),
-                                        style: TextStyle(fontSize: 12)),
-                                    value: value.text.toString(),
-                                  );
-                                }).toList(),
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    data.setPoleHeightSelected(value);
-                                    this._poleHeight.text = value!;
-                                  });
-                                },
-                                value: (data.poleHeightSelected.id == null)
-                                    ? null
-                                    : data.poleHeightSelected.text.toString(),
-                              ),
-                            ),
-                            UIHelper.horizontalSpaceSmall,
-                            Text("Feet", style: TextStyle(fontSize: 12)),
-                          ],
-                        )
-                      : (title.toLowerCase() == "pole class")
-                          ? DropdownButtonFormField<String>(
-                              isDense: true,
-                              decoration: kDecorationDropdown(),
-                              items: data.listAllPoleClass!.map((value) {
-                                return DropdownMenuItem<String>(
-                                  child: Text(value.text!.toUpperCase(),
-                                      style: TextStyle(fontSize: 12)),
-                                  value: value.text,
-                                );
-                              }).toList(),
-                              onChanged: (String? value) {
-                                setState(() {
-                                  data.setPoleClassSelected(value);
-                                  this._poleClass.text = value!.toUpperCase();
-                                });
-                              },
-                              value: (data.poleClassSelected.text == null ||
-                                      data.poleClassSelected.text == "")
-                                  ? null
-                                  : data.poleClassSelected.text!.toUpperCase(),
-                            )
-                          : (title.toLowerCase() == "species")
-                              ? DropdownButtonFormField<String>(
-                                  isDense: true,
-                                  decoration: kDecorationDropdown(),
-                                  items: data.listAllPoleSpecies!.map((value) {
-                                    return DropdownMenuItem<String>(
-                                      child: Text(value.text!,
-                                          style: TextStyle(fontSize: 12)),
-                                      value: value.text,
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? value) {
-                                    setState(() {
-                                      data.setPoleSpeciesSelected(value);
-                                      this._species.text = value!;
-                                    });
-                                  },
-                                  value: (data.poleSpeciesSelected.text ==
-                                              null ||
-                                          data.poleSpeciesSelected.text == "")
-                                      ? null
-                                      : data.poleSpeciesSelected.text,
-                                )
-                              : (title.toLowerCase() == "condition")
-                                  ? DropdownButtonFormField<String>(
-                                      isDense: true,
-                                      decoration: kDecorationDropdown(),
-                                      items: data.listAllPoleCondition!
-                                          .map((value) {
-                                        return DropdownMenuItem<String>(
-                                          child: Text(value.text.toString(),
-                                              style: TextStyle(fontSize: 12)),
-                                          value: value.text.toString(),
-                                        );
-                                      }).toList(),
-                                      onChanged: (String? value) {
-                                        setState(() {
-                                          data.setPoleConditionSelected(value);
-                                          this._condition.text =
-                                              value.toString();
-                                        });
-                                      },
-                                      value: (data.poleConditionSelected.text ==
-                                                  null ||
-                                              data.poleConditionSelected.text ==
-                                                  "")
-                                          ? null
-                                          : data.poleConditionSelected.text,
-                                    )
-                                  : (title.toLowerCase() == "fielding type")
-                                      ? DropdownButtonFormField<String>(
-                                          isDense: true,
-                                          decoration: kDecorationDropdown(),
-                                          items: data.allFieldingType!
-                                              .map((value) {
-                                            return DropdownMenuItem<String>(
-                                              child: Text(value.text.toString(),
-                                                  style:
-                                                      TextStyle(fontSize: 12)),
-                                              value: value.text.toString(),
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? value) {
-                                            setState(() {
-                                              data.setFieldingTypeSelected(
-                                                  value!);
-                                              this._fieldingType.text =
-                                                  value.toString();
-                                            });
-                                          },
-                                          value:
-                                              data.fieldingTypeSelected!.text,
-                                        )
-                                      : DropdownButtonFormField<String>(
-                                          isDense: true,
-                                          decoration: kDecorationDropdown(),
-                                          items: _listChoice.map((value) {
-                                            return DropdownMenuItem<String>(
-                                              child: Text(value,
-                                                  style:
-                                                      TextStyle(fontSize: 12)),
-                                              value: value,
-                                            );
-                                          }).toList(),
-                                          onChanged: (String? value) {
-                                            setState(() {
-                                              // if (value == "Yes") {
-                                              //   valueDropdown = true;
-                                              // } else if (value == "No") {
-                                              //   valueDropdown = false;
-                                              // }
-                                              controller.text = value!;
-                                            });
-                                          },
-                                          value: controller.text,
-                                        ),
-                  UIHelper.verticalSpaceSmall,
-                  Container(
-                    width: double.infinity,
-                    child: FlatButton(
-                      child:
-                          Text("Save", style: TextStyle(color: Colors.white)),
-                      onPressed: () {
-                        setState(() {});
-                        Navigator.of(context).pop();
-                      },
-                      color: ColorHelpers.colorButtonDefault,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
   }
 
   Future dialogSaveLocal() {

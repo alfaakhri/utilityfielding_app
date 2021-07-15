@@ -25,6 +25,20 @@ class FieldingProvider extends ChangeNotifier {
   ApiProvider _apiProvider = ApiProvider();
   HiveService _hiveService = HiveService();
 
+  bool? _isUnknownCurrent;
+  bool? get isUnknownCurrent => _isUnknownCurrent;
+  void setUnknownCurrent(value) {
+    _isUnknownCurrent = value;
+    notifyListeners();
+  }
+
+  bool? _isEstimateCurrent;
+  bool? get isEstimateCurrent => _isEstimateCurrent;
+  void setIsEstimateCurrent(bool? isEstimateCurrent) {
+    _isEstimateCurrent = isEstimateCurrent;
+    notifyListeners();
+  }
+
   late double baseWidth;
   late double baseHeight;
   setBaseSize(double width, double height) {

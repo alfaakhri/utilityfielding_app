@@ -1,3 +1,4 @@
+import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/download_image_bloc/download_image_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
@@ -13,9 +14,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 class PreviewImage extends StatefulWidget {
   final String? image;
+  final String? attachmentId;
   final bool? functionDelete;
 
-  const PreviewImage({this.image, this.functionDelete});
+  const PreviewImage({this.image, this.functionDelete, this.attachmentId});
   @override
   _PreviewImageState createState() => _PreviewImageState();
 }
@@ -95,7 +97,7 @@ class _PreviewImageState extends State<PreviewImage> {
           child: ClipRect(
             child: PhotoView(
               imageProvider: NetworkImage(
-                widget.image!,
+                "$BASE_URL${widget.image!}",
               ),
               loadingBuilder: (context, event) => Center(
                 child: Container(
@@ -164,7 +166,7 @@ class _PreviewImageState extends State<PreviewImage> {
                         context.read<PictureBloc>().add(DeleteImage(
                             user.userModel!.data!.token!,
                             fielding.polesByLayerSelected.id!,
-                            widget.image!));
+                            widget.image!, widget.attachmentId!));
                         Navigator.pop(context);
                         Get.back();
                       },
