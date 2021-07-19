@@ -574,4 +574,54 @@ class FieldingProvider extends ChangeNotifier {
     _layerStatus = layerStatus;
     notifyListeners();
   }
+
+  //------------------------------------------------------------------------------
+  String valueTextContent(String title, TextEditingController controller,
+      {bool? isUnk, bool? isEst}) {
+    var value;
+    if (title.toLowerCase().contains("pole length")) {
+      if (isUnk!) {
+        value = (controller.text == "-" || controller.text.isEmpty)
+            ? "UNK"
+            : "${controller.text} ft, UNK";
+      } else if (isEst!) {
+        value = (controller.text == "-" || controller.text.isEmpty)
+            ? "EST"
+            : "${controller.text} ft, EST";
+      } else {
+        value = (controller.text.isEmpty)
+            ? "-"
+            : (controller.text == "-")
+            ? controller.text
+            : "${controller.text} ft";
+      }
+    } else if (title.toLowerCase().contains("ground line")) {
+      if (isUnk!) {
+        value = (controller.text == "-" || controller.text.isEmpty)
+            ? "UNK"
+            : "${controller.text} inch, UNK";
+      } else if (isEst!) {
+        value = (controller.text == "-" || controller.text.isEmpty)
+            ? "EST"
+            : "${controller.text} inch, EST";
+      } else {
+        value = (controller.text.isEmpty)
+            ? "-"
+            : (controller.text == "-")
+                ? controller.text
+                : "${controller.text} ft";
+      }
+    } else if (isUnk!) {
+      value = (controller.text == "-" || controller.text.isEmpty)
+          ? "UNK"
+          : "${controller.text}, UNK";
+    } else if (isEst!) {
+      value = (controller.text == "-" || controller.text.isEmpty)
+          ? "EST"
+          : "${controller.text}, EST";
+    } else {
+      value = (controller.text.isEmpty) ? "-" : controller.text;
+    }
+    return value;
+  }
 }

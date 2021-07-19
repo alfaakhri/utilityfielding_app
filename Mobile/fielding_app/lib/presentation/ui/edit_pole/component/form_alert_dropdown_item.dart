@@ -128,44 +128,58 @@ class _FormAlertDropdownItemState extends State<FormAlertDropdownItem> {
                                       });
                                       widget.onChangeItem!(value!);
                                     },
-                                    value: (valueDefault == "") ? null : valueDefault ?? null,
+                                    value: (valueDefault == "")
+                                        ? null
+                                        : valueDefault ?? null,
                                   ),
-            (widget.needUnknown!)
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: CheckboxListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text("Unknown"),
-                      value: isUnknown,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (value) {
-                        setState(() {
-                          isUnknown = value!;
-                        });
-                      },
-                      activeColor: ColorHelpers.colorButtonDefault,
-                    ),
-                  )
-                : Container(),
-            (widget.needEstimate!)
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: CheckboxListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text("Estimate"),
-                      value: isEstimate,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (value) {
-                        setState(() {
-                          isEstimate = value!;
-                        });
-                      },
-                      activeColor: ColorHelpers.colorButtonDefault,
-                    ),
-                  )
-                : Container(),
+            Row(
+              children: [
+                Expanded(
+                  child: (widget.needUnknown!)
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: CheckboxListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.all(0),
+                            title: Text("UNK"),
+                            value: isUnknown,
+                            controlAffinity: ListTileControlAffinity.leading,
+                            onChanged: (isEstimate!)
+                                ? null
+                                : (value) {
+                                    setState(() {
+                                      isUnknown = value!;
+                                    });
+                                  },
+                            activeColor: ColorHelpers.colorButtonDefault,
+                          ),
+                        )
+                      : Container(),
+                ),
+                Expanded(
+                  child: (widget.needEstimate!)
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: CheckboxListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.all(0),
+                            title: Text("EST"),
+                            value: isEstimate,
+                            controlAffinity: ListTileControlAffinity.leading,
+                            onChanged: (isUnknown!)
+                                ? null
+                                : (value) {
+                                    setState(() {
+                                      isEstimate = value!;
+                                    });
+                                  },
+                            activeColor: ColorHelpers.colorButtonDefault,
+                          ),
+                        )
+                      : Container(),
+                ),
+              ],
+            ),
             UIHelper.verticalSpaceSmall,
             Container(
               width: double.infinity,

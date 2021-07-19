@@ -503,6 +503,10 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               InkWell(
                   onTap: () {
                     fielding.setLatLng(0, 0);
+                    context
+                        .read<FieldingBloc>()
+                        .setPoleByIdModel(PoleByIdModel());
+
                     Get.to(EditPolePage(
                         allProjectsModel: widget.allProjectsModel,
                         isAddPole: true));
@@ -546,6 +550,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         InkWell(
             onTap: () {
               fielding.setLatLng(0, 0);
+              context.read<FieldingBloc>().setPoleByIdModel(PoleByIdModel());
               Get.to(EditPolePage(
                   allProjectsModel: widget.allProjectsModel, isAddPole: true));
             },

@@ -73,52 +73,64 @@ class _FormAlertItemState extends State<FormAlertItem> {
                     : Container()
               ],
             ),
-            (widget.needUnk!)
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: CheckboxListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text("Unknown"),
-                      value: _isUnknown,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (value) {
-                        setState(() {
-                          _isUnknown = value;
-                        });
-                      },
-                      activeColor: ColorHelpers.colorButtonDefault,
-                    ),
-                  )
-                : Container(),
-            (widget.needEst!)
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: CheckboxListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.all(0),
-                      title: Text("Estimate"),
-                      value: _isEstimate,
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (value) {
-                        setState(() {
-                          _isEstimate = value;
-                        });
-                      },
-                      activeColor: ColorHelpers.colorButtonDefault,
-                    ),
-                  )
-                : Container(),
+            Row(
+              children: [
+                Expanded(
+                  child: (widget.needUnk!)
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: CheckboxListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.all(0),
+                            title: Text("UNK"),
+                            value: _isUnknown,
+                            controlAffinity: ListTileControlAffinity.leading,
+                            onChanged: (_isEstimate!)
+                                ? null
+                                : (value) {
+                                    setState(() {
+                                      _isUnknown = value;
+                                    });
+                                  },
+                            activeColor: ColorHelpers.colorButtonDefault,
+                          ),
+                        )
+                      : Container(),
+                ),
+                Expanded(
+                  child: (widget.needEst!)
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 10.0),
+                          child: CheckboxListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.all(0),
+                            title: Text("EST"),
+                            value: _isEstimate,
+                            controlAffinity: ListTileControlAffinity.leading,
+                            onChanged: (_isUnknown!)
+                                ? null
+                                : (value) {
+                                    setState(() {
+                                      _isEstimate = value;
+                                    });
+                                  },
+                            activeColor: ColorHelpers.colorButtonDefault,
+                          ),
+                        )
+                      : Container(),
+                ),
+              ],
+            ),
             UIHelper.verticalSpaceSmall,
             Container(
               width: double.infinity,
               child: FlatButton(
                 child: Text("Save", style: TextStyle(color: Colors.white)),
                 onPressed: () {
-                  widget.result();
                   var fielding = context.read<FieldingProvider>();
                   fielding.setUnknownCurrent(_isUnknown);
                   fielding.setIsEstimateCurrent(_isEstimate);
+                  widget.result();
                   Navigator.of(context).pop();
                 },
                 color: ColorHelpers.colorButtonDefault,

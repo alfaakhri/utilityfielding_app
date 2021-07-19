@@ -47,10 +47,12 @@ class _EditPolePageState extends State<EditPolePage> {
   late AuthBloc authBloc;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
+  bool? isFillPoleNumber;
   bool? isFillPoleClass;
   bool? isFillPoleLength;
   bool? isFillGLC;
   bool? isFillYear;
+  bool? isFillSpecies;
   bool? isFillGPS;
 
   List<String> _listChoice = ["-", "Yes", "No"];
@@ -246,51 +248,72 @@ class _EditPolePageState extends State<EditPolePage> {
                   padding: EdgeInsets.all(10),
                   child: RaisedButton(
                     onPressed: () {
+                      var pole = context.read<FieldingBloc>().poleByIdModel;
                       setState(() {
-                        if (_poleHeight.text == "-" ||
-                            _poleHeight.text.isEmpty) {
-                          isFillPoleLength = true;
-                        } else {
+                        if (pole.isPoleLengthUnknown!) {
                           isFillPoleLength = false;
-                        }
+                        } else if (_poleHeight.text == "-" ||
+                            _poleHeight.text.isEmpty)
+                          isFillPoleLength = true;
+                        else
+                          isFillPoleLength = false;
 
-                        if (_poleClass.text.isEmpty || _poleClass.text == "-") {
-                          isFillPoleClass = true;
-                        } else {
+                        if (pole.isPoleClassUnknown!) {
                           isFillPoleClass = false;
-                        }
+                        } else if (_poleClass.text.isEmpty ||
+                            _poleClass.text == "-")
+                          isFillPoleClass = true;
+                        else
+                          isFillPoleClass = false;
 
-                        if (_groundLine.text == "-" ||
-                            _groundLine.text.isEmpty) {
-                          isFillGLC = true;
-                        } else {
+                        if (pole.isGroundLineUnknown!) {
                           isFillGLC = false;
+                        } else {
+                          if (_groundLine.text == "-" ||
+                              _groundLine.text.isEmpty)
+                            isFillGLC = true;
+                          else
+                            isFillGLC = false;
                         }
 
-                        if (_year.text == "-" || _year.text.isEmpty) {
-                          isFillYear = true;
-                        } else {
+                        if (pole.isYearUnknown!) {
                           isFillYear = false;
-                        }
+                        } else if (_year.text == "-" || _year.text.isEmpty)
+                          isFillYear = true;
+                        else
+                          isFillYear = false;
+
+                        if (pole.isSpeciesUnknown!) {
+                          isFillSpecies = false;
+                        } else if (_species.text == "-" ||
+                            _species.text.isEmpty)
+                          isFillSpecies = true;
+                        else
+                          isFillSpecies = false;
+
+                        if (_poleNumber.text == "-" || _poleNumber.text.isEmpty)
+                          isFillPoleNumber = true;
+                        else
+                          isFillPoleNumber = false;
 
                         var fieldingProvider = context.read<FieldingProvider>();
                         if (fieldingProvider.latitude!.toInt() == 0 ||
-                            fieldingProvider.longitude == null) {
+                            fieldingProvider.longitude == null)
                           isFillGPS = true;
-                        } else {
+                        else
                           isFillGPS = false;
-                        }
 
                         if (!isFillPoleLength! &&
                             !isFillPoleClass! &&
                             !isFillGLC! &&
                             !isFillYear! &&
-                            !isFillGPS!) {
-                          if (context.read<ConnectionProvider>().isConnected) {
+                            !isFillGPS! &&
+                            !isFillSpecies! &&
+                            !isFillPoleNumber!) {
+                          if (context.read<ConnectionProvider>().isConnected)
                             doneAddPole();
-                          } else {
+                          else
                             dialogSaveLocal();
-                          }
                         }
                       });
                     },
@@ -587,7 +610,9 @@ class _EditPolePageState extends State<EditPolePage> {
                     }, isUnk: pole.isFAPUnknown),
                     _contentFormText("Pole Number", _poleNumber.text,
                         _poleNumber, false, false,
-                        needUnk: false, needEst: false, result: () {
+                        isValidation: isFillPoleNumber,
+                        needUnk: false,
+                        needEst: false, result: () {
                       setState(() {});
                     }),
                     _contentFormText("Osmose Number", _osmoseNumber.text,
@@ -604,7 +629,7 @@ class _EditPolePageState extends State<EditPolePage> {
                         _otherNumber, false, false,
                         needUnk: true,
                         needEst: false,
-                        isUnk: pole.isOsmoseUnknown, result: () {
+                        isUnk: pole.isOsmoseUnknown ?? false, result: () {
                       setState(() {
                         pole.isOsmoseUnknown =
                             providerFielding.isUnknownCurrent;
@@ -617,8 +642,9 @@ class _EditPolePageState extends State<EditPolePage> {
                         needEst: true,
                         isUnk: fieldingBloc.poleByIdModel.isPoleLengthUnknown ??
                             false,
-                        isEst: fieldingBloc.poleByIdModel.isPoleLengthUnknown ??
-                            false, result: () {
+                        isEst:
+                            fieldingBloc.poleByIdModel.isPoleLengthEstimated ??
+                                false, result: () {
                       setState(() {
                         pole.isPoleLengthUnknown =
                             providerFielding.isUnknownCurrent;
@@ -645,12 +671,14 @@ class _EditPolePageState extends State<EditPolePage> {
                     }),
                     _contentFormText("Ground Line Circumference",
                         _groundLine.text, _groundLine, false, true,
-                        isValidation: pole.isGroundLineEstimated,
+                        isValidation: isFillGLC,
                         needUnk: true,
                         needEst: true,
-                        isUnk: fieldingBloc.poleByIdModel.isGroundLineUnknown,
-                        isEst: fieldingBloc.poleByIdModel.isGroundLineEstimated,
-                        result: () {
+                        isUnk: fieldingBloc.poleByIdModel.isGroundLineUnknown ??
+                            false,
+                        isEst:
+                            fieldingBloc.poleByIdModel.isGroundLineEstimated ??
+                                false, result: () {
                       setState(() {
                         pole.isGroundLineUnknown =
                             providerFielding.isUnknownCurrent;
@@ -662,9 +690,10 @@ class _EditPolePageState extends State<EditPolePage> {
                         isValidation: isFillYear,
                         needUnk: true,
                         needEst: true,
-                        isUnk: fieldingBloc.poleByIdModel.isYearUnknown,
-                        isEst: fieldingBloc.poleByIdModel.isYearEstimated,
-                        result: () {
+                        isUnk:
+                            fieldingBloc.poleByIdModel.isYearUnknown ?? false,
+                        isEst: fieldingBloc.poleByIdModel.isYearEstimated ??
+                            false, result: () {
                       setState(() {
                         pole.isYearUnknown = providerFielding.isUnknownCurrent;
                         pole.isYearEstimated =
@@ -673,6 +702,7 @@ class _EditPolePageState extends State<EditPolePage> {
                     }),
                     _contentFormText(
                         "Species", _species.text, _species, true, true,
+                        isValidation: isFillSpecies,
                         needUnk: true,
                         needEst: true,
                         isUnk: fieldingBloc.poleByIdModel.isSpeciesUnknown ??
@@ -680,9 +710,9 @@ class _EditPolePageState extends State<EditPolePage> {
                         isEst: fieldingBloc.poleByIdModel.isSpeciesEstimated ??
                             false, result: () {
                       setState(() {
-                        pole.isPoleLengthUnknown =
+                        pole.isSpeciesUnknown =
                             providerFielding.isUnknownCurrent;
-                        pole.isPoleLengthEstimated =
+                        pole.isSpeciesEstimated =
                             providerFielding.isEstimateCurrent;
                       });
                     }),
@@ -746,6 +776,9 @@ class _EditPolePageState extends State<EditPolePage> {
       Function()? result,
       bool? isUnk,
       bool? isEst}) {
+    String valueContent = context.read<FieldingProvider>().valueTextContent(
+        title, controller,
+        isUnk: isUnk ?? false, isEst: isEst ?? false);
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -779,17 +812,7 @@ class _EditPolePageState extends State<EditPolePage> {
           Expanded(
             flex: 2,
             child: Text(
-              (controller.text.isEmpty)
-                  ? unknownValue
-                  : (title.toLowerCase().contains("pole length"))
-                      ? (controller.text == "-")
-                          ? controller.text
-                          : "${controller.text} ft"
-                      : (title.toLowerCase().contains("ground line"))
-                          ? controller.text + " inch"
-                          : (controller.text == "-")
-                              ? unknownValue
-                              : controller.text,
+              valueContent,
               style:
                   TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12),
             ),

@@ -40,6 +40,9 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
 
   PoleByIdModel _poleByIdModel = PoleByIdModel();
   PoleByIdModel get poleByIdModel => _poleByIdModel;
+  void setPoleByIdModel(PoleByIdModel data) {
+    _poleByIdModel = data;
+  }
 
   CurrentAddress _currentAddress = CurrentAddress();
   CurrentAddress get currentAddress => _currentAddress;
