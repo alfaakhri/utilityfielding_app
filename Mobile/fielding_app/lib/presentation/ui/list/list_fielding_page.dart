@@ -31,11 +31,12 @@ class ListFieldingPage extends StatefulWidget {
 
 class _ListFieldingPageState extends State<ListFieldingPage> {
   final Connectivity _connectivity = Connectivity();
+  bool _isEmptyJob = false;
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     switch (result) {
-      case ConnectivityResult.wifi: 
+      case ConnectivityResult.wifi:
         Fluttertoast.showToast(msg: "Internet available");
         context.read<ConnectionProvider>().setIsConnected(true);
         break;
@@ -60,7 +61,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       result = await _connectivity.checkConnectivity();
-      context.read<FieldingProvider>().getCurrentLocation((result.index == 2) ? false : true);
+      context
+          .read<FieldingProvider>()
+          .getCurrentLocation((result.index == 2) ? false : true);
       fieldingBloc.add(GetFieldingRequest(
           context.read<UserProvider>().userModel.data!.token,
           (result.index == 2) ? false : true));
@@ -178,6 +181,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
   }
 
   Widget _content(List<FieldingRequestByJobModel> fieldingRequest) {
+    var fielding = context.watch<FieldingProvider>();
     return Container(
       color: Colors.white,
       padding: EdgeInsets.all(16),
@@ -213,7 +217,17 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             children: fieldingRequest
-                .map((data) => ItemFieldingRequestNew(fieldingRequest: data))
+                .map((data) => (data.details!
+                            .where((e) =>
+                                e.fieldingProgressStatus ==
+                                fielding.layerStatus)
+                            .toList()
+                            .length ==
+                        0)
+                    ? Container()
+                    : ItemFieldingRequestNew(
+                        fieldingRequest: data,
+                      ))
                 .toList(),
           ),
         ],

@@ -9,29 +9,54 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:configurable_expansion_tile/configurable_expansion_tile.dart';
 
-class ItemFieldingRequestNew extends StatelessWidget {
+class ItemFieldingRequestNew extends StatefulWidget {
   final FieldingRequestByJobModel fieldingRequest;
 
-  const ItemFieldingRequestNew({Key? key, required this.fieldingRequest})
-      : super(key: key);
+  const ItemFieldingRequestNew({
+    Key? key,
+    required this.fieldingRequest,
+  }) : super(key: key);
 
+  @override
+  _ItemFieldingRequestNewState createState() => _ItemFieldingRequestNewState();
+}
+
+class _ItemFieldingRequestNewState extends State<ItemFieldingRequestNew> {
+
+  // @override
+  // void initState() { 
+  //   super.initState();
+  //    var fielding = context.watch<FieldingProvider>();
+  //   var dataList = widget.fieldingRequest.details!
+  //       .where(
+  //           (element) => element.fieldingProgressStatus == fielding.layerStatus)
+  //       .toList();
+  //   if (dataList.length == 0) {
+  //     fielding.setEmptyListJob(true);
+  //   } else {
+  //     fielding.setEmptyListJob(false);
+  //   }
+  // }
   @override
   Widget build(BuildContext context) {
     var fielding = context.watch<FieldingProvider>();
+  
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: ConfigurableExpansionTile(
         headerExpanded: TileTitle(
-          fieldingRequest: fieldingRequest,
+          fieldingRequest: widget.fieldingRequest,
           iconName: Icons.keyboard_arrow_up,
         ),
         header: TileTitle(
           iconName: Icons.keyboard_arrow_down,
-          fieldingRequest: fieldingRequest,
+          fieldingRequest: widget.fieldingRequest,
         ),
         children: [
-          for (var item in fieldingRequest.details!
-              .where((element) => element.layerStatus == fielding.layerStatus).toList())
+          for (var item in widget.fieldingRequest.details!
+              .where((element) =>
+                  element.fieldingProgressStatus == fielding.layerStatus)
+              .toList())
             TileItem(
               detailItem: item,
             )

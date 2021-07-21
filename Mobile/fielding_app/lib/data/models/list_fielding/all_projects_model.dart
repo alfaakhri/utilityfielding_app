@@ -14,6 +14,7 @@ class AllProjectsModel {
   String? parentJobNumberId;
   int? layerStatus;
   int? jobStatus;
+  int? fieldingProgressStatus;
   String? fieldingProgress;
 
   AllProjectsModel(
@@ -32,6 +33,7 @@ class AllProjectsModel {
       this.parentJobNumberId,
       this.layerStatus,
       this.jobStatus,
+      this.fieldingProgressStatus,
       this.fieldingProgress});
 
   AllProjectsModel.fromJson(Map<String, dynamic> json) {
@@ -50,6 +52,7 @@ class AllProjectsModel {
     parentJobNumberId = json['ParentJobNumberId'];
     layerStatus = json['LayerStatus'];
     jobStatus = json['JobStatus'];
+    fieldingProgressStatus = json['FieldingProgressStatus'];
     fieldingProgress = json['FieldingProgress'];
   }
 
@@ -70,6 +73,7 @@ class AllProjectsModel {
     data['ParentJobNumberId'] = this.parentJobNumberId;
     data['LayerStatus'] = this.layerStatus;
     data['JobStatus'] = this.jobStatus;
+    data['FieldingProgressStatus'] = this.fieldingProgressStatus;
     data['FieldingProgress'] = this.fieldingProgress;
     return data;
   }

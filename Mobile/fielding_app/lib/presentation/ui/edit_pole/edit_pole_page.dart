@@ -116,17 +116,18 @@ class _EditPolePageState extends State<EditPolePage> {
             ? null
             : provider.poleConditionSelected.id,
         otherNumber: this._otherNumber.text,
-        poleStamp: (this._poleStamp.text == "-")
+        poleStamp: (this._poleStamp.text == "-" || this._poleStamp.text.isEmpty)
             ? null
             : (this._poleStamp.text == "Yes")
                 ? true
                 : false,
         notes: this._notes.text,
-        isRadioAntenna: (this._radioAntena.text == "-")
-            ? null
-            : (this._radioAntena.text == "Yes")
-                ? true
-                : false,
+        isRadioAntenna:
+            (this._radioAntena.text == "-" || this._radioAntena.text.isEmpty)
+                ? null
+                : (this._radioAntena.text == "Yes")
+                    ? true
+                    : false,
         hOAList: provider.hoaList,
         transformerList: provider.listTransformer,
         spanDirectionList: context.read<SpanProvider>().listSpanData,
@@ -176,6 +177,7 @@ class _EditPolePageState extends State<EditPolePage> {
     super.initState();
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     authBloc = BlocProvider.of<AuthBloc>(context);
+
     if (widget.poles != null) {
       fieldingBloc
           .add(GetPoleById(widget.poles!.id, authBloc.userModel!.data!.token));
@@ -249,47 +251,18 @@ class _EditPolePageState extends State<EditPolePage> {
                   child: RaisedButton(
                     onPressed: () {
                       var pole = context.read<FieldingBloc>().poleByIdModel;
+                      var fielding = context.read<FieldingProvider>();
                       setState(() {
-                        if (pole.isPoleLengthUnknown!) {
-                          isFillPoleLength = false;
-                        } else if (_poleHeight.text == "-" ||
-                            _poleHeight.text.isEmpty)
-                          isFillPoleLength = true;
-                        else
-                          isFillPoleLength = false;
-
-                        if (pole.isPoleClassUnknown!) {
-                          isFillPoleClass = false;
-                        } else if (_poleClass.text.isEmpty ||
-                            _poleClass.text == "-")
-                          isFillPoleClass = true;
-                        else
-                          isFillPoleClass = false;
-
-                        if (pole.isGroundLineUnknown!) {
-                          isFillGLC = false;
-                        } else {
-                          if (_groundLine.text == "-" ||
-                              _groundLine.text.isEmpty)
-                            isFillGLC = true;
-                          else
-                            isFillGLC = false;
-                        }
-
-                        if (pole.isYearUnknown!) {
-                          isFillYear = false;
-                        } else if (_year.text == "-" || _year.text.isEmpty)
-                          isFillYear = true;
-                        else
-                          isFillYear = false;
-
-                        if (pole.isSpeciesUnknown!) {
-                          isFillSpecies = false;
-                        } else if (_species.text == "-" ||
-                            _species.text.isEmpty)
-                          isFillSpecies = true;
-                        else
-                          isFillSpecies = false;
+                        isFillPoleLength = fielding.validate(
+                            pole.isPoleLengthUnknown!, _poleHeight);
+                        isFillPoleClass = fielding.validate(
+                            pole.isPoleClassUnknown!, _poleClass);
+                        isFillGLC = fielding.validate(
+                            pole.isGroundLineUnknown!, _groundLine);
+                        isFillYear =
+                            fielding.validate(pole.isYearUnknown!, _year);
+                        isFillSpecies =
+                            fielding.validate(pole.isSpeciesUnknown!, _species);
 
                         if (_poleNumber.text == "-" || _poleNumber.text.isEmpty)
                           isFillPoleNumber = true;
@@ -591,146 +564,223 @@ class _EditPolePageState extends State<EditPolePage> {
                       ),
                     ),
                     StreetNameItem(),
-                    _contentFormText("Pole Sequence", _poleSequence.text,
-                        _poleSequence, false, true,
-                        needUnk: false, needEst: false, result: () {
-                      setState(() {});
-                    }),
-                    _contentFormText("Fielding Type", _fieldingType.text,
-                        _fieldingType, true, false,
-                        needUnk: false, needEst: false, result: () {
-                      setState(() {});
-                    }),
-                    _contentFormText("FAP / Terminal Address",
-                        _vapTerminal.text, _vapTerminal, false, true,
-                        needUnk: true, needEst: false, result: () {
-                      setState(() {
-                        pole.isFAPUnknown = providerFielding.isUnknownCurrent;
-                      });
-                    }, isUnk: pole.isFAPUnknown),
-                    _contentFormText("Pole Number", _poleNumber.text,
-                        _poleNumber, false, false,
-                        isValidation: isFillPoleNumber,
-                        needUnk: false,
-                        needEst: false, result: () {
-                      setState(() {});
-                    }),
-                    _contentFormText("Osmose Number", _osmoseNumber.text,
-                        _osmoseNumber, false, true,
-                        needUnk: true,
-                        needEst: false,
-                        isUnk: pole.isOsmoseUnknown, result: () {
-                      setState(() {
-                        pole.isOsmoseUnknown =
-                            providerFielding.isUnknownCurrent;
-                      });
-                    }),
-                    _contentFormText("Other Number", _otherNumber.text,
-                        _otherNumber, false, false,
-                        needUnk: true,
-                        needEst: false,
-                        isUnk: pole.isOsmoseUnknown ?? false, result: () {
-                      setState(() {
-                        pole.isOsmoseUnknown =
-                            providerFielding.isUnknownCurrent;
-                      });
-                    }),
-                    _contentFormText("Pole Length", _poleHeight.text,
-                        _poleHeight, true, true,
-                        isValidation: isFillPoleLength,
-                        needUnk: true,
-                        needEst: true,
-                        isUnk: fieldingBloc.poleByIdModel.isPoleLengthUnknown ??
-                            false,
-                        isEst:
-                            fieldingBloc.poleByIdModel.isPoleLengthEstimated ??
-                                false, result: () {
-                      setState(() {
-                        pole.isPoleLengthUnknown =
-                            providerFielding.isUnknownCurrent;
-                        pole.isPoleLengthEstimated =
-                            providerFielding.isEstimateCurrent;
-                      });
-                    }),
-                    _contentFormText(
-                        "Pole Class", _poleClass.text, _poleClass, true, false,
-                        isValidation: isFillPoleClass,
-                        needUnk: true,
-                        needEst: true,
-                        isUnk: fieldingBloc.poleByIdModel.isPoleClassUnknown ??
-                            false,
-                        isEst:
-                            fieldingBloc.poleByIdModel.isPoleClassEstimated ??
-                                false, result: () {
-                      setState(() {
-                        pole.isPoleClassUnknown =
-                            providerFielding.isUnknownCurrent;
-                        pole.isPoleClassEstimated =
-                            providerFielding.isEstimateCurrent;
-                      });
-                    }),
-                    _contentFormText("Ground Line Circumference",
-                        _groundLine.text, _groundLine, false, true,
-                        isValidation: isFillGLC,
-                        needUnk: true,
-                        needEst: true,
-                        isUnk: fieldingBloc.poleByIdModel.isGroundLineUnknown ??
-                            false,
-                        isEst:
-                            fieldingBloc.poleByIdModel.isGroundLineEstimated ??
-                                false, result: () {
-                      setState(() {
-                        pole.isGroundLineUnknown =
-                            providerFielding.isUnknownCurrent;
-                        pole.isGroundLineEstimated =
-                            providerFielding.isEstimateCurrent;
-                      });
-                    }),
-                    _contentFormText("Year", _year.text, _year, false, false,
-                        isValidation: isFillYear,
-                        needUnk: true,
-                        needEst: true,
-                        isUnk:
-                            fieldingBloc.poleByIdModel.isYearUnknown ?? false,
-                        isEst: fieldingBloc.poleByIdModel.isYearEstimated ??
-                            false, result: () {
-                      setState(() {
-                        pole.isYearUnknown = providerFielding.isUnknownCurrent;
-                        pole.isYearEstimated =
-                            providerFielding.isEstimateCurrent;
-                      });
-                    }),
-                    _contentFormText(
-                        "Species", _species.text, _species, true, true,
-                        isValidation: isFillSpecies,
-                        needUnk: true,
-                        needEst: true,
-                        isUnk: fieldingBloc.poleByIdModel.isSpeciesUnknown ??
-                            false,
-                        isEst: fieldingBloc.poleByIdModel.isSpeciesEstimated ??
-                            false, result: () {
-                      setState(() {
-                        pole.isSpeciesUnknown =
-                            providerFielding.isUnknownCurrent;
-                        pole.isSpeciesEstimated =
-                            providerFielding.isEstimateCurrent;
-                      });
-                    }),
-                    _contentFormText(
-                        "Condition", _condition.text, _condition, true, false,
-                        needUnk: false, needEst: false, result: () {
-                      setState(() {});
-                    }),
-                    _contentFormText(
-                        "Pole Stamp", _poleStamp.text, _poleStamp, true, true,
-                        needUnk: false, needEst: false, result: () {
-                      setState(() {});
-                    }),
-                    _contentFormText("Radio Antena", this._radioAntena.text,
-                        this._radioAntena, true, false,
-                        needUnk: false, needEst: false, result: () {
-                      setState(() {});
-                    }),
+                    ContentFormTextWidget(
+                      title: "Pole Sequence",
+                      controller: _poleSequence,
+                      isButtonGrey: false,
+                      isDropdown: false,
+                      isBlueColor: true,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Fielding Type",
+                      controller: _fieldingType,
+                      isButtonGrey: false,
+                      isDropdown: true,
+                      isBlueColor: false,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "FAP / Terminal Address",
+                      controller: _vapTerminal,
+                      isButtonGrey: true,
+                      isDropdown: false,
+                      isBlueColor: true,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Pole Number",
+                      controller: _poleNumber,
+                      isButtonGrey: false,
+                      isDropdown: false,
+                      isBlueColor: false,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Osmose Number",
+                      controller: _osmoseNumber,
+                      isDropdown: false,
+                      isButtonGrey: true,
+                      isBlueColor: true,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Other Number",
+                      controller: _otherNumber,
+                      isButtonGrey: true,
+                      isDropdown: false,
+                      isBlueColor: false,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Pole Length",
+                      isValidation: isFillPoleLength,
+                      isButtonGrey: false,
+                      controller: _poleHeight,
+                      isDropdown: true,
+                      isBlueColor: true,
+                      needUnk: true,
+                      needEst: true,
+                      isUnk: fieldingBloc.poleByIdModel.isPoleLengthUnknown ??
+                          false,
+                      isEst: fieldingBloc.poleByIdModel.isPoleLengthEstimated ??
+                          false,
+                      result: () {
+                        setState(() {
+                          pole.isPoleLengthUnknown =
+                              providerFielding.isUnknownCurrent;
+                          pole.isPoleLengthEstimated =
+                              providerFielding.isEstimateCurrent;
+                        });
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Pole Class",
+                      isValidation: isFillPoleClass,
+                      isButtonGrey: false,
+                      controller: _poleClass,
+                      isDropdown: true,
+                      isBlueColor: false,
+                      needUnk: true,
+                      needEst: true,
+                      isUnk: fieldingBloc.poleByIdModel.isPoleClassUnknown ??
+                          false,
+                      isEst: fieldingBloc.poleByIdModel.isPoleClassEstimated ??
+                          false,
+                      result: () {
+                        setState(() {
+                          pole.isPoleClassUnknown =
+                              providerFielding.isUnknownCurrent;
+                          pole.isPoleClassEstimated =
+                              providerFielding.isEstimateCurrent;
+                        });
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Ground Line Circumference",
+                      isValidation: isFillGLC,
+                      controller: _groundLine,
+                      isDropdown: false,
+                      isButtonGrey: false,
+                      isBlueColor: true,
+                      needUnk: true,
+                      needEst: true,
+                      isUnk: fieldingBloc.poleByIdModel.isGroundLineUnknown ??
+                          false,
+                      isEst: fieldingBloc.poleByIdModel.isGroundLineEstimated ??
+                          false,
+                      result: () {
+                        setState(() {
+                          pole.isGroundLineUnknown =
+                              providerFielding.isUnknownCurrent;
+                          pole.isGroundLineEstimated =
+                              providerFielding.isEstimateCurrent;
+                        });
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Year",
+                      isValidation: isFillYear,
+                      isButtonGrey: false,
+                      controller: _year,
+                      isDropdown: false,
+                      isBlueColor: false,
+                      needUnk: true,
+                      needEst: true,
+                      isUnk: fieldingBloc.poleByIdModel.isYearUnknown ?? false,
+                      isEst:
+                          fieldingBloc.poleByIdModel.isYearEstimated ?? false,
+                      result: () {
+                        setState(() {
+                          pole.isYearUnknown =
+                              providerFielding.isUnknownCurrent;
+                          pole.isYearEstimated =
+                              providerFielding.isEstimateCurrent;
+                        });
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Species",
+                      isValidation: isFillSpecies,
+                      controller: _species,
+                      isDropdown: true,
+                      isButtonGrey: false,
+                      isBlueColor: true,
+                      needUnk: true,
+                      needEst: true,
+                      isUnk:
+                          fieldingBloc.poleByIdModel.isSpeciesUnknown ?? false,
+                      isEst: fieldingBloc.poleByIdModel.isSpeciesEstimated ??
+                          false,
+                      result: () {
+                        setState(() {
+                          pole.isSpeciesUnknown =
+                              providerFielding.isUnknownCurrent;
+                          pole.isSpeciesEstimated =
+                              providerFielding.isEstimateCurrent;
+                        });
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Condition",
+                      controller: _condition,
+                      isButtonGrey: false,
+                      isDropdown: true,
+                      isBlueColor: false,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Pole Stamp",
+                      controller: _poleStamp,
+                      isButtonGrey: false,
+                      isDropdown: true,
+                      isBlueColor: true,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
+                    ContentFormTextWidget(
+                      title: "Radio Antena",
+                      controller: _radioAntena,
+                      isButtonGrey: false,
+                      isDropdown: true,
+                      isBlueColor: false,
+                      needUnk: false,
+                      needEst: false,
+                      result: () {
+                        setState(() {});
+                      },
+                    ),
                     EditTransformerWidget(),
                     EditHoaWidget(),
                     FormDrawingItem(
@@ -847,11 +897,6 @@ class _EditPolePageState extends State<EditPolePage> {
                       return FormAlertItem(
                           title: title,
                           controller: controller,
-                          onController: (value) {
-                            setState(() {
-                              controller.text = value;
-                            });
-                          },
                           isUnknown: isUnk,
                           isEstimate: isEst,
                           needEst: needEst,

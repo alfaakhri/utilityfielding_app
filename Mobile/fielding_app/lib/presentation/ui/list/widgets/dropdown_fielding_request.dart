@@ -40,13 +40,13 @@ class _DropdownFieldingRequestState extends State<DropdownFieldingRequest> {
             _value = value!;
             switch (value) {
               case "Fielding Request":
-                fielding.setLayerStatus(0);
-                break;
-              case "Fielding Complete":
                 fielding.setLayerStatus(1);
                 break;
-              case "Fielding Archive":
+              case "Fielding Complete":
                 fielding.setLayerStatus(2);
+                break;
+              case "Fielding Archive":
+                fielding.setLayerStatus(3);
                 break;
             }
           });

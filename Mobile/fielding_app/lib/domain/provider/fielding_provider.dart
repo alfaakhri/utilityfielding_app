@@ -25,6 +25,13 @@ class FieldingProvider extends ChangeNotifier {
   ApiProvider _apiProvider = ApiProvider();
   HiveService _hiveService = HiveService();
 
+  bool? _isEmptyListJob = false;
+  bool? get isEmptyListJob => _isEmptyListJob;
+  void setEmptyListJob(value) {
+    _isEmptyListJob = value;
+    notifyListeners();
+  }
+
   bool? _isUnknownCurrent;
   bool? get isUnknownCurrent => _isUnknownCurrent;
   void setUnknownCurrent(value) {
@@ -568,7 +575,7 @@ class FieldingProvider extends ChangeNotifier {
 
   //------------------------------------------------------------------------------
 
-  int? _layerStatus = 0;
+  int? _layerStatus = 1;
   int get layerStatus => _layerStatus!;
   void setLayerStatus(int layerStatus) {
     _layerStatus = layerStatus;
@@ -576,6 +583,7 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   //------------------------------------------------------------------------------
+  //Return value UNK || controller.text
   String valueTextContent(String title, TextEditingController controller,
       {bool? isUnk, bool? isEst}) {
     var value;
@@ -592,8 +600,8 @@ class FieldingProvider extends ChangeNotifier {
         value = (controller.text.isEmpty)
             ? "-"
             : (controller.text == "-")
-            ? controller.text
-            : "${controller.text} ft";
+                ? controller.text
+                : "${controller.text} ft";
       }
     } else if (title.toLowerCase().contains("ground line")) {
       if (isUnk!) {
@@ -623,5 +631,18 @@ class FieldingProvider extends ChangeNotifier {
       value = (controller.text.isEmpty) ? "-" : controller.text;
     }
     return value;
+  }
+
+  //------------------------------------------------------------------------------
+  //return false if checkbox true, return tru if controller "-" || controller empty
+  bool validate(bool? isCheckbox, TextEditingController controller) {
+    if (isCheckbox == null) {
+      return true;
+    } else if (isCheckbox) {
+      return false;
+    } else if (controller.text == "-" || controller.text.isEmpty)
+      return true;
+    else
+      return false;
   }
 }

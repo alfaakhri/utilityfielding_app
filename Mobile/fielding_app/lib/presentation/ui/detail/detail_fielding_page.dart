@@ -500,26 +500,15 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     fontSize: 14,
                     color: ColorHelpers.colorBlackText),
               ),
-              InkWell(
-                  onTap: () {
-                    fielding.setLatLng(0, 0);
-                    context
-                        .read<FieldingBloc>()
-                        .setPoleByIdModel(PoleByIdModel());
-
-                    Get.to(EditPolePage(
-                        allProjectsModel: widget.allProjectsModel,
-                        isAddPole: true));
-                  },
-                  child: Icon(Icons.add, color: ColorHelpers.colorBlackText)),
+              ButtonAddPole(project: widget.allProjectsModel),
             ],
           ),
           UIHelper.verticalSpaceVerySmall,
           Row(
             children: [
               SupportingDocsButton(),
-              UIHelper.horizontalSpaceSmall,
-              itemFieldingType(fielding),
+              // UIHelper.horizontalSpaceSmall,
+              // itemFieldingType(fielding), //HIDE DULU
             ],
           ),
         ],
@@ -543,18 +532,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             ),
             UIHelper.horizontalSpaceSmall,
             SupportingDocsButton(),
-            UIHelper.horizontalSpaceSmall,
-            itemFieldingType(fielding),
+            // UIHelper.horizontalSpaceSmall,
+            // itemFieldingType(fielding), //HIDE DULU
           ],
         ),
-        InkWell(
-            onTap: () {
-              fielding.setLatLng(0, 0);
-              context.read<FieldingBloc>().setPoleByIdModel(PoleByIdModel());
-              Get.to(EditPolePage(
-                  allProjectsModel: widget.allProjectsModel, isAddPole: true));
-            },
-            child: Icon(Icons.add, color: ColorHelpers.colorBlackText)),
+        ButtonAddPole(project: widget.allProjectsModel),
       ],
     );
   }

@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 class FormAlertItem extends StatefulWidget {
   final String? title;
   final TextEditingController? controller;
-  final Function(String)? onController;
   final VoidCallback result;
   final bool? isUnknown;
   final bool? isEstimate;
@@ -19,7 +18,6 @@ class FormAlertItem extends StatefulWidget {
       {Key? key,
       this.title,
       this.controller,
-      this.onController,
       required this.result,
       this.isUnknown,
       required this.needUnk,
