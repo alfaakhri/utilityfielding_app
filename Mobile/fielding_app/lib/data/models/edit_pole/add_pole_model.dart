@@ -43,6 +43,7 @@ class AddPoleModel {
   bool? isYearEstimated;
   bool? isSpeciesUnknown;
   bool? isSpeciesEstimated;
+  bool? isPoleNumberUnknown;
 
   AddPoleModel(
       {this.token,
@@ -86,7 +87,7 @@ class AddPoleModel {
       this.isYearUnknown,
       this.isYearEstimated,
       this.isSpeciesUnknown,
-      this.isSpeciesEstimated});
+      this.isSpeciesEstimated, this.isPoleNumberUnknown});
 
   AddPoleModel.fromJson(Map<String, dynamic> json) {
     token = json['Token'];
@@ -171,6 +172,7 @@ class AddPoleModel {
     isYearEstimated = json['IsYearEstimated'];
     isSpeciesUnknown = json['IsSpeciesUnknown'];
     isSpeciesEstimated = json['IsSpeciesEstimated'];
+    isPoleNumberUnknown = json['IsPoleNumberUnknown'];
   }
 
   Map<String, dynamic> toJson() {
@@ -239,6 +241,7 @@ class AddPoleModel {
     data['IsYearEstimated'] = this.isYearEstimated;
     data['IsSpeciesUnknown'] = this.isSpeciesUnknown;
     data['IsSpeciesEstimated'] = this.isSpeciesEstimated;
+    data['IsPoleNumberUnknown'] = this.isPoleNumberUnknown;
     return data;
   }
 

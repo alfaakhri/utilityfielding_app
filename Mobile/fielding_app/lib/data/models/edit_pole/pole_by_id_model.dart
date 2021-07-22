@@ -47,6 +47,7 @@ class PoleByIdModel {
   bool? isYearEstimated;
   bool? isSpeciesUnknown;
   bool? isSpeciesEstimated;
+  bool? isPoleNumberUnknown;
 
   PoleByIdModel(
       {this.id,
@@ -94,7 +95,7 @@ class PoleByIdModel {
       this.isYearUnknown,
       this.isYearEstimated,
       this.isSpeciesUnknown,
-      this.isSpeciesEstimated});
+      this.isSpeciesEstimated, this.isPoleNumberUnknown});
 
   PoleByIdModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -183,6 +184,7 @@ class PoleByIdModel {
     isYearEstimated = json['IsYearEstimated'];
     isSpeciesUnknown = json['IsSpeciesUnknown'];
     isSpeciesEstimated = json['IsSpeciesEstimated'];
+    isPoleNumberUnknown = json['IsPoleNumberUnknown'];
   }
 
   Map<String, dynamic> toJson() {
@@ -253,6 +255,7 @@ class PoleByIdModel {
     data['IsYearEstimated'] = this.isYearEstimated;
     data['IsSpeciesUnknown'] = this.isSpeciesUnknown;
     data['IsSpeciesEstimated'] = this.isSpeciesEstimated;
+    data['IsPoleNumberUnknown'] = this.isPoleNumberUnknown;
     return data;
   }
 }

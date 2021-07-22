@@ -617,7 +617,7 @@ class FieldingProvider extends ChangeNotifier {
             ? "-"
             : (controller.text == "-")
                 ? controller.text
-                : "${controller.text} ft";
+                : "${controller.text} inch";
       }
     } else if (isUnk!) {
       value = (controller.text == "-" || controller.text.isEmpty)

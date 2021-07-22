@@ -151,7 +151,8 @@ class _EditPolePageState extends State<EditPolePage> {
         isYearUnknown: pole.isYearUnknown,
         isYearEstimated: pole.isYearEstimated,
         isSpeciesUnknown: pole.isSpeciesUnknown,
-        isSpeciesEstimated: pole.isSpeciesEstimated);
+        isSpeciesEstimated: pole.isSpeciesEstimated,
+        isPoleNumberUnknown: pole.isPoleNumberUnknown);
 
     fieldingBloc.add(AddPole(
         data,
@@ -263,11 +264,8 @@ class _EditPolePageState extends State<EditPolePage> {
                             fielding.validate(pole.isYearUnknown!, _year);
                         isFillSpecies =
                             fielding.validate(pole.isSpeciesUnknown!, _species);
-
-                        if (_poleNumber.text == "-" || _poleNumber.text.isEmpty)
-                          isFillPoleNumber = true;
-                        else
-                          isFillPoleNumber = false;
+                        isFillPoleNumber = fielding.validate(
+                            pole.isPoleNumberUnknown, _poleNumber);
 
                         var fieldingProvider = context.read<FieldingProvider>();
                         if (fieldingProvider.latitude!.toInt() == 0 ||
@@ -603,13 +601,19 @@ class _EditPolePageState extends State<EditPolePage> {
                     ContentFormTextWidget(
                       title: "Pole Number",
                       controller: _poleNumber,
+                      isValidation: isFillPoleNumber,
                       isButtonGrey: false,
                       isDropdown: false,
                       isBlueColor: false,
-                      needUnk: false,
+                      needUnk: true,
                       needEst: false,
+                      isUnk: fieldingBloc.poleByIdModel.isPoleNumberUnknown ??
+                          false,
                       result: () {
-                        setState(() {});
+                        setState(() {
+                          pole.isPoleNumberUnknown =
+                              providerFielding.isUnknownCurrent;
+                        });
                       },
                     ),
                     ContentFormTextWidget(
@@ -814,120 +818,6 @@ class _EditPolePageState extends State<EditPolePage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Container _contentFormText(String title, String value,
-      TextEditingController controller, bool isDropdown, bool isBlueColor,
-      {bool? isValidation,
-      required bool needUnk,
-      required bool needEst,
-      Function()? result,
-      bool? isUnk,
-      bool? isEst}) {
-    String valueContent = context.read<FieldingProvider>().valueTextContent(
-        title, controller,
-        isUnk: isUnk ?? false, isEst: isEst ?? false);
-    return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          color: isBlueColor
-              ? ColorHelpers.colorBlueIntro
-              : ColorHelpers.colorWhite),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            flex: 4,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  overflow: TextOverflow.ellipsis,
-                  style: ThemeFonts.textBoldDefault,
-                ),
-                (isValidation == null)
-                    ? Container()
-                    : isValidation
-                        ? Text(
-                            " *need to fill",
-                            style: TextStyle(color: Colors.red, fontSize: 12),
-                          )
-                        : Container()
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              valueContent,
-              style:
-                  TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              if (isDropdown) {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return FormAlertDropdownItem(
-                          title: title,
-                          controller: controller,
-                          needUnknown: needUnk,
-                          needEstimate: needEst,
-                          isUnknown: isUnk,
-                          isEstimate: isEst,
-                          result: () {
-                            result!();
-                          },
-                          onChangeItem: (value) {
-                            setState(() {
-                              controller.text = value;
-                            });
-                          });
-                    });
-              } else {
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return FormAlertItem(
-                          title: title,
-                          controller: controller,
-                          isUnknown: isUnk,
-                          isEstimate: isEst,
-                          needEst: needEst,
-                          needUnk: needUnk,
-                          result: () {
-                            setState(() {
-                              result!();
-                            });
-                          });
-                    });
-              }
-            },
-            child: Container(
-              width: 50,
-              height: 30,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: (controller.text.isEmpty || controller.text == "-")
-                    ? ColorHelpers.colorBlueNumber
-                    : ColorHelpers.colorGreen,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Text(
-                  (controller.text.isEmpty || controller.text == "-")
-                      ? 'Enter'
-                      : "Edit",
-                  style:
-                      TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
-            ),
-          ),
-        ],
       ),
     );
   }
