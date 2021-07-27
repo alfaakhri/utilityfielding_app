@@ -65,16 +65,20 @@ class MyApp extends StatelessWidget {
           BlocProvider<LocationBloc>(create: (context) => LocationBloc()),
           BlocProvider<PictureBloc>(create: (context) => PictureBloc()),
         ],
-        child: GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-
-          locale: DevicePreview.locale(context), // Add the locale here
-          builder: DevicePreview.appBuilder,
-          theme: ThemeData(
-              primarySwatch: Colors.blue,
-              fontFamily: GoogleFonts.poppins().fontFamily),
-          initialRoute: '/root',
-          getPages: [GetPage(name: '/root', page: () => RootPage())],
+        child: StreamProvider<ConnectivityStatus>(
+          initialData: ConnectivityStatus.Offline,
+          create: (context) =>
+              ConnectionProvider().connectionStatusController.stream,
+          child: GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            locale: DevicePreview.locale(context), // Add the locale here
+            builder: DevicePreview.appBuilder,
+            theme: ThemeData(
+                primarySwatch: Colors.blue,
+                fontFamily: GoogleFonts.poppins().fontFamily),
+            initialRoute: '/root',
+            getPages: [GetPage(name: '/root', page: () => RootPage())],
+          ),
         ),
       ),
     );

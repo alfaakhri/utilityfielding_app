@@ -88,7 +88,10 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
+    // fieldingBloc.add(GetFieldingRequest(
+    //     context.read<UserProvider>().userModel.data!.token, true));
   }
 
   @override

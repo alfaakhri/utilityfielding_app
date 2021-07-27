@@ -54,6 +54,7 @@ class _EditPolePageState extends State<EditPolePage> {
   bool? isFillYear;
   bool? isFillSpecies;
   bool? isFillGPS;
+  bool? isAlreadyPoleSequence;
 
   List<String> _listChoice = ["-", "Yes", "No"];
 
@@ -266,6 +267,7 @@ class _EditPolePageState extends State<EditPolePage> {
                             fielding.validate(pole.isSpeciesUnknown!, _species);
                         isFillPoleNumber = fielding.validate(
                             pole.isPoleNumberUnknown, _poleNumber);
+                        isAlreadyPoleSequence = fielding.isPoleSequenceAlready(_poleSequence.text);
 
                         var fieldingProvider = context.read<FieldingProvider>();
                         if (fieldingProvider.latitude!.toInt() == 0 ||
@@ -280,7 +282,7 @@ class _EditPolePageState extends State<EditPolePage> {
                             !isFillYear! &&
                             !isFillGPS! &&
                             !isFillSpecies! &&
-                            !isFillPoleNumber!) {
+                            !isFillPoleNumber! && !isAlreadyPoleSequence!) {
                           if (context.read<ConnectionProvider>().isConnected)
                             doneAddPole();
                           else
@@ -565,6 +567,7 @@ class _EditPolePageState extends State<EditPolePage> {
                     ContentFormTextWidget(
                       title: "Pole Sequence",
                       controller: _poleSequence,
+                      isValidation: isAlreadyPoleSequence,
                       isButtonGrey: false,
                       isDropdown: false,
                       isBlueColor: true,

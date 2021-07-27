@@ -72,6 +72,8 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
           var response = await _apiProvider.uploadImageByPole(json.encode(dataAttachPole));
           if (response.statusCode == 200) {
             print(response.data);
+            ImageByPoleModel imageByPole = ImageByPoleModel.fromJson(response.data[0]);
+            _imageByPoleModel!.add(imageByPole);
             yield UploadImageSuccess();
           } else {
             yield UploadImageFailed("Failed upload image");
@@ -111,6 +113,7 @@ class PictureBloc extends Bloc<PictureEvent, PictureState> {
 
         var response = await _apiProvider.deleteImage(data);
         if (response.statusCode == 200) {
+          _imageByPoleModel!.removeWhere((element) => element.id == event.attachmentId);
           yield DeleteImageSuccess();
         } else {
           yield DeleteImageFailed(response.data["message"]);

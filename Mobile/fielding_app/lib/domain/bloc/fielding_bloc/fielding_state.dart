@@ -19,21 +19,10 @@ class GetFieldingRequestSuccess extends FieldingState {
   GetFieldingRequestSuccess(this.fieldingRequest);
 }
 
-class GetAllProjectsLoading extends FieldingState {}
-
-class GetAllProjectsFailed extends FieldingState {
-  final String? message;
-
-  GetAllProjectsFailed(this.message);
-}
-
-class GetAllProjectsSuccess extends FieldingState {
-  final List<AllProjectsModel>? allProjectsModel;
-
-  GetAllProjectsSuccess(this.allProjectsModel);
-}
-
-class GetAllProjectsEmpty extends FieldingState {}
+class GetAssignedRequestLoading extends FieldingState {}
+class GetAssignedRequestSuccess extends FieldingState {}
+class GetAssignedRequestFailed extends FieldingState {}
+class GetAssignedRequestEmpty extends FieldingState {}
 
 class GetAllPolesByIdLoading extends FieldingState {}
 

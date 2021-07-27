@@ -44,8 +44,8 @@ class ImagePickerService {
     print("SEBELUM KOMPRES " + imageFile!.lengthSync().toString());
     File compressedFile = await FlutterNativeImage.compressImage(
         imageFile!.path,
-        quality: 100,
-        percentage: 80);
+        quality: 80,
+        percentage: 70);
     print("HASIL KOMPRES " + compressedFile.lengthSync().toString());
     if (imageFile != null) {
       Navigator.of(context).pop(compressedFile);
@@ -67,8 +67,8 @@ class ImagePickerService {
     imageFile = File(picture!.path);
     File compressedFile = await FlutterNativeImage.compressImage(
         imageFile!.path,
-        quality: 100,
-        percentage: 80);
+        quality: 80,
+        percentage: 70);
     print("HASIL KOMPRES " + compressedFile.lengthSync().toString());
     if (imageFile != null) {
       Navigator.of(context).pop(compressedFile);

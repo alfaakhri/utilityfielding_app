@@ -52,6 +52,9 @@ class _ItemFieldingRequestNewState extends State<ItemFieldingRequestNew> {
           iconName: Icons.keyboard_arrow_down,
           fieldingRequest: widget.fieldingRequest,
         ),
+        onExpansionChanged: (value) {
+          print(value);
+        },
         children: [
           for (var item in widget.fieldingRequest.details!
               .where((element) =>

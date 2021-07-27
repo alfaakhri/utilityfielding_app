@@ -18,6 +18,7 @@ import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/hive_service.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
@@ -644,5 +645,19 @@ class FieldingProvider extends ChangeNotifier {
       return true;
     else
       return false;
+  }
+
+  bool isPoleSequenceAlready(String value) {
+    if (value == polesByLayerSelected.poleSequence) {
+      return false;
+    } else {
+      for (var poles in _allPolesByLayer!) {
+        if (poles.poleSequence == value) {
+          Fluttertoast.showToast(msg: "Pole sequence number already existed", toastLength: Toast.LENGTH_LONG);
+          return true;
+        }
+      }
+      return false;
+    }
   }
 }

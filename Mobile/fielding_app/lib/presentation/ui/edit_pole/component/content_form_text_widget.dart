@@ -68,7 +68,7 @@ class _ContentFormTextWidgetState extends State<ContentFormTextWidget> {
                     ? Container()
                     : widget.isValidation!
                         ? Text(
-                            " *need to fill",
+                            (widget.title!.toLowerCase().contains("pole sequence")) ? " *number already existed" : " *need to fill",
                             style: TextStyle(color: Colors.red, fontSize: 12),
                           )
                         : Container()

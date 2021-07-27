@@ -7,6 +7,7 @@ import 'package:fielding_app/data/models/detail_fielding/all_poles_by_layer_mode
 import 'package:fielding_app/data/models/list_fielding/all_projects_model.dart';
 import 'package:fielding_app/data/models/edit_pole/current_address.dart';
 import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
+import 'package:fielding_app/data/models/list_fielding/assigned_job_number_model.dart';
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/external/external.exports.dart';
@@ -28,6 +29,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
   List<FieldingRequestByJobModel>? _fieldingRequestByJob;
   List<FieldingRequestByJobModel>? get fieldingRequestByJob =>
       _fieldingRequestByJob;
+
+  List<AssignedJobNumberModel>? _assignedJobNumberModel;
+  List<AssignedJobNumberModel>? get assignedJobNumberModel =>
+      _assignedJobNumberModel;
 
   List<AllProjectsModel>? _allProjects;
   List<AllProjectsModel>? get allProjects => _allProjects;
@@ -81,7 +86,8 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
           var dataBox = await _hiveService.openAndGetDataFromHiveBox(
               getHiveFieldingRequest, listFieldingRequest);
           if (dataBox != null) {
-            _fieldingRequestByJob = FieldingRequestByJobModel.fromJsonList(json.decode(dataBox));
+            _fieldingRequestByJob =
+                FieldingRequestByJobModel.fromJsonList(json.decode(dataBox));
             yield GetFieldingRequestSuccess(_fieldingRequestByJob!);
           } else {
             yield GetFieldingRequestEmpty();
@@ -90,43 +96,8 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
           yield GetFieldingRequestFailed(e.toString());
         }
       }
-    } else if (event is GetAllProjects) {
-      yield GetAllProjectsLoading();
-      if (event.isConnected!) {
-        try {
-          var response = await _apiProvider.getAllProject((event.token));
-          if (response!.statusCode == 200) {
-            _allProjects = AllProjectsModel.fromJsonList(response.data);
-
-            if (_allProjects!.length == 0) {
-              yield GetAllProjectsEmpty();
-            } else {
-              _hiveService.deleteDataFromBox(getHiveAllProject, listAllProject);
-              _hiveService.saveDataToBox(
-                  getHiveAllProject, listAllProject, json.encode(_allProjects));
-              yield GetAllProjectsSuccess(_allProjects);
-            }
-          } else if (response.data['Message'] == messageTokenExpired) {
-            Get.offAll(LoginPage());
-          } else
-            yield GetAllProjectsFailed(response.data['Message']);
-        } catch (e) {
-          yield GetAllProjectsFailed(e.toString());
-        }
-      } else {
-        try {
-          var dataBox = await _hiveService.openAndGetDataFromHiveBox(
-              getHiveAllProject, listAllProject);
-          if (dataBox != null) {
-            _allProjects = AllProjectsModel.fromJsonList(json.decode(dataBox));
-            yield GetAllProjectsSuccess(_allProjects);
-          } else {
-            yield GetAllProjectsEmpty();
-          }
-        } catch (e) {
-          yield GetAllProjectsFailed(e.toString());
-        }
-      }
+    } else if (event is GetAssignedRequest) {
+      
     } else if (event is GetAllPolesByID) {
       yield GetAllPolesByIdLoading();
       if (event.isConnected!) {

@@ -10,11 +10,11 @@ class GetFieldingRequest extends FieldingEvent {
   GetFieldingRequest(this.token, this.isConnected);
 }
 
-class GetAllProjects extends FieldingEvent {
+class GetAssignedRequest extends FieldingEvent {
   final String? token;
-  final bool? isConnected;
+  final String? jobNumberId;
 
-  GetAllProjects(this.token, this.isConnected);
+  GetAssignedRequest(this.token, this.jobNumberId);
 }
 
 class GetAllPolesByID extends FieldingEvent {

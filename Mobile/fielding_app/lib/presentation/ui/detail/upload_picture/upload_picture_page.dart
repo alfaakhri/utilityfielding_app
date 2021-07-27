@@ -36,6 +36,7 @@ class _UploadPicturePageState extends State<UploadPicturePage> {
   Widget build(BuildContext context) {
     var fielding = context.read<FieldingBloc>();
     var user = context.read<AuthBloc>();
+    var picture = context.read<PictureBloc>();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -58,12 +59,12 @@ class _UploadPicturePageState extends State<UploadPicturePage> {
         listener: (context, state) {
           if (state is UploadImageSuccess) {
             Fluttertoast.showToast(msg: "Upload Success");
-            context.read<PictureBloc>().add(
-                GetImageByPole(user.userModel!.data!.token!, widget.pole.id!));
+            // context.read<PictureBloc>().add(
+            //     GetImageByPole(user.userModel!.data!.token!, widget.pole.id!));
           } else if (state is DeleteImageSuccess) {
             Fluttertoast.showToast(msg: "Delete Success");
-            context.read<PictureBloc>().add(
-                GetImageByPole(user.userModel!.data!.token!, widget.pole.id!));
+            // context.read<PictureBloc>().add(
+            //     GetImageByPole(user.userModel!.data!.token!, widget.pole.id!));
           }
         },
         builder: (context, state) {
@@ -78,12 +79,22 @@ class _UploadPicturePageState extends State<UploadPicturePage> {
             return _handlingWidget(state.message);
           } else if (state is UploadImageFailed) {
             Fluttertoast.showToast(msg: state.message!);
-            return _listGridPicture(PictureBloc().imageByPoleModel);
+            return _listGridPicture(picture.imageByPoleModel);
           } else if (state is DeleteImageLoading) {
             return _loading();
           } else if (state is DeleteImageFailed) {
             Fluttertoast.showToast(msg: state.message);
-            return _listGridPicture(PictureBloc().imageByPoleModel);
+            return _listGridPicture(picture.imageByPoleModel);
+          } else if (state is UploadImageCancel) {
+            return _listGridPicture(picture.imageByPoleModel);
+          } else if (state is DeleteImageSuccess) {
+            Fluttertoast.showToast(msg: "Delete Success");
+
+            return _listGridPicture(picture.imageByPoleModel);
+          } else if (state is UploadImageSuccess) {
+            Fluttertoast.showToast(msg: "Upload Success");
+
+            return _listGridPicture(picture.imageByPoleModel);
           }
           return _loading();
         },
@@ -166,7 +177,10 @@ class _UploadPicturePageState extends State<UploadPicturePage> {
         for (var image in listImage)
           GestureDetector(
             onTap: () {
-              Get.to(PreviewImage(image: image.filePath!, functionDelete: true, attachmentId: image.id));
+              Get.to(PreviewImage(
+                  image: image.filePath!,
+                  functionDelete: true,
+                  attachmentId: image.id));
             },
             child: Card(
               elevation: 5.0,
