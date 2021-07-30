@@ -17,18 +17,26 @@ class ButtonAddPole extends StatelessWidget {
         onTap: () {
           var fielding = context.read<FieldingProvider>();
           fielding.setLatLng(0, 0);
-          context.read<FieldingBloc>().setPoleByIdModel(PoleByIdModel(
-              isPoleClassUnknown: false,
-              isPoleLengthUnknown: false,
-              isSpeciesUnknown: false,
-              isGroundLineUnknown: false,
-              isYearUnknown: false));
-          Get.to(EditPolePage(
-              allProjectsModel: project, isAddPole: true));
+          // context.read<FieldingBloc>().setPoleByIdModel(PoleByIdModel(
+          //     isPoleClassUnknown: false,
+          //     isPoleLengthUnknown: false,
+          //     isSpeciesUnknown: false,
+          //     isGroundLineUnknown: false,
+          //     isYearUnknown: false));
+          // Get.to(EditPolePage(allProjectsModel: project, isAddPole: true));
+
+          Get.to(EditLatLngPage(
+            polesLayerModel:
+                context.read<FieldingProvider>().polesByLayerSelected,
+            allProjectsModel: project,
+            isAddPole: true,
+          ));
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 5),
-          decoration: BoxDecoration(color: ColorHelpers.colorGreen2, borderRadius: BorderRadius.circular(5)),
+          decoration: BoxDecoration(
+              color: ColorHelpers.colorGreen2,
+              borderRadius: BorderRadius.circular(5)),
           child: Row(
             children: [
               Icon(Icons.add, color: ColorHelpers.colorWhite),

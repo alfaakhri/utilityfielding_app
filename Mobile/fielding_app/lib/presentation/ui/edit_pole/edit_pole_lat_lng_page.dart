@@ -1,9 +1,12 @@
 import 'package:fielding_app/data/models/detail_fielding/all_poles_by_layer_model.dart';
+import 'package:fielding_app/data/models/models.exports.dart';
+import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/bloc/location_bloc/location_bloc.dart';
 
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/service/location_service.dart';
@@ -24,8 +27,12 @@ import 'dart:async';
 
 class EditLatLngPage extends StatefulWidget {
   final AllPolesByLayerModel? polesLayerModel;
+  final AllProjectsModel? allProjectsModel;
+  final bool? isAddPole;
 
-  const EditLatLngPage({Key? key, this.polesLayerModel}) : super(key: key);
+  const EditLatLngPage(
+      {Key? key, this.polesLayerModel, this.allProjectsModel, this.isAddPole})
+      : super(key: key);
   @override
   _EditLatLngPageState createState() => _EditLatLngPageState();
 }
@@ -147,6 +154,25 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     super.dispose();
   }
 
+  void doneAddPole() {
+    var provider = context.read<FieldingProvider>();
+
+    AddPoleModel data = AddPoleModel(
+      token: context.read<AuthBloc>().userModel!.data!.token,
+      id: null,
+      layerId: widget.allProjectsModel!.iD,
+      street: (provider.streetName == null) ? null : provider.streetName,
+      latitude: provider.latitude.toString(),
+      longitude: provider.longitude.toString(),
+    );
+
+    context.read<FieldingBloc>().add(AddPole(
+        data,
+        provider.allProjectsSelected,
+        provider.polesByLayerSelected,
+        context.read<ConnectionProvider>().isConnected));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,49 +191,80 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
           ),
           backgroundColor: Colors.white,
         ),
-        body: BlocListener<LocationBloc, LocationState>(
+        body: BlocListener<FieldingBloc, FieldingState>(
           listener: (context, state) {
-            if (state is UpdateLocationLoading) {
+            if (state is AddPoleLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
-            } else if (state is UpdateLocationFailed) {
+            } else if (state is AddPoleFailed) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
               Fluttertoast.showToast(msg: state.message!);
-              } else if (state is UpdateLocationSuccess) {
-              setState(() {
-                _latitude = state.allPolesByLayerModel.latitude;
-                _longitude = state.allPolesByLayerModel.longitude;
-                // _editLocation = false;
-              });
+            } else if (state is AddPoleSuccess) {
               Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
                   .pop();
-              Fluttertoast.showToast(msg: "Update location success");
-              context.read<LocationBloc>().add(GetCurrentAddress(
-                  double.parse(_latitude!), double.parse(_longitude!)));
-              } else if (state is GetCurrentAddressLoading) {
-                LoadingWidget.showLoadingDialog(context, _keyLoader);
-            } else if (state is GetCurrentAddressFailed) {
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
-              Fluttertoast.showToast(msg: state.message);
-            } else if (state is GetCurrentAddressSuccess) {
+              Fluttertoast.showToast(msg: "Success");
               var fielding = context.read<FieldingProvider>();
-              AllPolesByLayerModel poles = fielding.polesByLayerSelected;
-              poles.latitude = _latitude!.toString();
-              poles.longitude = _longitude!.toString();
-              fielding.setPolesByLayerSelected(poles);
-              fielding.setLatLng(
-                  double.parse(_latitude!), double.parse(_longitude!));
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
-              Fluttertoast.showToast(msg: "Update location success");
+              fielding.setPolesByLayerSelected(AllPolesByLayerModel());
+              fielding.setFieldingTypeAssign(3);
+              fielding.setLatLng(0, 0);
+              fielding.setStreetName("");
+              fielding.clearAll();
+
+              context.read<FieldingBloc>().add(GetAllPolesByID(
+                  context.read<UserProvider>().userModel.data!.token,
+                  context.read<FieldingProvider>().allProjectsSelected.iD,
+                  context.read<ConnectionProvider>().isConnected));
               Get.back();
-              context
-                  .read<FieldingProvider>()
-                  .setCurrentAddress(state.currentAddress);
             }
           },
-          child: _content(),
+          child: BlocListener<LocationBloc, LocationState>(
+            listener: (context, state) {
+              if (state is UpdateLocationLoading) {
+                LoadingWidget.showLoadingDialog(context, _keyLoader);
+              } else if (state is UpdateLocationFailed) {
+                Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                    .pop();
+                Fluttertoast.showToast(msg: state.message!);
+              } else if (state is UpdateLocationSuccess) {
+                setState(() {
+                  _latitude = state.allPolesByLayerModel.latitude;
+                  _longitude = state.allPolesByLayerModel.longitude;
+                  // _editLocation = false;
+                });
+                Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                    .pop();
+                Fluttertoast.showToast(msg: "Update location success");
+                context.read<LocationBloc>().add(GetCurrentAddress(
+                    double.parse(_latitude!), double.parse(_longitude!)));
+              } else if (state is GetCurrentAddressLoading) {
+                LoadingWidget.showLoadingDialog(context, _keyLoader);
+              } else if (state is GetCurrentAddressFailed) {
+                Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                    .pop();
+                Fluttertoast.showToast(msg: state.message);
+              } else if (state is GetCurrentAddressSuccess) {
+                var fielding = context.read<FieldingProvider>();
+                AllPolesByLayerModel poles = fielding.polesByLayerSelected;
+                poles.latitude = _latitude!.toString();
+                poles.longitude = _longitude!.toString();
+                fielding.setPolesByLayerSelected(poles);
+                fielding.setLatLng(
+                    double.parse(_latitude!), double.parse(_longitude!));
+                Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
+                    .pop();
+                Fluttertoast.showToast(msg: "Update location success");
+                context
+                    .read<FieldingProvider>()
+                    .setCurrentAddress(state.currentAddress);
+                if (widget.isAddPole!) {
+                  doneAddPole();
+                } else {
+                  Get.back();
+                }
+              }
+            },
+            child: _content(),
+          ),
         ));
   }
 

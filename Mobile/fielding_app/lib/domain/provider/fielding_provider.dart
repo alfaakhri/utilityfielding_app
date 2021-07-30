@@ -635,13 +635,22 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   //------------------------------------------------------------------------------
-  //return false if checkbox true, return tru if controller "-" || controller empty
-  bool validate(bool? isCheckbox, TextEditingController controller) {
+  //return false if checkbox true, return true if controller "-" || controller empty
+  bool validateWithCheckbox(
+      bool? isCheckbox, TextEditingController controller) {
     if (isCheckbox == null) {
       return true;
     } else if (isCheckbox) {
       return false;
     } else if (controller.text == "-" || controller.text.isEmpty)
+      return true;
+    else
+      return false;
+  }
+
+  //return false if checkbox true, return true if controller "-" || controller empty
+  bool validate(TextEditingController controller, String title) {
+    if (controller.text == "-" || controller.text.isEmpty)
       return true;
     else
       return false;
@@ -653,7 +662,9 @@ class FieldingProvider extends ChangeNotifier {
     } else {
       for (var poles in _allPolesByLayer!) {
         if (poles.poleSequence == value) {
-          Fluttertoast.showToast(msg: "Pole sequence number already existed", toastLength: Toast.LENGTH_LONG);
+          Fluttertoast.showToast(
+              msg: "Pole sequence number already existed",
+              toastLength: Toast.LENGTH_LONG);
           return true;
         }
       }

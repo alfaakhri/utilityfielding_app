@@ -55,6 +55,8 @@ class _EditPolePageState extends State<EditPolePage> {
   bool? isFillSpecies;
   bool? isFillGPS;
   bool? isAlreadyPoleSequence;
+  bool? isFillPoleStamp;
+  bool? isFillRadioAntena;
 
   List<String> _listChoice = ["-", "Yes", "No"];
 
@@ -255,19 +257,24 @@ class _EditPolePageState extends State<EditPolePage> {
                       var pole = context.read<FieldingBloc>().poleByIdModel;
                       var fielding = context.read<FieldingProvider>();
                       setState(() {
-                        isFillPoleLength = fielding.validate(
+                        isFillPoleLength = fielding.validateWithCheckbox(
                             pole.isPoleLengthUnknown!, _poleHeight);
-                        isFillPoleClass = fielding.validate(
+                        isFillPoleClass = fielding.validateWithCheckbox(
                             pole.isPoleClassUnknown!, _poleClass);
-                        isFillGLC = fielding.validate(
+                        isFillGLC = fielding.validateWithCheckbox(
                             pole.isGroundLineUnknown!, _groundLine);
-                        isFillYear =
-                            fielding.validate(pole.isYearUnknown!, _year);
-                        isFillSpecies =
-                            fielding.validate(pole.isSpeciesUnknown!, _species);
-                        isFillPoleNumber = fielding.validate(
+                        isFillYear = fielding.validateWithCheckbox(
+                            pole.isYearUnknown!, _year);
+                        isFillSpecies = fielding.validateWithCheckbox(
+                            pole.isSpeciesUnknown!, _species);
+                        isFillPoleNumber = fielding.validateWithCheckbox(
                             pole.isPoleNumberUnknown, _poleNumber);
-                        isAlreadyPoleSequence = fielding.isPoleSequenceAlready(_poleSequence.text);
+                        isFillPoleStamp =
+                            fielding.validate(_poleStamp, "pole stamp");
+                        isFillRadioAntena =
+                            fielding.validate(_radioAntena, "radio antena");
+                        isAlreadyPoleSequence =
+                            fielding.isPoleSequenceAlready(_poleSequence.text);
 
                         var fieldingProvider = context.read<FieldingProvider>();
                         if (fieldingProvider.latitude!.toInt() == 0 ||
@@ -282,7 +289,10 @@ class _EditPolePageState extends State<EditPolePage> {
                             !isFillYear! &&
                             !isFillGPS! &&
                             !isFillSpecies! &&
-                            !isFillPoleNumber! && !isAlreadyPoleSequence!) {
+                            !isFillPoleNumber! &&
+                            !isAlreadyPoleSequence! &&
+                            !isFillRadioAntena! &&
+                            !isFillPoleStamp!) {
                           if (context.read<ConnectionProvider>().isConnected)
                             doneAddPole();
                           else
@@ -531,6 +541,8 @@ class _EditPolePageState extends State<EditPolePage> {
                                 polesLayerModel: context
                                     .read<FieldingProvider>()
                                     .polesByLayerSelected,
+                                allProjectsModel: widget.allProjectsModel,
+                                isAddPole: false,
                               ));
                             },
                             child: Container(
@@ -767,6 +779,7 @@ class _EditPolePageState extends State<EditPolePage> {
                     ContentFormTextWidget(
                       title: "Pole Stamp",
                       controller: _poleStamp,
+                      isValidation: isFillPoleStamp,
                       isButtonGrey: false,
                       isDropdown: true,
                       isBlueColor: true,
@@ -779,6 +792,7 @@ class _EditPolePageState extends State<EditPolePage> {
                     ContentFormTextWidget(
                       title: "Radio Antena",
                       controller: _radioAntena,
+                      isValidation: isFillRadioAntena,
                       isButtonGrey: false,
                       isDropdown: true,
                       isBlueColor: false,

@@ -87,7 +87,8 @@ class AddPoleModel {
       this.isYearUnknown,
       this.isYearEstimated,
       this.isSpeciesUnknown,
-      this.isSpeciesEstimated, this.isPoleNumberUnknown});
+      this.isSpeciesEstimated,
+      this.isPoleNumberUnknown});
 
   AddPoleModel.fromJson(Map<String, dynamic> json) {
     token = json['Token'];
@@ -198,34 +199,50 @@ class AddPoleModel {
     data['IsRadioAntenna'] = this.isRadioAntenna;
     if (this.hOAList != null) {
       data['HOAList'] = this.hOAList!.map((v) => v.toJson()).toList();
+    } else {
+      data['HOAList'] = [];
     }
     if (this.transformerList != null) {
       data['TransformerList'] =
           this.transformerList!.map((v) => v.toJson()).toList();
+    } else {
+      data['TransformerList'] = [];
     }
     if (this.spanDirectionList != null) {
       data['SpanDirectionList'] =
           this.spanDirectionList!.map((v) => v.toJson()).toList();
+    } else {
+      data['SpanDirectionList'] = [];
     }
     if (this.anchorList != null) {
       data['AnchorList'] = this.anchorList!.map((v) => v.toJson()).toList();
+    } else {
+      data['AnchorList'] = [];
     }
     if (this.riserAndVGRList != null) {
       data['RiserAndVGRList'] =
           this.riserAndVGRList!.map((v) => v.toJson()).toList();
+    } else {
+      data['RiserAndVGRList'] = [];
     }
     data['FieldingType'] = this.fieldingType;
     if (this.anchorFences != null) {
       data['AnchorFenceList'] =
           this.anchorFences!.map((v) => v.toJson()).toList();
+    } else {
+      data['AnchorFenceList'] = [];
     }
     if (this.anchorStreets != null) {
       data['AnchorStreetList'] =
           this.anchorStreets!.map((v) => v.toJson()).toList();
+    } else {
+      data['AnchorStreetList'] = [];
     }
     if (this.riserFences != null) {
       data['RiserFenceList'] =
           this.riserFences!.map((v) => v.toJson()).toList();
+    } else {
+      data['RiserFenceList'] = [];
     }
     data['PoleSequence'] = this.poleSequence;
     data['IsFAPUnknown'] = this.isFAPUnknown;
