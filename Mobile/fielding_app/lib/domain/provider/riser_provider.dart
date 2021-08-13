@@ -43,13 +43,10 @@ class RiserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getAllDownGuyOwner() async {
+  void getAllDownGuyOwner(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveDownGuyOwner, listDownGuyOwner);
-    if (dataBox != null) {
-      setListDownGuyOwner(
-          AllDownGuyOwnerModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _apiProvider.getAllDownGuyOwner();
         if (response.statusCode == 200) {
@@ -61,6 +58,11 @@ class RiserProvider extends ChangeNotifier {
         } else {}
       } catch (e) {
         print(e.toString());
+      }
+    } else {
+      if (dataBox != null) {
+        setListDownGuyOwner(
+            AllDownGuyOwnerModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
@@ -81,12 +83,10 @@ class RiserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getRiserAndVGR() async {
+  void getRiserAndVGR(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveRiserVGR, listRiserVGR);
-    if (dataBox != null) {
-      setListTypeRiser(RiserAndVGRTypeModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _apiProvider.getRiserAndVGR();
         if (response.statusCode == 200) {
@@ -98,6 +98,11 @@ class RiserProvider extends ChangeNotifier {
         } else {}
       } catch (e) {
         print(e.toString());
+      }
+    } else {
+      if (dataBox != null) {
+        setListTypeRiser(
+            RiserAndVGRTypeModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }

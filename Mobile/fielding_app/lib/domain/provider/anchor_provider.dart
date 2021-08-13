@@ -32,13 +32,10 @@ class AnchorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getAllAnchorSize() async {
+  void getAllAnchorSize(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveAnchorSize, listAnchorSize);
-    if (dataBox != null) {
-      setListAllAnchorSize(
-          AllAnchorSizeModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _repository.getAllAnchorSize();
         if (response.statusCode == 200) {
@@ -51,6 +48,9 @@ class AnchorProvider extends ChangeNotifier {
       } catch (e) {
         print(e.toString());
       }
+    } else if (dataBox != null) {
+      setListAllAnchorSize(
+          AllAnchorSizeModel.fromJsonList(json.decode(dataBox)));
     }
   }
 
@@ -71,13 +71,10 @@ class AnchorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getAllAnchorEyes() async {
+  void getAllAnchorEyes(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveAnchorEyes, listAnchorEyes);
-    if (dataBox != null) {
-      setListAnchorEyesModel(
-          AllAnchorEyesModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _repository.getAllAnchorEyes();
         if (response.statusCode == 200) {
@@ -91,6 +88,9 @@ class AnchorProvider extends ChangeNotifier {
       } catch (e) {
         print(e.toString());
       }
+    } else if (dataBox != null) {
+      setListAnchorEyesModel(
+          AllAnchorEyesModel.fromJsonList(json.decode(dataBox)));
     }
   }
 
@@ -111,12 +111,10 @@ class AnchorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getDownGuySize() async {
+  void getDownGuySize(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveDownGuySize, listHiveDownGuySize);
-    if (dataBox != null) {
-      setListDownGuySize(DownGuySizeModel.fromJsonList(jsonDecode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _repository.getDownGuySize();
         if (response.statusCode == 200) {
@@ -130,6 +128,8 @@ class AnchorProvider extends ChangeNotifier {
       } catch (e) {
         print(e.toString());
       }
+    } else if (dataBox != null) {
+      setListDownGuySize(DownGuySizeModel.fromJsonList(jsonDecode(dataBox)));
     }
   }
 
@@ -153,12 +153,10 @@ class AnchorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getBrokenDownGuySize() async {
+  void getBrokenDownGuySize(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveBrokenDownGuy, listBrokenDownGuy);
-    if (dataBox != null) {
-      setListDownGuySize(DownGuySizeModel.fromJsonList(jsonDecode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _repository.getBrokenDownGuySize();
         if (response.statusCode == 200) {
@@ -173,6 +171,8 @@ class AnchorProvider extends ChangeNotifier {
       } catch (e) {
         print(e.toString());
       }
+    } else if (dataBox != null) {
+      setListDownGuySize(DownGuySizeModel.fromJsonList(jsonDecode(dataBox)));
     }
   }
 
@@ -192,13 +192,10 @@ class AnchorProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getAllAnchorCondition() async {
+  void getAllAnchorCondition(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveAnchorCondition, listAllAnchorCondition);
-    if (dataBox != null) {
-      _listAnchorCondition =
-          AllAnchorConditionModel.fromJsonList(jsonDecode(dataBox));
-    } else {
+    if (isConnected) {
       try {
         var response = await _repository.getAllAnchorCondition();
         if (response.statusCode == 200) {
@@ -213,6 +210,9 @@ class AnchorProvider extends ChangeNotifier {
       } catch (e) {
         print(e.toString());
       }
+    } else if (dataBox != null) {
+      _listAnchorCondition =
+          AllAnchorConditionModel.fromJsonList(jsonDecode(dataBox));
     }
   }
 

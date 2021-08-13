@@ -9,6 +9,8 @@ class AllPolesByLayerModel {
   String? poleNumber;
   bool? startPolePicture;
   int? fieldingType;
+  String? markerPath;
+  int? poleType;
 
   AllPolesByLayerModel(
       {this.id,
@@ -19,7 +21,10 @@ class AllPolesByLayerModel {
       this.fieldingStatus,
       this.poleSequence,
       this.poleNumber,
-      this.startPolePicture, this.fieldingType});
+      this.startPolePicture,
+      this.fieldingType,
+      this.markerPath,
+      this.poleType});
 
   AllPolesByLayerModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -31,7 +36,9 @@ class AllPolesByLayerModel {
     poleSequence = json['PoleSequence'];
     poleNumber = json['PoleNumber'];
     startPolePicture = json['StartPolePicture'];
-    fieldingType = json['FieldingType'] ;
+    fieldingType = json['FieldingType'];
+    markerPath = json['MarkerPath'];
+    poleType = json['PoleType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -46,6 +53,9 @@ class AllPolesByLayerModel {
     data['PoleNumber'] = this.poleNumber;
     data['StartPolePicture'] = this.startPolePicture;
     data['FieldingType'] = this.fieldingType;
+    data['MarkerPath'] = this.markerPath;
+    data['PoleType'] = this.poleType;
+
     return data;
   }
 

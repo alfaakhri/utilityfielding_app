@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-class ButtonAddPole extends StatelessWidget {
+class ButtonAddTreeTrim extends StatelessWidget {
   final AllProjectsModel? project;
-  const ButtonAddPole({Key? key, required this.project}) : super(key: key);
+  const ButtonAddTreeTrim({Key? key, required this.project}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,20 +17,13 @@ class ButtonAddPole extends StatelessWidget {
         onTap: () {
           var fielding = context.read<FieldingProvider>();
           fielding.setLatLng(0, 0);
-          // context.read<FieldingBloc>().setPoleByIdModel(PoleByIdModel(
-          //     isPoleClassUnknown: false,
-          //     isPoleLengthUnknown: false,
-          //     isSpeciesUnknown: false,
-          //     isGroundLineUnknown: false,
-          //     isYearUnknown: false));
-          // Get.to(EditPolePage(allProjectsModel: project, isAddPole: true));
 
           Get.to(EditLatLngPage(
             polesLayerModel:
                 context.read<FieldingProvider>().polesByLayerSelected,
             allProjectsModel: project,
-            isAddPole: true,
-            isAddTreeTrim: false,
+            isAddPole: false,
+            isAddTreeTrim: true,
           ));
         },
         child: Container(
@@ -42,7 +35,7 @@ class ButtonAddPole extends StatelessWidget {
             children: [
               Icon(Icons.add, color: ColorHelpers.colorWhite, size: 15,),
               Text(
-                "Add Pole",
+                "Add Tree Trim",
                 style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 12),
               )
             ],

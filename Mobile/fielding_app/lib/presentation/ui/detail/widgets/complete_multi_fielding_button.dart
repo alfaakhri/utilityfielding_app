@@ -30,7 +30,7 @@ class CompleteMultiPoleButton extends StatelessWidget {
           ),
           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           child: Text(
-            "Complete Poles",
+            "Complete Fielding Request",
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white,

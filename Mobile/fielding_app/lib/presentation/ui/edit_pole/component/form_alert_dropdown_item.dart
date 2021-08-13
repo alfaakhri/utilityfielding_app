@@ -68,7 +68,7 @@ class _FormAlertDropdownItemState extends State<FormAlertDropdownItem> {
                           child: ItemDropdownEditPole(
                               listItem: data.listAllPoleHeight!,
                               onChange: (value) {
-                                data.setPoleHeightSelected(value);
+                                data.setPoleHeightSelected(int.parse(value));
                                 widget.onChangeItem!(value);
                               },
                               valueItem: (data.poleHeightSelected.id == null)

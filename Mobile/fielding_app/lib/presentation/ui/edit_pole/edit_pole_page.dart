@@ -155,7 +155,8 @@ class _EditPolePageState extends State<EditPolePage> {
         isYearEstimated: pole.isYearEstimated,
         isSpeciesUnknown: pole.isSpeciesUnknown,
         isSpeciesEstimated: pole.isSpeciesEstimated,
-        isPoleNumberUnknown: pole.isPoleNumberUnknown);
+        isPoleNumberUnknown: pole.isPoleNumberUnknown,
+        poleType: 0);
 
     fieldingBloc.add(AddPole(
         data,
@@ -543,6 +544,7 @@ class _EditPolePageState extends State<EditPolePage> {
                                     .polesByLayerSelected,
                                 allProjectsModel: widget.allProjectsModel,
                                 isAddPole: false,
+                                isAddTreeTrim: false,
                               ));
                             },
                             child: Container(

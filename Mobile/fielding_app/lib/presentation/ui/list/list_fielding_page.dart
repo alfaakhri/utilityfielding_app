@@ -81,13 +81,20 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     return _updateConnectionStatus(result);
   }
 
+  @override
+  void dispose() {
+    LocationService location = LocationService();
+    location.dispose();
+    super.dispose();
+  }
+
   late FieldingBloc fieldingBloc;
   @override
   void initState() {
     super.initState();
     initConnectivity();
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    // _connectivitySubscription =
+    //     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
 
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     // fieldingBloc.add(GetFieldingRequest(

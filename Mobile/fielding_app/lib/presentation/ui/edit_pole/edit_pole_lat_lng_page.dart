@@ -9,6 +9,7 @@ import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/domain/provider/user_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
+import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/location_service.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/widgets/loading_widget.dart';
@@ -29,9 +30,14 @@ class EditLatLngPage extends StatefulWidget {
   final AllPolesByLayerModel? polesLayerModel;
   final AllProjectsModel? allProjectsModel;
   final bool? isAddPole;
+  final bool? isAddTreeTrim;
 
   const EditLatLngPage(
-      {Key? key, this.polesLayerModel, this.allProjectsModel, this.isAddPole})
+      {Key? key,
+      this.polesLayerModel,
+      this.allProjectsModel,
+      this.isAddPole,
+      this.isAddTreeTrim})
       : super(key: key);
   @override
   _EditLatLngPageState createState() => _EditLatLngPageState();
@@ -42,8 +48,14 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   double pinPillPosition = -100;
   late LocationData currentLocation;
   late BitmapDescriptor poleIcon;
+
   late BitmapDescriptor poleGreen;
+  late BitmapDescriptor poleGreenRed;
+
   late BitmapDescriptor poleBlue;
+  late BitmapDescriptor poleBlueRed;
+
+  late BitmapDescriptor treeIcon;
 
   late GoogleMapController googleMapController;
   // bool _editLocation = false;
@@ -82,10 +94,10 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     }
 
     setPoleIcons();
-    locationService.locationStream.listen((location) {
-      currentLocation = location;
-      print("CURRENT LOCATION" + currentLocation.latitude.toString());
-    });
+    // locationService.locationStream.listen((location) {
+    currentLocation = fielding.currentLocationData!;
+    //   print("CURRENT LOCATION" + currentLocation.latitude.toString());
+    // });
   }
 
   void setPoleIcons() async {
@@ -102,9 +114,27 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     });
 
     await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/pin_blue_red.png')
+        .then((onValue) {
+      poleBlueRed = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
             ImageConfiguration(size: Size(2, 2)), 'assets/pin_green.png')
         .then((onValue) {
       poleGreen = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/pin_green_red.png')
+        .then((onValue) {
+      poleGreenRed = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/tree.png')
+        .then((onValue) {
+      treeIcon = onValue;
     });
   }
 
@@ -126,7 +156,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
             _longitude = newPosition.longitude.toString();
           });
         }),
-        icon: poleIcon,
+        icon: (widget.isAddTreeTrim!) ? treeIcon : poleIcon,
       ));
     });
     setState(() {});
@@ -164,6 +194,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
       street: (provider.streetName == null) ? null : provider.streetName,
       latitude: provider.latitude.toString(),
       longitude: provider.longitude.toString(),
+      poleType: (widget.isAddTreeTrim!) ? 4 : 0,
     );
 
     context.read<FieldingBloc>().add(AddPole(
@@ -256,7 +287,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                 context
                     .read<FieldingProvider>()
                     .setCurrentAddress(state.currentAddress);
-                if (widget.isAddPole!) {
+                if (widget.isAddPole! || widget.isAddTreeTrim!) {
                   doneAddPole();
                 } else {
                   Get.back();
@@ -277,22 +308,28 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
           width: double.infinity,
           color: Colors.white,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Pole Number",
-                style:
-                    TextStyle(fontSize: 14, color: ColorHelpers.colorBlackText),
-              ),
-              Text(
-                  (widget.polesLayerModel!.id == null)
-                      ? "-"
-                      : widget.polesLayerModel!.poleSequence.toString(),
-                  style: TextStyle(
-                      color: ColorHelpers.colorBlueNumber, fontSize: 18)),
-            ],
-          ),
+          child: (widget.isAddPole!)
+              ? Text("Add Pole")
+              : (widget.isAddTreeTrim!)
+                  ? Text("Add Tree Trim")
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Pole Number",
+                          style: TextStyle(
+                              fontSize: 14, color: ColorHelpers.colorBlackText),
+                        ),
+                        Text(
+                            (widget.polesLayerModel!.id == null)
+                                ? "-"
+                                : widget.polesLayerModel!.poleSequence
+                                    .toString(),
+                            style: TextStyle(
+                                color: ColorHelpers.colorBlueNumber,
+                                fontSize: 18)),
+                      ],
+                    ),
         ),
         Expanded(
           child: Stack(
@@ -314,7 +351,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                         double.parse(fielding.allPolesByLayer!.first.latitude!),
                         double.parse(
                             fielding.allPolesByLayer!.first.longitude!)),
-                    zoom: 16,
+                    zoom: 18,
                   ),
                   onTap: (LatLng loc) {
                     // if (_editLocation) {
@@ -560,33 +597,60 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
           if (widget.polesLayerModel != null) {
             if (widget.polesLayerModel!.id != data.id) {
               // add the initial source location pin
-              if (data.fieldingStatus == null ||
+              if (data.poleType == 4) {
+                _markers.add(Marker(
+                    markerId: MarkerId("${data.id}"),
+                    position: fieldingPosition,
+                    icon: treeIcon));
+              } else if (data.fieldingStatus == null ||
                   data.fieldingStatus == 0 ||
                   data.fieldingStatus == 1) {
                 _markers.add(Marker(
                     markerId: MarkerId("${data.id}"),
                     position: fieldingPosition,
-                    icon: poleBlue));
+                    icon: (data.markerPath == null)
+                        ? poleBlue
+                        : (data.markerPath == markerPathDefault)
+                            ? poleBlue
+                            : poleBlueRed));
               } else {
                 _markers.add(Marker(
                     markerId: MarkerId("${data.id}"),
                     position: fieldingPosition,
-                    icon: poleGreen));
+                    icon: (data.markerPath == null)
+                        ? poleGreen
+                        : (data.markerPath == markerPathDefault)
+                            ? poleGreen
+                            : poleGreenRed));
               }
             }
           } else {
+            if (data.poleType == 4) {
+              _markers.add(Marker(
+                  markerId: MarkerId("${data.id}"),
+                  position: fieldingPosition,
+                  icon: treeIcon));
+            }
             if (data.fieldingStatus == null ||
                 data.fieldingStatus == 0 ||
                 data.fieldingStatus == 1) {
               _markers.add(Marker(
                   markerId: MarkerId("${data.id}"),
                   position: fieldingPosition,
-                  icon: poleBlue));
+                  icon: (data.markerPath == null)
+                      ? poleBlue
+                      : (data.markerPath == markerPathDefault)
+                          ? poleBlue
+                          : poleBlueRed));
             } else {
               _markers.add(Marker(
                   markerId: MarkerId("${data.id}"),
                   position: fieldingPosition,
-                  icon: poleGreen));
+                  icon: (data.markerPath == null)
+                      ? poleGreen
+                      : (data.markerPath == markerPathDefault)
+                          ? poleGreen
+                          : poleGreenRed));
             }
           }
         }

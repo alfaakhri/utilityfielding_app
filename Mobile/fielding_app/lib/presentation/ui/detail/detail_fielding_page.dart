@@ -33,8 +33,12 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   bool showButtonCompleteMulti = true;
   late LocationData currentLocation;
   late BitmapDescriptor poleIcon;
+  late BitmapDescriptor poleIconRed;
   late BitmapDescriptor poleSelected;
+  late BitmapDescriptor poleSelectedRed;
   late BitmapDescriptor poleGreen;
+  late BitmapDescriptor poleGreenRed;
+  late BitmapDescriptor treeIcon;
   AllPolesByLayerModel? poleModelSelected;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
@@ -48,19 +52,19 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   void getCurrentLocation() async {
-    if (context.read<ConnectionProvider>().isConnected) {
-      LocationService location = LocationService();
-      LocationData data = await location.getCurrentLocation();
-      setState(() {
-        print(
-            "latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
-        currentLocation = data;
-      });
-    } else {
-      setState(() {
-        currentLocation = context.read<FieldingProvider>().currentLocationData!;
-      });
-    }
+    // if (context.read<ConnectionProvider>().isConnected) {
+    //   LocationService location = LocationService();
+    //   LocationData data = await location.getCurrentLocation();
+    //   setState(() {
+    //     print(
+    //         "latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
+    //     currentLocation = data;
+    //   });
+    // } else {
+    // setState(() {
+    currentLocation = context.read<FieldingProvider>().currentLocationData!;
+    // });
+    // }
   }
 
   void setPoleIcons() async {
@@ -71,15 +75,39 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     });
 
     await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/pin_blue_red.png')
+        .then((onValue) {
+      poleIconRed = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
             ImageConfiguration(size: Size(2, 2)), 'assets/pin_yellow.png')
         .then((onValue) {
       poleSelected = onValue;
     });
 
     await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/pin_yellow_red.png')
+        .then((onValue) {
+      poleSelectedRed = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
             ImageConfiguration(size: Size(2, 2)), 'assets/pin_green.png')
         .then((onValue) {
       poleGreen = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/pin_green_red.png')
+        .then((onValue) {
+      poleGreenRed = onValue;
+    });
+    await BitmapDescriptor.fromAssetImage(
+      ImageConfiguration(size: Size(2, 2)),
+      'assets/tree.png',
+    ).then((onValue) {
+      treeIcon = onValue;
     });
   }
 
@@ -91,7 +119,12 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   void searchPolesByStatus() {
-    context.read<FieldingProvider>().allPolesByLayer!.forEach((element) {
+    context
+        .read<FieldingProvider>()
+        .allPolesByLayer!
+        .where((element) => element.poleType != 4)
+        .toList()
+        .forEach((element) {
       if (element.fieldingStatus != 2) {
         setState(() {
           showButtonCompleteMulti = false;
@@ -148,6 +181,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         body: BlocConsumer<FieldingBloc, FieldingState>(
           listener: (context, state) {
             if (state is GetAllPolesByIdSuccess) {
+              showButtonCompleteMulti = true;
               fielding.setAllPolesByLayer(state.allPolesByLayer);
               fielding.setFieldingTypeAssign(3);
               searchPolesByStatus();
@@ -196,6 +230,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   .pop();
 
               Fluttertoast.showToast(msg: "Start fielding success");
+              showButtonCompleteMulti = true;
               Get.to(EditPolePage(
                 poles: poleModelSelected,
                 allProjectsModel: widget.allProjectsModel,
@@ -263,7 +298,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
           color: Colors.white,
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
           child:
-              (newWidth > 360) ? _itemTitleMapLarge() : _itemTitleMapDefault(),
+              (newWidth > 480) ? _itemTitleMapLarge() : _itemTitleMapDefault(),
         ),
         Expanded(
           child: Stack(
@@ -293,7 +328,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                                         (element.longitude != null &&
                                             element.longitude!.contains(".")))
                                     .longitude!)),
-                    zoom: 14,
+                    zoom: 18,
                   ),
                   onTap: (LatLng loc) {
                     print(_markers
@@ -405,9 +440,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         if (data.latitude != null && data.longitude != null) {
           var fieldingPosition = LatLng(
               double.parse(data.latitude!), double.parse(data.longitude!));
-
           // add the initial source location pin
-          if (data.fieldingStatus == null ||
+          //if poleType == 4 then icon tree on maps
+          if (data.poleType == 4) {
+            _markers.add(Marker(
+                markerId: MarkerId("${data.id}"),
+                position: fieldingPosition,
+                icon: treeIcon));
+          } else if (data.fieldingStatus == null ||
               data.fieldingStatus == 0 ||
               data.fieldingStatus == 1) {
             _markers.add(Marker(
@@ -417,7 +457,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   print("ID " + data.id!);
                   selectedMarker(list, data);
                 },
-                icon: poleIcon));
+                icon: (data.markerPath == null)
+                    ? poleIcon
+                    : (data.markerPath == markerPathDefault)
+                        ? poleIcon
+                        : poleIconRed));
           } else {
             _markers.add(Marker(
                 markerId: MarkerId("${data.id}"),
@@ -426,7 +470,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   print("ID " + data.id!);
                   selectedMarker(list, data);
                 },
-                icon: poleGreen));
+                icon: (data.markerPath == null)
+                    ? poleGreen
+                    : (data.markerPath == markerPathDefault)
+                        ? poleGreen
+                        : poleGreenRed));
           }
         }
       });
@@ -439,14 +487,20 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     setState(() {
       _markers.clear();
       list.map((e) {
+        //Check latlong is null
         if (e.latitude != null && e.longitude != null) {
           var position =
               LatLng(double.parse(e.latitude!), double.parse(e.longitude!));
+          //Check ID is the same
           if (e.id == data.id) {
             _markers.add(Marker(
                 markerId: MarkerId("${e.id}"),
                 position: position,
-                icon: poleSelected,
+                icon: (e.markerPath == null)
+                    ? poleSelected
+                    : (e.markerPath == markerPathDefault)
+                        ? poleSelected
+                        : poleSelectedRed,
                 onTap: () {
                   print("ID " + data.id!);
                   selectedMarker(list, e);
@@ -454,16 +508,30 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             _tempMarkerSelected = Marker(
                 markerId: MarkerId("${e.id}"),
                 position: position,
-                icon: poleSelected);
+                icon: (e.markerPath == null)
+                    ? poleSelected
+                    : (e.markerPath == markerPathDefault)
+                        ? poleSelected
+                        : poleSelectedRed);
             poleModelSelected = e;
           } else {
-            if (e.fieldingStatus == null ||
+            //If poleType 4 then treeIcon
+            if (e.poleType == 4) {
+              _markers.add(Marker(
+                  markerId: MarkerId("${e.id}"),
+                  position: position,
+                  icon: treeIcon));
+            } else if (e.fieldingStatus == null ||
                 e.fieldingStatus == 0 ||
                 e.fieldingStatus == 1) {
               _markers.add(Marker(
                   markerId: MarkerId("${e.id}"),
                   position: position,
-                  icon: poleIcon,
+                  icon: (e.markerPath == null)
+                      ? poleIcon
+                      : (e.markerPath == markerPathDefault)
+                          ? poleIcon
+                          : poleIconRed,
                   onTap: () {
                     print("ID " + data.id!);
                     selectedMarker(list, e);
@@ -472,7 +540,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               _markers.add(Marker(
                   markerId: MarkerId("${e.id}"),
                   position: position,
-                  icon: poleGreen,
+                  icon: (e.markerPath == null)
+                      ? poleGreen
+                      : (e.markerPath == markerPathDefault)
+                          ? poleGreen
+                          : poleGreenRed,
                   onTap: () {
                     print("ID " + data.id!);
                     selectedMarker(list, e);
@@ -505,8 +577,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
           ),
           UIHelper.verticalSpaceVerySmall,
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SupportingDocsButton(),
+              ButtonAddTreeTrim(project: widget.allProjectsModel),
+
               // UIHelper.horizontalSpaceSmall,
               // itemFieldingType(fielding), //HIDE DULU
             ],

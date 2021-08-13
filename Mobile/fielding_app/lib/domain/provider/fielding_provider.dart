@@ -186,13 +186,10 @@ class FieldingProvider extends ChangeNotifier {
     return _poleSpeciesSelected;
   }
 
-  void getListAllPoleSpecies() async {
+  void getListAllPoleSpecies(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHivePolesSpecies, listPolesSpecies);
-    if (dataBox != null) {
-      setListAllPoleSpecies(
-          AllPoleSpeciesModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _apiProvider.getAllPoleSpecies();
         if (response.statusCode == 200) {
@@ -205,6 +202,11 @@ class FieldingProvider extends ChangeNotifier {
         } else {}
       } catch (e) {
         print(e.toString());
+      }
+    } else {
+      if (dataBox != null) {
+        setListAllPoleSpecies(
+            AllPoleSpeciesModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
@@ -239,12 +241,10 @@ class FieldingProvider extends ChangeNotifier {
     return _poleClassSelected;
   }
 
-  void getListAllPoleClass() async {
+  void getListAllPoleClass(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHivePolesClass, listPolesClass);
-    if (dataBox != null) {
-      setListAllPoleClass(AllPoleClassModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _apiProvider.getAllPoleClass();
         if (response.statusCode == 200) {
@@ -256,6 +256,11 @@ class FieldingProvider extends ChangeNotifier {
         } else {}
       } catch (e) {
         print(e.toString());
+      }
+    } else {
+      if (dataBox != null) {
+        setListAllPoleClass(
+            AllPoleClassModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
@@ -270,9 +275,9 @@ class FieldingProvider extends ChangeNotifier {
 
   AllPoleHeightModel _poleHeightSelected = AllPoleHeightModel();
   AllPoleHeightModel get poleHeightSelected => _poleHeightSelected;
-  void setPoleHeightSelected(String? value) {
-    _poleHeightSelected = _listAllPoleHeight!
-        .firstWhere((element) => element.text == int.parse(value!));
+  void setPoleHeightSelected(int? value) {
+    _poleHeightSelected =
+        _listAllPoleHeight!.firstWhere((element) => element.text == value!);
     notifyListeners();
   }
 
@@ -289,13 +294,10 @@ class FieldingProvider extends ChangeNotifier {
     return _poleHeightSelected;
   }
 
-  void getListAllPoleHeight() async {
+  void getListAllPoleHeight(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHivePolesHeight, listPolesHeight);
-    if (dataBox != null) {
-      setListAllPoleHeight(
-          AllPoleHeightModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _apiProvider.getAllPoleHeight();
         if (response.statusCode == 200) {
@@ -307,6 +309,11 @@ class FieldingProvider extends ChangeNotifier {
         } else {}
       } catch (e) {
         print(e.toString());
+      }
+    } else {
+      if (dataBox != null) {
+        setListAllPoleHeight(
+            AllPoleHeightModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
@@ -343,13 +350,10 @@ class FieldingProvider extends ChangeNotifier {
     return _poleConditionSelected;
   }
 
-  void getListAllPoleCondition() async {
+  void getListAllPoleCondition(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHivePolesCondition, listPolesCondition);
-    if (dataBox != null) {
-      setListAllPoleCondition(
-          AllPoleConditionModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _apiProvider.getAllPoleCondition();
         if (response.statusCode == 200) {
@@ -364,6 +368,11 @@ class FieldingProvider extends ChangeNotifier {
       } catch (e) {
         print(e.toString());
       }
+    } else {
+      if (dataBox != null) {
+        setListAllPoleCondition(
+            AllPoleConditionModel.fromJsonList(json.decode(dataBox)));
+      }
     }
   }
 
@@ -375,12 +384,10 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getListAllHoaType() async {
+  void getListAllHoaType(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveHoaType, listHoaType);
-    if (dataBox != null) {
-      setListAllHoaType(AllHoaTypeModel.fromJsonList(json.decode(dataBox)));
-    } else {
+    if (isConnected) {
       try {
         var response = await _apiProvider.getAllHoaType();
         if (response.statusCode == 200) {
@@ -392,6 +399,10 @@ class FieldingProvider extends ChangeNotifier {
         } else {}
       } catch (e) {
         print(e.toString());
+      }
+    } else {
+      if (dataBox != null) {
+        setListAllHoaType(AllHoaTypeModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
@@ -546,16 +557,10 @@ class FieldingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getFieldingType() async {
+  void getFieldingType(bool isConnected) async {
     final dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveFieldingType, listFieldingType);
-    if (dataBox != null) {
-      _allFieldingType =
-          AllFieldingTypeModel.fromJsonList(json.decode(dataBox));
-      _allFieldingType!
-          .insertAll(0, [AllFieldingTypeModel(id: 3, text: "Fielding Type")]);
-      setFieldingTypeAssign(3);
-    } else {
+    if (isConnected) {
       try {
         var response = await _apiProvider.getFieldingType();
         if (response.statusCode == 200) {
@@ -571,6 +576,12 @@ class FieldingProvider extends ChangeNotifier {
       } catch (e) {
         print("Fielding Type " + e.toString());
       }
+    } else if (dataBox != null) {
+      _allFieldingType =
+          AllFieldingTypeModel.fromJsonList(json.decode(dataBox));
+      _allFieldingType!
+          .insertAll(0, [AllFieldingTypeModel(id: 3, text: "Fielding Type")]);
+      setFieldingTypeAssign(3);
     }
   }
 

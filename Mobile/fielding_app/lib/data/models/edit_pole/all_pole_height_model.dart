@@ -1,6 +1,6 @@
 class AllPoleHeightModel {
   int? id;
-  int? text;
+  String? text;
 
   AllPoleHeightModel({this.id, this.text});
 

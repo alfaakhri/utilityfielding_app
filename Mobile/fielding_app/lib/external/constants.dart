@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const String unknownValue = "-";
-const String version = "V2.7.0";
+const String version = "V2.7.5";
 
 const String baseGoogleApi = "https://maps.googleapis.com";
 const String apiKey = 'AIzaSyDQ-aesOz_ut1yBv_d6FG-0N60uqDwgLZs';
@@ -20,6 +20,9 @@ const String urlEula = "https://utilityfielding.com/AdditionalPages/eula";
 const String urlTerms = "https://utilityfielding.com/AdditionalPages/tos";
 const String urlDisclaimer =
     "https://utilityfielding.com/AdditionalPages/disclaimer";
+
+const String markerPathRed = "/Assets/png/default-pole_old.png";
+const String markerPathDefault = "/Assets/png/default-pole.png";
 
 const String bodyIntro1 =
     "When you use Utility Fielding, we may collect and process information about your location. We explain this in detail in our ";
