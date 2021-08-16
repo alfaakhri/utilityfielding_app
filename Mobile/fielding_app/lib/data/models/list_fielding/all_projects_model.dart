@@ -1,3 +1,5 @@
+import 'package:fielding_app/data/models/detail_fielding/detail_fielding.exports.dart';
+
 class AllProjectsModel {
   String? iD;
   String? projectID;
@@ -16,6 +18,7 @@ class AllProjectsModel {
   int? jobStatus;
   int? fieldingProgressStatus;
   String? fieldingProgress;
+  List<AllPolesByLayerModel>? allPolesByLayer;
 
   AllProjectsModel(
       {this.iD,
@@ -34,7 +37,8 @@ class AllProjectsModel {
       this.layerStatus,
       this.jobStatus,
       this.fieldingProgressStatus,
-      this.fieldingProgress});
+      this.fieldingProgress,
+      this.allPolesByLayer});
 
   AllProjectsModel.fromJson(Map<String, dynamic> json) {
     iD = json['ID'];
@@ -54,6 +58,12 @@ class AllProjectsModel {
     jobStatus = json['JobStatus'];
     fieldingProgressStatus = json['FieldingProgressStatus'];
     fieldingProgress = json['FieldingProgress'];
+    if (json['AllPolesByLayer'] != null) {
+      allPolesByLayer = <AllPolesByLayerModel>[];
+      json['AllPolesByLayer'].forEach((v) {
+        allPolesByLayer!.add(new AllPolesByLayerModel.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -75,6 +85,9 @@ class AllProjectsModel {
     data['JobStatus'] = this.jobStatus;
     data['FieldingProgressStatus'] = this.fieldingProgressStatus;
     data['FieldingProgress'] = this.fieldingProgress;
+    if (this.allPolesByLayer != null) {
+      data['AllPolesByLayer'] = this.allPolesByLayer!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 

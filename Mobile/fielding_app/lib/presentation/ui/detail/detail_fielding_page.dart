@@ -611,7 +611,13 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             // itemFieldingType(fielding), //HIDE DULU
           ],
         ),
-        ButtonAddPole(project: widget.allProjectsModel),
+        Row(
+          children: [
+            ButtonAddPole(project: widget.allProjectsModel),
+            UIHelper.horizontalSpaceSmall,
+            ButtonAddTreeTrim(project: widget.allProjectsModel),
+          ],
+        ),
       ],
     );
   }

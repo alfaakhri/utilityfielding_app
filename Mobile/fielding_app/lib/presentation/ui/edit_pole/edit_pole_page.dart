@@ -331,13 +331,13 @@ class _EditPolePageState extends State<EditPolePage> {
                         unknownValue;
                     this._poleHeight.text = (provider
                                 .setPoleHeightAssign(
-                                    state.poleByIdModel.poleHeight ?? 0)
+                                    state.poleByIdModel.poleHeight)
                                 .text ==
                             null)
                         ? unknownValue
                         : provider
                             .setPoleHeightAssign(
-                                state.poleByIdModel.poleHeight ?? 0)
+                                state.poleByIdModel.poleHeight)
                             .text
                             .toString();
 

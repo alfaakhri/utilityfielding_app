@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const String unknownValue = "-";
-const String version = "V2.7.5";
+const String version = "V2.7.6";
 
 const String baseGoogleApi = "https://maps.googleapis.com";
 const String apiKey = 'AIzaSyDQ-aesOz_ut1yBv_d6FG-0N60uqDwgLZs';
@@ -87,6 +87,7 @@ const String listAllProject = "list_all_project";
 const String listAllPoles = "list_all_poles";
 const String locationDataLocal = "current_location";
 const String listAllAnchorCondition = "list_all_anchor_condition";
+const String listAllFieldingPoles = "list_all_fielding_poles";
 
 const String _fielding_request = "fieldign_request";
 const String _edit_pole = "edit_pole";
@@ -108,6 +109,7 @@ const String _all_project = "all_project";
 const String _all_poles = "all_poles";
 const String _current_location = "current_location";
 const String _all_anchor_condition = "all_anchor_condition";
+const String _all_fielding_poles = "all_fielding_poles";
 
 String get getHiveFieldingRequest => _fielding_request;
 String get getHiveEditPole => _edit_pole;
@@ -129,6 +131,7 @@ String get getHiveAllProject => _all_project;
 String get getHiveAllPoles => _all_poles;
 String get getHiveCurrentLocation => _current_location;
 String get getHiveAnchorCondition => _all_anchor_condition;
+String get getHiveFieldingPoles => _all_fielding_poles;
 
 
 

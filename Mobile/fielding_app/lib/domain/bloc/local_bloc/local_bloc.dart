@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:fielding_app/data/models/detail_fielding/detail_fielding.exports.dart';
 import 'package:fielding_app/data/models/edit_pole/edit_pole.exports.dart';
+import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
+import 'package:fielding_app/data/repository/local_repository.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/hive_service.dart';
 import 'package:fielding_app/presentation/ui/ui.exports.dart';
@@ -17,9 +20,13 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
   LocalBloc() : super(LocalInitial());
   HiveService _hiveService = HiveService();
   ApiProvider _apiProvider = ApiProvider();
+  LocalRepository _localRepo = LocalRepository();
 
   List<AddPoleLocal>? _listAddPoleLocal = <AddPoleLocal>[];
   List<AddPoleLocal>? get listAddPoleLocal => _listAddPoleLocal;
+
+  List<AllProjectsModel>? _allProjectModel = <AllProjectsModel>[];
+  List<AllProjectsModel>? get allProjectModel => _allProjectModel;
 
   @override
   Stream<LocalState> mapEventToState(
@@ -67,6 +74,33 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
         }
       } catch (e) {
         yield PostEditPoleFailed(e.toString());
+      }
+    } else if (event is SaveFieldingRequest) {
+      yield SaveFieldingRequestLoading();
+      final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+          getHiveFieldingPoles, listAllFieldingPoles);
+
+      try {
+        var response =
+            await _localRepo.getFieldingPoles(event.token, event.layerId);
+        if (response!.statusCode == 200) {
+          if (dataBox != null) {
+            _allProjectModel =
+                AllProjectsModel.fromJsonList(json.decode(dataBox));
+            _allProjectModel!.removeWhere(
+                (element) => element.iD == event.allProjectModel.iD);
+          }
+
+          AllProjectsModel temp = event.allProjectModel;
+          temp.allPolesByLayer =
+              AllPolesByLayerModel.fromJsonList(response.data);
+          _allProjectModel!.add(temp);
+          _hiveService.saveDataToBox(
+              getHiveFieldingPoles, listAllFieldingPoles, json.encode(_allProjectModel));
+          yield SaveFieldingRequestSuccess();
+        }
+      } catch (e) {
+        yield SaveFieldingRequestFailed(e.toString());
       }
     }
   }

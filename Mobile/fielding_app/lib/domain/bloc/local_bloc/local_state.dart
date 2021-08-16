@@ -32,9 +32,21 @@ class PostEditPoleFailed extends LocalState {
 }
 
 class DeletePoleLoading extends LocalState {}
+
 class DeletePoleFailed extends LocalState {
   final String? message;
 
   DeletePoleFailed(this.message);
 }
+
 class DeletePoleSuccess extends LocalState {}
+
+class SaveFieldingRequestLoading extends LocalState {}
+
+class SaveFieldingRequestFailed extends LocalState {
+  final String? message;
+
+  SaveFieldingRequestFailed(this.message);
+}
+
+class SaveFieldingRequestSuccess extends LocalState {}

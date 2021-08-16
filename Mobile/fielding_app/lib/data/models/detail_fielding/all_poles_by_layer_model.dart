@@ -1,3 +1,5 @@
+import 'package:fielding_app/data/models/models.exports.dart';
+
 class AllPolesByLayerModel {
   String? id;
   String? latitude;
@@ -11,6 +13,7 @@ class AllPolesByLayerModel {
   int? fieldingType;
   String? markerPath;
   int? poleType;
+  AddPoleModel? detailInformation;
 
   AllPolesByLayerModel(
       {this.id,
@@ -24,7 +27,8 @@ class AllPolesByLayerModel {
       this.startPolePicture,
       this.fieldingType,
       this.markerPath,
-      this.poleType});
+      this.poleType,
+      this.detailInformation});
 
   AllPolesByLayerModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
@@ -39,6 +43,9 @@ class AllPolesByLayerModel {
     fieldingType = json['FieldingType'];
     markerPath = json['MarkerPath'];
     poleType = json['PoleType'];
+    detailInformation = json['DetailInformation'] != null
+        ? new AddPoleModel.fromJson(json['DetailInformation'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -55,7 +62,9 @@ class AllPolesByLayerModel {
     data['FieldingType'] = this.fieldingType;
     data['MarkerPath'] = this.markerPath;
     data['PoleType'] = this.poleType;
-
+    if (this.detailInformation != null) {
+      data['DetailInformation'] = this.detailInformation!.toJson();
+    }
     return data;
   }
 

@@ -275,7 +275,7 @@ class FieldingProvider extends ChangeNotifier {
 
   AllPoleHeightModel _poleHeightSelected = AllPoleHeightModel();
   AllPoleHeightModel get poleHeightSelected => _poleHeightSelected;
-  void setPoleHeightSelected(int? value) {
+  void setPoleHeightSelected(String? value) {
     _poleHeightSelected =
         _listAllPoleHeight!.firstWhere((element) => element.text == value!);
     notifyListeners();

@@ -17,3 +17,11 @@ class DeletePole extends LocalEvent {
 
   DeletePole(this.addPole);
 }
+
+class SaveFieldingRequest extends LocalEvent {
+  final String token;
+  final String layerId;
+  final AllProjectsModel allProjectModel;
+
+  SaveFieldingRequest(this.token, this.layerId, this.allProjectModel);
+}

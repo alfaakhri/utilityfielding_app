@@ -23,7 +23,7 @@ class CompleteMultiPoleButton extends StatelessWidget {
               context.read<FieldingProvider>().allPolesByLayer));
         },
         child: Container(
-          width: 150,
+          width: 170,
           decoration: BoxDecoration(
             color: ColorHelpers.colorGreen2,
             borderRadius: BorderRadius.circular(5),

@@ -22,9 +22,8 @@ class ItemFieldingRequestNew extends StatefulWidget {
 }
 
 class _ItemFieldingRequestNewState extends State<ItemFieldingRequestNew> {
-
   // @override
-  // void initState() { 
+  // void initState() {
   //   super.initState();
   //    var fielding = context.watch<FieldingProvider>();
   //   var dataList = widget.fieldingRequest.details!
@@ -40,7 +39,7 @@ class _ItemFieldingRequestNewState extends State<ItemFieldingRequestNew> {
   @override
   Widget build(BuildContext context) {
     var fielding = context.watch<FieldingProvider>();
-  
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: ConfigurableExpansionTile(
@@ -166,7 +165,7 @@ class TileItem extends StatelessWidget {
                       ],
                     ),
                     Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Row(
                           children: [
@@ -183,6 +182,24 @@ class TileItem extends StatelessWidget {
                                     color: ColorHelpers.colorBlackText,
                                     fontSize: 14)),
                           ],
+                        ),
+                        InkWell(
+                          onTap: () {
+                            
+                          },
+                          child: Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Download",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                                color: ColorHelpers.colorGreen2,
+                                borderRadius: BorderRadius.circular(5)),
+                          ),
                         ),
                       ],
                     ),
