@@ -78,7 +78,7 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
     } else if (event is SaveFieldingRequest) {
       yield SaveFieldingRequestLoading();
       final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-          getHiveFieldingPoles, listAllFieldingPoles);
+          getHiveFieldingPoles, event.userId);
 
       try {
         var response =
@@ -95,12 +95,31 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
           temp.allPolesByLayer =
               AllPolesByLayerModel.fromJsonList(response.data);
           _allProjectModel!.add(temp);
-          _hiveService.saveDataToBox(
-              getHiveFieldingPoles, listAllFieldingPoles, json.encode(_allProjectModel));
+          _hiveService.saveDataToBox(getHiveFieldingPoles, event.userId,
+              json.encode(_allProjectModel));
           yield SaveFieldingRequestSuccess();
         }
       } catch (e) {
         yield SaveFieldingRequestFailed(e.toString());
+      }
+    } else if (event is GetListFielding) {
+      yield GetListFieldingLoading();
+      try {
+        final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+            getHiveFieldingPoles, event.userId);
+        if (dataBox != null) {
+          if (dataBox != null) {
+            _allProjectModel =
+                AllProjectsModel.fromJsonList(json.decode(dataBox));
+            yield GetListFieldingSuccess();
+          } else {
+            yield GetListFieldingEmpty();
+          }
+        } else {
+          yield GetListFieldingEmpty();
+        }
+      } catch (e) {
+        yield GetListFieldingFailed(e.toString());
       }
     }
   }

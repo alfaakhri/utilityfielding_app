@@ -159,10 +159,12 @@ class _EditPolePageState extends State<EditPolePage> {
         poleType: 0);
 
     fieldingBloc.add(AddPole(
-        data,
-        provider.allProjectsSelected,
-        provider.polesByLayerSelected,
-        context.read<ConnectionProvider>().isConnected));
+      data,
+      provider.allProjectsSelected,
+      provider.polesByLayerSelected,
+      context.read<ConnectionProvider>().isConnected,
+      context.read<AuthBloc>().userModel!.data!.user!.iD!,
+    ));
   }
 
   Widget spaceForm() {
@@ -182,10 +184,11 @@ class _EditPolePageState extends State<EditPolePage> {
     super.initState();
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     authBloc = BlocProvider.of<AuthBloc>(context);
+    var connect = context.read<ConnectionProvider>();
 
     if (widget.poles != null) {
-      fieldingBloc
-          .add(GetPoleById(widget.poles!.id, authBloc.userModel!.data!.token));
+      fieldingBloc.add(GetPoleById(
+          widget.poles!, authBloc.userModel!.data!.token, connect.isConnected));
     }
   }
 
@@ -199,7 +202,7 @@ class _EditPolePageState extends State<EditPolePage> {
   void getAllPoles() {
     fieldingBloc.add(GetAllPolesByID(
         context.read<UserProvider>().userModel.data!.token,
-        context.read<FieldingProvider>().allProjectsSelected.iD,
+        widget.allProjectsModel,
         context.read<ConnectionProvider>().isConnected));
   }
 
@@ -231,6 +234,7 @@ class _EditPolePageState extends State<EditPolePage> {
             }
           },
           child: Scaffold(
+            key: _keyLoader,
             appBar: AppBar(
               title: Text("Pole",
                   style: TextStyle(
@@ -336,8 +340,7 @@ class _EditPolePageState extends State<EditPolePage> {
                             null)
                         ? unknownValue
                         : provider
-                            .setPoleHeightAssign(
-                                state.poleByIdModel.poleHeight)
+                            .setPoleHeightAssign(state.poleByIdModel.poleHeight)
                             .text
                             .toString();
 
@@ -440,6 +443,7 @@ class _EditPolePageState extends State<EditPolePage> {
     var fielding = context.read<FieldingBloc>();
     var pole = context.read<FieldingBloc>().poleByIdModel;
     var providerFielding = context.read<FieldingProvider>();
+    var connect = context.read<ConnectionProvider>();
     return Container(
       color: ColorHelpers.colorBackground,
       child: Form(
@@ -536,44 +540,46 @@ class _EditPolePageState extends State<EditPolePage> {
                                   fontSize: 12),
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              Get.to(EditLatLngPage(
-                                polesLayerModel: context
-                                    .read<FieldingProvider>()
-                                    .polesByLayerSelected,
-                                allProjectsModel: widget.allProjectsModel,
-                                isAddPole: false,
-                                isAddTreeTrim: false,
-                              ));
-                            },
-                            child: Container(
-                              width: 50,
-                              height: 30,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: (context
-                                            .watch<FieldingProvider>()
-                                            .latitude!
-                                            .toInt() ==
-                                        0)
-                                    ? ColorHelpers.colorBlueNumber
-                                    : ColorHelpers.colorGreen,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                  (context
-                                              .watch<FieldingProvider>()
-                                              .latitude!
-                                              .toInt() ==
-                                          0)
-                                      ? 'Enter'
-                                      : "Edit",
-                                  style: TextStyle(
-                                      color: ColorHelpers.colorWhite,
-                                      fontSize: 12)),
-                            ),
-                          ),
+                          (!connect.isConnected)
+                              ? Container()
+                              : InkWell(
+                                  onTap: () {
+                                    Get.to(EditLatLngPage(
+                                      polesLayerModel: context
+                                          .read<FieldingProvider>()
+                                          .polesByLayerSelected,
+                                      allProjectsModel: widget.allProjectsModel,
+                                      isAddPole: false,
+                                      isAddTreeTrim: false,
+                                    ));
+                                  },
+                                  child: Container(
+                                    width: 50,
+                                    height: 30,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: (context
+                                                  .watch<FieldingProvider>()
+                                                  .latitude!
+                                                  .toInt() ==
+                                              0)
+                                          ? ColorHelpers.colorBlueNumber
+                                          : ColorHelpers.colorGreen,
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Text(
+                                        (context
+                                                    .watch<FieldingProvider>()
+                                                    .latitude!
+                                                    .toInt() ==
+                                                0)
+                                            ? 'Enter'
+                                            : "Edit",
+                                        style: TextStyle(
+                                            color: ColorHelpers.colorWhite,
+                                            fontSize: 12)),
+                                  ),
+                                ),
                         ],
                       ),
                     ),
@@ -878,7 +884,9 @@ class _EditPolePageState extends State<EditPolePage> {
                 GestureDetector(
                   onTap: () async {
                     Navigator.pop(context);
-                    doneAddPole();
+                    setState(() {
+                      doneAddPole();
+                    });
                   },
                   child: Container(
                       height: 50,

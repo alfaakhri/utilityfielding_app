@@ -82,28 +82,27 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
           yield GetFieldingRequestFailed(e.toString());
         }
       } else {
-        try {
-          var dataBox = await _hiveService.openAndGetDataFromHiveBox(
-              getHiveFieldingRequest, listFieldingRequest);
-          if (dataBox != null) {
-            _fieldingRequestByJob =
-                FieldingRequestByJobModel.fromJsonList(json.decode(dataBox));
-            yield GetFieldingRequestSuccess(_fieldingRequestByJob!);
-          } else {
-            yield GetFieldingRequestEmpty();
-          }
-        } catch (e) {
-          yield GetFieldingRequestFailed(e.toString());
-        }
+        // try {
+        // var dataBox = await _hiveService.openAndGetDataFromHiveBox(
+        //     getHiveFieldingRequest, listFieldingRequest);
+        // if (dataBox != null) {
+        //   _fieldingRequestByJob =
+        //       FieldingRequestByJobModel.fromJsonList(json.decode(dataBox));
+        //   yield GetFieldingRequestSuccess(_fieldingRequestByJob!);
+        // } else {
+        yield GetFieldingRequestFailed("Internet not available");
+        //   }
+        // } catch (e) {
+        //   yield GetFieldingRequestFailed(e.toString());
+        // }
       }
     } else if (event is GetAssignedRequest) {
-      
     } else if (event is GetAllPolesByID) {
       yield GetAllPolesByIdLoading();
       if (event.isConnected!) {
         try {
           var response = await (_apiProvider.getAllPolesByLayerID(
-              event.token, event.layerId));
+              event.token, event.allProjectsModel!.iD));
           if (response!.statusCode == 200) {
             _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
             _hiveService.deleteDataFromBox(getHiveAllPoles, listAllPoles);
@@ -120,15 +119,8 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         }
       } else {
         try {
-          var dataBox = await _hiveService.openAndGetDataFromHiveBox(
-              getHiveAllPoles, listAllPoles);
-          if (dataBox != null) {
-            _allPolesByLayer =
-                AllPolesByLayerModel.fromJsonList(json.decode(dataBox));
-            yield GetAllPolesByIdSuccess(_allPolesByLayer);
-          } else {
-            yield GetAllPolesByIdFailed("Failed load data poles");
-          }
+          _allPolesByLayer = event.allProjectsModel!.allPolesByLayer;
+          yield GetAllPolesByIdSuccess(_allPolesByLayer);
         } catch (e) {
           yield GetAllPolesByIdFailed(e.toString());
         }
@@ -187,10 +179,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         yield CompletePolePictureFailed(e.toString());
       }
     } else if (event is AddPole) {
+      yield AddPoleLoading();
+
       try {
         if (event.isConnected!) {
-          yield AddPoleLoading();
-
           JsonEncoder encoder = new JsonEncoder.withIndent('  ');
           String prettyprint = encoder.convert(event.addPoleModel.toJson());
           debugPrint(prettyprint);
@@ -205,33 +197,44 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
             yield AddPoleFailed(response.data['Message']);
           }
         } else {
-          yield AddPoleLoading();
-
           //Save to local
-          List<AddPoleLocal>? addPoleLocal = <AddPoleLocal>[];
-          AddPoleLocal tempAddPole = AddPoleLocal(
-              id: Uuid().v1(),
-              allProjectsModel: event.allProjectsModel,
-              allPolesByLayerModel: event.allPolesByLayerModel,
-              addPoleModel: event.addPoleModel);
+          List<AllProjectsModel>? _allProjectModel = <AllProjectsModel>[];
+          AllProjectsModel currentProjects = AllProjectsModel();
           final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-              getHiveEditPole, listEditPole);
-          if (dataBox != null) {
-            addPoleLocal = AddPoleLocal.fromJsonList(jsonDecode(dataBox));
-            //Check if data is added and doing removal
-            addPoleLocal!.removeWhere(
-                (element) => element.addPoleModel!.id == event.addPoleModel.id);
-            addPoleLocal.add(tempAddPole);
-            //Saving to local
-            _hiveService.saveDataToBox(
-                getHiveEditPole, listEditPole, json.encode(addPoleLocal));
-            yield AddPoleSuccess();
-          } else {
-            addPoleLocal.add(tempAddPole);
+              getHiveFieldingPoles, event.userId);
 
-            _hiveService.saveDataToBox(
-                getHiveEditPole, listEditPole, json.encode(addPoleLocal));
-            yield AddPoleSuccess();
+          if (dataBox != null) {
+            _allProjectModel =
+                AllProjectsModel.fromJsonList(jsonDecode(dataBox));
+            //Search projects by id is same
+            currentProjects = _allProjectModel!.firstWhere(
+                (element) => element.iD == event.allProjectsModel.iD,
+                orElse: () => AllProjectsModel());
+            //Check is null
+            if (currentProjects.iD != null) {
+              //Check add pole is null
+              if (currentProjects.addPoleModel != null) {
+                //Remove and then add addPoleModel
+                currentProjects.addPoleModel!.removeWhere(
+                    (element) => element.id == event.addPoleModel.id);
+                currentProjects.addPoleModel!.add(event.addPoleModel);
+              } else {
+                currentProjects.addPoleModel = [event.addPoleModel];
+              }
+              //Remove and then add project
+              _allProjectModel.removeWhere(
+                  (element) => element.iD == event.allProjectsModel.iD);
+              _allProjectModel.add(currentProjects);
+              //Saving to local
+              await _hiveService.saveDataToBox(getHiveFieldingPoles,
+                  event.userId, json.encode(_allProjectModel));
+
+              yield AddPoleSuccess();
+            } else {
+              yield AddPoleFailed("Projects not found");
+            }
+          } else {
+            yield AddPoleFailed("Projects not found");
           }
         }
       } catch (e) {
@@ -240,18 +243,24 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is GetPoleById) {
       yield GetPoleByIdLoading();
       try {
-        var response = await (_apiProvider.getPoleById(event.id, event.token));
-        if (response!.statusCode == 200) {
-          if (response.data != null) {
-            _poleByIdModel = PoleByIdModel.fromJson(response.data);
-            yield GetPoleByIdSuccess(_poleByIdModel);
-          } else if (response.data['Message'] == messageTokenExpired) {
-            Get.offAll(LoginPage());
+        if (event.isConnected) {
+          var response = await (_apiProvider.getPoleById(
+              event.allPolesByLayerModel!.id, event.token));
+          if (response!.statusCode == 200) {
+            if (response.data != null) {
+              _poleByIdModel = PoleByIdModel.fromJson(response.data);
+              yield GetPoleByIdSuccess(_poleByIdModel);
+            } else if (response.data['Message'] == messageTokenExpired) {
+              Get.offAll(LoginPage());
+            } else {
+              yield GetPoleByIdFailed("Failed load data pole");
+            }
           } else {
             yield GetPoleByIdFailed("Failed load data pole");
           }
         } else {
-          yield GetPoleByIdFailed("Failed load data pole");
+          _poleByIdModel = event.allPolesByLayerModel!.detailInformation!;
+          yield GetPoleByIdSuccess(_poleByIdModel);
         }
       } catch (e) {
         yield GetPoleByIdFailed(e.toString());

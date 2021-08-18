@@ -20,8 +20,15 @@ class DeletePole extends LocalEvent {
 
 class SaveFieldingRequest extends LocalEvent {
   final String token;
+  final String userId;
   final String layerId;
   final AllProjectsModel allProjectModel;
 
-  SaveFieldingRequest(this.token, this.layerId, this.allProjectModel);
+  SaveFieldingRequest(this.token, this.layerId, this.allProjectModel, this.userId);
+}
+
+class GetListFielding extends LocalEvent {
+  final String userId;
+
+  GetListFielding(this.userId);
 }

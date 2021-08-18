@@ -34,53 +34,6 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
   bool _isEmptyJob = false;
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    switch (result) {
-      case ConnectivityResult.wifi:
-        Fluttertoast.showToast(msg: "Internet available");
-        context.read<ConnectionProvider>().setIsConnected(true);
-        break;
-      case ConnectivityResult.mobile:
-        Fluttertoast.showToast(msg: "Internet available");
-        context.read<ConnectionProvider>().setIsConnected(true);
-        break;
-      case ConnectivityResult.none:
-        Fluttertoast.showToast(msg: "Internet not available");
-        context.read<ConnectionProvider>().setIsConnected(false);
-        break;
-      default:
-        Fluttertoast.showToast(msg: "Internet not available");
-        context.read<ConnectionProvider>().setIsConnected(false);
-        break;
-    }
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initConnectivity() async {
-    ConnectivityResult result = ConnectivityResult.none;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      result = await _connectivity.checkConnectivity();
-      context
-          .read<FieldingProvider>()
-          .getCurrentLocation((result.index == 2) ? false : true);
-      fieldingBloc.add(GetFieldingRequest(
-          context.read<UserProvider>().userModel.data!.token,
-          (result.index == 2) ? false : true));
-    } on PlatformException catch (e) {
-      print(e.toString());
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) {
-      return Future.value(null);
-    }
-
-    return _updateConnectionStatus(result);
-  }
-
   @override
   void dispose() {
     LocationService location = LocationService();
@@ -92,13 +45,11 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
   @override
   void initState() {
     super.initState();
-    initConnectivity();
-    // _connectivitySubscription =
-    //     _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
 
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
-    // fieldingBloc.add(GetFieldingRequest(
-    //     context.read<UserProvider>().userModel.data!.token, true));
+    var connect = context.read<ConnectionProvider>();
+    fieldingBloc.add(GetFieldingRequest(
+        context.read<UserProvider>().userModel.data!.token, connect.isConnected));
   }
 
   @override

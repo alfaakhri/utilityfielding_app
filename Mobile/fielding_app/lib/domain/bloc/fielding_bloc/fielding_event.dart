@@ -19,10 +19,10 @@ class GetAssignedRequest extends FieldingEvent {
 
 class GetAllPolesByID extends FieldingEvent {
   final String? token;
-  final String? layerId;
+  final AllProjectsModel? allProjectsModel;
   final bool? isConnected;
 
-  GetAllPolesByID(this.token, this.layerId, this.isConnected);
+  GetAllPolesByID(this.token, this.allProjectsModel, this.isConnected);
 }
 
 class StartPolePicture extends FieldingEvent {
@@ -42,20 +42,22 @@ class CompletePolePicture extends FieldingEvent {
 }
 
 class AddPole extends FieldingEvent {
+  final String userId;
   final AddPoleModel addPoleModel;
   final AllProjectsModel allProjectsModel;
   final AllPolesByLayerModel allPolesByLayerModel;
   final bool? isConnected;
 
-  AddPole(this.addPoleModel, this.allProjectsModel, this.allPolesByLayerModel, this.isConnected);
-
+  AddPole(this.addPoleModel, this.allProjectsModel, this.allPolesByLayerModel,
+      this.isConnected, this.userId);
 }
 
 class GetPoleById extends FieldingEvent {
-  final String? id;
+  final AllPolesByLayerModel? allPolesByLayerModel;
   final String? token;
+  final bool isConnected;
 
-  GetPoleById(this.id, this.token);
+  GetPoleById(this.allPolesByLayerModel, this.token, this.isConnected);
 }
 
 class StartFielding extends FieldingEvent {
@@ -64,7 +66,8 @@ class StartFielding extends FieldingEvent {
   final bool? isStartAdditional;
   final String? layerId;
 
-  StartFielding({this.token, this.poleId, this.isStartAdditional, this.layerId});
+  StartFielding(
+      {this.token, this.poleId, this.isStartAdditional, this.layerId});
 }
 
 class CompleteMultiPole extends FieldingEvent {

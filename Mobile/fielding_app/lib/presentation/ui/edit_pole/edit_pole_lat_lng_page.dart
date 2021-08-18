@@ -198,10 +198,12 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     );
 
     context.read<FieldingBloc>().add(AddPole(
-        data,
-        provider.allProjectsSelected,
-        provider.polesByLayerSelected,
-        context.read<ConnectionProvider>().isConnected));
+          data,
+          provider.allProjectsSelected,
+          provider.polesByLayerSelected,
+          context.read<ConnectionProvider>().isConnected,
+          context.read<AuthBloc>().userModel!.data!.user!.iD!,
+        ));
   }
 
   @override
@@ -243,7 +245,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
 
               context.read<FieldingBloc>().add(GetAllPolesByID(
                   context.read<UserProvider>().userModel.data!.token,
-                  context.read<FieldingProvider>().allProjectsSelected.iD,
+                  widget.allProjectsModel,
                   context.read<ConnectionProvider>().isConnected));
               Get.back();
             }

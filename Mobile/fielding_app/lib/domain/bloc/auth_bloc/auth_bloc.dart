@@ -38,11 +38,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           if (_userModel == null) {
             yield GetAuthMustLogin();
           } else {
-            var response = await _apiProvider.checkToken(_userModel!.data!.token);
-            if (response!.statusCode == 200) {
+            if (event.isConnected) {
+              var response =
+                  await _apiProvider.checkToken(_userModel!.data!.token);
+              if (response!.statusCode == 200) {
+                yield GetAuthSuccess(_userModel);
+              } else
+                yield GetAuthMustLogin();
+            } else {
               yield GetAuthSuccess(_userModel);
-            } else
-              yield GetAuthMustLogin();
+            }
           }
         }
       } catch (e) {
@@ -64,7 +69,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield DoLoginFailed(e.toString());
       }
     } else if (event is StartApp) {
-      yield* _startAppToState();
+      yield* _startAppToState(event.isConnected);
     } else if (event is DoLogout) {
       _sharedPref.deleteUserModel();
       Fluttertoast.showToast(msg: "Logout Success");
@@ -74,10 +79,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Stream<AuthState> _startAppToState() async* {
+  Stream<AuthState> _startAppToState(bool isConnected) async* {
     yield GetAuthLoading();
     Timer(Duration(seconds: 2), () {
-      add(GetAuthentication());
+      add(GetAuthentication(isConnected));
     });
   }
 }

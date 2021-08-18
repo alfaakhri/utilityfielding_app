@@ -1,112 +1,126 @@
 import 'package:fielding_app/data/models/models.exports.dart';
-import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
-import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
-import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
+
 import 'package:fielding_app/external/external.exports.dart';
-import 'package:bloc/bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ItemLocalPole extends StatelessWidget {
-  final AddPoleLocal addPoleLocal;
+  final AllProjectsModel projects;
 
-  const ItemLocalPole({Key? key, required this.addPoleLocal}) : super(key: key);
+  const ItemLocalPole({Key? key, required this.projects}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-      child: Card(
-        color: ColorHelpers.colorBlue,
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Pole Sequence " +
-                        addPoleLocal.allPolesByLayerModel!.poleSequence!
-                            .toString(),
-                    style: TextStyle(
-                        color: ColorHelpers.colorBlackText,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-              UIHelper.verticalSpaceSmall,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        addPoleLocal.allProjectsModel!.projectName!,
-                        // "Due Date ${data.dueDate  }",
-                        style: TextStyle(
-                            fontSize: 12, color: ColorHelpers.colorBlackText),
-                      ),
-                      Text(
-                        addPoleLocal.allProjectsModel!.layerName!,
-                        style: TextStyle(
-                            fontSize: 12, color: ColorHelpers.colorBlackText),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          context.read<LocalBloc>().add(PostEditPole(
-                              context.read<AuthBloc>().userModel!.data!.token!,
-                              addPoleLocal));
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: 75,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Update",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          ),
-                          decoration: BoxDecoration(
-                              color: ColorHelpers.colorButtonDefault,
-                              borderRadius: BorderRadius.circular(5)),
+    return InkWell(
+      onTap: () {
+        context
+            .read<FieldingProvider>()
+            .setAllProjectsSelected(projects);
+        context
+            .read<FieldingProvider>()
+            .getJobNumberAttachModel(projects.iD);
+        Get.to(DetailFieldingPage(allProjectsModel: projects,));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Card(
+          color: ColorHelpers.colorBlue,
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          projects.projectName!,
+                          style: TextStyle(
+                              color: ColorHelpers.colorBlackText,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      UIHelper.horizontalSpaceVerySmall,
-                      InkWell(
-                        onTap: () {
-                          dialogSaveLocal(context);
-                        },
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: 75,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Delete",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          ),
-                          decoration: BoxDecoration(
-                              color: ColorHelpers.colorRed,
-                              borderRadius: BorderRadius.circular(5)),
+                        Text(
+                          projects.layerName ?? "-",
+                          style: TextStyle(
+                              color: ColorHelpers.colorBlackText,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
                         ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                                (projects.totalPoles != null)
+                                    ? projects.totalPoles.toString()
+                                    : "0",
+                                style: TextStyle(
+                                    color: ColorHelpers.colorBlueNumber,
+                                    fontSize: 24)),
+                            UIHelper.horizontalSpaceSmall,
+                            Text("Complete Poles",
+                                style: TextStyle(
+                                    color: ColorHelpers.colorBlackText,
+                                    fontSize: 14)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                UIHelper.verticalSpaceSmall,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          (projects.dueDate != null)
+                              ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(projects.dueDate!))}"
+                              : "-",
+                          style: TextStyle(
+                              fontSize: 12, color: ColorHelpers.colorBlackText),
+                        ),
+                        Text(
+                          (projects.totalPoles != null)
+                              ? "Total ${projects.approx} Poles"
+                              : "Total 0 Poles",
+                          style: TextStyle(
+                              fontSize: 12, color: ColorHelpers.colorBlackText),
+                        )
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Notes",
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            color: ColorHelpers.colorButtonDefault,
+                            borderRadius: BorderRadius.circular(5)),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -149,7 +163,6 @@ class ItemLocalPole extends StatelessWidget {
                 UIHelper.verticalSpaceMedium,
                 GestureDetector(
                   onTap: () async {
-                    context.read<LocalBloc>().add(DeletePole(addPoleLocal));
                     Navigator.pop(context);
                   },
                   child: Container(

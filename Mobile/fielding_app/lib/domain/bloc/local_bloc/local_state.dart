@@ -50,3 +50,12 @@ class SaveFieldingRequestFailed extends LocalState {
 }
 
 class SaveFieldingRequestSuccess extends LocalState {}
+
+class GetListFieldingLoading extends LocalState {}
+class GetListFieldingSuccess extends LocalState {}
+class GetListFieldingEmpty extends LocalState {}
+class GetListFieldingFailed extends LocalState {
+  final String? message;
+
+  GetListFieldingFailed(this.message);
+}

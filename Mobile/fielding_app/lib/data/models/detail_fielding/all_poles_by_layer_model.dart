@@ -13,7 +13,7 @@ class AllPolesByLayerModel {
   int? fieldingType;
   String? markerPath;
   int? poleType;
-  AddPoleModel? detailInformation;
+  PoleByIdModel? detailInformation;
 
   AllPolesByLayerModel(
       {this.id,
@@ -44,7 +44,7 @@ class AllPolesByLayerModel {
     markerPath = json['MarkerPath'];
     poleType = json['PoleType'];
     detailInformation = json['DetailInformation'] != null
-        ? new AddPoleModel.fromJson(json['DetailInformation'])
+        ? new PoleByIdModel.fromJson(json['DetailInformation'])
         : null;
   }
 

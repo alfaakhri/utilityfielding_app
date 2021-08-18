@@ -36,16 +36,20 @@ class ConnectionProvider extends ChangeNotifier {
     switch (result) {
       case ConnectivityResult.mobile:
         Fluttertoast.showToast(msg: "Internet available");
+        setIsConnected(true);
         return ConnectivityStatus.Online;
       case ConnectivityResult.wifi:
         Fluttertoast.showToast(msg: "Internet available");
+        setIsConnected(true);
         return ConnectivityStatus.Online;
 
       case ConnectivityResult.none:
         Fluttertoast.showToast(msg: "Internet not available");
+        setIsConnected(false);
         return ConnectivityStatus.Offline;
       default:
         Fluttertoast.showToast(msg: "Internet not available");
+        setIsConnected(false);
         return ConnectivityStatus.Offline;
     }
   }

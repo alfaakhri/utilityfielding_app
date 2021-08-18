@@ -26,7 +26,6 @@ class DetailFieldingPage extends StatefulWidget {
 class _DetailFieldingPageState extends State<DetailFieldingPage> {
   late FieldingBloc fieldingBloc;
   GoogleMapController? googleMapController;
-  Marker? _tempMarkerBlue;
   Marker? _tempMarkerSelected;
   Set<Marker> _markers = Set<Marker>();
   double pinPillPosition = -100;
@@ -52,19 +51,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   void getCurrentLocation() async {
-    // if (context.read<ConnectionProvider>().isConnected) {
-    //   LocationService location = LocationService();
-    //   LocationData data = await location.getCurrentLocation();
-    //   setState(() {
-    //     print(
-    //         "latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
-    //     currentLocation = data;
-    //   });
-    // } else {
-    // setState(() {
     currentLocation = context.read<FieldingProvider>().currentLocationData!;
-    // });
-    // }
   }
 
   void setPoleIcons() async {
@@ -114,7 +101,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   void getAllPoleById() {
     fieldingBloc.add(GetAllPolesByID(
         context.read<UserProvider>().userModel.data!.token,
-        widget.allProjectsModel!.iD,
+        widget.allProjectsModel!,
         context.read<ConnectionProvider>().isConnected));
   }
 
@@ -266,18 +253,19 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 subTitle: "Please come back in a moment.",
               );
             } else if (state is GetAllPolesByIdSuccess) {
-              List<AllPolesByLayerModel>? allPolesByFilter;
-              if (fielding.fieldingTypeSelected!.id != 3) {
-                allPolesByFilter = state.allPolesByLayer!
-                    .where((element) =>
-                        element.fieldingType ==
-                        fielding.fieldingTypeSelected!.id)
-                    .toList();
-              } else {
-                allPolesByFilter = state.allPolesByLayer;
-              }
+              //TO-DO activated if filter fielding type not hidden
+              // List<AllPolesByLayerModel>? allPolesByFilter;
+              // if (fielding.fieldingTypeSelected!.id != 3) {
+              //   allPolesByFilter = state.allPolesByLayer!
+              //       .where((element) =>
+              //           element.fieldingType ==
+              //           fielding.fieldingTypeSelected!.id)
+              //       .toList();
+              // } else {
+              //   allPolesByFilter = state.allPolesByLayer;
+              // }
 
-              return _content(allPolesByFilter);
+              return _content(state.allPolesByLayer);
             }
             return Container();
           },
@@ -291,15 +279,9 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   Widget _content(List<AllPolesByLayerModel>? allPoles) {
-    double newWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        Container(
-          color: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          child:
-              (newWidth > 480) ? _itemTitleMapLarge() : _itemTitleMapDefault(),
-        ),
+        TitleMapItem(allProjectsModel: widget.allProjectsModel!),
         Expanded(
           child: Stack(
             children: [
@@ -554,72 +536,6 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         }
       }).toList();
     });
-  }
-
-  Widget _itemTitleMapDefault() {
-    var fielding = context.read<FieldingProvider>();
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "Fielded Request",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: ColorHelpers.colorBlackText),
-              ),
-              ButtonAddPole(project: widget.allProjectsModel),
-            ],
-          ),
-          UIHelper.verticalSpaceVerySmall,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SupportingDocsButton(),
-              ButtonAddTreeTrim(project: widget.allProjectsModel),
-
-              // UIHelper.horizontalSpaceSmall,
-              // itemFieldingType(fielding), //HIDE DULU
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Row _itemTitleMapLarge() {
-    var fielding = context.read<FieldingProvider>();
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Text(
-              "Fielded Request",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: ColorHelpers.colorBlackText),
-            ),
-            UIHelper.horizontalSpaceSmall,
-            SupportingDocsButton(),
-            // UIHelper.horizontalSpaceSmall,
-            // itemFieldingType(fielding), //HIDE DULU
-          ],
-        ),
-        Row(
-          children: [
-            ButtonAddPole(project: widget.allProjectsModel),
-            UIHelper.horizontalSpaceSmall,
-            ButtonAddTreeTrim(project: widget.allProjectsModel),
-          ],
-        ),
-      ],
-    );
   }
 
   Container itemFieldingType(FieldingProvider fielding) {

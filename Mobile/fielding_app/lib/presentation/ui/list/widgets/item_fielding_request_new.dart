@@ -1,9 +1,14 @@
 import 'package:fielding_app/data/models/list_fielding/list_fielding.exports.dart';
+import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
+import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
 import 'package:fielding_app/presentation/ui/list/widgets/notes_request_item.dart';
+import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +41,7 @@ class _ItemFieldingRequestNewState extends State<ItemFieldingRequestNew> {
   //     fielding.setEmptyListJob(false);
   //   }
   // }
+
   @override
   Widget build(BuildContext context) {
     var fielding = context.watch<FieldingProvider>();
@@ -120,18 +126,29 @@ class TileTitle extends StatelessWidget {
   }
 }
 
-class TileItem extends StatelessWidget {
+class TileItem extends StatefulWidget {
   final AllProjectsModel detailItem;
 
   const TileItem({Key? key, required this.detailItem}) : super(key: key);
 
   @override
+  _TileItemState createState() => _TileItemState();
+}
+
+class _TileItemState extends State<TileItem> {
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.read<FieldingProvider>().setAllProjectsSelected(detailItem);
-        context.read<FieldingProvider>().getJobNumberAttachModel(detailItem.iD);
-        Get.to(DetailFieldingPage(allProjectsModel: detailItem));
+        context
+            .read<FieldingProvider>()
+            .setAllProjectsSelected(widget.detailItem);
+        context
+            .read<FieldingProvider>()
+            .getJobNumberAttachModel(widget.detailItem.iD);
+        Get.to(DetailFieldingPage(allProjectsModel: widget.detailItem));
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),
@@ -149,14 +166,14 @@ class TileItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          detailItem.projectName!,
+                          widget.detailItem.projectName!,
                           style: TextStyle(
                               color: ColorHelpers.colorBlackText,
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          detailItem.layerName ?? "-",
+                          widget.detailItem.layerName ?? "-",
                           style: TextStyle(
                               color: ColorHelpers.colorBlackText,
                               fontSize: 16,
@@ -170,8 +187,8 @@ class TileItem extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                                (detailItem.totalPoles != null)
-                                    ? detailItem.totalPoles.toString()
+                                (widget.detailItem.totalPoles != null)
+                                    ? widget.detailItem.totalPoles.toString()
                                     : "0",
                                 style: TextStyle(
                                     color: ColorHelpers.colorBlueNumber,
@@ -183,22 +200,45 @@ class TileItem extends StatelessWidget {
                                     fontSize: 14)),
                           ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            
+                        BlocListener<LocalBloc, LocalState>(
+                          listener: (context, state) {
+                            if (state is SaveFieldingRequestLoading) {
+                              LoadingWidget.showLoadingDialog(
+                                  context, _keyLoader);
+                            } else if (state is SaveFieldingRequestSuccess) {
+                              Navigator.of(_keyLoader.currentContext!,
+                                      rootNavigator: true)
+                                  .pop();
+                              Fluttertoast.showToast(msg: "Download success");
+                            } else if (state is SaveFieldingRequestFailed) {
+                              Navigator.of(_keyLoader.currentContext!,
+                                      rootNavigator: true)
+                                  .pop();
+                              Fluttertoast.showToast(msg: state.toString());
+                            }
                           },
-                          child: Container(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Download",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                          child: InkWell(
+                            onTap: () {
+                              var user = context.read<AuthBloc>().userModel;
+                              context.read<LocalBloc>().add(SaveFieldingRequest(
+                                  user!.data!.token!,
+                                  widget.detailItem.iD!,
+                                  widget.detailItem,
+                                  user.data!.user!.iD!));
+                            },
+                            child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Download",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
                               ),
+                              decoration: BoxDecoration(
+                                  color: ColorHelpers.colorGreen2,
+                                  borderRadius: BorderRadius.circular(5)),
                             ),
-                            decoration: BoxDecoration(
-                                color: ColorHelpers.colorGreen2,
-                                borderRadius: BorderRadius.circular(5)),
                           ),
                         ),
                       ],
@@ -213,15 +253,15 @@ class TileItem extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          (detailItem.dueDate != null)
-                              ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(detailItem.dueDate!))}"
+                          (widget.detailItem.dueDate != null)
+                              ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(widget.detailItem.dueDate!))}"
                               : "-",
                           style: TextStyle(
                               fontSize: 12, color: ColorHelpers.colorBlackText),
                         ),
                         Text(
-                          (detailItem.totalPoles != null)
-                              ? "Total ${detailItem.approx} Poles"
+                          (widget.detailItem.totalPoles != null)
+                              ? "Total ${widget.detailItem.approx} Poles"
                               : "Total 0 Poles",
                           style: TextStyle(
                               fontSize: 12, color: ColorHelpers.colorBlackText),
@@ -233,7 +273,8 @@ class TileItem extends StatelessWidget {
                         showDialog(
                             context: context,
                             builder: (context) {
-                              return NotesRequestItem(note: detailItem.note);
+                              return NotesRequestItem(
+                                  note: widget.detailItem.note);
                             });
                       },
                       child: Container(

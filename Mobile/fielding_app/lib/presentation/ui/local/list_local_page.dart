@@ -1,4 +1,5 @@
 import 'package:fielding_app/data/models/models.exports.dart';
+import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/list/list.exports.dart';
@@ -23,7 +24,8 @@ class _ListLocalPageState extends State<ListLocalPage> {
   @override
   void initState() {
     super.initState();
-    context.read<LocalBloc>().add(GetEditPole());
+    context.read<LocalBloc>().add(
+        GetListFielding(context.read<AuthBloc>().userModel!.data!.user!.iD!));
   }
 
   @override
@@ -40,20 +42,20 @@ class _ListLocalPageState extends State<ListLocalPage> {
       backgroundColor: Colors.white,
       body: BlocConsumer<LocalBloc, LocalState>(
         listener: (context, state) {
-       if (state is PostEditPoleFailed) {
+          if (state is PostEditPoleFailed) {
             Fluttertoast.showToast(msg: state.message!);
-          }  else if (state is DeletePoleFailed) {
+          } else if (state is DeletePoleFailed) {
             Fluttertoast.showToast(msg: state.message!);
           }
         },
         builder: (context, state) {
-          if (state is GetEditPoleLoading) {
+          if (state is GetListFieldingLoading) {
             return _skeletonLoading();
-          } else if (state is GetEditPoleFailed) {
+          } else if (state is GetListFieldingFailed) {
             return _handlingWidget(state.message);
-          } else if (state is GetEditPoleSuccess) {
+          } else if (state is GetListFieldingSuccess) {
             return _content();
-          } else if (state is GetEditPoleEmpty) {
+          } else if (state is GetListFieldingEmpty) {
             return _handlingWidget("Fielding Request Empty");
           } else if (state is PostEditPoleSuccess) {
             return _content();
@@ -78,7 +80,8 @@ class _ListLocalPageState extends State<ListLocalPage> {
         FittedBox(
           child: InkWell(
             onTap: () {
-              context.read<LocalBloc>().add(GetEditPole());
+              context.read<LocalBloc>().add(GetListFielding(
+                  context.read<AuthBloc>().userModel!.data!.user!.iD!));
             },
             child: Container(
               color: ColorHelpers.colorBlueIntro,
@@ -124,8 +127,9 @@ class _ListLocalPageState extends State<ListLocalPage> {
   }
 
   Widget _content() {
-    return (context.read<LocalBloc>().listAddPoleLocal!.length == 0)
-        ? _handlingWidget("List pole an empty")
+    var localBloc = context.read<LocalBloc>();
+    return (localBloc.allProjectModel!.length == 0)
+        ? _handlingWidget("Fielding Request Empty")
         : Container(
             color: Colors.white,
             padding: EdgeInsets.all(16),
@@ -142,11 +146,8 @@ class _ListLocalPageState extends State<ListLocalPage> {
                 ListView(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  children: context
-                      .read<LocalBloc>()
-                      .listAddPoleLocal!
-                      .map((data) => ItemLocalPole(
-                            addPoleLocal: data,
+                  children: localBloc.allProjectModel!.map((data) => ItemLocalPole(
+                            projects: data,
                           ))
                       .toList(),
                 ),

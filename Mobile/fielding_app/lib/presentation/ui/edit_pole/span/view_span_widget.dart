@@ -63,7 +63,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        _capturePng();
+        // _capturePng();
         Get.back();
         return Future.value(false);
       },
@@ -78,7 +78,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
                 color: ColorHelpers.colorBlackText,
               ),
               onPressed: () {
-                _capturePng();
+                // _capturePng();
                 Get.back();
               },
             ),
@@ -101,7 +101,7 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
               child: RaisedButton(
                   padding: EdgeInsets.all(10),
                   onPressed: () {
-                    _capturePng();
+                    // _capturePng();
                     Get.back();
                   },
                   child: Text(

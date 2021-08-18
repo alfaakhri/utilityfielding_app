@@ -7,7 +7,7 @@ class HiveService {
     return dataFromBox;
   }
 
-  saveDataToBox(String boxName, String dataByKey, dynamic content) async {
+  Future saveDataToBox(String boxName, String dataByKey, dynamic content) async {
     final openedBox = await Hive.openBox(boxName);
     await openedBox.put(dataByKey, content);
   }

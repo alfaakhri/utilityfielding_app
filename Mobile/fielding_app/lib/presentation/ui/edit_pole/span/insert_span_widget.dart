@@ -154,106 +154,108 @@ class _InsertSpanWidgetState extends State<InsertSpanWidget> {
                 color: ColorHelpers.colorButtonDefault,
               )),
         ),
-        body: Column(
-          children: [
-            RepaintBoundary(
-              key: globalKey,
-              child: Container(
-                color: Colors.white,
-                margin: EdgeInsets.all(15),
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                        borderRadius: BorderRadius.circular(10),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              RepaintBoundary(
+                key: globalKey,
+                child: Container(
+                  color: Colors.white,
+                  margin: EdgeInsets.all(15),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: ColorHelpers.colorGrey.withOpacity(0.2)),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        width: 350,
+                        height: 250,
                       ),
-                      width: 350,
-                      height: 250,
-                    ),
-                    GestureDetector(
-                        onHorizontalDragStart: (detail) {
-                          setState(() {
-                            this._bX = detail.localPosition.dx;
-                          });
-                        },
-                        onVerticalDragStart: (detail) {
-                          setState(() {
-                            this._bY = detail.localPosition.dy;
-                          });
-                        },
-                        onHorizontalDragUpdate: (detail) {
-                          setState(() {
-                            this._bX = detail.localPosition.dx;
-                          });
-                        },
-                        onVerticalDragUpdate: (detail) {
-                          setState(() {
-                            this._bY = detail.localPosition.dy;
-                          });
-                        },
-                        child: Line(
-                          start: {"x": this._aX, "y": this._aY},
-                          end: {"x": this._bX, "y": this._bY},
-                          color: randomColor,
-                        )),
-                  ],
+                      GestureDetector(
+                          onHorizontalDragStart: (detail) {
+                            setState(() {
+                              this._bX = detail.localPosition.dx;
+                            });
+                          },
+                          onVerticalDragStart: (detail) {
+                            setState(() {
+                              this._bY = detail.localPosition.dy;
+                            });
+                          },
+                          onHorizontalDragUpdate: (detail) {
+                            setState(() {
+                              this._bX = detail.localPosition.dx;
+                            });
+                          },
+                          onVerticalDragUpdate: (detail) {
+                            setState(() {
+                              this._bY = detail.localPosition.dy;
+                            });
+                          },
+                          child: Line(
+                            start: {"x": this._aX, "y": this._aY},
+                            end: {"x": this._bX, "y": this._bY},
+                            color: randomColor,
+                          )),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Text("Touch & Drag",
-                style: TextStyle(fontSize: 14, color: ColorHelpers.colorGrey)),
-            UIHelper.verticalSpaceSmall,
-            Form(
-              key: this.formKey,
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Size in Feet",
-                        style: TextStyle(
-                            fontSize: 14, color: ColorHelpers.colorGrey)),
-                    UIHelper.verticalSpaceSmall,
-                    TextFormField(
-                      controller: this.sizeController,
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null) {
-                          return 'Please insert feet';
-                        } else if (value == "") {
-                          return 'Please insert feet';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                        suffixText: "ft",
-                        suffixStyle: TextStyle(fontSize: 14),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: ColorHelpers.colorGrey.withOpacity(0.2)),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorHelpers.colorRed),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorHelpers.colorRed),
+              Text("Touch & Drag",
+                  style: TextStyle(fontSize: 14, color: ColorHelpers.colorGrey)),
+              UIHelper.verticalSpaceSmall,
+              Form(
+                key: this.formKey,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Size in Feet",
+                          style: TextStyle(
+                              fontSize: 14, color: ColorHelpers.colorGrey)),
+                      UIHelper.verticalSpaceSmall,
+                      TextFormField(
+                        controller: this.sizeController,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please insert feet';
+                          } else if (value == "") {
+                            return 'Please insert feet';
+                          }
+                          return null;
+                        },
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          isDense: true,
+                          suffixText: "ft",
+                          suffixStyle: TextStyle(fontSize: 14),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: ColorHelpers.colorGrey.withOpacity(0.2)),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: ColorHelpers.colorGrey.withOpacity(0.2)),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: ColorHelpers.colorRed),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: ColorHelpers.colorRed),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

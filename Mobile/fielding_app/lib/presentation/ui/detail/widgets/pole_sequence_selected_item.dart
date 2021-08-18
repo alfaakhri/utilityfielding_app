@@ -23,6 +23,7 @@ class PoleSequenceSelectedItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var fielding = context.read<FieldingProvider>();
+    var connect = context.read<ConnectionProvider>();
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
       child: Card(
@@ -89,71 +90,81 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                               )),
                         ),
                         UIHelper.verticalSpaceSmall,
-                        InkWell(
-                          onTap: () {
-                            var fielding = context.read<FieldingProvider>();
+                        (!connect.isConnected)
+                            ? Container()
+                            : InkWell(
+                                onTap: () {
+                                  var fielding =
+                                      context.read<FieldingProvider>();
 
-                            fielding
-                                .setPolesByLayerSelected(poleModelSelected!);
-                            Get.to(UploadPicturePage(
-                              pole: poleModelSelected!,
-                            ));
-                          },
-                          child: Container(
-                              width: 150,
-                              decoration: BoxDecoration(
-                                  color: ColorHelpers.colorGreenCard,
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                      color: ColorHelpers.colorButtonDefault)),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              child: Text(
-                                "Take Close Up Picture",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: ColorHelpers.colorButtonDefault,
-                                  fontSize: 12,
-                                ),
-                              )),
-                        ),
+                                  fielding.setPolesByLayerSelected(
+                                      poleModelSelected!);
+                                  Get.to(UploadPicturePage(
+                                    pole: poleModelSelected!,
+                                  ));
+                                },
+                                child: Container(
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                        color: ColorHelpers.colorGreenCard,
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                            color: ColorHelpers
+                                                .colorButtonDefault)),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 10),
+                                    child: Text(
+                                      "Take Close Up Picture",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: ColorHelpers.colorButtonDefault,
+                                        fontSize: 12,
+                                      ),
+                                    )),
+                              ),
                         UIHelper.verticalSpaceSmall,
-                        InkWell(
-                          onTap: () {
-                            if (poleModelSelected!.startPolePicture!) {
-                              dialogAlertPicture("complete pictures", context);
-                            } else {
-                              dialogAlertPicture(
-                                  "additional pictures", context);
-                            }
-                          },
-                          child: Container(
-                              width: 150,
-                              decoration: BoxDecoration(
-                                  color: poleModelSelected!.startPolePicture!
-                                      ? ColorHelpers.colorButtonDefault
-                                      : ColorHelpers.colorYellowCard,
-                                  borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                      color:
-                                          poleModelSelected!.startPolePicture!
-                                              ? ColorHelpers.colorButtonDefault
-                                              : ColorHelpers.colorOrange)),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              child: Text(
-                                poleModelSelected!.startPolePicture!
-                                    ? "Complete Pictures"
-                                    : "Additional Pictures",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: poleModelSelected!.startPolePicture!
-                                      ? ColorHelpers.colorWhite
-                                      : ColorHelpers.colorOrange,
-                                  fontSize: 12,
-                                ),
-                              )),
-                        ),
+                        (!connect.isConnected)
+                            ? Container()
+                            : InkWell(
+                                onTap: () {
+                                  if (poleModelSelected!.startPolePicture!) {
+                                    dialogAlertPicture(
+                                        "complete pictures", context);
+                                  } else {
+                                    dialogAlertPicture(
+                                        "additional pictures", context);
+                                  }
+                                },
+                                child: Container(
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                        color: poleModelSelected!
+                                                .startPolePicture!
+                                            ? ColorHelpers.colorButtonDefault
+                                            : ColorHelpers.colorYellowCard,
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                            color: poleModelSelected!
+                                                    .startPolePicture!
+                                                ? ColorHelpers
+                                                    .colorButtonDefault
+                                                : ColorHelpers.colorOrange)),
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 5, horizontal: 10),
+                                    child: Text(
+                                      poleModelSelected!.startPolePicture!
+                                          ? "Complete Pictures"
+                                          : "Additional Pictures",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color:
+                                            poleModelSelected!.startPolePicture!
+                                                ? ColorHelpers.colorWhite
+                                                : ColorHelpers.colorOrange,
+                                        fontSize: 12,
+                                      ),
+                                    )),
+                              ),
                       ],
                     )
                   : InkWell(
