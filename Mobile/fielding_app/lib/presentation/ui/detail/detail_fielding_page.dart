@@ -1,5 +1,6 @@
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
@@ -99,10 +100,12 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   }
 
   void getAllPoleById() {
+    var user = context.read<UserProvider>();
     fieldingBloc.add(GetAllPolesByID(
-        context.read<UserProvider>().userModel.data!.token,
+        user.userModel.data!.token,
         widget.allProjectsModel!,
-        context.read<ConnectionProvider>().isConnected));
+        context.read<ConnectionProvider>().isConnected,
+        user.userModel.data!.user!.iD!));
   }
 
   void searchPolesByStatus() {
@@ -169,6 +172,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
           listener: (context, state) {
             if (state is GetAllPolesByIdSuccess) {
               showButtonCompleteMulti = true;
+              context.read<LocalProvider>().updateProjectsLocal(
+                  context.read<UserProvider>().userModel.data!.user!.iD!);
               fielding.setAllPolesByLayer(state.allPolesByLayer);
               fielding.setFieldingTypeAssign(3);
               searchPolesByStatus();

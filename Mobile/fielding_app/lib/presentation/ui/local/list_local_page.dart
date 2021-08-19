@@ -146,7 +146,8 @@ class _ListLocalPageState extends State<ListLocalPage> {
                 ListView(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  children: localBloc.allProjectModel!.map((data) => ItemLocalPole(
+                  children: localBloc.allProjectModel!
+                      .map((data) => ItemLocalPole(
                             projects: data,
                           ))
                       .toList(),

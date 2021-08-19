@@ -3,6 +3,7 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:fielding_app/domain/bloc/download_image_bloc/download_image_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/presentation/ui/ui.exports.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => IntroProvider()),
         ChangeNotifierProvider(create: (_) => MapProvider()),
         ChangeNotifierProvider(create: (_) => ConnectionProvider()),
+        ChangeNotifierProvider(create: (_) => LocalProvider()),
       ],
       child: MultiBlocProvider(
         providers: [

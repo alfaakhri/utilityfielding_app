@@ -32,3 +32,10 @@ class GetListFielding extends LocalEvent {
 
   GetListFielding(this.userId);
 }
+
+class DeleteFieldingRequest extends LocalEvent {
+  final AllProjectsModel allProjectsModel;
+  final String userId;
+
+  DeleteFieldingRequest(this.allProjectsModel, this.userId);
+}

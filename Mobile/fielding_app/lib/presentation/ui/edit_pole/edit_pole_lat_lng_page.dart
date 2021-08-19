@@ -242,11 +242,13 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               fielding.setLatLng(0, 0);
               fielding.setStreetName("");
               fielding.clearAll();
-
+              
+              var user = context.read<UserProvider>();
               context.read<FieldingBloc>().add(GetAllPolesByID(
-                  context.read<UserProvider>().userModel.data!.token,
+                  user.userModel.data!.token,
                   widget.allProjectsModel,
-                  context.read<ConnectionProvider>().isConnected));
+                  context.read<ConnectionProvider>().isConnected,
+                  user.userModel.data!.user!.iD!));
               Get.back();
             }
           },

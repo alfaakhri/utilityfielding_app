@@ -1,17 +1,29 @@
 import 'package:fielding_app/data/models/models.exports.dart';
+import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
+import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
+import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class ItemLocalPole extends StatelessWidget {
+class ItemLocalPole extends StatefulWidget {
   final AllProjectsModel projects;
 
   const ItemLocalPole({Key? key, required this.projects}) : super(key: key);
+
+  @override
+  _ItemLocalPoleState createState() => _ItemLocalPoleState();
+}
+
+class _ItemLocalPoleState extends State<ItemLocalPole> {
+  final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +31,15 @@ class ItemLocalPole extends StatelessWidget {
       onTap: () {
         context
             .read<FieldingProvider>()
-            .setAllProjectsSelected(projects);
+            .setAllProjectsSelected(widget.projects);
         context
             .read<FieldingProvider>()
-            .getJobNumberAttachModel(projects.iD);
-        Get.to(DetailFieldingPage(allProjectsModel: projects,));
+            .getJobNumberAttachModel(widget.projects.iD);
+        context.read<LocalProvider>().setProjectsLocal(widget.projects);
+        Get.back();
+        Get.to(DetailFieldingPage(
+          allProjectsModel: widget.projects,
+        ));
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),
@@ -41,14 +57,14 @@ class ItemLocalPole extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          projects.projectName!,
+                          widget.projects.projectName!,
                           style: TextStyle(
                               color: ColorHelpers.colorBlackText,
                               fontSize: 16,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          projects.layerName ?? "-",
+                          widget.projects.layerName ?? "-",
                           style: TextStyle(
                               color: ColorHelpers.colorBlackText,
                               fontSize: 16,
@@ -62,8 +78,8 @@ class ItemLocalPole extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                                (projects.totalPoles != null)
-                                    ? projects.totalPoles.toString()
+                                (widget.projects.totalPoles != null)
+                                    ? widget.projects.totalPoles.toString()
                                     : "0",
                                 style: TextStyle(
                                     color: ColorHelpers.colorBlueNumber,
@@ -87,35 +103,80 @@ class ItemLocalPole extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          (projects.dueDate != null)
-                              ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(projects.dueDate!))}"
+                          (widget.projects.dueDate != null)
+                              ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(widget.projects.dueDate!))}"
                               : "-",
                           style: TextStyle(
                               fontSize: 12, color: ColorHelpers.colorBlackText),
                         ),
                         Text(
-                          (projects.totalPoles != null)
-                              ? "Total ${projects.approx} Poles"
+                          (widget.projects.totalPoles != null)
+                              ? "Total ${widget.projects.approx} Poles"
                               : "Total 0 Poles",
                           style: TextStyle(
                               fontSize: 12, color: ColorHelpers.colorBlackText),
                         )
                       ],
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Notes",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {},
+                          child: Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Notes",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                                color: ColorHelpers.colorButtonDefault,
+                                borderRadius: BorderRadius.circular(5)),
                           ),
                         ),
-                        decoration: BoxDecoration(
-                            color: ColorHelpers.colorButtonDefault,
-                            borderRadius: BorderRadius.circular(5)),
-                      ),
+                        UIHelper.horizontalSpaceSmall,
+                        BlocListener<LocalBloc, LocalState>(
+                          listener: (context, state) {
+                            if (state is DeleteFieldingRequestLoading) {
+                              
+                            } else if (state is DeleteFieldingRequestSuccess) {
+                             
+                              Fluttertoast.showToast(msg: "Delete success");
+                            } else if (state is DeleteFieldingRequestFailed) {
+                              
+                              Fluttertoast.showToast(msg: state.toString());
+                            }
+                          },
+                          child: InkWell(
+                            onTap: () {
+                              context.read<LocalBloc>().add(
+                                  DeleteFieldingRequest(
+                                      widget.projects,
+                                      context
+                                          .read<UserProvider>()
+                                          .userModel
+                                          .data!
+                                          .user!
+                                          .iD!));
+                            },
+                            child: Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "Delete",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 12),
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                  color: ColorHelpers.colorRed,
+                                  borderRadius: BorderRadius.circular(5)),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

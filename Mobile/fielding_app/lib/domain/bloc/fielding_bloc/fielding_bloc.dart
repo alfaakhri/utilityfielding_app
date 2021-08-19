@@ -119,8 +119,16 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         }
       } else {
         try {
-          _allPolesByLayer = event.allProjectsModel!.allPolesByLayer;
-          yield GetAllPolesByIdSuccess(_allPolesByLayer);
+          final dataBox = await _hiveService.openAndGetDataFromHiveBox(
+              getHiveFieldingPoles, event.userId);
+          if (dataBox != null) {
+            var project = AllProjectsModel.fromJsonList(json.decode(dataBox));
+            _allPolesByLayer = project!
+                .firstWhere(
+                    (element) => element.iD == event.allProjectsModel!.iD)
+                .allPolesByLayer;
+            yield GetAllPolesByIdSuccess(_allPolesByLayer);
+          }
         } catch (e) {
           yield GetAllPolesByIdFailed(e.toString());
         }

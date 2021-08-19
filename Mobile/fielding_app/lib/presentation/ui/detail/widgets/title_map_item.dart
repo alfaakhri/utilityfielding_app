@@ -1,4 +1,5 @@
 import 'package:fielding_app/data/models/list_fielding/list_fielding.exports.dart';
+import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/supporting_docs/supporting_docs_exports.dart';
@@ -28,7 +29,10 @@ class TitleMapItem extends StatelessWidget {
                     color: ColorHelpers.colorBlackText),
               ),
               (!connect.isConnected)
-                  ? ButtonUploadPole(allProjectsModel: allProjectsModel,)
+                  ? ButtonUploadPole(
+                      allProjectsModel:
+                          context.read<LocalProvider>().projectLocalSelected,
+                    )
                   : ButtonAddPole(project: allProjectsModel),
             ],
           ),
@@ -66,7 +70,12 @@ class TitleMapItem extends StatelessWidget {
                   color: ColorHelpers.colorBlackText),
             ),
             UIHelper.horizontalSpaceSmall,
-            (!connect.isConnected) ? ButtonUploadPole(allProjectsModel: allProjectsModel,) : SupportingDocsButton(),
+            (!connect.isConnected)
+                ? ButtonUploadPole(
+                    allProjectsModel:
+                        context.read<LocalProvider>().projectLocalSelected,
+                  )
+                : SupportingDocsButton(),
             // UIHelper.horizontalSpaceSmall,
             // itemFieldingType(fielding), //HIDE DULU
           ],

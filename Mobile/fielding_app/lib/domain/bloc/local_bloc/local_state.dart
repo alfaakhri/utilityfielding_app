@@ -59,3 +59,11 @@ class GetListFieldingFailed extends LocalState {
 
   GetListFieldingFailed(this.message);
 }
+
+class DeleteFieldingRequestLoading extends LocalState {}
+class DeleteFieldingRequestSuccess extends LocalState {}
+class DeleteFieldingRequestFailed extends LocalState {
+  final String? message;
+
+  DeleteFieldingRequestFailed(this.message);
+}

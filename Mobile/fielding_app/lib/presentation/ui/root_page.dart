@@ -64,6 +64,8 @@ class _RootPageState extends State<RootPage> {
       context.read<AnchorProvider>().getDownGuySize(_isConnected);
       context.read<AnchorProvider>().getAllAnchorCondition(_isConnected);
       context.read<FieldingProvider>().getFieldingType(_isConnected);
+      context.read<FieldingProvider>().getCurrentLocation(_isConnected);
+
       authBloc = BlocProvider.of<AuthBloc>(context);
       authBloc.add(StartApp(_isConnected));
     } on PlatformException catch (e) {

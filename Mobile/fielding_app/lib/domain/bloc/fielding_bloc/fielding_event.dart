@@ -21,8 +21,9 @@ class GetAllPolesByID extends FieldingEvent {
   final String? token;
   final AllProjectsModel? allProjectsModel;
   final bool? isConnected;
+  final String userId;
 
-  GetAllPolesByID(this.token, this.allProjectsModel, this.isConnected);
+  GetAllPolesByID(this.token, this.allProjectsModel, this.isConnected, this.userId);
 }
 
 class StartPolePicture extends FieldingEvent {

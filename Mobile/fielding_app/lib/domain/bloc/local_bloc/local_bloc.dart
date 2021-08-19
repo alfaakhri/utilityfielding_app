@@ -121,6 +121,20 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
       } catch (e) {
         yield GetListFieldingFailed(e.toString());
       }
+    } else if (event is DeleteFieldingRequest) {
+      yield DeleteFieldingRequestLoading();
+      try {
+        _allProjectModel!.remove(event.allProjectsModel);
+        await _hiveService.deleteDataFromBox(getHiveFieldingPoles, event.userId,);
+        if (_allProjectModel!.length != 0) {
+          await _hiveService.saveDataToBox(
+              getHiveFieldingPoles, event.userId, json.encode(_allProjectModel));
+        }
+        yield DeleteFieldingRequestSuccess();
+        add(GetListFielding(event.userId));
+      } catch (e) {
+        yield DeleteFieldingRequestFailed(e.toString());
+      }
     }
   }
 }

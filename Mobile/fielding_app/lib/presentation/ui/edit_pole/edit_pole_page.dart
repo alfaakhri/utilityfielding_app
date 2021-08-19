@@ -200,10 +200,12 @@ class _EditPolePageState extends State<EditPolePage> {
   }
 
   void getAllPoles() {
+    var user = context.read<UserProvider>();
     fieldingBloc.add(GetAllPolesByID(
-        context.read<UserProvider>().userModel.data!.token,
+        user.userModel.data!.token,
         widget.allProjectsModel,
-        context.read<ConnectionProvider>().isConnected));
+        context.read<ConnectionProvider>().isConnected,
+        user.userModel.data!.user!.iD!));
   }
 
   @override
