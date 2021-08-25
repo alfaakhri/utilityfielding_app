@@ -39,3 +39,14 @@ class DeleteFieldingRequest extends LocalEvent {
 
   DeleteFieldingRequest(this.allProjectsModel, this.userId);
 }
+
+class UploadSinglePole extends LocalEvent {
+  final AllProjectsModel allProjectsModel;
+  final AddPoleModel addPoleModel;
+  final String userId;
+
+  UploadSinglePole(this.addPoleModel, this.allProjectsModel, this.userId);
+}
+
+class UploadListPole extends LocalEvent {
+}

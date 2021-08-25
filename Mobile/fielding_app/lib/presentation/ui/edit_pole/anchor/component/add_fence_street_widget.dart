@@ -34,6 +34,8 @@ class _AddFenceStreetWidgetState extends State<AddFenceStreetWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double widthSize = 300;
+    double heightSize = 200;
     return Scaffold(
         appBar: AppBar(
           title: Text("Add ${widget.title}",
@@ -67,12 +69,12 @@ class _AddFenceStreetWidgetState extends State<AddFenceStreetWidget> {
                     });
                   },
                   child: Container(
-                    height: 250,
-                    width: 350,
+                    height: heightSize,
+                    width: widthSize,
                     alignment: Alignment.center,
                     margin: EdgeInsets.all(15),
                     child: CustomPaint(
-                      size: Size(350, 250),
+                      size: Size(widthSize, heightSize),
                       child: GestureDetector(
                         child: Stack(
                           alignment: Alignment.center,
@@ -84,8 +86,8 @@ class _AddFenceStreetWidgetState extends State<AddFenceStreetWidget> {
                                         .withOpacity(0.2)),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              width: 350,
-                              height: 250,
+                              width: widthSize,
+                              height: heightSize,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -111,7 +113,7 @@ class _AddFenceStreetWidgetState extends State<AddFenceStreetWidget> {
                                     fielding.baseHeight);
 
                                 return CustomPaint(
-                                  size: Size(350, 250),
+                                  size: Size(widthSize, heightSize),
                                   painter: DrawCircleTextAnchor(
                                       center: (e.imageType == 1)
                                           ? {"x": newX + 30, "y": newY + 30}
@@ -134,7 +136,7 @@ class _AddFenceStreetWidgetState extends State<AddFenceStreetWidget> {
                                 var bY =
                                     e.points!.replaceAll("]", "").split(",")[3];
                                 return CustomPaint(
-                                  size: Size(350, 250),
+                                  size: Size(widthSize, heightSize),
                                   painter: DrawLine(
                                       start: {"x": double.parse(aX), "y": aY},
                                       end: {"x": bX, "y": double.parse(bY)},
@@ -155,7 +157,7 @@ class _AddFenceStreetWidgetState extends State<AddFenceStreetWidget> {
                                 var bY =
                                     e.points!.replaceAll("]", "").split(",")[3];
                                 return CustomPaint(
-                                  size: Size(350, 250),
+                                  size: Size(widthSize, heightSize),
                                   painter: DrawLine(
                                       start: {"x": double.parse(aX), "y": aY},
                                       end: {"x": bX, "y": double.parse(bY)},
@@ -166,7 +168,7 @@ class _AddFenceStreetWidgetState extends State<AddFenceStreetWidget> {
                             (this._shapeA == null || this._shapeB == null)
                                 ? Container()
                                 : CustomPaint(
-                                    size: Size(350, 250),
+                                    size: Size(widthSize, heightSize),
                                     painter: DrawLine(
                                         start: {
                                           "x": this._shapeA!.dx,

@@ -110,7 +110,7 @@ class AddPoleModel {
     poleCondition = json['PoleCondition'];
     otherNumber = json['OtherNumber'];
     poleStamp = json['PoleStamp'];
-    notes = json['Notes'];
+    notes = json['Note'];
     isRadioAntenna = json['IsRadioAntenna'];
     if (json['HOAList'] != null) {
       hOAList = <HOAList>[];

@@ -58,8 +58,6 @@ class _EditPolePageState extends State<EditPolePage> {
   bool? isFillPoleStamp;
   bool? isFillRadioAntena;
 
-  List<String> _listChoice = ["-", "Yes", "No"];
-
   void clearFormController() {
     var fielding = context.read<FieldingProvider>();
     fielding.setPolesByLayerSelected(AllPolesByLayerModel());

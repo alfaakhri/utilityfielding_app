@@ -1,16 +1,11 @@
-import 'package:fielding_app/data/models/edit_pole/add_pole_model.dart';
-import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
+
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
-import 'package:fielding_app/domain/provider/riser_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
-import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/ui/edit_pole/anchor/anchor.exports.dart';
 import 'package:fielding_app/presentation/ui/edit_pole/anchor/component/active_anchor_widget.dart';
 import 'package:fielding_app/presentation/widgets/circle_and_text_painter.dart';
-import 'package:fielding_app/presentation/widgets/circle_painter.dart';
-import 'package:fielding_app/presentation/widgets/constants_widget.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -30,6 +25,8 @@ class _AnchorWidgetState extends State<AnchorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double widthSize = 300;
+    double heightSize = 200;
     return Scaffold(
         appBar: AppBar(
           title: Text("Anchor",
@@ -52,12 +49,12 @@ class _AnchorWidgetState extends State<AnchorWidget> {
             children: [
               RepaintBoundary(
                 child: Container(
-                  height: 250,
-                  width: 350,
+                  height: heightSize,
+                  width: widthSize,
                   alignment: Alignment.center,
                   margin: EdgeInsets.all(15),
                   child: CustomPaint(
-                    size: Size(350, 250),
+                    size: Size(widthSize, heightSize),
                     child: GestureDetector(
                       onTapDown: (detail) {
                         // if (data.listAnchorData.length > 2) {
@@ -82,8 +79,8 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                       ColorHelpers.colorGrey.withOpacity(0.2)),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            width: 350,
-                            height: 250,
+                            width: widthSize,
+                            height: heightSize,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -109,7 +106,7 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                                   fielding.baseHeight);
 
                               return CustomPaint(
-                                size: Size(350, 250),
+                                size: Size(widthSize, heightSize),
                                 painter: DrawCircleTextAnchor(
                                     center: (e.imageType == 1)
                                         ? {"x": newX + 30, "y": newY + 30}
@@ -130,7 +127,7 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                               var bY =
                                   e.points!.replaceAll("]", "").split(",")[3];
                               return CustomPaint(
-                                size: Size(350, 250),
+                                size: Size(widthSize, 200),
                                 painter: DrawLine(
                                     start: {"x": double.parse(aX), "y": aY},
                                     end: {"x": bX, "y": double.parse(bY)},
@@ -149,7 +146,7 @@ class _AnchorWidgetState extends State<AnchorWidget> {
                               var bY =
                                   e.points!.replaceAll("]", "").split(",")[3];
                               return CustomPaint(
-                                size: Size(350, 250),
+                                size: Size(widthSize, 200),
                                 painter: DrawLine(
                                     start: {"x": double.parse(aX), "y": aY},
                                     end: {"x": bX, "y": double.parse(bY)},

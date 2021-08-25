@@ -1,4 +1,3 @@
-import 'package:fielding_app/data/models/edit_pole/add_pole_model.dart';
 import 'package:fielding_app/data/models/edit_pole/all_down_guy_owner.dart';
 import 'package:fielding_app/data/models/edit_pole/pole_by_id_model.dart';
 import 'package:fielding_app/domain/provider/anchor_provider.dart';
@@ -8,7 +7,6 @@ import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/widgets/constants_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 
 class EditDownguyWidget extends StatefulWidget {
   final bool? type;
@@ -135,8 +133,7 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
-            List<DownGuyList> downGuyList;
-            List<DownGuyList> brokenDownGuyList;
+            
             DownGuyList dataDownGuy;
             //Filtering untuk menampilkan list type == 0 & type == 1 (broken)
             if (type) {
@@ -411,7 +408,7 @@ class _EditDownguyWidgetState extends State<EditDownguyWidget> {
                               }
                             });
                           },
-                          value: (this.textInsulated.text == null ||
+                          value: (this.textInsulated.text.isEmpty ||
                                   this.textInsulated.text == "")
                               ? null
                               : this.textInsulated.text.toString(),

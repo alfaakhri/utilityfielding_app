@@ -18,8 +18,9 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class DetailFieldingPage extends StatefulWidget {
   final AllProjectsModel? allProjectsModel;
+  final bool? isLocalMenu; 
 
-  const DetailFieldingPage({Key? key, this.allProjectsModel}) : super(key: key);
+  const DetailFieldingPage({Key? key, this.allProjectsModel, this.isLocalMenu}) : super(key: key);
   @override
   _DetailFieldingPageState createState() => _DetailFieldingPageState();
 }
@@ -258,7 +259,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 subTitle: "Please come back in a moment.",
               );
             } else if (state is GetAllPolesByIdSuccess) {
-              //TO-DO activated if filter fielding type not hidden
+              // TODO: activated if filter fielding type not hidden
               // List<AllPolesByLayerModel>? allPolesByFilter;
               // if (fielding.fieldingTypeSelected!.id != 3) {
               //   allPolesByFilter = state.allPolesByLayer!
@@ -286,7 +287,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   Widget _content(List<AllPolesByLayerModel>? allPoles) {
     return Column(
       children: [
-        TitleMapItem(allProjectsModel: widget.allProjectsModel!),
+        TitleMapItem(allProjectsModel: widget.allProjectsModel!, isLocalMenu: widget.isLocalMenu!,),
         Expanded(
           child: Stack(
             children: [

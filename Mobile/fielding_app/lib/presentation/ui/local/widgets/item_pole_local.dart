@@ -39,6 +39,7 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
         Get.back();
         Get.to(DetailFieldingPage(
           allProjectsModel: widget.projects,
+          isLocalMenu: true,
         ));
       },
       child: Padding(

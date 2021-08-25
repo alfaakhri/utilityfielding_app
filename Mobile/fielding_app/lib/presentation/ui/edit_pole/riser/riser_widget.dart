@@ -7,8 +7,6 @@ import 'package:fielding_app/external/ui_helpers.dart';
 import 'package:fielding_app/presentation/ui/edit_pole/edit_pole.exports.dart';
 import 'package:fielding_app/presentation/ui/edit_pole/riser/component/active_riser_widget.dart';
 import 'package:fielding_app/presentation/widgets/circle_and_text_painter.dart';
-import 'package:fielding_app/presentation/widgets/circle_painter.dart';
-import 'package:fielding_app/presentation/widgets/constants_widget.dart';
 import 'package:fielding_app/presentation/widgets/triangle_and_text_painter.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import 'insert_riser_widget.dart';
 
 class RiserWidget extends StatefulWidget {
   @override

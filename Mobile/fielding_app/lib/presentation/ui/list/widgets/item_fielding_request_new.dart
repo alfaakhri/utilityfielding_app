@@ -148,7 +148,7 @@ class _TileItemState extends State<TileItem> {
         context
             .read<FieldingProvider>()
             .getJobNumberAttachModel(widget.detailItem.iD);
-        Get.to(DetailFieldingPage(allProjectsModel: widget.detailItem));
+        Get.to(DetailFieldingPage(allProjectsModel: widget.detailItem, isLocalMenu: false,));
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),

@@ -52,7 +52,11 @@ class SaveFieldingRequestFailed extends LocalState {
 class SaveFieldingRequestSuccess extends LocalState {}
 
 class GetListFieldingLoading extends LocalState {}
-class GetListFieldingSuccess extends LocalState {}
+class GetListFieldingSuccess extends LocalState {
+  final List<AllProjectsModel> allProjectsModel;
+
+  GetListFieldingSuccess(this.allProjectsModel);
+}
 class GetListFieldingEmpty extends LocalState {}
 class GetListFieldingFailed extends LocalState {
   final String? message;
@@ -66,4 +70,20 @@ class DeleteFieldingRequestFailed extends LocalState {
   final String? message;
 
   DeleteFieldingRequestFailed(this.message);
+}
+
+class UploadListPoleLoading extends LocalState {}
+class UploadListPoleSuccess extends LocalState {}
+class UploadListPoleFailed extends LocalState {
+  final String? message;
+
+  UploadListPoleFailed(this.message);
+}
+
+class UploadSinglePoleLoading extends LocalState {}
+class UploadSinglePoleSuccess extends LocalState {}
+class UploadSinglePoleFailed extends LocalState {
+  final String? message;
+
+  UploadSinglePoleFailed(this.message);
 }

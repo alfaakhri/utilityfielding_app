@@ -10,6 +10,7 @@ import 'package:fielding_app/data/repository/local_repository.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/hive_service.dart';
 import 'package:fielding_app/presentation/ui/ui.exports.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:meta/meta.dart';
 
@@ -111,7 +112,7 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
           if (dataBox != null) {
             _allProjectModel =
                 AllProjectsModel.fromJsonList(json.decode(dataBox));
-            yield GetListFieldingSuccess();
+            yield GetListFieldingSuccess(_allProjectModel!);
           } else {
             yield GetListFieldingEmpty();
           }
@@ -125,15 +126,53 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
       yield DeleteFieldingRequestLoading();
       try {
         _allProjectModel!.remove(event.allProjectsModel);
-        await _hiveService.deleteDataFromBox(getHiveFieldingPoles, event.userId,);
+        await _hiveService.deleteDataFromBox(
+          getHiveFieldingPoles,
+          event.userId,
+        );
         if (_allProjectModel!.length != 0) {
-          await _hiveService.saveDataToBox(
-              getHiveFieldingPoles, event.userId, json.encode(_allProjectModel));
+          await _hiveService.saveDataToBox(getHiveFieldingPoles, event.userId,
+              json.encode(_allProjectModel));
         }
         yield DeleteFieldingRequestSuccess();
         add(GetListFielding(event.userId));
       } catch (e) {
         yield DeleteFieldingRequestFailed(e.toString());
+      }
+    } else if (event is UploadListPole) {
+      try {} catch (e) {
+        yield UploadListPoleFailed(e.toString());
+      }
+    } else if (event is UploadSinglePole) {
+      yield UploadSinglePoleLoading();
+      try {
+        JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+        String prettyprint = encoder.convert(event.addPoleModel.toJson());
+        debugPrint(prettyprint);
+        // yield AddPoleFailed("Test");
+        var response =
+            await (_apiProvider.addPole(event.addPoleModel.toJson()));
+        if (response!.statusCode == 200) {
+          event.allProjectsModel.addPoleModel!.remove(event.addPoleModel);
+          _allProjectModel!.removeWhere((element) => element.iD == event.allProjectsModel.iD);
+          _allProjectModel!.add(event.allProjectsModel);
+          await _hiveService.deleteDataFromBox(
+            getHiveFieldingPoles,
+            event.userId,
+          );
+          
+          if (_allProjectModel!.length != 0) {
+            await _hiveService.saveDataToBox(getHiveFieldingPoles, event.userId,
+                json.encode(_allProjectModel));
+          }
+          yield UploadSinglePoleSuccess();
+        } else if (response.data['Message'] == messageTokenExpired) {
+          Get.offAll(LoginPage());
+        } else {
+          yield UploadSinglePoleFailed(response.data['Message']);
+        }
+      } catch (e) {
+        yield UploadSinglePoleFailed(e.toString());
       }
     }
   }

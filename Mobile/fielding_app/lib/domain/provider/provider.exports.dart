@@ -6,3 +6,4 @@ export 'riser_provider.dart';
 export 'span_provider.dart';
 export 'user_provider.dart';
 export 'connection_provider.dart';
+export 'local_provider.dart';

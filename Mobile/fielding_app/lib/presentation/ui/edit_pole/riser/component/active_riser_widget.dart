@@ -53,12 +53,12 @@ class _ActiveRiserWidgetState extends State<ActiveRiserWidget> {
                 data.searchTypeByPointName(value);
               });
             },
-            value: (this.selectActivePoint.text == null ||
+            value: (this.selectActivePoint.text.isEmpty ||
                     this.selectActivePoint.text == "")
                 ? null
                 : this.selectActivePoint.text.toString(),
           ),
-          (this.selectActivePoint.text == null ||
+          (this.selectActivePoint.text.isEmpty ||
                   this.selectActivePoint.text == "")
               ? Container()
               : Column(

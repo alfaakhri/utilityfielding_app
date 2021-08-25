@@ -1,6 +1,7 @@
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
+import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/list/list.exports.dart';
 import 'package:fielding_app/presentation/ui/local/widgets/item_pole_local.dart';
@@ -46,6 +47,8 @@ class _ListLocalPageState extends State<ListLocalPage> {
             Fluttertoast.showToast(msg: state.message!);
           } else if (state is DeletePoleFailed) {
             Fluttertoast.showToast(msg: state.message!);
+          } else if (state is GetListFieldingSuccess) {
+            context.read<LocalProvider>().setAllProjectsModel(state.allProjectsModel);
           }
         },
         builder: (context, state) {

@@ -1,15 +1,19 @@
 // @dart=2.9
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:fielding_app/domain/bloc/download_image_bloc/download_image_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/presentation/ui/ui.exports.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -25,6 +29,33 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  AwesomeNotifications().initialize(
+      'resource://drawable/launcher_icon', // icon for your app notification
+      [
+        NotificationChannel(
+            channelKey: 'key1',
+            channelName: 'Proto Coders Point',
+            channelDescription: "Notification example",
+            defaultColor: Color(0XFF9050DD),
+            ledColor: Colors.white,
+            playSound: true,
+            enableLights: true,
+            enableVibration: true),
+        NotificationChannel(
+            icon: 'resource://drawable/launcher_icon',
+            channelKey: 'progress_bar',
+            channelName: 'Progress bar notifications',
+            channelDescription: 'Notifications with a progress bar layout',
+            defaultColor: Colors.deepPurple,
+            ledColor: Colors.deepPurple,
+            vibrationPattern: lowVibrationPattern,
+            onlyAlertOnce: true),
+      ]);
+  // Create the initialization for your desired push service here
+  FirebaseApp firebaseApp = await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   await FlutterDownloader.initialize(
       debug: true // optional: set false to disable printing logs to console
       );
@@ -38,6 +69,18 @@ void main() async {
     // ));
     runApp(MyApp());
   });
+}
+
+// Declared as global, outside of any class
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+
+  // Use this method to automatically convert the push data, in case you gonna use our data standard
+  AwesomeNotifications().createNotificationFromJsonData(message.data);
 }
 
 class MyApp extends StatelessWidget {

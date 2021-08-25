@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
@@ -86,6 +87,20 @@ class _RootPageState extends State<RootPage> {
   void initState() {
     super.initState();
     initConnectivity();
+    AwesomeNotifications().actionStream.listen((receivedNotification) {
+      print("TEST NOTIFICATION");
+      // Navigator.of(context).pushName(context, '/NotificationPage', arguments: {
+      //   id: receivedNotification.id
+      // } // your page params. I recommend to you to pass all *receivedNotification* object
+      //     );
+    });
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        // Insert here your friendly dialog box before call the request method
+        // This is very important to not harm the user experience
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
   }
 
   @override

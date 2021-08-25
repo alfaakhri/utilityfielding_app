@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 
 class TitleMapItem extends StatelessWidget {
   final AllProjectsModel allProjectsModel;
-  const TitleMapItem({Key? key, required this.allProjectsModel})
+  final bool isLocalMenu;
+  const TitleMapItem({Key? key, required this.allProjectsModel, required this.isLocalMenu})
       : super(key: key);
 
   Widget _itemTitleMapDefault(BuildContext context) {
@@ -28,7 +29,7 @@ class TitleMapItem extends StatelessWidget {
                     fontSize: 14,
                     color: ColorHelpers.colorBlackText),
               ),
-              (!connect.isConnected)
+              (isLocalMenu)
                   ? ButtonUploadPole(
                       allProjectsModel:
                           context.read<LocalProvider>().projectLocalSelected,
@@ -37,7 +38,7 @@ class TitleMapItem extends StatelessWidget {
             ],
           ),
           UIHelper.verticalSpaceVerySmall,
-          (!connect.isConnected)
+          (isLocalMenu)
               ? Container()
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,7 +71,7 @@ class TitleMapItem extends StatelessWidget {
                   color: ColorHelpers.colorBlackText),
             ),
             UIHelper.horizontalSpaceSmall,
-            (!connect.isConnected)
+            (isLocalMenu)
                 ? ButtonUploadPole(
                     allProjectsModel:
                         context.read<LocalProvider>().projectLocalSelected,
@@ -80,7 +81,7 @@ class TitleMapItem extends StatelessWidget {
             // itemFieldingType(fielding), //HIDE DULU
           ],
         ),
-        (!connect.isConnected)
+        (isLocalMenu)
             ? Container()
             : Row(
                 children: [
