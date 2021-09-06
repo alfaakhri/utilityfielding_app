@@ -15,6 +15,13 @@ class RiserProvider extends ChangeNotifier {
   ApiProvider _apiProvider = ApiProvider();
   HiveService _hiveService = HiveService();
 
+  void getAllDataRiser(bool? isConnected) {
+    if (isConnected != null) {
+       getAllDownGuyOwner(isConnected);
+      getRiserAndVGR(isConnected);
+    }
+  }
+
   //-----------------------------------------------------------------------------------------
   List<AllDownGuyOwnerModel>? _listDownGuyOwner = <AllDownGuyOwnerModel>[];
   List<AllDownGuyOwnerModel>? get getListDownGuyOwner => _listDownGuyOwner;

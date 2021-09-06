@@ -2,6 +2,7 @@ import 'package:fielding_app/data/models/list_fielding/list_fielding.exports.dar
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/domain/provider/symbol_provider.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
 import 'package:fielding_app/presentation/ui/list/widgets/notes_request_item.dart';
@@ -93,29 +94,35 @@ class TileTitle extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    fieldingRequest.title!,
-                    style: TextStyle(
-                        color: ColorHelpers.colorBlackText,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    (fieldingRequest.lastDueDate != null)
-                        ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(fieldingRequest.lastDueDate!))}"
-                        : "-",
-                    style: TextStyle(
-                        fontSize: 12, color: ColorHelpers.colorBlackText),
-                  ),
-                  Text(
-                    "Total ${fieldingRequest.fieldingRequestCount} request",
-                    style: TextStyle(
-                        fontSize: 12, color: ColorHelpers.colorBlackText),
-                  ),
-                ],
+              Flexible(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      fieldingRequest.title!,
+                      softWrap: true,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: ColorHelpers.colorBlackText,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      (fieldingRequest.lastDueDate != null)
+                          ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(fieldingRequest.lastDueDate!))}"
+                          : "-",
+                      style: TextStyle(
+                          fontSize: 12, color: ColorHelpers.colorBlackText),
+                    ),
+                    Text(
+                      "Total ${fieldingRequest.fieldingRequestCount} request",
+                      style: TextStyle(
+                          fontSize: 12, color: ColorHelpers.colorBlackText),
+                    ),
+                  ],
+                ),
               ),
               Icon(iconName),
             ],
@@ -148,7 +155,14 @@ class _TileItemState extends State<TileItem> {
         context
             .read<FieldingProvider>()
             .getJobNumberAttachModel(widget.detailItem.iD);
-        Get.to(DetailFieldingPage(allProjectsModel: widget.detailItem, isLocalMenu: false,));
+        context.read<SymbolProvider>().getOtherSymbolModel(
+            context.read<UserProvider>().userModel.data!.token!,
+            widget.detailItem.iD!,
+            context.read<ConnectionProvider>().isConnected);
+        Get.to(DetailFieldingPage(
+          allProjectsModel: widget.detailItem,
+          isLocalMenu: false,
+        ));
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),

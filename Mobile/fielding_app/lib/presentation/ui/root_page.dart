@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
@@ -23,27 +26,6 @@ class _RootPageState extends State<RootPage> {
   late AuthBloc authBloc;
   final Connectivity _connectivity = Connectivity();
 
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    switch (result) {
-      case ConnectivityResult.wifi:
-        Fluttertoast.showToast(msg: "Internet available");
-        context.read<ConnectionProvider>().setIsConnected(true);
-        break;
-      case ConnectivityResult.mobile:
-        Fluttertoast.showToast(msg: "Internet available");
-        context.read<ConnectionProvider>().setIsConnected(true);
-        break;
-      case ConnectivityResult.none:
-        Fluttertoast.showToast(msg: "Internet not available");
-        context.read<ConnectionProvider>().setIsConnected(false);
-        break;
-      default:
-        Fluttertoast.showToast(msg: "Internet not available");
-        context.read<ConnectionProvider>().setIsConnected(false);
-        break;
-    }
-  }
-
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initConnectivity() async {
     ConnectivityResult result = ConnectivityResult.none;
@@ -51,21 +33,10 @@ class _RootPageState extends State<RootPage> {
     try {
       result = await _connectivity.checkConnectivity();
       bool _isConnected = (result.index == 2) ? false : true;
-
-      context.read<FieldingProvider>().getListAllPoleClass(_isConnected);
-      context.read<FieldingProvider>().getListAllPoleCondition(_isConnected);
-      context.read<FieldingProvider>().getListAllPoleHeight(_isConnected);
-      context.read<FieldingProvider>().getListAllPoleSpecies(_isConnected);
-      context.read<FieldingProvider>().getListAllHoaType(_isConnected);
-      context.read<RiserProvider>().getAllDownGuyOwner(_isConnected);
-      context.read<RiserProvider>().getRiserAndVGR(_isConnected);
-      context.read<AnchorProvider>().getAllAnchorEyes(_isConnected);
-      context.read<AnchorProvider>().getAllAnchorSize(_isConnected);
-      context.read<AnchorProvider>().getBrokenDownGuySize(_isConnected);
-      context.read<AnchorProvider>().getDownGuySize(_isConnected);
-      context.read<AnchorProvider>().getAllAnchorCondition(_isConnected);
-      context.read<FieldingProvider>().getFieldingType(_isConnected);
-      context.read<FieldingProvider>().getCurrentLocation(_isConnected);
+      context.read<ConnectionProvider>().setIsConnected(_isConnected);
+      context.read<FieldingProvider>().getAllDataFielding(_isConnected);
+      context.read<RiserProvider>().getAllDataRiser(_isConnected);
+      context.read<AnchorProvider>().getAllDataAnchor(_isConnected);
 
       authBloc = BlocProvider.of<AuthBloc>(context);
       authBloc.add(StartApp(_isConnected));
@@ -80,13 +51,14 @@ class _RootPageState extends State<RootPage> {
       return Future.value(null);
     }
 
-    return _updateConnectionStatus(result);
+    // return _updateConnectionStatus(result);
   }
 
   @override
   void initState() {
     super.initState();
     initConnectivity();
+
     AwesomeNotifications().actionStream.listen((receivedNotification) {
       print("TEST NOTIFICATION");
       // Navigator.of(context).pushName(context, '/NotificationPage', arguments: {
@@ -110,6 +82,12 @@ class _RootPageState extends State<RootPage> {
         if (state is GetAuthSuccess) {
           Get.offAll(ListFieldingPage());
           context.read<UserProvider>().setUserModel(state.userModel!);
+          context
+              .read<LocalProvider>()
+              .updateProjectsLocal(state.userModel!.data!.user!.iD!);
+          context
+              .read<ConnectionProvider>()
+              .updateForTriggerDialog(state.userModel!.data!.user!.iD!);
         } else if (state is GetAuthFailed) {
           Get.offAll(LoginPage());
         } else if (state is GetAuthMustLogin) {
@@ -127,5 +105,86 @@ class _RootPageState extends State<RootPage> {
         );
       },
     );
+  }
+
+  Future dialogSaveLocal(String titleName, String layerName) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            content: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                UIHelper.verticalSpaceMedium,
+                Text(
+                  'Information',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: ColorHelpers.colorGrey,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
+                UIHelper.verticalSpaceMedium,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    "Internet is available, do you want upload all data pole sequence in $titleName $layerName. After finished uplaod you can upload manually on menu pole local storage",
+                    softWrap: true,
+                    maxLines: 4,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: ColorHelpers.colorGrey,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                UIHelper.verticalSpaceMedium,
+                UIHelper.verticalSpaceMedium,
+                GestureDetector(
+                  onTap: () async {
+                    Navigator.pop(context);
+                    setState(() {});
+                  },
+                  child: Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: ColorHelpers.colorBlueNumber,
+                        border: Border.all(color: ColorHelpers.colorBlueNumber),
+                      ),
+                      child: Text(
+                        "UPLOAD",
+                        style: TextStyle(
+                            color: ColorHelpers.colorWhite,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      )),
+                ),
+                UIHelper.verticalSpaceMedium,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                      height: 50,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: ColorHelpers.colorRed,
+                      ),
+                      child: Text(
+                        "CANCEL",
+                        style: TextStyle(
+                            color: ColorHelpers.colorWhite,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
+                      )),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

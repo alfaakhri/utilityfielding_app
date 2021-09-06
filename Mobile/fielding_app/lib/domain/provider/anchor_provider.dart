@@ -14,8 +14,18 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class AnchorProvider extends ChangeNotifier {
-  ApiProvider _repository = ApiProvider();
+  ApiProvider repository = ApiProvider();
   HiveService _hiveService = HiveService();
+
+  void getAllDataAnchor(bool? isConnected) {
+    if (isConnected != null) {
+      getAllAnchorEyes(isConnected);
+      getAllAnchorSize(isConnected);
+      getBrokenDownGuySize(isConnected);
+      getDownGuySize(isConnected);
+      getAllAnchorCondition(isConnected);
+    }
+  }
 
   List<AllAnchorSizeModel>? _listAllAnchorSize = <AllAnchorSizeModel>[];
   List<AllAnchorSizeModel>? get listAllAnchorSize => _listAllAnchorSize;
@@ -37,7 +47,7 @@ class AnchorProvider extends ChangeNotifier {
         getHiveAnchorSize, listAnchorSize);
     if (isConnected) {
       try {
-        var response = await _repository.getAllAnchorSize();
+        var response = await repository.getAllAnchorSize();
         if (response.statusCode == 200) {
           setListAllAnchorSize(AllAnchorSizeModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(getHiveAnchorSize, listAnchorSize);
@@ -76,7 +86,7 @@ class AnchorProvider extends ChangeNotifier {
         getHiveAnchorEyes, listAnchorEyes);
     if (isConnected) {
       try {
-        var response = await _repository.getAllAnchorEyes();
+        var response = await repository.getAllAnchorEyes();
         if (response.statusCode == 200) {
           setListAnchorEyesModel(
               AllAnchorEyesModel.fromJsonList(response.data));
@@ -116,7 +126,7 @@ class AnchorProvider extends ChangeNotifier {
         getHiveDownGuySize, listHiveDownGuySize);
     if (isConnected) {
       try {
-        var response = await _repository.getDownGuySize();
+        var response = await repository.getDownGuySize();
         if (response.statusCode == 200) {
           setListDownGuySize(DownGuySizeModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(
@@ -158,7 +168,7 @@ class AnchorProvider extends ChangeNotifier {
         getHiveBrokenDownGuy, listBrokenDownGuy);
     if (isConnected) {
       try {
-        var response = await _repository.getBrokenDownGuySize();
+        var response = await repository.getBrokenDownGuySize();
         if (response.statusCode == 200) {
           setListBrokenDownGuySize(
               BrokenDownGuySizeModel.fromJsonList(response.data));
@@ -197,7 +207,7 @@ class AnchorProvider extends ChangeNotifier {
         getHiveAnchorCondition, listAllAnchorCondition);
     if (isConnected) {
       try {
-        var response = await _repository.getAllAnchorCondition();
+        var response = await repository.getAllAnchorCondition();
         if (response.statusCode == 200) {
           _listAnchorCondition =
               AllAnchorConditionModel.fromJsonList(response.data);

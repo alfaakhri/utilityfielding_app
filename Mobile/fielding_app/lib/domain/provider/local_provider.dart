@@ -32,12 +32,13 @@ class LocalProvider extends ChangeNotifier {
     var dataBox = await _hiveService.openAndGetDataFromHiveBox(
         getHiveFieldingPoles, userId);
     if (dataBox != null) {
-      var projects = AllProjectsModel.fromJsonList(jsonDecode(dataBox));
-      _projectLocalSelected = projects!
-          .firstWhere((element) => element.iD == _projectLocalSelected.iD);
+      _allProjectsModel = AllProjectsModel.fromJsonList(jsonDecode(dataBox))!;
+      _projectLocalSelected = _allProjectsModel
+          .firstWhere((element) => element.iD == _projectLocalSelected.iD, orElse: () => AllProjectsModel());
     }
     notifyListeners();
   }
+  
 
   Future uploadAllWithNotif(String customerId) async {
     Dio _dio = Dio();
@@ -72,7 +73,7 @@ class LocalProvider extends ChangeNotifier {
         }
       } else {
         showProgressNotification(index,
-            _projectLocalSelected.addPoleModel![index].poleSequence!, true);
+            _projectLocalSelected.addPoleModel![index].poleSequence!, false);
       }
     }
   }
@@ -80,36 +81,13 @@ class LocalProvider extends ChangeNotifier {
   Future<void> showProgressNotification(
       int id, String sequencePole, bool isSuccess) async {
     await Future.delayed(Duration(seconds: 1), () async {
-      // if (received > total) {
-
       await AwesomeNotifications().createNotification(
           content: NotificationContent(
               id: id,
-              channelKey: 'progress_bar',
+              channelKey: 'grouped',
               title:
                   'Upload pole sequence $sequencePole ${(isSuccess) ? 'finished' : 'failed'}',
-              // body: 'filename.txt',
-              // payload: {
-              //   'file': 'filename.txt',
-              //   'path': '-rmdir c://ruwindows/system32/huehuehue'
-              // },
               locked: false));
-      // } else {
-      //   await AwesomeNotifications().createNotification(
-      //       content: NotificationContent(
-      //           id: id,
-      //           channelKey: 'progress_bar',
-      //           title:
-      //               'Uploading Pole Sequence $sequencePole in progress ($received of $total)',
-      //           // body: 'filename.txt',
-      //           // payload: {
-      //           //   'file': 'filename.txt',
-      //           //   'path': '-rmdir c://ruwindows/system32/huehuehue'
-      //           // },
-      //           notificationLayout: NotificationLayout.ProgressBar,
-      //           progress: min((received / total * 100).floor(), 100),
-      //           locked: true));
-      // }
     });
   }
 }

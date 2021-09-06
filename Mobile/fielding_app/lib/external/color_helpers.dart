@@ -10,6 +10,7 @@ class ColorHelpers {
   static const Color colorGrey = const Color(0xFF707070);
   static const Color colorGrey2 = const Color(0xFFF4F5FA);
   static const Color colorRed = const Color(0xFFC0392B);
+  static const Color colorRed2 = const Color(0xFFdc2828);
   static const colorOrangeLoginError = Color(0xffE74C3C);
   static const colorBlackText = Color(0xFF434343);
   static const colorButtonDefault = Color(0xFF879BFF);

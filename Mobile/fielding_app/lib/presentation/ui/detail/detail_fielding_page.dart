@@ -1,7 +1,9 @@
+import 'package:fielding_app/data/models/detail_fielding/other_symbol_model.dart';
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/domain/provider/symbol_provider.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/supporting_docs/supporting_docs_exports.dart';
@@ -14,13 +16,15 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class DetailFieldingPage extends StatefulWidget {
   final AllProjectsModel? allProjectsModel;
-  final bool? isLocalMenu; 
+  final bool? isLocalMenu;
 
-  const DetailFieldingPage({Key? key, this.allProjectsModel, this.isLocalMenu}) : super(key: key);
+  const DetailFieldingPage({Key? key, this.allProjectsModel, this.isLocalMenu})
+      : super(key: key);
   @override
   _DetailFieldingPageState createState() => _DetailFieldingPageState();
 }
@@ -40,6 +44,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   late BitmapDescriptor poleGreen;
   late BitmapDescriptor poleGreenRed;
   late BitmapDescriptor treeIcon;
+  late BitmapDescriptor anchorIcon;
   AllPolesByLayerModel? poleModelSelected;
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
@@ -92,16 +97,24 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         .then((onValue) {
       poleGreenRed = onValue;
     });
+
     await BitmapDescriptor.fromAssetImage(
-      ImageConfiguration(size: Size(2, 2)),
+      ImageConfiguration(size: Size(2, 2), devicePixelRatio: 25),
       'assets/tree.png',
     ).then((onValue) {
       treeIcon = onValue;
+    });
+
+    await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(2, 2)), 'assets/default-anchor.png')
+        .then((onValue) {
+      anchorIcon = onValue;
     });
   }
 
   void getAllPoleById() {
     var user = context.read<UserProvider>();
+
     fieldingBloc.add(GetAllPolesByID(
         user.userModel.data!.token,
         widget.allProjectsModel!,
@@ -174,6 +187,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             if (state is GetAllPolesByIdSuccess) {
               showButtonCompleteMulti = true;
               context.read<LocalProvider>().updateProjectsLocal(
+                  context.read<UserProvider>().userModel.data!.user!.iD!);
+              context.read<ConnectionProvider>().updateForTriggerDialog(
                   context.read<UserProvider>().userModel.data!.user!.iD!);
               fielding.setAllPolesByLayer(state.allPolesByLayer);
               fielding.setFieldingTypeAssign(3);
@@ -270,8 +285,30 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               // } else {
               //   allPolesByFilter = state.allPolesByLayer;
               // }
-
-              return _content(state.allPolesByLayer);
+              return Consumer<SymbolProvider>(builder: (context, symbol, _) {
+                if (symbol.state == SymbolState.loading) {
+                  return _loading();
+                } else if (symbol.state == SymbolState.success) {
+                  symbol.otherSymbolsModel.forEach((element) {
+                    var fieldingPosition = LatLng(
+                        double.parse(element.latitude!),
+                        double.parse(element.longitude!));
+                    _markers.add(Marker(
+                        markerId: MarkerId("${element.iD}"),
+                        position: fieldingPosition,
+                        icon:
+                            (element.poleType == 12) ? anchorIcon : treeIcon));
+                  });
+                  return _content(state.allPolesByLayer);
+                } else if (symbol.state == SymbolState.empty) {
+                  Fluttertoast.showToast(msg: symbol.message);
+                  return _content(state.allPolesByLayer);
+                } else if (symbol.state == SymbolState.failed) {
+                  Fluttertoast.showToast(msg: symbol.message);
+                  return _content(state.allPolesByLayer);
+                }
+                return Container();
+              });
             }
             return Container();
           },
@@ -287,7 +324,10 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
   Widget _content(List<AllPolesByLayerModel>? allPoles) {
     return Column(
       children: [
-        TitleMapItem(allProjectsModel: widget.allProjectsModel!, isLocalMenu: widget.isLocalMenu!,),
+        TitleMapItem(
+          allProjectsModel: widget.allProjectsModel!,
+          isLocalMenu: widget.isLocalMenu!,
+        ),
         Expanded(
           child: Stack(
             children: [
@@ -332,6 +372,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   onMapCreated: (GoogleMapController controller) {
                     googleMapController = controller;
                     showPinsOnMap(allPoles);
+                    showSymbolMap();
                   }),
               (allPoles.length == 0)
                   ? Container()
@@ -422,6 +463,28 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     );
   }
 
+  void showSymbolMap() {
+    Consumer<SymbolProvider>(builder: (context, symbol, _) {
+      if (symbol.state == SymbolState.loading) {
+      } else if (symbol.state == SymbolState.success) {
+        symbol.otherSymbolsModel.forEach((element) {
+          var fieldingPosition = LatLng(double.parse(element.latitude!),
+              double.parse(element.longitude!));
+          _markers.add(Marker(
+              markerId: MarkerId("${element.iD}"),
+              position: fieldingPosition,
+              icon: (element.poleType == 12) ? anchorIcon : treeIcon));
+        });
+        setState(() {});
+      } else if (symbol.state == SymbolState.empty) {
+        Fluttertoast.showToast(msg: symbol.message);
+      } else if (symbol.state == SymbolState.failed) {
+        Fluttertoast.showToast(msg: symbol.message);
+      }
+      return Container();
+    });
+  }
+
   void showPinsOnMap(List<AllPolesByLayerModel> list) {
     if (list.length != 0) {
       list.forEach((data) {
@@ -430,12 +493,13 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               double.parse(data.latitude!), double.parse(data.longitude!));
           // add the initial source location pin
           //if poleType == 4 then icon tree on maps
-          if (data.poleType == 4) {
-            _markers.add(Marker(
-                markerId: MarkerId("${data.id}"),
-                position: fieldingPosition,
-                icon: treeIcon));
-          } else if (data.fieldingStatus == null ||
+          // if (data.poleType == 4) {
+          //   _markers.add(Marker(
+          //       markerId: MarkerId("${data.id}"),
+          //       position: fieldingPosition,
+          //       icon: treeIcon));
+          // } else
+          if (data.fieldingStatus == null ||
               data.fieldingStatus == 0 ||
               data.fieldingStatus == 1) {
             _markers.add(Marker(
@@ -504,12 +568,13 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
             poleModelSelected = e;
           } else {
             //If poleType 4 then treeIcon
-            if (e.poleType == 4) {
-              _markers.add(Marker(
-                  markerId: MarkerId("${e.id}"),
-                  position: position,
-                  icon: treeIcon));
-            } else if (e.fieldingStatus == null ||
+            // if (e.poleType == 4) {
+            //   _markers.add(Marker(
+            //       markerId: MarkerId("${e.id}"),
+            //       position: position,
+            //       icon: treeIcon));
+            // } else
+            if (e.fieldingStatus == null ||
                 e.fieldingStatus == 0 ||
                 e.fieldingStatus == 1) {
               _markers.add(Marker(

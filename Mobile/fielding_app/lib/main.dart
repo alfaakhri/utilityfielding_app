@@ -19,6 +19,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 
+import 'data/repository/api_provider.dart';
 import 'domain/bloc/auth_bloc/auth_bloc.dart';
 import 'domain/bloc/local_bloc/local_bloc.dart';
 import 'domain/bloc/location_bloc/location_bloc.dart';
@@ -26,6 +27,8 @@ import 'domain/bloc/map_bloc/map_bloc.dart';
 import 'domain/bloc/picture_bloc/picture_bloc.dart';
 import 'domain/provider/provider.exports.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
+
+import 'domain/provider/symbol_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,6 +54,17 @@ void main() async {
             ledColor: Colors.deepPurple,
             vibrationPattern: lowVibrationPattern,
             onlyAlertOnce: true),
+        NotificationChannel(
+            channelKey: 'grouped',
+            channelName: 'Grouped notifications',
+            channelDescription: 'Notifications with group functionality',
+            groupKey: 'grouped',
+            groupSort: GroupSort.Desc,
+            groupAlertBehavior: GroupAlertBehavior.Children,
+            defaultColor: Colors.lightGreen,
+            ledColor: Colors.lightGreen,
+            vibrationPattern: lowVibrationPattern,
+            importance: NotificationImportance.High)
       ]);
   // Create the initialization for your desired push service here
   FirebaseApp firebaseApp = await Firebase.initializeApp();
@@ -98,6 +112,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MapProvider()),
         ChangeNotifierProvider(create: (_) => ConnectionProvider()),
         ChangeNotifierProvider(create: (_) => LocalProvider()),
+        ChangeNotifierProvider(create: (_) => SymbolProvider()),
       ],
       child: MultiBlocProvider(
         providers: [

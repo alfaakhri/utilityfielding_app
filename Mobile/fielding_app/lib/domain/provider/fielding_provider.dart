@@ -23,8 +23,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
 class FieldingProvider extends ChangeNotifier {
-  ApiProvider _apiProvider = ApiProvider();
+  ApiProvider apiProvider = ApiProvider();
   HiveService _hiveService = HiveService();
+
+  void getAllDataFielding(bool? isConnected) {
+    if (isConnected != null) {
+      getListAllPoleClass(isConnected);
+      getListAllPoleCondition(isConnected);
+      getListAllPoleHeight(isConnected);
+      getListAllPoleSpecies(isConnected);
+      getListAllHoaType(isConnected);
+      getFieldingType(isConnected);
+      getCurrentLocation(isConnected);
+    }
+  }
 
   bool? _isEmptyListJob = false;
   bool? get isEmptyListJob => _isEmptyListJob;
@@ -191,7 +203,7 @@ class FieldingProvider extends ChangeNotifier {
         getHivePolesSpecies, listPolesSpecies);
     if (isConnected) {
       try {
-        var response = await _apiProvider.getAllPoleSpecies();
+        var response = await apiProvider.getAllPoleSpecies();
         if (response.statusCode == 200) {
           setListAllPoleSpecies(
               AllPoleSpeciesModel.fromJsonList(response.data));
@@ -246,7 +258,7 @@ class FieldingProvider extends ChangeNotifier {
         getHivePolesClass, listPolesClass);
     if (isConnected) {
       try {
-        var response = await _apiProvider.getAllPoleClass();
+        var response = await apiProvider.getAllPoleClass();
         if (response.statusCode == 200) {
           setListAllPoleClass(AllPoleClassModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(getHivePolesClass, listPolesClass);
@@ -299,7 +311,7 @@ class FieldingProvider extends ChangeNotifier {
         getHivePolesHeight, listPolesHeight);
     if (isConnected) {
       try {
-        var response = await _apiProvider.getAllPoleHeight();
+        var response = await apiProvider.getAllPoleHeight();
         if (response.statusCode == 200) {
           setListAllPoleHeight(AllPoleHeightModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(getHivePolesHeight, listPolesHeight);
@@ -355,7 +367,7 @@ class FieldingProvider extends ChangeNotifier {
         getHivePolesCondition, listPolesCondition);
     if (isConnected) {
       try {
-        var response = await _apiProvider.getAllPoleCondition();
+        var response = await apiProvider.getAllPoleCondition();
         if (response.statusCode == 200) {
           setListAllPoleCondition(
               AllPoleConditionModel.fromJsonList(response.data));
@@ -389,7 +401,7 @@ class FieldingProvider extends ChangeNotifier {
         getHiveHoaType, listHoaType);
     if (isConnected) {
       try {
-        var response = await _apiProvider.getAllHoaType();
+        var response = await apiProvider.getAllHoaType();
         if (response.statusCode == 200) {
           setListAllHoaType(AllHoaTypeModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(getHiveHoaType, listHoaType);
@@ -517,7 +529,7 @@ class FieldingProvider extends ChangeNotifier {
 
   void getJobNumberAttachModel(String? layerId) async {
     try {
-      var response = await _apiProvider.getJobNumberAttach(layerId);
+      var response = await apiProvider.getJobNumberAttach(layerId);
       if (response.statusCode == 200) {
         _jobNumberAttachModel =
             JobNumberAttachModel.fromJsonList(response.data);
@@ -562,7 +574,7 @@ class FieldingProvider extends ChangeNotifier {
         getHiveFieldingType, listFieldingType);
     if (isConnected) {
       try {
-        var response = await _apiProvider.getFieldingType();
+        var response = await apiProvider.getFieldingType();
         if (response.statusCode == 200) {
           _allFieldingType = AllFieldingTypeModel.fromJsonList(response.data);
           _hiveService.deleteDataFromBox(getHiveFieldingType, listFieldingType);

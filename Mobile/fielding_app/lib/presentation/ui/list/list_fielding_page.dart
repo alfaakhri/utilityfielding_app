@@ -1,25 +1,14 @@
-import 'dart:async';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
-import 'package:fielding_app/external/service/service.exports.dart';
-import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
 import 'package:fielding_app/presentation/ui/list/list.exports.dart';
 import 'package:fielding_app/presentation/ui/list/widgets/dropdown_fielding_request.dart';
-import 'package:fielding_app/presentation/ui/list/widgets/item_fielding_request.dart';
-import 'package:fielding_app/presentation/ui/list/widgets/notes_request_item.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
-import 'package:intl/intl.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
 import 'widgets/item_fielding_request_new.dart';
@@ -30,17 +19,6 @@ class ListFieldingPage extends StatefulWidget {
 }
 
 class _ListFieldingPageState extends State<ListFieldingPage> {
-  final Connectivity _connectivity = Connectivity();
-  bool _isEmptyJob = false;
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
-
-  @override
-  void dispose() {
-    LocationService location = LocationService();
-    location.dispose();
-    super.dispose();
-  }
-
   late FieldingBloc fieldingBloc;
   @override
   void initState() {
@@ -49,7 +27,8 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     var connect = context.read<ConnectionProvider>();
     fieldingBloc.add(GetFieldingRequest(
-        context.read<UserProvider>().userModel.data!.token, connect.isConnected));
+        context.read<UserProvider>().userModel.data!.token,
+        connect.isConnected));
   }
 
   @override
@@ -59,8 +38,7 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: ColorHelpers.colorBlackText),
         title: InkWell(
-          onTap: () {
-          },
+          onTap: () {},
           child: Text(
             "Fielding App",
             style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),

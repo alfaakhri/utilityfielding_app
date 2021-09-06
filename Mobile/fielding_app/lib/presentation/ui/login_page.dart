@@ -46,6 +46,12 @@ class _LoginPageState extends State<LoginPage> {
           if (state is DoLoginSuccess) {
             Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
             context.read<UserProvider>().setUserModel(state.userModel);
+            context
+                .read<LocalProvider>()
+                .updateProjectsLocal(state.userModel.data!.user!.iD!);
+            context
+                .read<ConnectionProvider>()
+                .updateForTriggerDialog(state.userModel.data!.user!.iD!);
             Get.offAll(ListFieldingPage());
           } else if (state is DoLoginLoading) {
             LoadingWidget.showLoadingDialog(context, _keyLoader);

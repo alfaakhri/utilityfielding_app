@@ -12,8 +12,8 @@ class ApiProvider {
   Future<Response?> getPrivacyPolicy() async {
     try {
       _response = await _dio.get(
-          BASE_URL + "/home/privacypolicy",
-          );
+        BASE_URL + "/home/privacypolicy",
+      );
       return _response;
     } on DioError catch (e) {
       if (e.response!.statusCode == 400) {
@@ -59,8 +59,8 @@ class ApiProvider {
   Future<Response?> getFieldingRequest(String? token) async {
     print(token);
     try {
-      _response = await _dio.get(
-          BASE_URL + "/api/MobileProject/GetAssignedFieldingRequestsGroupedByJob?token=$token");
+      _response = await _dio.get(BASE_URL +
+          "/api/MobileProject/GetAssignedFieldingRequestsGroupedByJob?token=$token");
       return _response;
     } on DioError catch (e) {
       if (e.response!.statusCode == 400) {
@@ -100,7 +100,8 @@ class ApiProvider {
     }
   }
 
-  Future<Response?> startPolePicture(String? token, String? poleId, String? layerId) async {
+  Future<Response?> startPolePicture(
+      String? token, String? poleId, String? layerId) async {
     var data = {
       "Token": token,
       "PoleID": poleId,
@@ -138,8 +139,8 @@ class ApiProvider {
     }
   }
 
-  Future<Response?> updateLocation(
-      String? token, String? poleId, String? latitude, String? longitude) async {
+  Future<Response?> updateLocation(String? token, String? poleId,
+      String? latitude, String? longitude) async {
     var data = {
       "Token": token,
       "PoleID": poleId,
@@ -190,8 +191,8 @@ class ApiProvider {
     }
   }
 
-  Future<Response?> startFielding(
-      String? token, String? poleId, bool isStartAdditional, String? layerId) async {
+  Future<Response?> startFielding(String? token, String? poleId,
+      bool isStartAdditional, String? layerId) async {
     var data = {
       'Token': token,
       'PoleID': poleId,
@@ -314,8 +315,9 @@ class ApiProvider {
 
   Future<Response> deleteImage(dynamic data) async {
     try {
-      var response = await _dio
-          .post(BASE_URL + "/api/MobileProject/RemovePoleImageData", data: data);
+      var response = await _dio.post(
+          BASE_URL + "/api/MobileProject/RemovePoleImageData",
+          data: data);
       return response;
     } on DioError catch (e) {
       if (e.response!.statusCode == 400) {
@@ -328,8 +330,8 @@ class ApiProvider {
 
   Future<Response> getPoleImagesData(String token, String poleId) async {
     try {
-      var response = await _dio
-          .get(BASE_URL + "/api/MobileProject/GetPoleImagesData?token=$token&poleId=$poleId");
+      var response = await _dio.get(BASE_URL +
+          "/api/MobileProject/GetPoleImagesData?token=$token&poleId=$poleId");
       return response;
     } catch (e) {
       throw e;
@@ -388,8 +390,8 @@ class ApiProvider {
 
   Future<Response> getJobNumberAttach(String? layerId) async {
     try {
-      var response =
-          await _dio.get(BASE_URL + "/api/Layer/GetJobnumberAttachments?assignedLayerId=$layerId");
+      var response = await _dio.get(BASE_URL +
+          "/api/Layer/GetJobnumberAttachments?assignedLayerId=$layerId");
       return response;
     } catch (e) {
       throw e;
@@ -398,8 +400,8 @@ class ApiProvider {
 
   Future<Response> getJobNumberLoc(String? token) async {
     try {
-      var response =
-          await _dio.get(BASE_URL + "/api/MobileProject/GetJobnumberLocations?token=$token");
+      var response = await _dio.get(
+          BASE_URL + "/api/MobileProject/GetJobnumberLocations?token=$token");
       return response;
     } catch (e) {
       throw e;
@@ -408,8 +410,8 @@ class ApiProvider {
 
   Future<Response> getFieldingType() async {
     try {
-      var response =
-          await _dio.get(BASE_URL + "/api/MobileProject/GetAllPoleFieldingType");
+      var response = await _dio
+          .get(BASE_URL + "/api/MobileProject/GetAllPoleFieldingType");
       return response;
     } catch (e) {
       throw e;
@@ -418,8 +420,29 @@ class ApiProvider {
 
   Future<Response> completeMultiPole(dynamic data) async {
     try {
-      var response =
-          await _dio.post(BASE_URL + "/api/MobileProject/CompleteMultiPoleFielding", data: data);
+      var response = await _dio.post(
+          BASE_URL + "/api/MobileProject/CompleteMultiPoleFielding",
+          data: data);
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getOtherSymbol(String token, String layerId) async {
+    try {
+      var response = await _dio.get(BASE_URL +
+          "/api/MobileProject/GetAllOtherPoleSymbols?token=$token&layerId=$layerId");
+      return response;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Response> getAllItemLine(String token, String layerId) async {
+    try {
+      var response = await _dio.get(BASE_URL +
+          "/api/MobileProject/GetAllItemsByLayerId?token=$token&layerId=$layerId");
       return response;
     } catch (e) {
       throw e;

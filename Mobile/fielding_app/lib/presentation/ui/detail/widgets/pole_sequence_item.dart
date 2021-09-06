@@ -127,13 +127,13 @@ class PoleSequenceItem extends StatelessWidget {
                               width: 150,
                               decoration: BoxDecoration(
                                   color: allPolesByLayerModel.startPolePicture!
-                                      ? ColorHelpers.colorButtonDefault
+                                      ? ColorHelpers.colorRed2
                                       : ColorHelpers.colorGreenCard,
                                   borderRadius: BorderRadius.circular(5),
                                   border: Border.all(
                                       color:
                                           allPolesByLayerModel.startPolePicture!
-                                              ? ColorHelpers.colorButtonDefault
+                                              ? ColorHelpers.colorRed2
                                               : ColorHelpers.colorGreen2)),
                               padding: EdgeInsets.symmetric(
                                   vertical: 5, horizontal: 10),

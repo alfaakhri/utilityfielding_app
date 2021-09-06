@@ -53,6 +53,7 @@ class _ListPoleLocalWidgetState extends State<ListPoleLocalWidget> {
               UIHelper.verticalSpaceMedium,
               InkWell(
                   onTap: () async {
+                    Navigator.pop(context);
                     var user = context.read<UserProvider>().userModel;
                     context.read<LocalProvider>().uploadAllWithNotif(user.data!.user!.iD!);
                   },

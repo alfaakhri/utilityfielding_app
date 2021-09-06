@@ -52,6 +52,62 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
   CurrentAddress _currentAddress = CurrentAddress();
   CurrentAddress get currentAddress => _currentAddress;
 
+  PoleByIdModel assignCompleteFielding(
+      AddPoleModel addPole, AllPolesByLayerModel polesByLayerModel) {
+    polesByLayerModel.detailInformation = PoleByIdModel(
+      id: polesByLayerModel.detailInformation!.id,
+      layerID: polesByLayerModel.detailInformation!.layerID,
+      street: addPole.street,
+      vAPTerminal: addPole.vAPTerminal,
+      poleNumber: addPole.poleNumber,
+      osmose: addPole.osmose,
+      latitude: addPole.latitude,
+      longitude: addPole.longitude,
+      poleHeight: addPole.poleHeight,
+      groundCircumference: addPole.groundCircumference,
+      poleClass: addPole.poleClass,
+      poleYear: addPole.poleYear,
+      poleSpecies: addPole.poleSpecies,
+      poleCondition: addPole.poleCondition,
+      poleType: addPole.poleType,
+      isRadioAntenna: addPole.isRadioAntenna,
+      note: addPole.notes,
+      otherNumber: addPole.otherNumber,
+      poleStamp: addPole.poleStamp,
+      fieldingCompletedDate:
+          polesByLayerModel.detailInformation!.fieldingCompletedDate,
+      fieldingById: polesByLayerModel.detailInformation!.fieldingById,
+      fieldingBy: polesByLayerModel.detailInformation!.fieldingBy,
+      fieldingStatus: polesByLayerModel.detailInformation!.fieldingStatus,
+      poleSequence: addPole.poleSequence,
+      hOAList: addPole.hOAList,
+      transformerList: addPole.transformerList,
+      spanDirectionList: addPole.spanDirectionList,
+      anchorList: addPole.anchorList,
+      riserAndVGRList: addPole.riserAndVGRList,
+      fieldingType: addPole.fieldingType,
+      anchorFences: addPole.anchorFences,
+      anchorStreets: addPole.anchorStreets,
+      riserFences: addPole.riserFences,
+      isFAPUnknown: addPole.isFAPUnknown,
+      isOsmoseUnknown: addPole.isOsmoseUnknown,
+      isOtherNumberUnknown: addPole.isOtherNumberUnknown,
+      isPoleLengthUnknown: addPole.isPoleLengthUnknown,
+      isPoleLengthEstimated: addPole.isPoleLengthEstimated,
+      isPoleClassUnknown: addPole.isPoleClassUnknown,
+      isPoleClassEstimated: addPole.isPoleClassEstimated,
+      isGroundLineUnknown: addPole.isGroundLineUnknown,
+      isGroundLineEstimated: addPole.isGroundLineEstimated,
+      isYearUnknown: addPole.isYearUnknown,
+      isYearEstimated: addPole.isYearEstimated,
+      isSpeciesUnknown: addPole.isSpeciesUnknown,
+      isSpeciesEstimated: addPole.isSpeciesEstimated,
+      isPoleNumberUnknown: addPole.isPoleNumberUnknown,
+    );
+
+    return polesByLayerModel.detailInformation!;
+  }
+
   @override
   Stream<FieldingState> mapEventToState(
     FieldingEvent event,
@@ -96,7 +152,6 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         //   yield GetFieldingRequestFailed(e.toString());
         // }
       }
-    } else if (event is GetAssignedRequest) {
     } else if (event is GetAllPolesByID) {
       yield GetAllPolesByIdLoading();
       if (event.isConnected!) {
@@ -207,6 +262,7 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         } else {
           //Save to local
           List<AllProjectsModel>? _allProjectModel = <AllProjectsModel>[];
+          AllPolesByLayerModel _polesByLayerModel = AllPolesByLayerModel();
           AllProjectsModel currentProjects = AllProjectsModel();
           final dataBox = await _hiveService.openAndGetDataFromHiveBox(
               getHiveFieldingPoles, event.userId);
@@ -229,6 +285,19 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
               } else {
                 currentProjects.addPoleModel = [event.addPoleModel];
               }
+              //Search poleByLayer by id is same
+              _polesByLayerModel = currentProjects.allPolesByLayer!.firstWhere(
+                  (element) => element.id == event.allPolesByLayerModel.id,
+                  orElse: () => AllPolesByLayerModel());
+                  
+              if (_polesByLayerModel.id != null) {
+                //Assign addPole to update value
+                _polesByLayerModel.detailInformation = assignCompleteFielding(
+                    event.addPoleModel, event.allPolesByLayerModel);
+              }
+              //Remove and then add polesBylayer
+              currentProjects.allPolesByLayer!.removeWhere((element) => element.id == event.allPolesByLayerModel.id);
+              currentProjects.allPolesByLayer!.add(_polesByLayerModel);
               //Remove and then add project
               _allProjectModel.removeWhere(
                   (element) => element.iD == event.allProjectsModel.iD);
