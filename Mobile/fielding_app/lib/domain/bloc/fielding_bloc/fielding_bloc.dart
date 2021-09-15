@@ -347,8 +347,21 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
             yield GetPoleByIdFailed("Failed load data pole");
           }
         } else {
-          _poleByIdModel = event.allPolesByLayerModel!.detailInformation!;
-          yield GetPoleByIdSuccess(_poleByIdModel);
+          if (event.allPolesByLayerModel!.detailInformation == null) {
+            final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveFieldingPoles, event.userId);
+            if (dataBox != null) {
+              var project = AllProjectsModel.fromJsonList(json.decode(dataBox));
+              _allPolesByLayer =
+                  project!.firstWhere((element) => element.iD == event.allProjectsModel.iD).allPolesByLayer;
+              _poleByIdModel = _allPolesByLayer!
+                  .firstWhere((element) => element.id! == event.allPolesByLayerModel!.id)
+                  .detailInformation!;
+              yield GetPoleByIdSuccess(_poleByIdModel);
+            }
+          } else {
+            _poleByIdModel = event.allPolesByLayerModel!.detailInformation!;
+            yield GetPoleByIdSuccess(_poleByIdModel);
+          }
         }
       } catch (e) {
         yield GetPoleByIdFailed(e.toString());

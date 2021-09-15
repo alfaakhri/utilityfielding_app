@@ -11,8 +11,7 @@ import 'alert_picture_item.dart';
 class PoleSequenceItem extends StatelessWidget {
   final AllPolesByLayerModel allPolesByLayerModel;
 
-  const PoleSequenceItem({Key? key, required this.allPolesByLayerModel})
-      : super(key: key);
+  const PoleSequenceItem({Key? key, required this.allPolesByLayerModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +34,12 @@ class PoleSequenceItem extends StatelessWidget {
                     children: [
                       Text(
                         "Pole Sequence",
-                        style: TextStyle(
-                            color: ColorHelpers.colorBlackText,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                  Text(
-                      (allPolesByLayerModel.poleSequence == null)
-                          ? "-"
-                          : allPolesByLayerModel.poleSequence.toString(),
-                      style: TextStyle(
-                          color: ColorHelpers.colorGreen2, fontSize: 24)),
+                  Text((allPolesByLayerModel.poleSequence == null) ? "-" : allPolesByLayerModel.poleSequence.toString(),
+                      style: TextStyle(color: ColorHelpers.colorGreen2, fontSize: 24)),
                 ],
               ),
               Column(
@@ -56,7 +48,8 @@ class PoleSequenceItem extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       var fielding = context.read<FieldingProvider>();
-                      fielding.setLatLng(0, 0);
+                      fielding.setLatLng(
+                          double.parse(allPolesByLayerModel.latitude!), double.parse(allPolesByLayerModel.longitude!));
                       fielding.setPolesByLayerSelected(allPolesByLayerModel);
                       Get.to(EditPolePage(
                         allProjectsModel: fielding.allProjectsSelected,
@@ -70,8 +63,7 @@ class PoleSequenceItem extends StatelessWidget {
                           color: ColorHelpers.colorGreen2,
                           borderRadius: BorderRadius.circular(5),
                         ),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                         child: Text(
                           "Edit Pole Information",
                           textAlign: TextAlign.center,
@@ -88,8 +80,7 @@ class PoleSequenceItem extends StatelessWidget {
                           onTap: () {
                             var fielding = context.read<FieldingProvider>();
 
-                            fielding
-                                .setPolesByLayerSelected(allPolesByLayerModel);
+                            fielding.setPolesByLayerSelected(allPolesByLayerModel);
                             Get.to(UploadPicturePage(
                               pole: allPolesByLayerModel,
                             ));
@@ -99,10 +90,8 @@ class PoleSequenceItem extends StatelessWidget {
                               decoration: BoxDecoration(
                                   color: ColorHelpers.colorGreenCard,
                                   borderRadius: BorderRadius.circular(5),
-                                  border: Border.all(
-                                      color: ColorHelpers.colorButtonDefault)),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
+                                  border: Border.all(color: ColorHelpers.colorButtonDefault)),
+                              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                               child: Text(
                                 "Take Close Up Picture",
                                 textAlign: TextAlign.center,
@@ -120,8 +109,7 @@ class PoleSequenceItem extends StatelessWidget {
                             if (allPolesByLayerModel.startPolePicture!) {
                               dialogAlertPicture("complete pictures", context);
                             } else {
-                              dialogAlertPicture(
-                                  "additional pictures", context);
+                              dialogAlertPicture("additional pictures", context);
                             }
                           },
                           child: Container(
@@ -132,16 +120,12 @@ class PoleSequenceItem extends StatelessWidget {
                                       : ColorHelpers.colorGreenCard,
                                   borderRadius: BorderRadius.circular(5),
                                   border: Border.all(
-                                      color:
-                                          allPolesByLayerModel.startPolePicture!
-                                              ? ColorHelpers.colorRed2
-                                              : ColorHelpers.colorGreen2)),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
+                                      color: allPolesByLayerModel.startPolePicture!
+                                          ? ColorHelpers.colorRed2
+                                          : ColorHelpers.colorGreen2)),
+                              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                               child: Text(
-                                allPolesByLayerModel.startPolePicture!
-                                    ? "Complete Pictures"
-                                    : "Additional Pictures",
+                                allPolesByLayerModel.startPolePicture! ? "Complete Pictures" : "Additional Pictures",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: allPolesByLayerModel.startPolePicture!
@@ -167,8 +151,7 @@ class PoleSequenceItem extends StatelessWidget {
           return AlertPictureItem(
             valueAlert: valueAlert,
             allPolesByLayerModel: allPolesByLayerModel,
-            allProjectsModel:
-                context.read<FieldingProvider>().allProjectsSelected,
+            allProjectsModel: context.read<FieldingProvider>().allProjectsSelected,
           );
         });
   }

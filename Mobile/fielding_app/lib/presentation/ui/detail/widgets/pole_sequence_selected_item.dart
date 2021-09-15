@@ -66,7 +66,7 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                             callback!();
                             fielding
                                 .setPolesByLayerSelected(poleModelSelected!);
-                            fielding.setLatLng(0, 0);
+                            fielding.setLatLng(double.parse(poleModelSelected!.latitude!), double.parse(poleModelSelected!.longitude!));
                             Get.to(EditPolePage(
                               allProjectsModel: fielding.allProjectsSelected,
                               poles: poleModelSelected,

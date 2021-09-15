@@ -170,9 +170,16 @@ class _EditPolePageState extends State<EditPolePage> {
     fieldingBloc = BlocProvider.of<FieldingBloc>(context);
     authBloc = BlocProvider.of<AuthBloc>(context);
     var connect = context.read<ConnectionProvider>();
+    var provider = context.read<FieldingProvider>();
 
     if (widget.poles != null) {
-      fieldingBloc.add(GetPoleById(widget.poles!, authBloc.userModel!.data!.token, connect.isConnected));
+      fieldingBloc.add(GetPoleById(
+        widget.poles!,
+        authBloc.userModel!.data!.token,
+        connect.isConnected,
+        context.read<AuthBloc>().userModel!.data!.user!.iD!,
+        provider.allProjectsSelected,
+      ));
     }
   }
 
