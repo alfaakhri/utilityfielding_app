@@ -44,8 +44,9 @@ class UploadSinglePole extends LocalEvent {
   final AllProjectsModel allProjectsModel;
   final AddPoleModel addPoleModel;
   final String userId;
+  final String token;
 
-  UploadSinglePole(this.addPoleModel, this.allProjectsModel, this.userId);
+  UploadSinglePole(this.addPoleModel, this.allProjectsModel, this.userId, this.token);
 }
 
 class UploadListPole extends LocalEvent {
@@ -55,8 +56,9 @@ class UploadStartComplete extends LocalEvent {
   final AllProjectsModel allProjectsModel;
   final StartCompleteModel startCompleteModel;
   final String userId;
+  final String token;
 
-  UploadStartComplete(this.allProjectsModel, this.startCompleteModel, this.userId);
+  UploadStartComplete(this.allProjectsModel, this.startCompleteModel, this.userId, this.token);
 }
 
 class StartLocalFielding extends LocalEvent {}

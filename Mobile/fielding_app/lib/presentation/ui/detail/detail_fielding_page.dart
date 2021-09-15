@@ -228,7 +228,8 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
               ));
               fieldingBloc.setStartTimer(DateTime.now().toUtc());
               fielding.setPolesByLayerSelected(poleModelSelected!);
-              fielding.setLatLng(0, 0);
+              fielding.setLatLng(
+                  double.parse(poleModelSelected!.latitude!), double.parse(poleModelSelected!.longitude!));
               callback();
             } else if (state is CompleteMultiPoleLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);

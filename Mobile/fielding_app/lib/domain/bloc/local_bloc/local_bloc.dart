@@ -150,6 +150,7 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
         String prettyprint = encoder.convert(event.addPoleModel.toJson());
         debugPrint(prettyprint);
         // yield AddPoleFailed("Test");
+        event.addPoleModel.token = event.token;
         var response =
             await (_apiProvider.addPole(event.addPoleModel.toJson()));
         if (response!.statusCode == 200) {
@@ -181,6 +182,7 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
         String prettyprint = encoder.convert(event.startCompleteModel.toJson());
         debugPrint(prettyprint);
         // yield AddPoleFailed("Test");
+        event.startCompleteModel.token = event.token;
         var response =
             await (_apiProvider.startAndCompletePole(event.startCompleteModel.toJson()));
         if (response!.statusCode == 200) {

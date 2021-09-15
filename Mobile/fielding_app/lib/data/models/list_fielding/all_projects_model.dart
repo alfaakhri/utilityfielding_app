@@ -74,12 +74,16 @@ class AllProjectsModel {
       json['AddPoleModel'].forEach((v) {
         addPoleModel!.add(AddPoleModel.fromJson(v));
       });
+    } else {
+      addPoleModel = [];
     }
     if (json['StartCompleteModel'] != null) {
       startCompleteModel = <StartCompleteModel>[];
       json['StartCompleteModel'].forEach((v) {
         startCompleteModel!.add(StartCompleteModel.fromJson(v));
       });
+    } else {
+      startCompleteModel = <StartCompleteModel>[];
     }
   }
 

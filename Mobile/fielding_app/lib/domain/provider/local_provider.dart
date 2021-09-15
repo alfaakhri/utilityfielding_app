@@ -49,7 +49,7 @@ class LocalProvider extends ChangeNotifier {
           data: jsonEncode(_projectLocalSelected.addPoleModel![index]),
         );
         if (response.statusCode == 200) {
-          showProgressNotification(index, _projectLocalSelected.addPoleModel![index].poleSequence!, true);
+          showProgressNotification(index, _projectLocalSelected.addPoleModel![index].poleSequence!, true, _projectLocalSelected);
           _projectLocalSelected.addPoleModel!.remove(_projectLocalSelected.addPoleModel![index]);
           _allProjectsModel.removeWhere((element) => element.iD == _projectLocalSelected.iD);
           _allProjectsModel.add(_projectLocalSelected);
@@ -67,7 +67,7 @@ class LocalProvider extends ChangeNotifier {
             uploadAllWithNotif(customerId);
           }
         } else {
-          showProgressNotification(index, _projectLocalSelected.addPoleModel![index].poleSequence!, false);
+          showProgressNotification(index, _projectLocalSelected.addPoleModel![index].poleSequence!, false, _projectLocalSelected);
         }
       }
     }
@@ -81,7 +81,7 @@ class LocalProvider extends ChangeNotifier {
         data: jsonEncode(_projectLocalSelected.startCompleteModel![index]),
       );
       if (response.statusCode == 200) {
-        showProgressNotification(index, _projectLocalSelected.startCompleteModel![index].poleSequence!, true);
+        showProgressNotification(index, _projectLocalSelected.startCompleteModel![index].poleSequence!, true, _projectLocalSelected);
         _projectLocalSelected.startCompleteModel!.remove(_projectLocalSelected.startCompleteModel![index]);
         _allProjectsModel.removeWhere((element) => element.iD == _projectLocalSelected.iD);
         _allProjectsModel.add(_projectLocalSelected);
@@ -99,18 +99,19 @@ class LocalProvider extends ChangeNotifier {
           uploadAllWithNotif(customerId);
         }
       } else {
-        showProgressNotification(index, _projectLocalSelected.startCompleteModel![index].poleSequence!, false);
+        showProgressNotification(index, _projectLocalSelected.startCompleteModel![index].poleSequence!, false, _projectLocalSelected);
       }
     }
   }
 
-  Future<void> showProgressNotification(int id, String sequencePole, bool isSuccess) async {
+  Future<void> showProgressNotification(int id, String sequencePole, bool isSuccess, AllProjectsModel allProjectsModel) async {
     await Future.delayed(Duration(seconds: 1), () async {
       await AwesomeNotifications().createNotification(
           content: NotificationContent(
               id: id,
               channelKey: 'grouped',
               title: 'Upload pole sequence $sequencePole ${(isSuccess) ? 'finished' : 'failed'}',
+              body: "${_projectLocalSelected.projectName} ${_projectLocalSelected.layerName}",
               locked: false));
     });
   }
