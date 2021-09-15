@@ -93,7 +93,9 @@ class ConnectionProvider extends ChangeNotifier {
 
   bool isShowDialog() {
     if (allProjectsModel.isNotEmpty) {
-      if (allProjectsModel.first.addPoleModel!.isNotEmpty) {
+      if (allProjectsModel.first.addPoleModel == null) {
+        return false;
+      } else if (allProjectsModel.first.addPoleModel!.isNotEmpty) {
         return true;
       }
     }

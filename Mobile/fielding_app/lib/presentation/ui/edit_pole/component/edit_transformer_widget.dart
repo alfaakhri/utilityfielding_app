@@ -86,7 +86,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                               style: textDefault,
                             ),
                             Text(
-                              "${list.value} kV, ${list.hOA} ft",
+                              "${list.value} kV",
                               style: textDefault,
                             )
                           ],
@@ -219,50 +219,51 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                                   ),
                                 ),
                               ),
-                              UIHelper.horizontalSpaceVerySmall,
-                              Expanded(
-                                child: TextFormField(
-                                  controller: ftController,
-                                  keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Please insert ft value';
-                                    } else if (value == "") {
-                                      return 'Please insert ft value';
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    isDense: true,
-                                    suffixText: "ft",
-                                    suffixStyle: textDefault,
-                                    focusedErrorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorRed)),
-                                    disabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorGrey
-                                                .withOpacity(0.3))),
-                                    errorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorRed)),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorGrey
-                                                .withOpacity(0.3))),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorGrey
-                                                .withOpacity(0.3))),
-                                  ),
-                                ),
-                              ),
+                              //TO-DO HIDE for temporary 
+                              // UIHelper.horizontalSpaceVerySmall,
+                              // Expanded(
+                              //   child: TextFormField(
+                              //     controller: ftController,
+                              //     keyboardType: TextInputType.number,
+                              //     validator: (value) {
+                              //       if (value == null) {
+                              //         return 'Please insert ft value';
+                              //       } else if (value == "") {
+                              //         return 'Please insert ft value';
+                              //       }
+                              //       return null;
+                              //     },
+                              //     decoration: InputDecoration(
+                              //       border: InputBorder.none,
+                              //       isDense: true,
+                              //       suffixText: "ft",
+                              //       suffixStyle: textDefault,
+                              //       focusedErrorBorder: OutlineInputBorder(
+                              //           borderRadius: BorderRadius.circular(5),
+                              //           borderSide: BorderSide(
+                              //               color: ColorHelpers.colorRed)),
+                              //       disabledBorder: OutlineInputBorder(
+                              //           borderRadius: BorderRadius.circular(5),
+                              //           borderSide: BorderSide(
+                              //               color: ColorHelpers.colorGrey
+                              //                   .withOpacity(0.3))),
+                              //       errorBorder: OutlineInputBorder(
+                              //           borderRadius: BorderRadius.circular(5),
+                              //           borderSide: BorderSide(
+                              //               color: ColorHelpers.colorRed)),
+                              //       enabledBorder: OutlineInputBorder(
+                              //           borderRadius: BorderRadius.circular(5),
+                              //           borderSide: BorderSide(
+                              //               color: ColorHelpers.colorGrey
+                              //                   .withOpacity(0.3))),
+                              //       focusedBorder: OutlineInputBorder(
+                              //           borderRadius: BorderRadius.circular(5),
+                              //           borderSide: BorderSide(
+                              //               color: ColorHelpers.colorGrey
+                              //                   .withOpacity(0.3))),
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           )
                         : Container(),
@@ -295,10 +296,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                                           .kvController
                                           .text
                                           .replaceAll(",", ".")),
-                                      hOA: double.parse(this
-                                          .ftController
-                                          .text
-                                          .replaceAll(",", "."))));
+                                      hOA: 0));
                                 }
                               }
 

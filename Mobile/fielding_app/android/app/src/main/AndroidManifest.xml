@@ -76,7 +76,7 @@
             </intent-filter>
         </receiver>
         <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyDQ-aesOz_ut1yBv_d6FG-0N60uqDwgLZs"/>
+               android:value="AIzaSyBkjUYIRfhJvzE_avAHS53yASeUlbOfrlg"/>
         <provider
             android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
             android:authorities="${applicationId}.flutter_downloader.provider"

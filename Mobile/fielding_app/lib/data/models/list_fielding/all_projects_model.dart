@@ -21,6 +21,7 @@ class AllProjectsModel {
   String? fieldingProgress;
   List<AllPolesByLayerModel>? allPolesByLayer;
   List<AddPoleModel>? addPoleModel;
+  List<StartCompleteModel>? startCompleteModel;
 
   AllProjectsModel(
       {this.iD,
@@ -41,7 +42,8 @@ class AllProjectsModel {
       this.fieldingProgressStatus,
       this.fieldingProgress,
       this.allPolesByLayer,
-      this.addPoleModel});
+      this.addPoleModel,
+      this.startCompleteModel});
 
   AllProjectsModel.fromJson(Map<String, dynamic> json) {
     iD = json['ID'];
@@ -73,6 +75,12 @@ class AllProjectsModel {
         addPoleModel!.add(AddPoleModel.fromJson(v));
       });
     }
+    if (json['StartCompleteModel'] != null) {
+      startCompleteModel = <StartCompleteModel>[];
+      json['StartCompleteModel'].forEach((v) {
+        startCompleteModel!.add(StartCompleteModel.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -95,19 +103,18 @@ class AllProjectsModel {
     data['FieldingProgressStatus'] = this.fieldingProgressStatus;
     data['FieldingProgress'] = this.fieldingProgress;
     if (this.allPolesByLayer != null) {
-      data['AllPolesByLayer'] =
-          this.allPolesByLayer!.map((v) => v.toJson()).toList();
+      data['AllPolesByLayer'] = this.allPolesByLayer!.map((v) => v.toJson()).toList();
     }
     if (this.addPoleModel != null) {
-      data['AddPoleModel'] =
-          this.addPoleModel!.map((v) => v.toJson()).toList();
+      data['AddPoleModel'] = this.addPoleModel!.map((v) => v.toJson()).toList();
+    }
+    if (this.startCompleteModel != null) {
+      data['StartCompleteModel'] = this.startCompleteModel!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 
   static List<AllProjectsModel>? fromJsonList(jsonList) {
-    return jsonList
-        .map<AllProjectsModel>((obj) => AllProjectsModel.fromJson(obj))
-        .toList();
+    return jsonList.map<AllProjectsModel>((obj) => AllProjectsModel.fromJson(obj)).toList();
   }
 }

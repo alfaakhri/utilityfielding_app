@@ -50,3 +50,13 @@ class UploadSinglePole extends LocalEvent {
 
 class UploadListPole extends LocalEvent {
 }
+
+class UploadStartComplete extends LocalEvent {
+  final AllProjectsModel allProjectsModel;
+  final StartCompleteModel startCompleteModel;
+  final String userId;
+
+  UploadStartComplete(this.allProjectsModel, this.startCompleteModel, this.userId);
+}
+
+class StartLocalFielding extends LocalEvent {}

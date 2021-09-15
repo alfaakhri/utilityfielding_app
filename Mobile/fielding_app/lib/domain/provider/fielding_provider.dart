@@ -91,18 +91,13 @@ class FieldingProvider extends ChangeNotifier {
   void getCurrentLocation(bool isConnected) async {
     LocationService location = LocationService();
     LocationData data;
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHiveCurrentLocation, locationDataLocal);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveCurrentLocation, locationDataLocal);
     if (isConnected) {
       data = await location.getCurrentLocation();
-      var mapLocation = {
-        "latitude": data.latitude!,
-        "longitude": data.longitude!
-      };
+      var mapLocation = {"latitude": data.latitude!, "longitude": data.longitude!};
       print("latlng: ${data.latitude.toString()} ${data.longitude.toString()}");
       _hiveService.deleteDataFromBox(getHiveCurrentLocation, locationDataLocal);
-      _hiveService.saveDataToBox(
-          getHiveCurrentLocation, locationDataLocal, mapLocation);
+      _hiveService.saveDataToBox(getHiveCurrentLocation, locationDataLocal, mapLocation);
       setCurrentPosition(LatLng(data.latitude!, data.longitude!));
       setCurrentLocationData(data);
     } else {
@@ -180,8 +175,7 @@ class FieldingProvider extends ChangeNotifier {
   AllPoleSpeciesModel _poleSpeciesSelected = AllPoleSpeciesModel();
   AllPoleSpeciesModel get poleSpeciesSelected => _poleSpeciesSelected;
   void setPoleSpeciesSelected(String? value) {
-    _poleSpeciesSelected = _listAllPoleSpecies!
-        .firstWhere((element) => element.text!.contains(value!));
+    _poleSpeciesSelected = _listAllPoleSpecies!.firstWhere((element) => element.text!.contains(value!));
     notifyListeners();
   }
 
@@ -199,17 +193,14 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllPoleSpecies(bool isConnected) async {
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHivePolesSpecies, listPolesSpecies);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHivePolesSpecies, listPolesSpecies);
     if (isConnected) {
       try {
         var response = await apiProvider.getAllPoleSpecies();
         if (response.statusCode == 200) {
-          setListAllPoleSpecies(
-              AllPoleSpeciesModel.fromJsonList(response.data));
+          setListAllPoleSpecies(AllPoleSpeciesModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(getHivePolesSpecies, listPolesSpecies);
-          _hiveService.saveDataToBox(getHivePolesSpecies, listPolesSpecies,
-              json.encode(listAllPoleSpecies));
+          _hiveService.saveDataToBox(getHivePolesSpecies, listPolesSpecies, json.encode(listAllPoleSpecies));
           print("all pole species: ${response.data}");
         } else {}
       } catch (e) {
@@ -217,8 +208,7 @@ class FieldingProvider extends ChangeNotifier {
       }
     } else {
       if (dataBox != null) {
-        setListAllPoleSpecies(
-            AllPoleSpeciesModel.fromJsonList(json.decode(dataBox)));
+        setListAllPoleSpecies(AllPoleSpeciesModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
@@ -234,8 +224,7 @@ class FieldingProvider extends ChangeNotifier {
   AllPoleClassModel _poleClassSelected = AllPoleClassModel();
   AllPoleClassModel get poleClassSelected => _poleClassSelected;
   void setPoleClassSelected(String? value) {
-    _poleClassSelected = _listAllPoleClass!
-        .firstWhere((element) => element.text!.contains(value!));
+    _poleClassSelected = _listAllPoleClass!.firstWhere((element) => element.text!.contains(value!));
     notifyListeners();
   }
 
@@ -254,16 +243,14 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllPoleClass(bool isConnected) async {
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHivePolesClass, listPolesClass);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHivePolesClass, listPolesClass);
     if (isConnected) {
       try {
         var response = await apiProvider.getAllPoleClass();
         if (response.statusCode == 200) {
           setListAllPoleClass(AllPoleClassModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(getHivePolesClass, listPolesClass);
-          _hiveService.saveDataToBox(
-              getHivePolesClass, listPolesClass, json.encode(listAllPoleClass));
+          _hiveService.saveDataToBox(getHivePolesClass, listPolesClass, json.encode(listAllPoleClass));
           print("all pole class: ${response.data}");
         } else {}
       } catch (e) {
@@ -271,8 +258,7 @@ class FieldingProvider extends ChangeNotifier {
       }
     } else {
       if (dataBox != null) {
-        setListAllPoleClass(
-            AllPoleClassModel.fromJsonList(json.decode(dataBox)));
+        setListAllPoleClass(AllPoleClassModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
@@ -288,8 +274,7 @@ class FieldingProvider extends ChangeNotifier {
   AllPoleHeightModel _poleHeightSelected = AllPoleHeightModel();
   AllPoleHeightModel get poleHeightSelected => _poleHeightSelected;
   void setPoleHeightSelected(String? value) {
-    _poleHeightSelected =
-        _listAllPoleHeight!.firstWhere((element) => element.text == value!);
+    _poleHeightSelected = _listAllPoleHeight!.firstWhere((element) => element.text == value!);
     notifyListeners();
   }
 
@@ -307,16 +292,14 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllPoleHeight(bool isConnected) async {
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHivePolesHeight, listPolesHeight);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHivePolesHeight, listPolesHeight);
     if (isConnected) {
       try {
         var response = await apiProvider.getAllPoleHeight();
         if (response.statusCode == 200) {
           setListAllPoleHeight(AllPoleHeightModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(getHivePolesHeight, listPolesHeight);
-          _hiveService.saveDataToBox(getHivePolesHeight, listPolesHeight,
-              json.encode(listAllPoleHeight));
+          _hiveService.saveDataToBox(getHivePolesHeight, listPolesHeight, json.encode(listAllPoleHeight));
           print("all pole height: ${response.data}");
         } else {}
       } catch (e) {
@@ -324,19 +307,15 @@ class FieldingProvider extends ChangeNotifier {
       }
     } else {
       if (dataBox != null) {
-        setListAllPoleHeight(
-            AllPoleHeightModel.fromJsonList(json.decode(dataBox)));
+        setListAllPoleHeight(AllPoleHeightModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
 
 //--------------------------------------------------------------------------------------------
-  List<AllPoleConditionModel>? _listAllPoleCondition =
-      <AllPoleConditionModel>[];
-  List<AllPoleConditionModel>? get listAllPoleCondition =>
-      _listAllPoleCondition;
-  void setListAllPoleCondition(
-      List<AllPoleConditionModel>? listAllPoleCondition) {
+  List<AllPoleConditionModel>? _listAllPoleCondition = <AllPoleConditionModel>[];
+  List<AllPoleConditionModel>? get listAllPoleCondition => _listAllPoleCondition;
+  void setListAllPoleCondition(List<AllPoleConditionModel>? listAllPoleCondition) {
     _listAllPoleCondition = listAllPoleCondition;
     notifyListeners();
   }
@@ -344,8 +323,7 @@ class FieldingProvider extends ChangeNotifier {
   AllPoleConditionModel _poleConditionSelected = AllPoleConditionModel();
   AllPoleConditionModel get poleConditionSelected => _poleConditionSelected;
   void setPoleConditionSelected(String? value) {
-    _poleConditionSelected = _listAllPoleCondition!
-        .firstWhere((element) => element.text!.contains(value!));
+    _poleConditionSelected = _listAllPoleCondition!.firstWhere((element) => element.text!.contains(value!));
     notifyListeners();
   }
 
@@ -363,18 +341,14 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllPoleCondition(bool isConnected) async {
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHivePolesCondition, listPolesCondition);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHivePolesCondition, listPolesCondition);
     if (isConnected) {
       try {
         var response = await apiProvider.getAllPoleCondition();
         if (response.statusCode == 200) {
-          setListAllPoleCondition(
-              AllPoleConditionModel.fromJsonList(response.data));
-          _hiveService.deleteDataFromBox(
-              getHivePolesCondition, listPolesCondition);
-          _hiveService.saveDataToBox(getHivePolesCondition, listPolesCondition,
-              json.encode(listAllPoleCondition));
+          setListAllPoleCondition(AllPoleConditionModel.fromJsonList(response.data));
+          _hiveService.deleteDataFromBox(getHivePolesCondition, listPolesCondition);
+          _hiveService.saveDataToBox(getHivePolesCondition, listPolesCondition, json.encode(listAllPoleCondition));
           print("all pole condition: ${response.data}");
         } else {}
       } catch (e) {
@@ -382,8 +356,7 @@ class FieldingProvider extends ChangeNotifier {
       }
     } else {
       if (dataBox != null) {
-        setListAllPoleCondition(
-            AllPoleConditionModel.fromJsonList(json.decode(dataBox)));
+        setListAllPoleCondition(AllPoleConditionModel.fromJsonList(json.decode(dataBox)));
       }
     }
   }
@@ -397,16 +370,14 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getListAllHoaType(bool isConnected) async {
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHiveHoaType, listHoaType);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveHoaType, listHoaType);
     if (isConnected) {
       try {
         var response = await apiProvider.getAllHoaType();
         if (response.statusCode == 200) {
           setListAllHoaType(AllHoaTypeModel.fromJsonList(response.data));
           _hiveService.deleteDataFromBox(getHiveHoaType, listHoaType);
-          _hiveService.saveDataToBox(
-              getHiveHoaType, listHoaType, json.encode(listAllHoaType));
+          _hiveService.saveDataToBox(getHiveHoaType, listHoaType, json.encode(listAllHoaType));
           print("all hoa type: ${response.data}");
         } else {}
       } catch (e) {
@@ -422,8 +393,7 @@ class FieldingProvider extends ChangeNotifier {
   AllHoaTypeModel _hoaSelected = AllHoaTypeModel();
   AllHoaTypeModel get hoaSelected => _hoaSelected;
   void setHoaSelected(String? value) {
-    _hoaSelected =
-        listAllHoaType!.firstWhere((element) => element.text == value);
+    _hoaSelected = listAllHoaType!.firstWhere((element) => element.text == value);
     notifyListeners();
   }
 
@@ -521,21 +491,21 @@ class FieldingProvider extends ChangeNotifier {
 
   List<JobNumberAttachModel>? _jobNumberAttachModel = <JobNumberAttachModel>[];
   List<JobNumberAttachModel>? get jobNumberAttachModel => _jobNumberAttachModel;
-  void setJobNumberAttachModel(
-      List<JobNumberAttachModel> jobNumberAttachModel) {
+  void setJobNumberAttachModel(List<JobNumberAttachModel> jobNumberAttachModel) {
     _jobNumberAttachModel = jobNumberAttachModel;
     notifyListeners();
   }
 
-  void getJobNumberAttachModel(String? layerId) async {
-    try {
-      var response = await apiProvider.getJobNumberAttach(layerId);
-      if (response.statusCode == 200) {
-        _jobNumberAttachModel =
-            JobNumberAttachModel.fromJsonList(response.data);
+  void getJobNumberAttachModel(String? layerId, bool isConnected) async {
+    if (isConnected) {
+      try {
+        var response = await apiProvider.getJobNumberAttach(layerId);
+        if (response.statusCode == 200) {
+          _jobNumberAttachModel = JobNumberAttachModel.fromJsonList(response.data);
+        }
+      } catch (e) {
+        print("JOB NUMBER ATTACH " + e.toString());
       }
-    } catch (e) {
-      print("JOB NUMBER ATTACH " + e.toString());
     }
   }
 
@@ -550,8 +520,7 @@ class FieldingProvider extends ChangeNotifier {
   AllFieldingTypeModel? _fieldingTypeSelected;
   AllFieldingTypeModel? get fieldingTypeSelected => _fieldingTypeSelected;
   void setFieldingTypeSelected(String? value) {
-    _fieldingTypeSelected =
-        _allFieldingType!.firstWhere((element) => element.text == value);
+    _fieldingTypeSelected = _allFieldingType!.firstWhere((element) => element.text == value);
     notifyListeners();
   }
 
@@ -570,18 +539,15 @@ class FieldingProvider extends ChangeNotifier {
   }
 
   void getFieldingType(bool isConnected) async {
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHiveFieldingType, listFieldingType);
+    final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveFieldingType, listFieldingType);
     if (isConnected) {
       try {
         var response = await apiProvider.getFieldingType();
         if (response.statusCode == 200) {
           _allFieldingType = AllFieldingTypeModel.fromJsonList(response.data);
           _hiveService.deleteDataFromBox(getHiveFieldingType, listFieldingType);
-          _hiveService.saveDataToBox(getHiveFieldingType, listFieldingType,
-              json.encode(_allFieldingType));
-          _allFieldingType!.insertAll(
-              0, [AllFieldingTypeModel(id: 3, text: "Fielding Type")]);
+          _hiveService.saveDataToBox(getHiveFieldingType, listFieldingType, json.encode(_allFieldingType));
+          _allFieldingType!.insertAll(0, [AllFieldingTypeModel(id: 3, text: "Fielding Type")]);
 
           setFieldingTypeAssign(3);
         }
@@ -589,10 +555,8 @@ class FieldingProvider extends ChangeNotifier {
         print("Fielding Type " + e.toString());
       }
     } else if (dataBox != null) {
-      _allFieldingType =
-          AllFieldingTypeModel.fromJsonList(json.decode(dataBox));
-      _allFieldingType!
-          .insertAll(0, [AllFieldingTypeModel(id: 3, text: "Fielding Type")]);
+      _allFieldingType = AllFieldingTypeModel.fromJsonList(json.decode(dataBox));
+      _allFieldingType!.insertAll(0, [AllFieldingTypeModel(id: 3, text: "Fielding Type")]);
       setFieldingTypeAssign(3);
     }
   }
@@ -608,18 +572,13 @@ class FieldingProvider extends ChangeNotifier {
 
   //------------------------------------------------------------------------------
   //Return value UNK || controller.text
-  String valueTextContent(String title, TextEditingController controller,
-      {bool? isUnk, bool? isEst}) {
+  String valueTextContent(String title, TextEditingController controller, {bool? isUnk, bool? isEst}) {
     var value;
     if (title.toLowerCase().contains("pole length")) {
       if (isUnk!) {
-        value = (controller.text == "-" || controller.text.isEmpty)
-            ? "UNK"
-            : "${controller.text} ft, UNK";
+        value = (controller.text == "-" || controller.text.isEmpty) ? "UNK" : "${controller.text} ft, UNK";
       } else if (isEst!) {
-        value = (controller.text == "-" || controller.text.isEmpty)
-            ? "EST"
-            : "${controller.text} ft, EST";
+        value = (controller.text == "-" || controller.text.isEmpty) ? "EST" : "${controller.text} ft, EST";
       } else {
         value = (controller.text.isEmpty)
             ? "-"
@@ -629,13 +588,9 @@ class FieldingProvider extends ChangeNotifier {
       }
     } else if (title.toLowerCase().contains("ground line")) {
       if (isUnk!) {
-        value = (controller.text == "-" || controller.text.isEmpty)
-            ? "UNK"
-            : "${controller.text} inch, UNK";
+        value = (controller.text == "-" || controller.text.isEmpty) ? "UNK" : "${controller.text} inch, UNK";
       } else if (isEst!) {
-        value = (controller.text == "-" || controller.text.isEmpty)
-            ? "EST"
-            : "${controller.text} inch, EST";
+        value = (controller.text == "-" || controller.text.isEmpty) ? "EST" : "${controller.text} inch, EST";
       } else {
         value = (controller.text.isEmpty)
             ? "-"
@@ -644,13 +599,9 @@ class FieldingProvider extends ChangeNotifier {
                 : "${controller.text} inch";
       }
     } else if (isUnk!) {
-      value = (controller.text == "-" || controller.text.isEmpty)
-          ? "UNK"
-          : "${controller.text}, UNK";
+      value = (controller.text == "-" || controller.text.isEmpty) ? "UNK" : "${controller.text}, UNK";
     } else if (isEst!) {
-      value = (controller.text == "-" || controller.text.isEmpty)
-          ? "EST"
-          : "${controller.text}, EST";
+      value = (controller.text == "-" || controller.text.isEmpty) ? "EST" : "${controller.text}, EST";
     } else {
       value = (controller.text.isEmpty) ? "-" : controller.text;
     }
@@ -659,8 +610,7 @@ class FieldingProvider extends ChangeNotifier {
 
   //------------------------------------------------------------------------------
   //return false if checkbox true, return true if controller "-" || controller empty
-  bool validateWithCheckbox(
-      bool? isCheckbox, TextEditingController controller) {
+  bool validateWithCheckbox(bool? isCheckbox, TextEditingController controller) {
     if (isCheckbox == null) {
       return true;
     } else if (isCheckbox) {
@@ -685,9 +635,7 @@ class FieldingProvider extends ChangeNotifier {
     } else {
       for (var poles in _allPolesByLayer!) {
         if (poles.poleSequence == value) {
-          Fluttertoast.showToast(
-              msg: "Pole sequence number already existed",
-              toastLength: Toast.LENGTH_LONG);
+          Fluttertoast.showToast(msg: "Pole sequence number already existed", toastLength: Toast.LENGTH_LONG);
           return true;
         }
       }

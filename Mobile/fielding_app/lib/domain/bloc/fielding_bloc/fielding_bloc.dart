@@ -27,12 +27,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
   HiveService _hiveService = HiveService();
 
   List<FieldingRequestByJobModel>? _fieldingRequestByJob;
-  List<FieldingRequestByJobModel>? get fieldingRequestByJob =>
-      _fieldingRequestByJob;
+  List<FieldingRequestByJobModel>? get fieldingRequestByJob => _fieldingRequestByJob;
 
   List<AssignedJobNumberModel>? _assignedJobNumberModel;
-  List<AssignedJobNumberModel>? get assignedJobNumberModel =>
-      _assignedJobNumberModel;
+  List<AssignedJobNumberModel>? get assignedJobNumberModel => _assignedJobNumberModel;
 
   List<AllProjectsModel>? _allProjects;
   List<AllProjectsModel>? get allProjects => _allProjects;
@@ -52,57 +50,68 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
   CurrentAddress _currentAddress = CurrentAddress();
   CurrentAddress get currentAddress => _currentAddress;
 
-  PoleByIdModel assignCompleteFielding(
-      AddPoleModel addPole, AllPolesByLayerModel polesByLayerModel) {
+  DateTime _startTimer = DateTime.now().toUtc();
+  DateTime get startTimer => _startTimer;
+  void setStartTimer(DateTime data) {
+    _startTimer = data;
+  }
+
+  DateTime _endTimer = DateTime.now();
+  DateTime get endTimer => _endTimer;
+  void setEndTimer(DateTime data) {
+    _endTimer = data;
+  }
+
+  PoleByIdModel assignCompleteFielding(AddPoleModel addPole, StartCompleteModel startComplete, bool isStartComplete,
+      AllPolesByLayerModel polesByLayerModel) {
     polesByLayerModel.detailInformation = PoleByIdModel(
       id: polesByLayerModel.detailInformation!.id,
       layerID: polesByLayerModel.detailInformation!.layerID,
-      street: addPole.street,
-      vAPTerminal: addPole.vAPTerminal,
-      poleNumber: addPole.poleNumber,
-      osmose: addPole.osmose,
-      latitude: addPole.latitude,
-      longitude: addPole.longitude,
-      poleHeight: addPole.poleHeight,
-      groundCircumference: addPole.groundCircumference,
-      poleClass: addPole.poleClass,
-      poleYear: addPole.poleYear,
-      poleSpecies: addPole.poleSpecies,
-      poleCondition: addPole.poleCondition,
-      poleType: addPole.poleType,
-      isRadioAntenna: addPole.isRadioAntenna,
-      note: addPole.notes,
-      otherNumber: addPole.otherNumber,
-      poleStamp: addPole.poleStamp,
-      fieldingCompletedDate:
-          polesByLayerModel.detailInformation!.fieldingCompletedDate,
+      street: (isStartComplete) ? startComplete.street : addPole.street,
+      vAPTerminal: (isStartComplete) ? startComplete.vAPTerminal : addPole.vAPTerminal,
+      poleNumber: (isStartComplete) ? startComplete.poleNumber : addPole.poleNumber,
+      osmose: (isStartComplete) ? startComplete.osmose : addPole.osmose,
+      latitude: (isStartComplete) ? startComplete.latitude : addPole.latitude,
+      longitude: (isStartComplete) ? startComplete.longitude : addPole.longitude,
+      poleHeight: (isStartComplete) ? startComplete.poleHeight : addPole.poleHeight,
+      groundCircumference: (isStartComplete) ? startComplete.groundCircumference : addPole.groundCircumference,
+      poleClass: (isStartComplete) ? startComplete.poleClass : addPole.poleClass,
+      poleYear: (isStartComplete) ? startComplete.poleYear : addPole.poleYear,
+      poleSpecies: (isStartComplete) ? startComplete.poleSpecies : addPole.poleSpecies,
+      poleCondition: (isStartComplete) ? startComplete.poleCondition : addPole.poleCondition,
+      poleType: (isStartComplete) ? startComplete.poleType : addPole.poleType,
+      isRadioAntenna: (isStartComplete) ? startComplete.isRadioAntenna : addPole.isRadioAntenna,
+      note: (isStartComplete) ? startComplete.notes : addPole.notes,
+      otherNumber: (isStartComplete) ? startComplete.otherNumber : addPole.otherNumber,
+      poleStamp: (isStartComplete) ? startComplete.poleStamp : addPole.poleStamp,
+      fieldingCompletedDate: polesByLayerModel.detailInformation!.fieldingCompletedDate,
       fieldingById: polesByLayerModel.detailInformation!.fieldingById,
       fieldingBy: polesByLayerModel.detailInformation!.fieldingBy,
       fieldingStatus: polesByLayerModel.detailInformation!.fieldingStatus,
-      poleSequence: addPole.poleSequence,
-      hOAList: addPole.hOAList,
-      transformerList: addPole.transformerList,
-      spanDirectionList: addPole.spanDirectionList,
-      anchorList: addPole.anchorList,
-      riserAndVGRList: addPole.riserAndVGRList,
-      fieldingType: addPole.fieldingType,
-      anchorFences: addPole.anchorFences,
-      anchorStreets: addPole.anchorStreets,
-      riserFences: addPole.riserFences,
-      isFAPUnknown: addPole.isFAPUnknown,
-      isOsmoseUnknown: addPole.isOsmoseUnknown,
-      isOtherNumberUnknown: addPole.isOtherNumberUnknown,
-      isPoleLengthUnknown: addPole.isPoleLengthUnknown,
-      isPoleLengthEstimated: addPole.isPoleLengthEstimated,
-      isPoleClassUnknown: addPole.isPoleClassUnknown,
-      isPoleClassEstimated: addPole.isPoleClassEstimated,
-      isGroundLineUnknown: addPole.isGroundLineUnknown,
-      isGroundLineEstimated: addPole.isGroundLineEstimated,
-      isYearUnknown: addPole.isYearUnknown,
-      isYearEstimated: addPole.isYearEstimated,
-      isSpeciesUnknown: addPole.isSpeciesUnknown,
-      isSpeciesEstimated: addPole.isSpeciesEstimated,
-      isPoleNumberUnknown: addPole.isPoleNumberUnknown,
+      poleSequence: (isStartComplete) ? startComplete.poleSequence : addPole.poleSequence,
+      hOAList: (isStartComplete) ? startComplete.hOAList : addPole.hOAList,
+      transformerList: (isStartComplete) ? startComplete.transformerList : addPole.transformerList,
+      spanDirectionList: (isStartComplete) ? startComplete.spanDirectionList : addPole.spanDirectionList,
+      anchorList: (isStartComplete) ? startComplete.anchorList : addPole.anchorList,
+      riserAndVGRList: (isStartComplete) ? startComplete.riserAndVGRList : addPole.riserAndVGRList,
+      fieldingType: (isStartComplete) ? startComplete.fieldingType : addPole.fieldingType,
+      anchorFences: (isStartComplete) ? startComplete.anchorFences : addPole.anchorFences,
+      anchorStreets: (isStartComplete) ? startComplete.anchorStreets : addPole.anchorStreets,
+      riserFences: (isStartComplete) ? startComplete.riserFences : addPole.riserFences,
+      isFAPUnknown: (isStartComplete) ? startComplete.isFAPUnknown : addPole.isFAPUnknown,
+      isOsmoseUnknown: (isStartComplete) ? startComplete.isOsmoseUnknown : addPole.isOsmoseUnknown,
+      isOtherNumberUnknown: (isStartComplete) ? startComplete.isOtherNumberUnknown : addPole.isOtherNumberUnknown,
+      isPoleLengthUnknown: (isStartComplete) ? startComplete.isPoleLengthUnknown : addPole.isPoleLengthUnknown,
+      isPoleLengthEstimated: (isStartComplete) ? startComplete.isPoleLengthEstimated : addPole.isPoleLengthEstimated,
+      isPoleClassUnknown: (isStartComplete) ? startComplete.isPoleClassUnknown : addPole.isPoleClassUnknown,
+      isPoleClassEstimated: (isStartComplete) ? startComplete.isPoleClassEstimated : addPole.isPoleClassEstimated,
+      isGroundLineUnknown: (isStartComplete) ? startComplete.isGroundLineUnknown : addPole.isGroundLineUnknown,
+      isGroundLineEstimated: (isStartComplete) ? startComplete.isGroundLineEstimated : addPole.isGroundLineEstimated,
+      isYearUnknown: (isStartComplete) ? startComplete.isYearUnknown : addPole.isYearUnknown,
+      isYearEstimated: (isStartComplete) ? startComplete.isYearEstimated : addPole.isYearEstimated,
+      isSpeciesUnknown: (isStartComplete) ? startComplete.isSpeciesUnknown : addPole.isSpeciesUnknown,
+      isSpeciesEstimated: (isStartComplete) ? startComplete.isSpeciesEstimated : addPole.isSpeciesEstimated,
+      isPoleNumberUnknown: (isStartComplete) ? startComplete.isPoleNumberUnknown : addPole.isPoleNumberUnknown,
     );
 
     return polesByLayerModel.detailInformation!;
@@ -118,16 +127,14 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         try {
           var response = await _apiProvider.getFieldingRequest(event.token);
           if (response!.statusCode == 200) {
-            _fieldingRequestByJob =
-                FieldingRequestByJobModel.fromJsonList(response.data);
+            _fieldingRequestByJob = FieldingRequestByJobModel.fromJsonList(response.data);
 
             if (_fieldingRequestByJob!.length == 0) {
               yield GetFieldingRequestEmpty();
             } else {
-              _hiveService.deleteDataFromBox(
-                  getHiveFieldingRequest, listFieldingRequest);
-              _hiveService.saveDataToBox(getHiveFieldingRequest,
-                  listFieldingRequest, json.encode(_fieldingRequestByJob));
+              _hiveService.deleteDataFromBox(getHiveFieldingRequest, listFieldingRequest);
+              _hiveService.saveDataToBox(
+                  getHiveFieldingRequest, listFieldingRequest, json.encode(_fieldingRequestByJob));
               yield GetFieldingRequestSuccess(_fieldingRequestByJob!);
             }
           } else if (response.data['Message'] == messageTokenExpired) {
@@ -156,13 +163,11 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield GetAllPolesByIdLoading();
       if (event.isConnected!) {
         try {
-          var response = await (_apiProvider.getAllPolesByLayerID(
-              event.token, event.allProjectsModel!.iD));
+          var response = await (_apiProvider.getAllPolesByLayerID(event.token, event.allProjectsModel!.iD));
           if (response!.statusCode == 200) {
             _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
             _hiveService.deleteDataFromBox(getHiveAllPoles, listAllPoles);
-            _hiveService.saveDataToBox(
-                getHiveAllPoles, listAllPoles, json.encode(_allPolesByLayer));
+            _hiveService.saveDataToBox(getHiveAllPoles, listAllPoles, json.encode(_allPolesByLayer));
             yield GetAllPolesByIdSuccess(_allPolesByLayer);
           } else if (response.data['Message'] == messageTokenExpired) {
             Get.offAll(LoginPage());
@@ -174,14 +179,11 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         }
       } else {
         try {
-          final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-              getHiveFieldingPoles, event.userId);
+          final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveFieldingPoles, event.userId);
           if (dataBox != null) {
             var project = AllProjectsModel.fromJsonList(json.decode(dataBox));
-            _allPolesByLayer = project!
-                .firstWhere(
-                    (element) => element.iD == event.allProjectsModel!.iD)
-                .allPolesByLayer;
+            _allPolesByLayer =
+                project!.firstWhere((element) => element.iD == event.allProjectsModel!.iD).allPolesByLayer;
             yield GetAllPolesByIdSuccess(_allPolesByLayer);
           }
         } catch (e) {
@@ -191,13 +193,10 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is StartPolePicture) {
       yield StartPolePictureLoading();
       try {
-        var responseFirst = await (_apiProvider.startPolePicture(
-            event.token, event.poleId, event.layerId));
+        var responseFirst = await (_apiProvider.startPolePicture(event.token, event.poleId, event.layerId));
         if (responseFirst!.statusCode == 200) {
-          _responsePolePicture =
-              AllPolesByLayerModel.fromJson(responseFirst.data);
-          var response = await (_apiProvider.getAllPolesByLayerID(
-              event.token, event.layerId));
+          _responsePolePicture = AllPolesByLayerModel.fromJson(responseFirst.data);
+          var response = await (_apiProvider.getAllPolesByLayerID(event.token, event.layerId));
 
           if (response!.statusCode == 200) {
             _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
@@ -216,14 +215,11 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
     } else if (event is CompletePolePicture) {
       yield CompletePolePictureLoading();
       try {
-        var responseFirst =
-            await (_apiProvider.completePolePicture(event.token, event.poleId));
+        var responseFirst = await (_apiProvider.completePolePicture(event.token, event.poleId));
 
         if (responseFirst!.statusCode == 200) {
-          _responsePolePicture =
-              AllPolesByLayerModel.fromJson(responseFirst.data);
-          var response = await (_apiProvider.getAllPolesByLayerID(
-              event.token, event.layerId));
+          _responsePolePicture = AllPolesByLayerModel.fromJson(responseFirst.data);
+          var response = await (_apiProvider.getAllPolesByLayerID(event.token, event.layerId));
 
           if (response!.statusCode == 200) {
             _allPolesByLayer = AllPolesByLayerModel.fromJsonList(response.data);
@@ -250,8 +246,7 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
           String prettyprint = encoder.convert(event.addPoleModel.toJson());
           debugPrint(prettyprint);
           // yield AddPoleFailed("Test");
-          var response =
-              await (_apiProvider.addPole(event.addPoleModel.toJson()));
+          var response = await (_apiProvider.addPole(event.addPoleModel.toJson()));
           if (response!.statusCode == 200) {
             yield AddPoleSuccess();
           } else if (response.data['Message'] == messageTokenExpired) {
@@ -264,47 +259,64 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
           List<AllProjectsModel>? _allProjectModel = <AllProjectsModel>[];
           AllPolesByLayerModel _polesByLayerModel = AllPolesByLayerModel();
           AllProjectsModel currentProjects = AllProjectsModel();
-          final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-              getHiveFieldingPoles, event.userId);
+          StartCompleteModel _startCompleteModel = StartCompleteModel();
+          final dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveFieldingPoles, event.userId);
 
           if (dataBox != null) {
-            _allProjectModel =
-                AllProjectsModel.fromJsonList(jsonDecode(dataBox));
+            _allProjectModel = AllProjectsModel.fromJsonList(jsonDecode(dataBox));
             //Search projects by id is same
-            currentProjects = _allProjectModel!.firstWhere(
-                (element) => element.iD == event.allProjectsModel.iD,
-                orElse: () => AllProjectsModel());
+            currentProjects = _allProjectModel!
+                .firstWhere((element) => element.iD == event.allProjectsModel.iD, orElse: () => AllProjectsModel());
             //Check is null
             if (currentProjects.iD != null) {
-              //Check add pole is null
-              if (currentProjects.addPoleModel != null) {
-                //Remove and then add addPoleModel
-                currentProjects.addPoleModel!.removeWhere(
-                    (element) => element.id == event.addPoleModel.id);
-                currentProjects.addPoleModel!.add(event.addPoleModel);
+              //Check isStartComplete
+              if (event.isStartComplete) {
+                _startCompleteModel =
+                    StartCompleteModel.fromJson(json.decode(json.encode(event.addPoleModel.toJson())));
+                _startCompleteModel.startTimer = _startTimer.toString();
+                _startCompleteModel.endTimer = DateTime.now().toUtc().toString();
+                _startCompleteModel.isStartAdditional = true;
+                if (currentProjects.startCompleteModel != null) {
+                  //Remove and then add addPoleModel
+                  currentProjects.startCompleteModel!.removeWhere((element) => element.id == event.addPoleModel.id);
+                  currentProjects.startCompleteModel!.add(_startCompleteModel);
+                } else {
+                  currentProjects.startCompleteModel = [_startCompleteModel];
+                }
               } else {
-                currentProjects.addPoleModel = [event.addPoleModel];
+                //Check add pole is null
+                if (currentProjects.addPoleModel != null) {
+                  //Remove and then add addPoleModel
+                  currentProjects.addPoleModel!.removeWhere((element) => element.id == event.addPoleModel.id);
+                  currentProjects.addPoleModel!.add(event.addPoleModel);
+                } else {
+                  currentProjects.addPoleModel = [event.addPoleModel];
+                }
               }
+
               //Search poleByLayer by id is same
               _polesByLayerModel = currentProjects.allPolesByLayer!.firstWhere(
                   (element) => element.id == event.allPolesByLayerModel.id,
                   orElse: () => AllPolesByLayerModel());
-                  
+
               if (_polesByLayerModel.id != null) {
-                //Assign addPole to update value
+                //Assign addPole to update detailInformation
                 _polesByLayerModel.detailInformation = assignCompleteFielding(
-                    event.addPoleModel, event.allPolesByLayerModel);
+                    event.addPoleModel, _startCompleteModel, event.isStartComplete, event.allPolesByLayerModel);
+                if (event.isStartComplete) {
+                  _polesByLayerModel.fieldingCompletedDate = _startCompleteModel.endTimer;
+                  _polesByLayerModel.fieldingStatus = 2;
+                  _polesByLayerModel.poleNumber = event.addPoleModel.poleNumber;
+                }
               }
               //Remove and then add polesBylayer
               currentProjects.allPolesByLayer!.removeWhere((element) => element.id == event.allPolesByLayerModel.id);
               currentProjects.allPolesByLayer!.add(_polesByLayerModel);
               //Remove and then add project
-              _allProjectModel.removeWhere(
-                  (element) => element.iD == event.allProjectsModel.iD);
+              _allProjectModel.removeWhere((element) => element.iD == event.allProjectsModel.iD);
               _allProjectModel.add(currentProjects);
               //Saving to local
-              await _hiveService.saveDataToBox(getHiveFieldingPoles,
-                  event.userId, json.encode(_allProjectModel));
+              await _hiveService.saveDataToBox(getHiveFieldingPoles, event.userId, json.encode(_allProjectModel));
 
               yield AddPoleSuccess();
             } else {
@@ -321,8 +333,7 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       yield GetPoleByIdLoading();
       try {
         if (event.isConnected) {
-          var response = await (_apiProvider.getPoleById(
-              event.allPolesByLayerModel!.id, event.token));
+          var response = await (_apiProvider.getPoleById(event.allPolesByLayerModel!.id, event.token));
           if (response!.statusCode == 200) {
             if (response.data != null) {
               _poleByIdModel = PoleByIdModel.fromJson(response.data);
@@ -343,19 +354,23 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
         yield GetPoleByIdFailed(e.toString());
       }
     } else if (event is StartFielding) {
-      yield StartFieldingLoading();
-      try {
-        var response = await (_apiProvider.startFielding(event.token,
-            event.poleId, event.isStartAdditional!, event.layerId));
-        if (response!.statusCode == 200) {
-          yield StartFieldingSuccess();
-        } else if (response.data['Message'] == messageTokenExpired) {
-          Get.offAll(LoginPage());
-        } else {
-          yield StartFieldingFailed(response.data['Message']);
+      if (event.isConnected) {
+        yield StartFieldingLoading();
+        try {
+          var response =
+              await (_apiProvider.startFielding(event.token, event.poleId, event.isStartAdditional, event.layerId));
+          if (response!.statusCode == 200) {
+            yield StartFieldingSuccess();
+          } else if (response.data['Message'] == messageTokenExpired) {
+            Get.offAll(LoginPage());
+          } else {
+            yield StartFieldingFailed(response.data['Message']);
+          }
+        } catch (e) {
+          yield StartFieldingFailed(e.toString());
         }
-      } catch (e) {
-        yield StartFieldingFailed(e.toString());
+      } else {
+        yield StartFieldingSuccess();
       }
     } else if (event is CompleteMultiPole) {
       yield CompleteMultiPoleLoading();

@@ -177,6 +177,21 @@ class ApiProvider {
     }
   }
 
+  Future<Response?> startAndCompletePole(dynamic data) async {
+    try {
+      _response = await _dio.post(
+          BASE_URL + "/api/MobileProject/StartAndCompleteFielding",
+          data: data);
+      return _response;
+    } on DioError catch (e) {
+      if (e.response!.statusCode == 400) {
+        return e.response;
+      } else {
+        throw e;
+      }
+    }
+  }
+
   Future<Response?> getPoleById(String? id, String? token) async {
     try {
       _response = await _dio

@@ -61,6 +61,7 @@ class PoleSequenceItem extends StatelessWidget {
                       Get.to(EditPolePage(
                         allProjectsModel: fielding.allProjectsSelected,
                         poles: allPolesByLayerModel,
+                        isStartComplete: false,
                       ));
                     },
                     child: Container(

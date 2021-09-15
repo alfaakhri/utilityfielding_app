@@ -149,16 +149,20 @@ class _TileItemState extends State<TileItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        var connect = context.read<ConnectionProvider>();
         context
             .read<FieldingProvider>()
             .setAllProjectsSelected(widget.detailItem);
-        context
-            .read<FieldingProvider>()
-            .getJobNumberAttachModel(widget.detailItem.iD);
+        context.read<FieldingProvider>().getJobNumberAttachModel(
+            widget.detailItem.iD, connect.isConnected);
         context.read<SymbolProvider>().getOtherSymbolModel(
             context.read<UserProvider>().userModel.data!.token!,
             widget.detailItem.iD!,
-            context.read<ConnectionProvider>().isConnected);
+            connect.isConnected);
+        context.read<SymbolProvider>().getAllItemLine(
+            context.read<UserProvider>().userModel.data!.token!,
+            widget.detailItem.iD!,
+            connect.isConnected);
         Get.to(DetailFieldingPage(
           allProjectsModel: widget.detailItem,
           isLocalMenu: false,

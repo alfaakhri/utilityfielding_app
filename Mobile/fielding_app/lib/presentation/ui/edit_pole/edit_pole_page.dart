@@ -15,9 +15,9 @@ class EditPolePage extends StatefulWidget {
   final AllProjectsModel? allProjectsModel;
   final AllPolesByLayerModel? poles;
   final bool? isAddPole;
+  final bool isStartComplete;
 
-  const EditPolePage(
-      {Key? key, this.allProjectsModel, this.poles, this.isAddPole})
+  const EditPolePage({Key? key, this.allProjectsModel, this.poles, this.isAddPole, required this.isStartComplete})
       : super(key: key);
 
   @override
@@ -94,28 +94,18 @@ class _EditPolePageState extends State<EditPolePage> {
         id: (widget.poles == null) ? null : widget.poles!.id,
         layerId: widget.allProjectsModel!.iD,
         street: (provider.streetName == null) ? null : provider.streetName,
-        fieldingType: (provider.fieldingTypeSelected!.id == null)
-            ? null
-            : provider.fieldingTypeSelected!.id,
+        fieldingType: (provider.fieldingTypeSelected!.id == null) ? null : provider.fieldingTypeSelected!.id,
         vAPTerminal: this._vapTerminal.text,
         poleNumber: this._poleNumber.text,
         osmose: this._osmoseNumber.text,
         latitude: provider.latitude.toString(),
         longitude: provider.longitude.toString(),
-        poleHeight: (provider.poleHeightSelected.id == null)
-            ? null
-            : provider.poleHeightSelected.id,
+        poleHeight: (provider.poleHeightSelected.id == null) ? null : provider.poleHeightSelected.id,
         groundCircumference: this._groundLine.text,
-        poleClass: (provider.poleClassSelected.id == null)
-            ? null
-            : provider.poleClassSelected.id,
+        poleClass: (provider.poleClassSelected.id == null) ? null : provider.poleClassSelected.id,
         poleYear: this._year.text,
-        poleSpecies: (provider.poleSpeciesSelected.id == null)
-            ? null
-            : provider.poleSpeciesSelected.id,
-        poleCondition: (provider.poleConditionSelected.id == null)
-            ? null
-            : provider.poleConditionSelected.id,
+        poleSpecies: (provider.poleSpeciesSelected.id == null) ? null : provider.poleSpeciesSelected.id,
+        poleCondition: (provider.poleConditionSelected.id == null) ? null : provider.poleConditionSelected.id,
         otherNumber: this._otherNumber.text,
         poleStamp: (this._poleStamp.text == "-" || this._poleStamp.text.isEmpty)
             ? null
@@ -123,12 +113,11 @@ class _EditPolePageState extends State<EditPolePage> {
                 ? true
                 : false,
         notes: this._notes.text,
-        isRadioAntenna:
-            (this._radioAntena.text == "-" || this._radioAntena.text.isEmpty)
-                ? null
-                : (this._radioAntena.text == "Yes")
-                    ? true
-                    : false,
+        isRadioAntenna: (this._radioAntena.text == "-" || this._radioAntena.text.isEmpty)
+            ? null
+            : (this._radioAntena.text == "Yes")
+                ? true
+                : false,
         hOAList: provider.hoaList,
         transformerList: provider.listTransformer,
         spanDirectionList: context.read<SpanProvider>().listSpanData,
@@ -137,9 +126,7 @@ class _EditPolePageState extends State<EditPolePage> {
         anchorFences: anchor.listAnchorFences,
         anchorStreets: anchor.listAnchorStreet,
         riserFences: riser.listRiserFence,
-        poleSequence: (this._poleSequence.text.isNotEmpty)
-            ? this._poleSequence.text
-            : null,
+        poleSequence: (this._poleSequence.text.isNotEmpty) ? this._poleSequence.text : null,
         isFAPUnknown: pole.isFAPUnknown,
         isOsmoseUnknown: pole.isOsmoseUnknown,
         isOtherNumberUnknown: pole.isOtherNumberUnknown,
@@ -157,12 +144,12 @@ class _EditPolePageState extends State<EditPolePage> {
         poleType: 0);
 
     fieldingBloc.add(AddPole(
-      data,
-      provider.allProjectsSelected,
-      provider.polesByLayerSelected,
-      context.read<ConnectionProvider>().isConnected,
-      context.read<AuthBloc>().userModel!.data!.user!.iD!,
-    ));
+        data,
+        provider.allProjectsSelected,
+        provider.polesByLayerSelected,
+        context.read<ConnectionProvider>().isConnected,
+        context.read<AuthBloc>().userModel!.data!.user!.iD!,
+        widget.isStartComplete));
   }
 
   Widget spaceForm() {
@@ -185,8 +172,7 @@ class _EditPolePageState extends State<EditPolePage> {
     var connect = context.read<ConnectionProvider>();
 
     if (widget.poles != null) {
-      fieldingBloc.add(GetPoleById(
-          widget.poles!, authBloc.userModel!.data!.token, connect.isConnected));
+      fieldingBloc.add(GetPoleById(widget.poles!, authBloc.userModel!.data!.token, connect.isConnected));
     }
   }
 
@@ -199,11 +185,8 @@ class _EditPolePageState extends State<EditPolePage> {
 
   void getAllPoles() {
     var user = context.read<UserProvider>();
-    fieldingBloc.add(GetAllPolesByID(
-        user.userModel.data!.token,
-        widget.allProjectsModel,
-        context.read<ConnectionProvider>().isConnected,
-        user.userModel.data!.user!.iD!));
+    fieldingBloc.add(GetAllPolesByID(user.userModel.data!.token, widget.allProjectsModel,
+        context.read<ConnectionProvider>().isConnected, user.userModel.data!.user!.iD!));
   }
 
   @override
@@ -220,13 +203,11 @@ class _EditPolePageState extends State<EditPolePage> {
             if (state is AddPoleLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is AddPoleFailed) {
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
               Fluttertoast.showToast(msg: state.message!);
             } else if (state is AddPoleSuccess) {
               clearFormController();
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
               Fluttertoast.showToast(msg: "Success");
 
               getAllPoles();
@@ -236,9 +217,7 @@ class _EditPolePageState extends State<EditPolePage> {
           child: Scaffold(
             key: _keyLoader,
             appBar: AppBar(
-              title: Text("Pole",
-                  style: TextStyle(
-                      color: ColorHelpers.colorBlackText, fontSize: 14)),
+              title: Text("Pole", style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
               leading: IconButton(
                 icon: Icon(
                   Icons.arrow_back,
@@ -262,28 +241,18 @@ class _EditPolePageState extends State<EditPolePage> {
                       var pole = context.read<FieldingBloc>().poleByIdModel;
                       var fielding = context.read<FieldingProvider>();
                       setState(() {
-                        isFillPoleLength = fielding.validateWithCheckbox(
-                            pole.isPoleLengthUnknown!, _poleHeight);
-                        isFillPoleClass = fielding.validateWithCheckbox(
-                            pole.isPoleClassUnknown!, _poleClass);
-                        isFillGLC = fielding.validateWithCheckbox(
-                            pole.isGroundLineUnknown!, _groundLine);
-                        isFillYear = fielding.validateWithCheckbox(
-                            pole.isYearUnknown!, _year);
-                        isFillSpecies = fielding.validateWithCheckbox(
-                            pole.isSpeciesUnknown!, _species);
-                        isFillPoleNumber = fielding.validateWithCheckbox(
-                            pole.isPoleNumberUnknown, _poleNumber);
-                        isFillPoleStamp =
-                            fielding.validate(_poleStamp, "pole stamp");
-                        isFillRadioAntena =
-                            fielding.validate(_radioAntena, "radio antena");
-                        isAlreadyPoleSequence =
-                            fielding.isPoleSequenceAlready(_poleSequence.text);
+                        isFillPoleLength = fielding.validateWithCheckbox(pole.isPoleLengthUnknown!, _poleHeight);
+                        isFillPoleClass = fielding.validateWithCheckbox(pole.isPoleClassUnknown!, _poleClass);
+                        isFillGLC = fielding.validateWithCheckbox(pole.isGroundLineUnknown!, _groundLine);
+                        isFillYear = fielding.validateWithCheckbox(pole.isYearUnknown!, _year);
+                        isFillSpecies = fielding.validateWithCheckbox(pole.isSpeciesUnknown!, _species);
+                        isFillPoleNumber = fielding.validateWithCheckbox(pole.isPoleNumberUnknown, _poleNumber);
+                        isFillPoleStamp = fielding.validate(_poleStamp, "pole stamp");
+                        isFillRadioAntena = fielding.validate(_radioAntena, "radio antena");
+                        isAlreadyPoleSequence = fielding.isPoleSequenceAlready(_poleSequence.text);
 
                         var fieldingProvider = context.read<FieldingProvider>();
-                        if (fieldingProvider.latitude!.toInt() == 0 ||
-                            fieldingProvider.longitude == null)
+                        if (fieldingProvider.latitude!.toInt() == 0 || fieldingProvider.longitude == null)
                           isFillGPS = true;
                         else
                           isFillGPS = false;
@@ -323,52 +292,28 @@ class _EditPolePageState extends State<EditPolePage> {
                   var anchor = context.read<AnchorProvider>();
                   var riser = context.read<RiserProvider>();
                   setState(() {
-                    this._poleClass.text = provider
-                            .setPoleClassAssign(
-                                state.poleByIdModel.poleClass ?? 13)
-                            .text ??
-                        unknownValue;
-                    this._condition.text = provider
-                            .setPoleConditionAssign(
-                                state.poleByIdModel.poleCondition ?? 0)
-                            .text ??
-                        unknownValue;
-                    this._poleHeight.text = (provider
-                                .setPoleHeightAssign(
-                                    state.poleByIdModel.poleHeight)
-                                .text ==
-                            null)
+                    this._poleClass.text =
+                        provider.setPoleClassAssign(state.poleByIdModel.poleClass ?? 13).text ?? unknownValue;
+                    this._condition.text =
+                        provider.setPoleConditionAssign(state.poleByIdModel.poleCondition ?? 0).text ?? unknownValue;
+                    this._poleHeight.text = (provider.setPoleHeightAssign(state.poleByIdModel.poleHeight).text == null)
                         ? unknownValue
-                        : provider
-                            .setPoleHeightAssign(state.poleByIdModel.poleHeight)
-                            .text
-                            .toString();
+                        : provider.setPoleHeightAssign(state.poleByIdModel.poleHeight).text.toString();
 
-                    provider.setFieldingTypeAssign(
-                        state.poleByIdModel.fieldingType ?? 2);
-                    this._species.text = provider
-                            .setPoleSpeciesAssign(
-                                state.poleByIdModel.poleSpecies)
-                            .text ??
-                        unknownValue;
-                    this._poleNumber.text =
-                        state.poleByIdModel.poleNumber ?? unknownValue;
-                    this._vapTerminal.text =
-                        state.poleByIdModel.vAPTerminal ?? unknownValue;
+                    provider.setFieldingTypeAssign(state.poleByIdModel.fieldingType ?? 2);
+                    this._species.text =
+                        provider.setPoleSpeciesAssign(state.poleByIdModel.poleSpecies).text ?? unknownValue;
+                    this._poleNumber.text = state.poleByIdModel.poleNumber ?? unknownValue;
+                    this._vapTerminal.text = state.poleByIdModel.vAPTerminal ?? unknownValue;
 
                     this._osmoseNumber.text =
-                        (state.poleByIdModel.osmose == "-")
-                            ? unknownValue
-                            : state.poleByIdModel.osmose ?? unknownValue;
-                    this._groundLine.text =
-                        state.poleByIdModel.groundCircumference ?? unknownValue;
-                    this._year.text = (state.poleByIdModel.poleYear != null)
-                        ? state.poleByIdModel.poleYear.toString()
-                        : unknownValue;
-                    this._otherNumber.text =
-                        (state.poleByIdModel.otherNumber == "-")
-                            ? unknownValue
-                            : state.poleByIdModel.otherNumber ?? unknownValue;
+                        (state.poleByIdModel.osmose == "-") ? unknownValue : state.poleByIdModel.osmose ?? unknownValue;
+                    this._groundLine.text = state.poleByIdModel.groundCircumference ?? unknownValue;
+                    this._year.text =
+                        (state.poleByIdModel.poleYear != null) ? state.poleByIdModel.poleYear.toString() : unknownValue;
+                    this._otherNumber.text = (state.poleByIdModel.otherNumber == "-")
+                        ? unknownValue
+                        : state.poleByIdModel.otherNumber ?? unknownValue;
                     if (state.poleByIdModel.poleStamp == null)
                       this._poleStamp.text = "-";
                     else if (state.poleByIdModel.poleStamp!)
@@ -386,39 +331,27 @@ class _EditPolePageState extends State<EditPolePage> {
                     this._notes.text = state.poleByIdModel.note ?? unknownValue;
 
                     this._fieldingType.text =
-                        (provider.fieldingTypeSelected!.text != null)
-                            ? provider.fieldingTypeSelected!.text!
-                            : "";
-                    this._poleSequence.text =
-                        (state.poleByIdModel.poleSequence != null)
-                            ? state.poleByIdModel.poleSequence.toString()
-                            : unknownValue;
+                        (provider.fieldingTypeSelected!.text != null) ? provider.fieldingTypeSelected!.text! : "";
+                    this._poleSequence.text = (state.poleByIdModel.poleSequence != null)
+                        ? state.poleByIdModel.poleSequence.toString()
+                        : unknownValue;
 
                     provider.setLatLng(
-                        double.parse(state.poleByIdModel.latitude ??
-                            provider.allPolesByLayer!.first.latitude!),
-                        double.parse(state.poleByIdModel.longitude ??
-                            provider.allPolesByLayer!.first.longitude!));
+                        double.parse(state.poleByIdModel.latitude ?? provider.allPolesByLayer!.first.latitude!),
+                        double.parse(state.poleByIdModel.longitude ?? provider.allPolesByLayer!.first.longitude!));
                     provider.getCurrentAddress(
-                        double.parse(state.poleByIdModel.latitude ??
-                            provider.allPolesByLayer!.first.latitude!),
-                        double.parse(state.poleByIdModel.longitude ??
-                            provider.allPolesByLayer!.first.longitude!));
+                        double.parse(state.poleByIdModel.latitude ?? provider.allPolesByLayer!.first.latitude!),
+                        double.parse(state.poleByIdModel.longitude ?? provider.allPolesByLayer!.first.longitude!));
 
                     provider.addAllHoaList(state.poleByIdModel.hOAList);
-                    provider.addAllListTransformer(
-                        state.poleByIdModel.transformerList);
-                    span.addAllListSpanData(
-                        state.poleByIdModel.spanDirectionList);
+                    provider.addAllListTransformer(state.poleByIdModel.transformerList);
+                    span.addAllListSpanData(state.poleByIdModel.spanDirectionList);
 
                     anchor.setListAnchorData(state.poleByIdModel.anchorList);
-                    anchor.setAllListAnchorFence(
-                        state.poleByIdModel.anchorFences!);
-                    anchor
-                        .setAllAnchorStreet(state.poleByIdModel.anchorStreets!);
+                    anchor.setAllListAnchorFence(state.poleByIdModel.anchorFences!);
+                    anchor.setAllAnchorStreet(state.poleByIdModel.anchorStreets!);
                     riser.setAllRiserFence(state.poleByIdModel.riserFences!);
-                    riser.addAllListRiserData(
-                        state.poleByIdModel.riserAndVGRList);
+                    riser.addAllListRiserData(state.poleByIdModel.riserAndVGRList);
                   });
                 }
               },
@@ -461,15 +394,11 @@ class _EditPolePageState extends State<EditPolePage> {
                     children: [
                       Text(
                         "Pole Sequence",
-                        style: TextStyle(
-                            color: ColorHelpers.colorBlueNumber, fontSize: 14),
+                        style: TextStyle(color: ColorHelpers.colorBlueNumber, fontSize: 14),
                       ),
                       Text(
-                        (this._poleSequence.text.isNotEmpty)
-                            ? this._poleSequence.text
-                            : "-",
-                        style: TextStyle(
-                            color: ColorHelpers.colorBlackText, fontSize: 14),
+                        (this._poleSequence.text.isNotEmpty) ? this._poleSequence.text : "-",
+                        style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
                       ),
                     ],
                   ),
@@ -489,16 +418,12 @@ class _EditPolePageState extends State<EditPolePage> {
                   children: [
                     Text(
                       "Pole Information",
-                      style: TextStyle(
-                          color: ColorHelpers.colorBlackText,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14),
+                      style: TextStyle(color: ColorHelpers.colorBlackText, fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                     UIHelper.verticalSpaceSmall,
                     Container(
                       padding: EdgeInsets.all(10),
-                      decoration:
-                          BoxDecoration(color: ColorHelpers.colorBlueIntro),
+                      decoration: BoxDecoration(color: ColorHelpers.colorBlueIntro),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -516,9 +441,7 @@ class _EditPolePageState extends State<EditPolePage> {
                                     : (isFillGPS!)
                                         ? Text(
                                             " *need to fill",
-                                            style: TextStyle(
-                                                color: Colors.red,
-                                                fontSize: 12),
+                                            style: TextStyle(color: Colors.red, fontSize: 12),
                                           )
                                         : Container()
                               ],
@@ -527,17 +450,11 @@ class _EditPolePageState extends State<EditPolePage> {
                           Expanded(
                             flex: 2,
                             child: Text(
-                              (context
-                                          .read<FieldingProvider>()
-                                          .latitude!
-                                          .toInt() ==
-                                      0)
+                              (context.read<FieldingProvider>().latitude!.toInt() == 0)
                                   ? unknownValue
                                   : "${context.watch<FieldingProvider>().latitude!.toStringAsFixed(6)}, ${context.watch<FieldingProvider>().longitude!.toStringAsFixed(6)}",
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: ColorHelpers.colorBlackText,
-                                  fontSize: 12),
+                                  fontWeight: FontWeight.w600, color: ColorHelpers.colorBlackText, fontSize: 12),
                             ),
                           ),
                           (!connect.isConnected)
@@ -545,9 +462,7 @@ class _EditPolePageState extends State<EditPolePage> {
                               : InkWell(
                                   onTap: () {
                                     Get.to(EditLatLngPage(
-                                      polesLayerModel: context
-                                          .read<FieldingProvider>()
-                                          .polesByLayerSelected,
+                                      polesLayerModel: context.read<FieldingProvider>().polesByLayerSelected,
                                       allProjectsModel: widget.allProjectsModel,
                                       isAddPole: false,
                                       isAddTreeTrim: false,
@@ -558,26 +473,14 @@ class _EditPolePageState extends State<EditPolePage> {
                                     height: 30,
                                     alignment: Alignment.center,
                                     decoration: BoxDecoration(
-                                      color: (context
-                                                  .watch<FieldingProvider>()
-                                                  .latitude!
-                                                  .toInt() ==
-                                              0)
+                                      color: (context.watch<FieldingProvider>().latitude!.toInt() == 0)
                                           ? ColorHelpers.colorBlueNumber
                                           : ColorHelpers.colorGreen,
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: Text(
-                                        (context
-                                                    .watch<FieldingProvider>()
-                                                    .latitude!
-                                                    .toInt() ==
-                                                0)
-                                            ? 'Enter'
-                                            : "Edit",
-                                        style: TextStyle(
-                                            color: ColorHelpers.colorWhite,
-                                            fontSize: 12)),
+                                        (context.watch<FieldingProvider>().latitude!.toInt() == 0) ? 'Enter' : "Edit",
+                                        style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
                                   ),
                                 ),
                         ],
@@ -630,12 +533,10 @@ class _EditPolePageState extends State<EditPolePage> {
                       isBlueColor: false,
                       needUnk: true,
                       needEst: false,
-                      isUnk: fieldingBloc.poleByIdModel.isPoleNumberUnknown ??
-                          false,
+                      isUnk: fieldingBloc.poleByIdModel.isPoleNumberUnknown ?? false,
                       result: () {
                         setState(() {
-                          pole.isPoleNumberUnknown =
-                              providerFielding.isUnknownCurrent;
+                          pole.isPoleNumberUnknown = providerFielding.isUnknownCurrent;
                         });
                       },
                     ),
@@ -672,16 +573,12 @@ class _EditPolePageState extends State<EditPolePage> {
                       isBlueColor: true,
                       needUnk: true,
                       needEst: true,
-                      isUnk: fieldingBloc.poleByIdModel.isPoleLengthUnknown ??
-                          false,
-                      isEst: fieldingBloc.poleByIdModel.isPoleLengthEstimated ??
-                          false,
+                      isUnk: fieldingBloc.poleByIdModel.isPoleLengthUnknown ?? false,
+                      isEst: fieldingBloc.poleByIdModel.isPoleLengthEstimated ?? false,
                       result: () {
                         setState(() {
-                          pole.isPoleLengthUnknown =
-                              providerFielding.isUnknownCurrent;
-                          pole.isPoleLengthEstimated =
-                              providerFielding.isEstimateCurrent;
+                          pole.isPoleLengthUnknown = providerFielding.isUnknownCurrent;
+                          pole.isPoleLengthEstimated = providerFielding.isEstimateCurrent;
                         });
                       },
                     ),
@@ -694,16 +591,12 @@ class _EditPolePageState extends State<EditPolePage> {
                       isBlueColor: false,
                       needUnk: true,
                       needEst: true,
-                      isUnk: fieldingBloc.poleByIdModel.isPoleClassUnknown ??
-                          false,
-                      isEst: fieldingBloc.poleByIdModel.isPoleClassEstimated ??
-                          false,
+                      isUnk: fieldingBloc.poleByIdModel.isPoleClassUnknown ?? false,
+                      isEst: fieldingBloc.poleByIdModel.isPoleClassEstimated ?? false,
                       result: () {
                         setState(() {
-                          pole.isPoleClassUnknown =
-                              providerFielding.isUnknownCurrent;
-                          pole.isPoleClassEstimated =
-                              providerFielding.isEstimateCurrent;
+                          pole.isPoleClassUnknown = providerFielding.isUnknownCurrent;
+                          pole.isPoleClassEstimated = providerFielding.isEstimateCurrent;
                         });
                       },
                     ),
@@ -716,16 +609,12 @@ class _EditPolePageState extends State<EditPolePage> {
                       isBlueColor: true,
                       needUnk: true,
                       needEst: true,
-                      isUnk: fieldingBloc.poleByIdModel.isGroundLineUnknown ??
-                          false,
-                      isEst: fieldingBloc.poleByIdModel.isGroundLineEstimated ??
-                          false,
+                      isUnk: fieldingBloc.poleByIdModel.isGroundLineUnknown ?? false,
+                      isEst: fieldingBloc.poleByIdModel.isGroundLineEstimated ?? false,
                       result: () {
                         setState(() {
-                          pole.isGroundLineUnknown =
-                              providerFielding.isUnknownCurrent;
-                          pole.isGroundLineEstimated =
-                              providerFielding.isEstimateCurrent;
+                          pole.isGroundLineUnknown = providerFielding.isUnknownCurrent;
+                          pole.isGroundLineEstimated = providerFielding.isEstimateCurrent;
                         });
                       },
                     ),
@@ -739,14 +628,11 @@ class _EditPolePageState extends State<EditPolePage> {
                       needUnk: true,
                       needEst: true,
                       isUnk: fieldingBloc.poleByIdModel.isYearUnknown ?? false,
-                      isEst:
-                          fieldingBloc.poleByIdModel.isYearEstimated ?? false,
+                      isEst: fieldingBloc.poleByIdModel.isYearEstimated ?? false,
                       result: () {
                         setState(() {
-                          pole.isYearUnknown =
-                              providerFielding.isUnknownCurrent;
-                          pole.isYearEstimated =
-                              providerFielding.isEstimateCurrent;
+                          pole.isYearUnknown = providerFielding.isUnknownCurrent;
+                          pole.isYearEstimated = providerFielding.isEstimateCurrent;
                         });
                       },
                     ),
@@ -759,16 +645,12 @@ class _EditPolePageState extends State<EditPolePage> {
                       isBlueColor: true,
                       needUnk: true,
                       needEst: true,
-                      isUnk:
-                          fieldingBloc.poleByIdModel.isSpeciesUnknown ?? false,
-                      isEst: fieldingBloc.poleByIdModel.isSpeciesEstimated ??
-                          false,
+                      isUnk: fieldingBloc.poleByIdModel.isSpeciesUnknown ?? false,
+                      isEst: fieldingBloc.poleByIdModel.isSpeciesEstimated ?? false,
                       result: () {
                         setState(() {
-                          pole.isSpeciesUnknown =
-                              providerFielding.isUnknownCurrent;
-                          pole.isSpeciesEstimated =
-                              providerFielding.isEstimateCurrent;
+                          pole.isSpeciesUnknown = providerFielding.isUnknownCurrent;
+                          pole.isSpeciesEstimated = providerFielding.isEstimateCurrent;
                         });
                       },
                     ),
@@ -785,7 +667,7 @@ class _EditPolePageState extends State<EditPolePage> {
                       },
                     ),
                     ContentFormTextWidget(
-                      title: "Pole Stamp",
+                      title: "Pole Stamp Picture",
                       controller: _poleStamp,
                       isValidation: isFillPoleStamp,
                       isButtonGrey: false,
@@ -815,22 +697,19 @@ class _EditPolePageState extends State<EditPolePage> {
                     FormDrawingItem(
                       isBlueColor: true,
                       title: "Span Direction and Distance",
-                      lengthValue:
-                          context.watch<SpanProvider>().listSpanData.length,
+                      lengthValue: context.watch<SpanProvider>().listSpanData.length,
                       classname: ViewSpanWidget(),
                     ),
                     FormDrawingItem(
                       isBlueColor: false,
                       title: "Anchor",
-                      lengthValue:
-                          context.watch<AnchorProvider>().listAnchorData.length,
+                      lengthValue: context.watch<AnchorProvider>().listAnchorData.length,
                       classname: AnchorWidget(),
                     ),
                     FormDrawingItem(
                       isBlueColor: true,
                       title: "Riser and VGR Location",
-                      lengthValue:
-                          context.watch<RiserProvider>().listRiserData.length,
+                      lengthValue: context.watch<RiserProvider>().listRiserData.length,
                       classname: RiserWidget(),
                     ),
                     NoteWidget(
@@ -852,8 +731,7 @@ class _EditPolePageState extends State<EditPolePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -862,10 +740,7 @@ class _EditPolePageState extends State<EditPolePage> {
                 Text(
                   'Information',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: ColorHelpers.colorGrey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500),
+                  style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 UIHelper.verticalSpaceMedium,
                 Padding(
@@ -873,10 +748,7 @@ class _EditPolePageState extends State<EditPolePage> {
                   child: Text(
                     "Internet not available, data will be saved and send anytime when internet is available",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: ColorHelpers.colorGrey,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500),
+                    style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 12, fontWeight: FontWeight.w500),
                   ),
                 ),
                 UIHelper.verticalSpaceMedium,
@@ -897,10 +769,7 @@ class _EditPolePageState extends State<EditPolePage> {
                       ),
                       child: Text(
                         "SAVE",
-                        style: TextStyle(
-                            color: ColorHelpers.colorWhite,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 14, fontWeight: FontWeight.bold),
                       )),
                 ),
                 UIHelper.verticalSpaceMedium,
@@ -916,10 +785,7 @@ class _EditPolePageState extends State<EditPolePage> {
                       ),
                       child: Text(
                         "CANCEL",
-                        style: TextStyle(
-                            color: ColorHelpers.colorWhite,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 14, fontWeight: FontWeight.bold),
                       )),
                 ),
               ],

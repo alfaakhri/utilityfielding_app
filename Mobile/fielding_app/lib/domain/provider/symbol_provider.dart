@@ -6,6 +6,7 @@ import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/hive_service.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 enum SymbolState { initial, loading, empty, success, failed }
 
@@ -28,19 +29,17 @@ class SymbolProvider extends ChangeNotifier {
       String token, String layerId, bool isConnected) async {
     _state = SymbolState.loading;
 
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHiveOtherSymbol, listOtherSymbol);
     if (isConnected) {
       try {
         var response = await _apiProvider.getOtherSymbol(token, layerId);
         if (response.statusCode == 200) {
           _otherSymbolsModel = OtherSymbolsModel.fromJsonList(response.data)!;
-          _hiveService.deleteDataFromBox(getHiveOtherSymbol, listOtherSymbol);
-          _hiveService.saveDataToBox(getHiveOtherSymbol, listOtherSymbol,
-              json.encode(_otherSymbolsModel));
+
           if (otherSymbolsModel.isEmpty) {
             _state = SymbolState.empty;
             _message = "This layer no more symbol";
+            Fluttertoast.showToast(msg: _message);
+
             notifyListeners();
           } else {
             _state = SymbolState.success;
@@ -50,6 +49,8 @@ class SymbolProvider extends ChangeNotifier {
       } catch (e) {
         _state = SymbolState.failed;
         _message = e.toString();
+        Fluttertoast.showToast(msg: _message);
+
         notifyListeners();
         print(e.toString());
       }
@@ -62,17 +63,13 @@ class SymbolProvider extends ChangeNotifier {
   void getAllItemLine(String token, String layerId, bool isConnected) async {
     _state = SymbolState.loading;
 
-    final dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHiveItemLine, listItemLine);
     if (isConnected) {
       try {
         var response = await _apiProvider.getAllItemLine(token, layerId);
         if (response.statusCode == 200) {
           _listItemLineByLayer =
               ItemLineByLayerModel.fromJsonList(response.data)!;
-          _hiveService.deleteDataFromBox(getHiveItemLine, listItemLine);
-          _hiveService.saveDataToBox(
-              getHiveItemLine, listItemLine, json.encode(_listItemLineByLayer));
+
           if (_listItemLineByLayer.isEmpty) {
             _state = SymbolState.empty;
             _message = "This layer no more symbol";

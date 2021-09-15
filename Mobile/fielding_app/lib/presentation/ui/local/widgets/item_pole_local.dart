@@ -2,6 +2,7 @@ import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
 import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
+import 'package:fielding_app/domain/provider/symbol_provider.dart';
 
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
@@ -29,12 +30,21 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        var connect = context.read<ConnectionProvider>();
         context
             .read<FieldingProvider>()
             .setAllProjectsSelected(widget.projects);
         context
             .read<FieldingProvider>()
-            .getJobNumberAttachModel(widget.projects.iD);
+            .getJobNumberAttachModel(widget.projects.iD, connect.isConnected);
+        context.read<SymbolProvider>().getOtherSymbolModel(
+            context.read<UserProvider>().userModel.data!.token!,
+            widget.projects.iD!,
+            connect.isConnected);
+        context.read<SymbolProvider>().getAllItemLine(
+            context.read<UserProvider>().userModel.data!.token!,
+            widget.projects.iD!,
+            connect.isConnected);
         context.read<LocalProvider>().setProjectsLocal(widget.projects);
         Get.back();
         Get.to(DetailFieldingPage(
@@ -141,12 +151,9 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                         BlocListener<LocalBloc, LocalState>(
                           listener: (context, state) {
                             if (state is DeleteFieldingRequestLoading) {
-                              
                             } else if (state is DeleteFieldingRequestSuccess) {
-                             
                               Fluttertoast.showToast(msg: "Delete success");
                             } else if (state is DeleteFieldingRequestFailed) {
-                              
                               Fluttertoast.showToast(msg: state.toString());
                             }
                           },

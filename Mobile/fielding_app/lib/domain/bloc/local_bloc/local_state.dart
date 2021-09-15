@@ -87,3 +87,19 @@ class UploadSinglePoleFailed extends LocalState {
 
   UploadSinglePoleFailed(this.message);
 }
+
+class StartLocalFieldingLoading extends  LocalState {}
+class StartLocalFieldingSuccess extends  LocalState {}
+class StartLocalFieldingFailed extends  LocalState {
+  final String? message;
+
+  StartLocalFieldingFailed(this.message);
+}
+
+class UploadStartCompleteLoading extends LocalState {}
+class UploadStartCompleteSuccess extends LocalState {}
+class UploadStartCompleteFailed extends LocalState {
+  final String? message;
+
+  UploadStartCompleteFailed(this.message);
+}

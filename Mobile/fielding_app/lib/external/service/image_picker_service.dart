@@ -42,10 +42,7 @@ class ImagePickerService {
 
     imageFile = File(picture!.path);
     print("SEBELUM KOMPRES " + imageFile!.lengthSync().toString());
-    File compressedFile = await FlutterNativeImage.compressImage(
-        imageFile!.path,
-        quality: 80,
-        percentage: 70);
+    File compressedFile = await FlutterNativeImage.compressImage(imageFile!.path, quality: 80, percentage: 70);
     print("HASIL KOMPRES " + compressedFile.lengthSync().toString());
     if (imageFile != null) {
       Navigator.of(context).pop(compressedFile);
@@ -65,10 +62,7 @@ class ImagePickerService {
     // PickedFile lostData = retrieveLostData() as PickedFile;
     // print("LOST DATA " + lostData.path);
     imageFile = File(picture!.path);
-    File compressedFile = await FlutterNativeImage.compressImage(
-        imageFile!.path,
-        quality: 80,
-        percentage: 70);
+    File compressedFile = await FlutterNativeImage.compressImage(imageFile!.path, quality: 80, percentage: 70);
     print("HASIL KOMPRES " + compressedFile.lengthSync().toString());
     if (imageFile != null) {
       Navigator.of(context).pop(compressedFile);
@@ -82,8 +76,7 @@ class ImagePickerService {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -92,10 +85,7 @@ class ImagePickerService {
                 Text(
                   'Take Picture',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: ColorHelpers.colorGrey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500),
+                  style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 UIHelper.verticalSpaceMedium,
                 Padding(
@@ -103,10 +93,7 @@ class ImagePickerService {
                   child: Text(
                     'Please choose to use Gallery or Camera',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: ColorHelpers.colorGrey,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500),
+                    style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 12, fontWeight: FontWeight.w500),
                   ),
                 ),
                 UIHelper.verticalSpaceMedium,
@@ -123,10 +110,7 @@ class ImagePickerService {
                       ),
                       child: Text(
                         "GALLERY",
-                        style: TextStyle(
-                            color: ColorHelpers.colorWhite,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 14, fontWeight: FontWeight.bold),
                       )),
                 ),
                 UIHelper.verticalSpaceMedium,
@@ -143,10 +127,7 @@ class ImagePickerService {
                       ),
                       child: Text(
                         "CAMERA",
-                        style: TextStyle(
-                            color: ColorHelpers.colorBlackText,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14, fontWeight: FontWeight.bold),
                       )),
                 ),
               ],

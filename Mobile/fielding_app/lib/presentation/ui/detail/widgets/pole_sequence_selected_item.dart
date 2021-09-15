@@ -70,6 +70,7 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                             Get.to(EditPolePage(
                               allProjectsModel: fielding.allProjectsSelected,
                               poles: poleModelSelected,
+                              isStartComplete: false,
                             ));
                           },
                           child: Container(
@@ -138,16 +139,15 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                                 child: Container(
                                     width: 150,
                                     decoration: BoxDecoration(
-                                        color: poleModelSelected!
-                                                .startPolePicture!
-                                            ? ColorHelpers.colorRed2
-                                            : ColorHelpers.colorYellowCard,
+                                        color:
+                                            poleModelSelected!.startPolePicture!
+                                                ? ColorHelpers.colorRed2
+                                                : ColorHelpers.colorYellowCard,
                                         borderRadius: BorderRadius.circular(5),
                                         border: Border.all(
                                             color: poleModelSelected!
                                                     .startPolePicture!
-                                                ? ColorHelpers
-                                                    .colorRed2
+                                                ? ColorHelpers.colorRed2
                                                 : ColorHelpers.colorOrange)),
                                     padding: EdgeInsets.symmetric(
                                         vertical: 5, horizontal: 10),
@@ -169,15 +169,18 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                     )
                   : InkWell(
                       onTap: () {
+                        var connect = context.read<ConnectionProvider>();
+
                         context.read<FieldingBloc>().add(StartFielding(
                             token: context
                                 .read<UserProvider>()
                                 .userModel
                                 .data!
-                                .token,
-                            poleId: poleModelSelected!.id,
+                                .token!,
+                            poleId: poleModelSelected!.id!,
                             isStartAdditional: true,
-                            layerId: fielding.allProjectsSelected.iD));
+                            layerId: fielding.allProjectsSelected.iD!,
+                            isConnected: connect.isConnected));
                       },
                       child: Container(
                           decoration: BoxDecoration(

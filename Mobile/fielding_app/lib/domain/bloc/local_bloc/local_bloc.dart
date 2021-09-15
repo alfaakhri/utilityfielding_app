@@ -174,6 +174,37 @@ class LocalBloc extends Bloc<LocalEvent, LocalState> {
       } catch (e) {
         yield UploadSinglePoleFailed(e.toString());
       }
+    } else if (event is UploadStartComplete) {
+      yield UploadStartCompleteLoading();
+      try {
+        JsonEncoder encoder = new JsonEncoder.withIndent('  ');
+        String prettyprint = encoder.convert(event.startCompleteModel.toJson());
+        debugPrint(prettyprint);
+        // yield AddPoleFailed("Test");
+        var response =
+            await (_apiProvider.startAndCompletePole(event.startCompleteModel.toJson()));
+        if (response!.statusCode == 200) {
+          event.allProjectsModel.startCompleteModel!.remove(event.startCompleteModel);
+          _allProjectModel!.removeWhere((element) => element.iD == event.allProjectsModel.iD);
+          _allProjectModel!.add(event.allProjectsModel);
+          await _hiveService.deleteDataFromBox(
+            getHiveFieldingPoles,
+            event.userId,
+          );
+          
+          if (_allProjectModel!.length != 0) {
+            await _hiveService.saveDataToBox(getHiveFieldingPoles, event.userId,
+                json.encode(_allProjectModel));
+          }
+          yield UploadStartCompleteSuccess();
+        } else if (response.data['Message'] == messageTokenExpired) {
+          Get.offAll(LoginPage());
+        } else {
+          yield UploadStartCompleteFailed(response.data['Message']);
+        }
+      } catch (e) {
+        yield UploadStartCompleteFailed(e.toString());
+      }
     }
   }
 }

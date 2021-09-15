@@ -48,9 +48,10 @@ class AddPole extends FieldingEvent {
   final AllProjectsModel allProjectsModel;
   final AllPolesByLayerModel allPolesByLayerModel;
   final bool? isConnected;
+  final bool isStartComplete;
 
   AddPole(this.addPoleModel, this.allProjectsModel, this.allPolesByLayerModel,
-      this.isConnected, this.userId);
+      this.isConnected, this.userId, this.isStartComplete);
 }
 
 class GetPoleById extends FieldingEvent {
@@ -62,13 +63,14 @@ class GetPoleById extends FieldingEvent {
 }
 
 class StartFielding extends FieldingEvent {
-  final String? token;
-  final String? poleId;
-  final bool? isStartAdditional;
-  final String? layerId;
+  final String token;
+  final String poleId;
+  final bool isStartAdditional;
+  final String layerId;
+  final bool isConnected;
 
   StartFielding(
-      {this.token, this.poleId, this.isStartAdditional, this.layerId});
+      {required this.token, required this.poleId, required this.isStartAdditional, required this.layerId, required this.isConnected});
 }
 
 class CompleteMultiPole extends FieldingEvent {

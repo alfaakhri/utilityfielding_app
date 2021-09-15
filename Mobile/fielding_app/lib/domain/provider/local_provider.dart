@@ -29,33 +29,61 @@ class LocalProvider extends ChangeNotifier {
   }
 
   void updateProjectsLocal(String userId) async {
-    var dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHiveFieldingPoles, userId);
+    var dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveFieldingPoles, userId);
     if (dataBox != null) {
       _allProjectsModel = AllProjectsModel.fromJsonList(jsonDecode(dataBox))!;
-      _projectLocalSelected = _allProjectsModel
-          .firstWhere((element) => element.iD == _projectLocalSelected.iD, orElse: () => AllProjectsModel());
+      _projectLocalSelected = _allProjectsModel.firstWhere((element) => element.iD == _projectLocalSelected.iD,
+          orElse: () => AllProjectsModel());
     }
     notifyListeners();
   }
-  
 
   Future uploadAllWithNotif(String customerId) async {
     Dio _dio = Dio();
-    for (var index = 0;
-        index < _projectLocalSelected.addPoleModel!.length;
-        index++) {
+    if (_projectLocalSelected.startCompleteModel != null) {
+      await uploadAllStartComplete(customerId);
+    } else if (_projectLocalSelected.addPoleModel != null) {
+      for (var index = 0; index < _projectLocalSelected.addPoleModel!.length; index++) {
+        var response = await _dio.post(
+          BASE_URL + "/api/MobileProject/CompletedFieldingNew",
+          data: jsonEncode(_projectLocalSelected.addPoleModel![index]),
+        );
+        if (response.statusCode == 200) {
+          showProgressNotification(index, _projectLocalSelected.addPoleModel![index].poleSequence!, true);
+          _projectLocalSelected.addPoleModel!.remove(_projectLocalSelected.addPoleModel![index]);
+          _allProjectsModel.removeWhere((element) => element.iD == _projectLocalSelected.iD);
+          _allProjectsModel.add(_projectLocalSelected);
+          await _hiveService.deleteDataFromBox(
+            getHiveFieldingPoles,
+            customerId,
+          );
+
+          if (_allProjectsModel.length != 0) {
+            await _hiveService.saveDataToBox(getHiveFieldingPoles, customerId, json.encode(_allProjectsModel));
+          }
+          if (_projectLocalSelected.addPoleModel!.length == 0) {
+            break;
+          } else {
+            uploadAllWithNotif(customerId);
+          }
+        } else {
+          showProgressNotification(index, _projectLocalSelected.addPoleModel![index].poleSequence!, false);
+        }
+      }
+    }
+  }
+
+  Future uploadAllStartComplete(String customerId) async {
+    Dio _dio = Dio();
+    for (var index = 0; index < _projectLocalSelected.startCompleteModel!.length; index++) {
       var response = await _dio.post(
-        BASE_URL + "/api/MobileProject/CompletedFieldingNew",
-        data: jsonEncode(_projectLocalSelected.addPoleModel![index]),
+        BASE_URL + "/api/MobileProject/StartAndCompleteFielding",
+        data: jsonEncode(_projectLocalSelected.startCompleteModel![index]),
       );
       if (response.statusCode == 200) {
-        showProgressNotification(index,
-            _projectLocalSelected.addPoleModel![index].poleSequence!, true);
-        _projectLocalSelected.addPoleModel!
-            .remove(_projectLocalSelected.addPoleModel![index]);
-        _allProjectsModel
-            .removeWhere((element) => element.iD == _projectLocalSelected.iD);
+        showProgressNotification(index, _projectLocalSelected.startCompleteModel![index].poleSequence!, true);
+        _projectLocalSelected.startCompleteModel!.remove(_projectLocalSelected.startCompleteModel![index]);
+        _allProjectsModel.removeWhere((element) => element.iD == _projectLocalSelected.iD);
         _allProjectsModel.add(_projectLocalSelected);
         await _hiveService.deleteDataFromBox(
           getHiveFieldingPoles,
@@ -63,30 +91,26 @@ class LocalProvider extends ChangeNotifier {
         );
 
         if (_allProjectsModel.length != 0) {
-          await _hiveService.saveDataToBox(
-              getHiveFieldingPoles, customerId, json.encode(_allProjectsModel));
+          await _hiveService.saveDataToBox(getHiveFieldingPoles, customerId, json.encode(_allProjectsModel));
         }
-        if (_projectLocalSelected.addPoleModel!.length == 0) {
+        if (_projectLocalSelected.startCompleteModel!.length == 0) {
           break;
         } else {
           uploadAllWithNotif(customerId);
         }
       } else {
-        showProgressNotification(index,
-            _projectLocalSelected.addPoleModel![index].poleSequence!, false);
+        showProgressNotification(index, _projectLocalSelected.startCompleteModel![index].poleSequence!, false);
       }
     }
   }
 
-  Future<void> showProgressNotification(
-      int id, String sequencePole, bool isSuccess) async {
+  Future<void> showProgressNotification(int id, String sequencePole, bool isSuccess) async {
     await Future.delayed(Duration(seconds: 1), () async {
       await AwesomeNotifications().createNotification(
           content: NotificationContent(
               id: id,
               channelKey: 'grouped',
-              title:
-                  'Upload pole sequence $sequencePole ${(isSuccess) ? 'finished' : 'failed'}',
+              title: 'Upload pole sequence $sequencePole ${(isSuccess) ? 'finished' : 'failed'}',
               locked: false));
     });
   }
