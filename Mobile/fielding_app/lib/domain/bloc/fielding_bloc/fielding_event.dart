@@ -22,8 +22,9 @@ class GetAllPolesByID extends FieldingEvent {
   final AllProjectsModel? allProjectsModel;
   final bool? isConnected;
   final String userId;
+  final bool? isLocalMenu;
 
-  GetAllPolesByID(this.token, this.allProjectsModel, this.isConnected, this.userId);
+  GetAllPolesByID(this.token, this.allProjectsModel, this.isConnected, this.userId, this.isLocalMenu);
 }
 
 class StartPolePicture extends FieldingEvent {

@@ -33,8 +33,7 @@ import 'domain/provider/symbol_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  AwesomeNotifications().initialize(
-      'resource://drawable/launcher_icon', // icon for your app notification
+  AwesomeNotifications().initialize('resource://drawable/launcher_icon', // icon for your app notification
       [
         NotificationChannel(
             channelKey: 'key1',
@@ -64,19 +63,19 @@ void main() async {
             defaultColor: Colors.lightGreen,
             ledColor: Colors.lightGreen,
             vibrationPattern: lowVibrationPattern,
+            playSound: true,
+            defaultRingtoneType: DefaultRingtoneType.Notification,
             importance: NotificationImportance.High)
       ]);
   // Create the initialization for your desired push service here
   FirebaseApp firebaseApp = await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-  await FlutterDownloader.initialize(
-      debug: true // optional: set false to disable printing logs to console
+  await FlutterDownloader.initialize(debug: true // optional: set false to disable printing logs to console
       );
   final appDocumentDir = await path_provider.getApplicationDocumentsDirectory();
   Hive.init(appDocumentDir.path);
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
     // runApp(DevicePreview(
     //   enabled: !kReleaseMode,
     //   builder: (context) => MyApp(), // Wrap your app
@@ -118,8 +117,7 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
           BlocProvider<FieldingBloc>(create: (context) => FieldingBloc()),
-          BlocProvider<DownloadImageBloc>(
-              create: (context) => DownloadImageBloc()),
+          BlocProvider<DownloadImageBloc>(create: (context) => DownloadImageBloc()),
           BlocProvider<MapBloc>(create: (context) => MapBloc()),
           BlocProvider<LocalBloc>(create: (context) => LocalBloc()),
           BlocProvider<LocationBloc>(create: (context) => LocationBloc()),
@@ -127,15 +125,12 @@ class MyApp extends StatelessWidget {
         ],
         child: StreamProvider<ConnectivityStatus>(
           initialData: ConnectivityStatus.Offline,
-          create: (context) =>
-              ConnectionProvider().connectionStatusController.stream,
+          create: (context) => ConnectionProvider().connectionStatusController.stream,
           child: GetMaterialApp(
             debugShowCheckedModeBanner: false,
             locale: DevicePreview.locale(context), // Add the locale here
             builder: DevicePreview.appBuilder,
-            theme: ThemeData(
-                primarySwatch: Colors.blue,
-                fontFamily: GoogleFonts.poppins().fontFamily),
+            theme: ThemeData(primarySwatch: Colors.blue, fontFamily: GoogleFonts.poppins().fontFamily),
             initialRoute: '/root',
             getPages: [GetPage(name: '/root', page: () => RootPage())],
           ),

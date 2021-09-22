@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:fielding_app/data/repository/api_provider.dart';
 import 'package:fielding_app/domain/bloc/download_image_bloc/download_image_bloc.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
 import 'package:fielding_app/external/color_helpers.dart';
@@ -46,7 +47,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
   @override
   void initState() {
     super.initState();
-    
+
     _bindBackgroundIsolate();
 
     FlutterDownloader.registerCallback(downloadCallback);
@@ -62,8 +63,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
   }
 
   void _bindBackgroundIsolate() {
-    bool isSuccess = IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
+    bool isSuccess = IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
     if (!isSuccess) {
       _unbindBackgroundIsolate();
       _bindBackgroundIsolate();
@@ -91,22 +91,18 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
   }
 
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
     if (true) {
-      print(
-          'Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
+      print('Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
     }
-    final SendPort send =
-        IsolateNameServer.lookupPortByName('downloader_send_port')!;
+    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port')!;
     send.send([id, status, progress]);
   }
 
   Future<void> _prepareSaveDir() async {
     _permissionReady = await _checkPermission();
     if (_permissionReady) {
-      _localPath =
-          (await _findLocalPath())! + Platform.pathSeparator + 'Download';
+      _localPath = (await _findLocalPath())! + Platform.pathSeparator + 'Download';
 
       final savedDir = Directory(_localPath);
       bool hasExisted = await savedDir.exists();
@@ -131,8 +127,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -147,8 +142,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
                 // context.read<DownloadImageBloc>().add(SaveFile(
                 //     context.read<FieldingProvider>().jobNumberAttachModel!,
                 //     _localPath));
-                for (var list
-                    in context.read<FieldingProvider>().jobNumberAttachModel!) {
+                for (var list in context.read<FieldingProvider>().jobNumberAttachModel!) {
                   await FlutterDownloader.enqueue(
                       url: baseURLnew + list.filePath!,
                       savedDir: _localPath,
@@ -186,18 +180,15 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
                           Container(
                             width: double.infinity,
                             padding: EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                                color: ColorHelpers.colorGrey2,
-                                borderRadius: BorderRadius.circular(5)),
+                            decoration:
+                                BoxDecoration(color: ColorHelpers.colorGrey2, borderRadius: BorderRadius.circular(5)),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: Text(
                                     e.fileName!,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        color: ColorHelpers.colorBlackText,
-                                        fontSize: 12),
+                                    style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12),
                                   ),
                                 ),
                                 InkWell(
@@ -206,11 +197,13 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
                                     if (format.toLowerCase() == "jpg" ||
                                         format.toLowerCase() == "jpeg" ||
                                         format.toLowerCase() == "png") {
-                                      Navigator.pop(context);
-                                      Get.to(PreviewImage(
-                                        image: e.filePath!,
-                                        functionDelete: false,
-                                      ));
+                                      // Navigator.pop(context);
+                                      // await ImagePickers.previewImage("$BASE_URL${e.filePath}");
+
+                                      // Get.to(PreviewImage(
+                                      //   image: e.filePath!,
+                                      //   functionDelete: false,
+                                      // ));
                                     } else {
                                       String url = baseURLnew + e.filePath!;
                                       if (await canLaunch(url)) {
@@ -224,9 +217,7 @@ class _SupportingDocsWidgetState extends State<SupportingDocsWidget> {
                                   child: Text(
                                     "Open",
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                        color: ColorHelpers.colorBlueNumber),
+                                        fontWeight: FontWeight.bold, fontSize: 12, color: ColorHelpers.colorBlueNumber),
                                   ),
                                 ),
                               ],

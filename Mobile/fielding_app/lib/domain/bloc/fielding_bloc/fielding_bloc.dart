@@ -161,7 +161,7 @@ class FieldingBloc extends Bloc<FieldingEvent, FieldingState> {
       }
     } else if (event is GetAllPolesByID) {
       yield GetAllPolesByIdLoading();
-      if (event.isConnected!) {
+      if (event.isConnected! && event.isLocalMenu == false) {
         try {
           var response = await (_apiProvider.getAllPolesByLayerID(event.token, event.allProjectsModel!.iD));
           if (response!.statusCode == 200) {

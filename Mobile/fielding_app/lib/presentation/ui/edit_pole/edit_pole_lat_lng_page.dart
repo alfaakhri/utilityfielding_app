@@ -32,12 +32,7 @@ class EditLatLngPage extends StatefulWidget {
   final bool? isAddPole;
   final bool? isAddTreeTrim;
 
-  const EditLatLngPage(
-      {Key? key,
-      this.polesLayerModel,
-      this.allProjectsModel,
-      this.isAddPole,
-      this.isAddTreeTrim})
+  const EditLatLngPage({Key? key, this.polesLayerModel, this.allProjectsModel, this.isAddPole, this.isAddTreeTrim})
       : super(key: key);
   @override
   _EditLatLngPageState createState() => _EditLatLngPageState();
@@ -101,39 +96,30 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   }
 
   void setPoleIcons() async {
-    await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(6, 6)), 'assets/pin_yellow.png')
+    await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(6, 6)), 'assets/pin_yellow.png')
         .then((onValue) {
       poleIcon = onValue;
     });
 
-    await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(2, 2)), 'assets/pin_blue.png')
-        .then((onValue) {
+    await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(2, 2)), 'assets/pin_blue.png').then((onValue) {
       poleBlue = onValue;
     });
 
-    await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(2, 2)), 'assets/pin_blue_red.png')
+    await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(2, 2)), 'assets/pin_blue_red.png')
         .then((onValue) {
       poleBlueRed = onValue;
     });
 
-    await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(2, 2)), 'assets/pin_green.png')
-        .then((onValue) {
+    await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(2, 2)), 'assets/pin_green.png').then((onValue) {
       poleGreen = onValue;
     });
 
-    await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(2, 2)), 'assets/pin_green_red.png')
+    await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(2, 2)), 'assets/pin_green_red.png')
         .then((onValue) {
       poleGreenRed = onValue;
     });
 
-    await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(2, 2)), 'assets/tree.png')
-        .then((onValue) {
+    await BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(2, 2)), 'assets/tree.png').then((onValue) {
       treeIcon = onValue;
     });
   }
@@ -164,15 +150,13 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
 
   void cameraMyLocation() async {
     googleMapController = await _controller.future;
-    _onAddMarkerButtonPressed(
-        currentLocation.latitude!, currentLocation.longitude!);
+    _onAddMarkerButtonPressed(currentLocation.latitude!, currentLocation.longitude!);
     CameraPosition cPosition = CameraPosition(
       zoom: 16,
       target: LatLng(currentLocation.latitude!, currentLocation.longitude!),
     );
     setState(() {
-      googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(cPosition));
+      googleMapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
     });
   }
 
@@ -184,16 +168,16 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     super.dispose();
   }
 
-  void doneAddPole() {
+  void doneAddPole(String streetname) {
     var provider = context.read<FieldingProvider>();
 
     AddPoleModel data = AddPoleModel(
       token: context.read<AuthBloc>().userModel!.data!.token,
       id: null,
       layerId: widget.allProjectsModel!.iD,
-      street: (provider.streetName == null) ? null : provider.streetName,
-      latitude: provider.latitude.toString(),
-      longitude: provider.longitude.toString(),
+      street: streetname,
+      latitude: _latitude,
+      longitude: _longitude,
       poleType: (widget.isAddTreeTrim!) ? 4 : 0,
     );
 
@@ -211,9 +195,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Pole",
-              style:
-                  TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
+          title: Text("Pole", style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
@@ -230,12 +212,10 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
             if (state is AddPoleLoading) {
               LoadingWidget.showLoadingDialog(context, _keyLoader);
             } else if (state is AddPoleFailed) {
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
               Fluttertoast.showToast(msg: state.message!);
             } else if (state is AddPoleSuccess) {
-              Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                  .pop();
+              Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
               Fluttertoast.showToast(msg: "Success");
               var fielding = context.read<FieldingProvider>();
               fielding.setPolesByLayerSelected(AllPolesByLayerModel());
@@ -243,13 +223,10 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               fielding.setLatLng(0, 0);
               fielding.setStreetName("");
               fielding.clearAll();
-              
+
               var user = context.read<UserProvider>();
-              context.read<FieldingBloc>().add(GetAllPolesByID(
-                  user.userModel.data!.token,
-                  widget.allProjectsModel,
-                  context.read<ConnectionProvider>().isConnected,
-                  user.userModel.data!.user!.iD!));
+              context.read<FieldingBloc>().add(GetAllPolesByID(user.userModel.data!.token, widget.allProjectsModel,
+                  context.read<ConnectionProvider>().isConnected, user.userModel.data!.user!.iD!, false));
               Get.back();
             }
           },
@@ -258,8 +235,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
               if (state is UpdateLocationLoading) {
                 LoadingWidget.showLoadingDialog(context, _keyLoader);
               } else if (state is UpdateLocationFailed) {
-                Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                    .pop();
+                Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
                 Fluttertoast.showToast(msg: state.message!);
               } else if (state is UpdateLocationSuccess) {
                 setState(() {
@@ -267,34 +243,33 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                   _longitude = state.allPolesByLayerModel.longitude;
                   // _editLocation = false;
                 });
-                Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                    .pop();
+                Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
                 Fluttertoast.showToast(msg: "Update location success");
-                context.read<LocationBloc>().add(GetCurrentAddress(
-                    double.parse(_latitude!), double.parse(_longitude!)));
+                context
+                    .read<LocationBloc>()
+                    .add(GetCurrentAddress(double.parse(_latitude!), double.parse(_longitude!)));
               } else if (state is GetCurrentAddressLoading) {
                 LoadingWidget.showLoadingDialog(context, _keyLoader);
               } else if (state is GetCurrentAddressFailed) {
-                Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                    .pop();
+                Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
                 Fluttertoast.showToast(msg: state.message);
               } else if (state is GetCurrentAddressSuccess) {
-                var fielding = context.read<FieldingProvider>();
-                AllPolesByLayerModel poles = fielding.polesByLayerSelected;
-                poles.latitude = _latitude!.toString();
-                poles.longitude = _longitude!.toString();
-                fielding.setPolesByLayerSelected(poles);
-                fielding.setLatLng(
-                    double.parse(_latitude!), double.parse(_longitude!));
-                Navigator.of(_keyLoader.currentContext!, rootNavigator: true)
-                    .pop();
+                Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
                 Fluttertoast.showToast(msg: "Update location success");
-                context
-                    .read<FieldingProvider>()
-                    .setCurrentAddress(state.currentAddress);
+                var fielding = context.read<FieldingProvider>();
+
                 if (widget.isAddPole! || widget.isAddTreeTrim!) {
-                  doneAddPole();
+                  
+                  doneAddPole(state.currentAddress.results!.first.formattedAddress!);
                 } else {
+                  AllPolesByLayerModel poles = fielding.polesByLayerSelected;
+                  poles.latitude = _latitude!.toString();
+                  poles.longitude = _longitude!.toString();
+                  fielding.setPolesByLayerSelected(poles);
+                  fielding.setLatLng(double.parse(_latitude!), double.parse(_longitude!));
+
+                  fielding.setCurrentAddress(state.currentAddress);
+
                   Get.back();
                 }
               }
@@ -322,17 +297,13 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                       children: [
                         Text(
                           "Pole Number",
-                          style: TextStyle(
-                              fontSize: 14, color: ColorHelpers.colorBlackText),
+                          style: TextStyle(fontSize: 14, color: ColorHelpers.colorBlackText),
                         ),
                         Text(
                             (widget.polesLayerModel!.id == null)
                                 ? "-"
-                                : widget.polesLayerModel!.poleSequence
-                                    .toString(),
-                            style: TextStyle(
-                                color: ColorHelpers.colorBlueNumber,
-                                fontSize: 18)),
+                                : widget.polesLayerModel!.poleSequence.toString(),
+                            style: TextStyle(color: ColorHelpers.colorBlueNumber, fontSize: 18)),
                       ],
                     ),
         ),
@@ -352,10 +323,8 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                     ),
                   ].toSet(),
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(
-                        double.parse(fielding.allPolesByLayer!.first.latitude!),
-                        double.parse(
-                            fielding.allPolesByLayer!.first.longitude!)),
+                    target: LatLng(double.parse(fielding.allPolesByLayer!.first.latitude!),
+                        double.parse(fielding.allPolesByLayer!.first.longitude!)),
                     zoom: 18,
                   ),
                   onTap: (LatLng loc) {
@@ -366,11 +335,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
 
                     _onAddMarkerButtonPressed(loc.latitude, loc.longitude);
                     // }
-                    if (context
-                            .read<FieldingProvider>()
-                            .allPolesByLayer!
-                            .length !=
-                        0) {
+                    if (context.read<FieldingProvider>().allPolesByLayer!.length != 0) {
                       showPinsOnMapAllPoles(fielding.allPolesByLayer!);
                     }
                   },
@@ -381,23 +346,18 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                     if (widget.polesLayerModel!.latitude != null) {
                       showPinsOnMap(widget.polesLayerModel!);
                     } else if (fielding.latitude != null) {
-                      showPinsOnMapDefault(
-                          fielding.latitude!, fielding.longitude!);
+                      showPinsOnMapDefault(fielding.latitude!, fielding.longitude!);
                     }
 
                     if (fielding.allPolesByLayer!.length != 0) {
                       showPinsOnMapAllPoles(fielding.allPolesByLayer!);
                     }
-                    Fluttertoast.showToast(
-                        msg: "Tap & drag to add pole in map",
-                        toastLength: Toast.LENGTH_LONG);
+                    Fluttertoast.showToast(msg: "Tap & drag to add pole in map", toastLength: Toast.LENGTH_LONG);
                   }),
               SlidingUpPanel(
                 minHeight: 200,
                 maxHeight: 200,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(25)),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(25)),
                 panel: _bottomPanel(),
                 body: Container(),
               ),
@@ -413,8 +373,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
           color: ColorHelpers.colorWhite,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25), topRight: Radius.circular(50))),
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(50))),
       child: Column(
         children: [
           Container(
@@ -437,17 +396,13 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             Container(
                               child: Text(
                                 "Latitude",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: ColorHelpers.colorBlackText),
+                                style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                               ),
                             ),
                             Container(
                               child: Text(
                                 double.parse(_latitude!).toStringAsFixed(6),
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: ColorHelpers.colorBlackText),
+                                style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                               ),
                             ),
                             UIHelper.verticalSpaceSmall,
@@ -463,17 +418,13 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             Container(
                               child: Text(
                                 "Longitude",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: ColorHelpers.colorBlackText),
+                                style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                               ),
                             ),
                             Container(
                               child: Text(
                                 double.parse(_longitude!).toStringAsFixed(6),
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    color: ColorHelpers.colorBlackText),
+                                style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                               ),
                             ),
                             UIHelper.verticalSpaceSmall,
@@ -492,21 +443,18 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      border:
-                          Border.all(color: ColorHelpers.colorButtonDefault),
+                      border: Border.all(color: ColorHelpers.colorButtonDefault),
                       borderRadius: BorderRadius.circular(3),
                     ),
                     padding: EdgeInsets.all(8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.my_location,
-                            color: ColorHelpers.colorButtonDefault),
+                        Icon(Icons.my_location, color: ColorHelpers.colorButtonDefault),
                         UIHelper.horizontalSpaceSmall,
                         Text(
                           "Move Pole to My Location",
-                          style:
-                              TextStyle(color: ColorHelpers.colorButtonDefault),
+                          style: TextStyle(color: ColorHelpers.colorButtonDefault),
                         ),
                       ],
                     ),
@@ -539,8 +487,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
   }
 
   void showPinsOnMap(AllPolesByLayerModel list) {
-    var fieldingPosition =
-        LatLng(double.parse(list.latitude!), double.parse(list.longitude!));
+    var fieldingPosition = LatLng(double.parse(list.latitude!), double.parse(list.longitude!));
 
     // add the initial source location pin
 
@@ -597,19 +544,13 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
     if (list.length != 0) {
       list.forEach((data) {
         if (data.latitude != null && data.longitude != null) {
-          var fieldingPosition = LatLng(
-              double.parse(data.latitude!), double.parse(data.longitude!));
+          var fieldingPosition = LatLng(double.parse(data.latitude!), double.parse(data.longitude!));
           if (widget.polesLayerModel != null) {
             if (widget.polesLayerModel!.id != data.id) {
               // add the initial source location pin
               if (data.poleType == 4) {
-                _markers.add(Marker(
-                    markerId: MarkerId("${data.id}"),
-                    position: fieldingPosition,
-                    icon: treeIcon));
-              } else if (data.fieldingStatus == null ||
-                  data.fieldingStatus == 0 ||
-                  data.fieldingStatus == 1) {
+                _markers.add(Marker(markerId: MarkerId("${data.id}"), position: fieldingPosition, icon: treeIcon));
+              } else if (data.fieldingStatus == null || data.fieldingStatus == 0 || data.fieldingStatus == 1) {
                 _markers.add(Marker(
                     markerId: MarkerId("${data.id}"),
                     position: fieldingPosition,
@@ -631,14 +572,9 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
             }
           } else {
             if (data.poleType == 4) {
-              _markers.add(Marker(
-                  markerId: MarkerId("${data.id}"),
-                  position: fieldingPosition,
-                  icon: treeIcon));
+              _markers.add(Marker(markerId: MarkerId("${data.id}"), position: fieldingPosition, icon: treeIcon));
             }
-            if (data.fieldingStatus == null ||
-                data.fieldingStatus == 0 ||
-                data.fieldingStatus == 1) {
+            if (data.fieldingStatus == null || data.fieldingStatus == 0 || data.fieldingStatus == 1) {
               _markers.add(Marker(
                   markerId: MarkerId("${data.id}"),
                   position: fieldingPosition,
@@ -669,8 +605,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
             content: Container(
               width: double.infinity,
               child: Column(
@@ -695,8 +630,7 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             },
                             child: Text(
                               "Cancel",
-                              style:
-                                  TextStyle(color: ColorHelpers.colorBlackText),
+                              style: TextStyle(color: ColorHelpers.colorBlackText),
                             ),
                           ),
                         ),
@@ -709,16 +643,12 @@ class _EditLatLngPageState extends State<EditLatLngPage> {
                             color: ColorHelpers.colorGreen,
                             onPressed: () {
                               if (widget.polesLayerModel!.id == null) {
-                                context.read<LocationBloc>().add(
-                                    GetCurrentAddress(double.parse(_latitude!),
-                                        double.parse(_longitude!)));
+                                context
+                                    .read<LocationBloc>()
+                                    .add(GetCurrentAddress(double.parse(_latitude!), double.parse(_longitude!)));
                               } else {
                                 context.read<LocationBloc>().add(UpdateLocation(
-                                    context
-                                        .read<UserProvider>()
-                                        .userModel
-                                        .data!
-                                        .token,
+                                    context.read<UserProvider>().userModel.data!.token,
                                     widget.polesLayerModel!.id,
                                     _latitude,
                                     _longitude));

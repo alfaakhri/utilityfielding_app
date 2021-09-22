@@ -13,7 +13,6 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:ui' as ui;
 
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,11 +43,11 @@ class _ViewSpanWidgetState extends State<ViewSpanWidget> {
     String base64Image = base64Encode(pngBytes);
 
     print(pngBytes);
-    Map<dynamic, dynamic> result =
-        await (ImageGallerySaver.saveImage(pngBytes, quality: 100, name: "1234") as FutureOr<Map<dynamic, dynamic>>);
-    print(result);
-    context.read<SpanProvider>().uploadImage(
-        Uuid().v1() + ".png", base64Image, result["filePath"], "span");
+    // Map<dynamic, dynamic> result =
+    //     await (ImageGallerySaver.saveImage(pngBytes, quality: 100, name: "1234") as FutureOr<Map<dynamic, dynamic>>);
+    // print(result);
+    // context.read<SpanProvider>().uploadImage(
+    //     Uuid().v1() + ".png", base64Image, result["filePath"], "span");
   }
 
   @override

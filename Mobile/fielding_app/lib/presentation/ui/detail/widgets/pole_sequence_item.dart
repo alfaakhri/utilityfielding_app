@@ -10,8 +10,9 @@ import 'alert_picture_item.dart';
 
 class PoleSequenceItem extends StatelessWidget {
   final AllPolesByLayerModel allPolesByLayerModel;
+  final bool isLocalMenu;
 
-  const PoleSequenceItem({Key? key, required this.allPolesByLayerModel}) : super(key: key);
+  const PoleSequenceItem({Key? key, required this.allPolesByLayerModel, required this.isLocalMenu}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,7 @@ class PoleSequenceItem extends StatelessWidget {
                         allProjectsModel: fielding.allProjectsSelected,
                         poles: allPolesByLayerModel,
                         isStartComplete: false,
+                        isLocalMenu: isLocalMenu,
                       ));
                     },
                     child: Container(

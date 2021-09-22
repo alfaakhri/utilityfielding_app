@@ -2,14 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:file_utils/file_utils.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:flutter/foundation.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+// import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:intl/intl.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
@@ -35,11 +34,11 @@ class DownloadImageBloc extends Bloc<DownloadImageEvent, DownloadImageState> {
 
         var response = await Dio().get(event.image!,
             options: Options(responseType: ResponseType.bytes));
-        final result = await ImageGallerySaver.saveImage(
-            Uint8List.fromList(response.data),
-            quality: 60,
-            name: "$formattedDate-${rand.nextInt(10000)}");
-        print(result);
+        // final result = await ImageGallerySaver.saveImage(
+        //     Uint8List.fromList(response.data),
+        //     quality: 60,
+        //     name: "$formattedDate-${rand.nextInt(10000)}");
+        // print(result);
         yield SaveImageSuccess();
       } catch (e) {
         yield SaveImageError(e.toString());
@@ -87,8 +86,8 @@ class DownloadImageBloc extends Bloc<DownloadImageEvent, DownloadImageState> {
               onReceiveProgress: (count, total) {
             print((count / total * 100).toStringAsFixed(0) + "%");
           });
-          final result = await ImageGallerySaver.saveFile(savePath);
-          print(result);
+          // final result = await ImageGallerySaver.saveFile(savePath);
+          // print(result);
         // }
       } catch (e) {
         yield SaveFileFailed(e.toString());

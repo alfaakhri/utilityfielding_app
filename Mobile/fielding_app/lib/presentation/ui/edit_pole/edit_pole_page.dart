@@ -16,8 +16,9 @@ class EditPolePage extends StatefulWidget {
   final AllPolesByLayerModel? poles;
   final bool? isAddPole;
   final bool isStartComplete;
+  final bool isLocalMenu;
 
-  const EditPolePage({Key? key, this.allProjectsModel, this.poles, this.isAddPole, required this.isStartComplete})
+  const EditPolePage({Key? key, this.allProjectsModel, this.poles, this.isAddPole, required this.isStartComplete, required this.isLocalMenu})
       : super(key: key);
 
   @override
@@ -193,7 +194,7 @@ class _EditPolePageState extends State<EditPolePage> {
   void getAllPoles() {
     var user = context.read<UserProvider>();
     fieldingBloc.add(GetAllPolesByID(user.userModel.data!.token, widget.allProjectsModel,
-        context.read<ConnectionProvider>().isConnected, user.userModel.data!.user!.iD!));
+        context.read<ConnectionProvider>().isConnected, user.userModel.data!.user!.iD!, widget.isLocalMenu));
   }
 
   @override

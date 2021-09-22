@@ -176,11 +176,13 @@ class _UploadPicturePageState extends State<UploadPicturePage> {
         ),
         for (var image in listImage)
           GestureDetector(
-            onTap: () {
-              Get.to(PreviewImage(
-                  image: image.filePath!,
-                  functionDelete: true,
-                  attachmentId: image.id));
+            onTap: () async {
+              // await ImagePickers.previewImage("$BASE_URL$image");
+
+              // Get.to(PreviewImage(
+              //     image: image.filePath!,
+              //     functionDelete: true,
+              //     attachmentId: image.id));
             },
             child: Card(
               elevation: 5.0,

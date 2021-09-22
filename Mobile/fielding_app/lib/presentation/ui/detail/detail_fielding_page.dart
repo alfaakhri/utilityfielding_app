@@ -110,7 +110,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     var user = context.read<UserProvider>();
 
     fieldingBloc.add(GetAllPolesByID(user.userModel.data!.token, widget.allProjectsModel!,
-        context.read<ConnectionProvider>().isConnected, user.userModel.data!.user!.iD!));
+        context.read<ConnectionProvider>().isConnected, user.userModel.data!.user!.iD!, widget.isLocalMenu));
   }
 
   void searchPolesByStatus() {
@@ -225,6 +225,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 poles: poleModelSelected,
                 allProjectsModel: widget.allProjectsModel,
                 isStartComplete: true,
+                isLocalMenu: widget.isLocalMenu!,
               ));
               fieldingBloc.setStartTimer(DateTime.now().toUtc());
               fielding.setPolesByLayerSelected(poleModelSelected!);
@@ -395,7 +396,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 children: <Widget>[
                   (_tempMarkerSelected == null)
                       ? Container()
-                      : PoleSequenceSelectedItem(poleModelSelected: poleModelSelected, callback: callback),
+                      : PoleSequenceSelectedItem(poleModelSelected: poleModelSelected, callback: callback, isLocalMenu: widget.isLocalMenu!,),
                   UIHelper.verticalSpaceSmall,
                   (showButtonCompleteMulti)
                       ? CompleteMultiPoleButton(
@@ -418,7 +419,7 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     children: allPoles
                         .map(
                           (data) =>
-                              (data.fieldingStatus == 2) ? PoleSequenceItem(allPolesByLayerModel: data) : Container(),
+                              (data.fieldingStatus == 2) ? PoleSequenceItem(allPolesByLayerModel: data, isLocalMenu: widget.isLocalMenu!,) : Container(),
                         )
                         .toList(),
                   ),

@@ -13,11 +13,12 @@ import 'alert_picture_item.dart';
 class PoleSequenceSelectedItem extends StatelessWidget {
   final AllPolesByLayerModel? poleModelSelected;
   final VoidCallback? callback;
+  final bool isLocalMenu;
 
   const PoleSequenceSelectedItem({
     Key? key,
     required this.poleModelSelected,
-    required this.callback,
+    required this.callback, required this.isLocalMenu,
   }) : super(key: key);
 
   @override
@@ -71,6 +72,7 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                               allProjectsModel: fielding.allProjectsSelected,
                               poles: poleModelSelected,
                               isStartComplete: false,
+                              isLocalMenu: isLocalMenu,
                             ));
                           },
                           child: Container(

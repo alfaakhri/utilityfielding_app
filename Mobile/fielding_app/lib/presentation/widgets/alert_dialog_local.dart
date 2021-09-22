@@ -7,14 +7,12 @@ import 'package:provider/provider.dart';
 class AlertDialogLocal extends StatelessWidget {
   final String? titleName;
   final String? layerName;
-  const AlertDialogLocal({Key? key, this.titleName, this.layerName})
-      : super(key: key);
+  const AlertDialogLocal({Key? key, this.titleName, this.layerName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10.0))),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
       content: Consumer<LocalProvider>(
         builder: (context, local, _) => Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -24,10 +22,7 @@ class AlertDialogLocal extends StatelessWidget {
             Text(
               'Information',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: ColorHelpers.colorGrey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500),
+              style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 16, fontWeight: FontWeight.w500),
             ),
             UIHelper.verticalSpaceMedium,
             Padding(
@@ -36,19 +31,15 @@ class AlertDialogLocal extends StatelessWidget {
                 textAlign: TextAlign.center,
                 softWrap: true,
                 text: TextSpan(
-                  text:
-                      'Internet is available, do you want upload all data pole sequence in ',
+                  text: 'Internet is available, do you want upload all data pole sequence in ',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.black,
                   ),
                   children: <TextSpan>[
+                    TextSpan(text: '$titleName - $layerName', style: TextStyle(fontWeight: FontWeight.bold)),
                     TextSpan(
-                        text: '$titleName - $layerName',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    TextSpan(
-                      text:
-                          '. After finished you can upload manually job other on menu pole local storage',
+                      text: '. After finished you can upload manually job other on menu pole local storage',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.black,
@@ -63,9 +54,9 @@ class AlertDialogLocal extends StatelessWidget {
             GestureDetector(
               onTap: () async {
                 var user = context.read<UserProvider>().userModel;
-                context
-                    .read<LocalProvider>()
-                    .uploadAllWithNotif(user.data!.user!.iD!);
+                local.uploadFirstWithAlert(
+                  user.data!.user!.iD!,
+                );
                 Navigator.pop(context);
               },
               child: Container(
@@ -77,10 +68,7 @@ class AlertDialogLocal extends StatelessWidget {
                   ),
                   child: Text(
                     "UPLOAD",
-                    style: TextStyle(
-                        color: ColorHelpers.colorWhite,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 14, fontWeight: FontWeight.bold),
                   )),
             ),
             UIHelper.verticalSpaceMedium,
@@ -96,10 +84,7 @@ class AlertDialogLocal extends StatelessWidget {
                   ),
                   child: Text(
                     "CANCEL",
-                    style: TextStyle(
-                        color: ColorHelpers.colorWhite,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 14, fontWeight: FontWeight.bold),
                   )),
             ),
           ],

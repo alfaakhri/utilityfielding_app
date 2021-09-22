@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"/>
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 
     <application
@@ -26,7 +27,14 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="Utility Fielding"
         android:icon="@mipmap/launcher_icon"
+        tools:replace="android:networkSecurityConfig"
         android:requestLegacyExternalStorage="true">
+        <service   android:name="me.carda.awesome_notifications.services.ForegroundService"
+            android:enabled="true"            
+            android:exported="false"
+            android:stopWithTask="true"
+            android:foregroundServiceType="mediaPlayback">
+        </service>
         <service android:name="cachet.plugins.notifications.NotificationListener"
             android:label="notifications"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
@@ -76,7 +84,7 @@
             </intent-filter>
         </receiver>
         <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyBkjUYIRfhJvzE_avAHS53yASeUlbOfrlg"/>
+               android:value="AIzaSyDQ-aesOz_ut1yBv_d6FG-0N60uqDwgLZs"/>
         <provider
             android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
             android:authorities="${applicationId}.flutter_downloader.provider"

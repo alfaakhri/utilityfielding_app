@@ -17,8 +17,8 @@ class ButtonUploadPole extends StatelessWidget {
     return Consumer<LocalProvider>(
       builder: (context, data, _) => InkWell(
           onTap: () {
-            if (data.projectLocalSelected.addPoleModel!.isEmpty ||
-                data.projectLocalSelected.startCompleteModel!.isEmpty) {
+            if (data.projectLocalSelected.addPoleModel!.isNotEmpty ||
+                data.projectLocalSelected.startCompleteModel!.isNotEmpty) {
               Get.to(ListPoleLocalWidget(
                 allProjectsModel: allProjectsModel,
               ));

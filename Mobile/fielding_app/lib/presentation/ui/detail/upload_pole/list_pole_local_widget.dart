@@ -24,7 +24,7 @@ class _ListPoleLocalWidgetState extends State<ListPoleLocalWidget> {
   void getAllPoles() {
     var user = context.read<UserProvider>();
     context.read<FieldingBloc>().add(GetAllPolesByID(user.userModel.data!.token, widget.allProjectsModel,
-        context.read<ConnectionProvider>().isConnected, user.userModel.data!.user!.iD!));
+        context.read<ConnectionProvider>().isConnected, user.userModel.data!.user!.iD!, true));
   }
 
   @override
@@ -94,9 +94,8 @@ class _ListPoleLocalWidgetState extends State<ListPoleLocalWidget> {
                           InkWell(
                               onTap: () async {
                                 var user = context.read<UserProvider>().userModel;
-                                context.read<LocalProvider>().uploadAllWithNotif(user.data!.user!.iD!);
+                                context.read<LocalProvider>().uploadAllWithNotif(user.data!.user!.iD!,);
                                 getAllPoles();
-                                Navigator.pop(context);
                               },
                               child: Container(
                                 width: 100,
