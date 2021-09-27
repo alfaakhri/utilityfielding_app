@@ -114,19 +114,19 @@ class LocalProvider extends ChangeNotifier {
     }
   }
 
-  void uploadFirstWithAlert(String customerId) async {
+  void uploadFirstWithAlert(String customerId, int indexElement) async {
     Dio _dio = Dio();
-
-    if (_allProjectsModel.first.addPoleModel!.isNotEmpty) {
-      for (var index = 0; index < _allProjectsModel.first.addPoleModel!.length; index++) {
+    
+    if (_allProjectsModel[indexElement].addPoleModel!.isNotEmpty) {
+      for (var index = 0; index < _allProjectsModel[indexElement].addPoleModel!.length; index++) {
         var response = await _dio.post(
           BASE_URL + "/api/MobileProject/CompletedFieldingNew",
-          data: jsonEncode(_allProjectsModel.first.addPoleModel![index]),
+          data: jsonEncode(_allProjectsModel[indexElement].addPoleModel![index]),
         );
         if (response.statusCode == 200) {
           showProgressNotification(
-              index, _allProjectsModel.first.addPoleModel![index].poleSequence!, true, _allProjectsModel.first);
-          _allProjectsModel.first.addPoleModel!.remove(_allProjectsModel.first.addPoleModel![index]);
+              index, _allProjectsModel[indexElement].addPoleModel![index].poleSequence!, true, _allProjectsModel[indexElement]);
+          _allProjectsModel[indexElement].addPoleModel!.remove(_allProjectsModel[indexElement].addPoleModel![index]);
           // _allProjectsModel.removeWhere((element) => element.iD == _allProjectsModel.first.iD);
           // _allProjectsModel.add(_allProjectsModel.first);
           await _hiveService.deleteDataFromBox(
@@ -137,22 +137,22 @@ class LocalProvider extends ChangeNotifier {
           if (_allProjectsModel.length != 0) {
             await _hiveService.saveDataToBox(getHiveFieldingPoles, customerId, json.encode(_allProjectsModel));
           }
-          if (_allProjectsModel.first.addPoleModel!.length == 0) {
-            if (_allProjectsModel.first.startCompleteModel!.isNotEmpty) {
+          if (_allProjectsModel[indexElement].addPoleModel!.length == 0) {
+            if (_allProjectsModel[indexElement].startCompleteModel!.isNotEmpty) {
               await uploadAllStartComplete(customerId, true);
             } else {
               updateProjectsLocal(customerId);
             }
             break;
           } else {
-            uploadAllWithNotif(customerId);
+            uploadFirstWithAlert(customerId, indexElement);
           }
         } else {
           showProgressNotification(
-              index, _allProjectsModel.first.addPoleModel![index].poleSequence!, false, _allProjectsModel.first);
+              index, _allProjectsModel[indexElement].addPoleModel![index].poleSequence!, false, _allProjectsModel[indexElement]);
         }
       }
-    } else if (_allProjectsModel.first.startCompleteModel!.isNotEmpty) {
+    } else if (_allProjectsModel[indexElement].startCompleteModel!.isNotEmpty) {
       await uploadAllStartComplete(customerId, true);
     }
   }
@@ -166,7 +166,7 @@ class LocalProvider extends ChangeNotifier {
               id: id,
               channelKey: 'grouped',
               title: 'Upload pole sequence $sequencePole ${(isSuccess) ? 'finished' : 'failed'}',
-              body: "${allProjectsModel.projectName} ${allProjectsModel.layerName}",
+              body: "${allProjectsModel.projectName} - ${allProjectsModel.jobNumber}\n${allProjectsModel.layerName}",
               locked: false));
     });
   }

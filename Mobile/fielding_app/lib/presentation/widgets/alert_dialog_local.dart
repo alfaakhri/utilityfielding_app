@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 class AlertDialogLocal extends StatelessWidget {
   final String? titleName;
   final String? layerName;
-  const AlertDialogLocal({Key? key, this.titleName, this.layerName}) : super(key: key);
+  final int? indexElement;
+  const AlertDialogLocal({Key? key, this.titleName, this.layerName, this.indexElement}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +57,7 @@ class AlertDialogLocal extends StatelessWidget {
                 var user = context.read<UserProvider>().userModel;
                 local.uploadFirstWithAlert(
                   user.data!.user!.iD!,
+                  indexElement!
                 );
                 Navigator.pop(context);
               },

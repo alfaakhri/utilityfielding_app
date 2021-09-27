@@ -68,7 +68,7 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.projects.projectName!,
+                          "${widget.projects.projectName!} - ${widget.projects.jobNumber!}",
                           style: TextStyle(
                               color: ColorHelpers.colorBlackText,
                               fontSize: 16,
@@ -83,25 +83,20 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                         ),
                       ],
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                                (widget.projects.totalPoles != null)
-                                    ? widget.projects.totalPoles.toString()
-                                    : "0",
-                                style: TextStyle(
-                                    color: ColorHelpers.colorBlueNumber,
-                                    fontSize: 24)),
-                            UIHelper.horizontalSpaceSmall,
-                            Text("Complete Poles",
-                                style: TextStyle(
-                                    color: ColorHelpers.colorBlackText,
-                                    fontSize: 14)),
-                          ],
-                        ),
+                        Text(
+                            (widget.projects.totalPoles != null)
+                                ? widget.projects.totalPoles.toString()
+                                : "0",
+                            style: TextStyle(
+                                color: ColorHelpers.colorBlueNumber,
+                                fontSize: 24)),
+                        UIHelper.horizontalSpaceSmall,
+                        Text("Complete Poles",
+                            style: TextStyle(
+                                color: ColorHelpers.colorBlackText,
+                                fontSize: 14)),
                       ],
                     ),
                   ],

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/data/repository/api_provider.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/external/service/service.exports.dart';
 import 'package:fielding_app/presentation/widgets/alert_dialog_local.dart';
@@ -24,29 +25,31 @@ class ConnectionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  int? _indexElement;
+  int? get indexElement => _indexElement;
+
   // Create our public controller
-  StreamController<ConnectivityStatus> connectionStatusController =
-      StreamController<ConnectivityStatus>();
+  StreamController<ConnectivityStatus> connectionStatusController = StreamController<ConnectivityStatus>();
 
   ConnectionProvider() {
     // Subscribe to the connectivity Chanaged Steam
-    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) async {
       // Use Connectivity() here to gather more info if you need t
-      connectionStatusController.add(getStatusFromResult(result));
+      connectionStatusController.add(await getStatusFromResult(result));
     });
   }
 
   // Convert from the third part enum to our own enum
-  ConnectivityStatus getStatusFromResult(ConnectivityResult result) {
-    bool _isShow = isShowDialog();
+  Future<ConnectivityStatus> getStatusFromResult(ConnectivityResult result) async {
+    bool _isShow = await isShowDialog();
     switch (result) {
       case ConnectivityResult.mobile:
         Fluttertoast.showToast(msg: "Internet available");
         if (_isShow) {
           Get.dialog(AlertDialogLocal(
-            titleName:
-                "${allProjectsModel.first.projectName} ${allProjectsModel.first.jobNumber}",
-            layerName: allProjectsModel.first.layerName,
+            titleName: "${allProjectsModel[indexElement!].projectName} ${allProjectsModel[indexElement!].jobNumber}",
+            layerName: allProjectsModel[indexElement!].layerName,
+            indexElement: indexElement,
           ));
         }
 
@@ -55,10 +58,10 @@ class ConnectionProvider extends ChangeNotifier {
       case ConnectivityResult.wifi:
         Fluttertoast.showToast(msg: "Internet available");
         if (_isShow) {
-          Get.dialog(AlertDialogLocal(
-            titleName:
-                "${allProjectsModel.first.projectName} ${allProjectsModel.first.jobNumber}",
-            layerName: allProjectsModel.first.layerName,
+           Get.dialog(AlertDialogLocal(
+            titleName: "${allProjectsModel[indexElement!].projectName} ${allProjectsModel[indexElement!].jobNumber}",
+            layerName: allProjectsModel[indexElement!].layerName,
+            indexElement: indexElement,
           ));
         }
         setIsConnected(true);
@@ -82,21 +85,36 @@ class ConnectionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateForTriggerDialog(String userId) async {
-    var dataBox = await _hiveService.openAndGetDataFromHiveBox(
-        getHiveFieldingPoles, userId);
+  String? _userId;
+  String? get userId => _userId;
+
+  void updateForTriggerDialog(String data) async {
+    _userId = data;
+    var dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveFieldingPoles, _userId!);
     if (dataBox != null) {
       _allProjectsModel = AllProjectsModel.fromJsonList(jsonDecode(dataBox))!;
     }
     notifyListeners();
   }
 
-  bool isShowDialog() {
-    if (allProjectsModel.isNotEmpty) {
-      if (allProjectsModel.first.addPoleModel == null && allProjectsModel.first.startCompleteModel == null) {
-        return false;
-      } else if (allProjectsModel.first.addPoleModel!.isNotEmpty || allProjectsModel.first.startCompleteModel!.isNotEmpty) {
-        return true;
+  Future<bool> isShowDialog() async {
+    if (_userId != null) {
+      var dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveFieldingPoles, _userId!);
+      if (dataBox != null) {
+        _allProjectsModel = AllProjectsModel.fromJsonList(jsonDecode(dataBox))!;
+      }
+    }
+
+    if (_allProjectsModel.isNotEmpty) {
+      for (int index = 0; index < _allProjectsModel.length; index++) {
+        if (_allProjectsModel[index].addPoleModel == null && _allProjectsModel[index].startCompleteModel == null) {
+          return false;
+        } else if (_allProjectsModel[index].addPoleModel!.isNotEmpty ||
+            _allProjectsModel[index].startCompleteModel!.isNotEmpty) {
+          _indexElement = index;
+          notifyListeners();
+          return true;
+        }
       }
     }
     return false;
