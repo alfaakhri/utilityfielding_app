@@ -14,11 +14,10 @@ import 'package:provider/provider.dart';
 class EditPolePage extends StatefulWidget {
   final AllProjectsModel? allProjectsModel;
   final AllPolesByLayerModel? poles;
-  final bool? isAddPole;
   final bool isStartComplete;
   final bool isLocalMenu;
 
-  const EditPolePage({Key? key, this.allProjectsModel, this.poles, this.isAddPole, required this.isStartComplete, required this.isLocalMenu})
+  const EditPolePage({Key? key, this.allProjectsModel, this.poles, required this.isStartComplete, required this.isLocalMenu})
       : super(key: key);
 
   @override

@@ -38,7 +38,6 @@ class SymbolProvider extends ChangeNotifier {
           if (otherSymbolsModel.isEmpty) {
             _state = SymbolState.empty;
             _message = "This layer no more symbol";
-            Fluttertoast.showToast(msg: _message);
 
             notifyListeners();
           } else {
@@ -49,7 +48,6 @@ class SymbolProvider extends ChangeNotifier {
       } catch (e) {
         _state = SymbolState.failed;
         _message = e.toString();
-        Fluttertoast.showToast(msg: _message);
 
         notifyListeners();
         print(e.toString());
