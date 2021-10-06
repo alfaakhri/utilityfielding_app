@@ -291,13 +291,13 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                   } else if (symbol.state == SymbolState.failed) {
                     return _content(state.allPolesByLayer);
                   }
-                  return Container();
+                  return _loading();
                 });
               } else {
                 return _content(state.allPolesByLayer);
               }
             }
-            return Container();
+            return _loading();
           },
         ),
       ),
@@ -396,7 +396,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                 children: <Widget>[
                   (_tempMarkerSelected == null)
                       ? Container()
-                      : PoleSequenceSelectedItem(poleModelSelected: poleModelSelected, callback: callback, isLocalMenu: widget.isLocalMenu!,),
+                      : PoleSequenceSelectedItem(
+                          poleModelSelected: poleModelSelected,
+                          callback: callback,
+                          isLocalMenu: widget.isLocalMenu!,
+                        ),
                   UIHelper.verticalSpaceSmall,
                   (showButtonCompleteMulti)
                       ? CompleteMultiPoleButton(
@@ -418,8 +422,12 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                     physics: NeverScrollableScrollPhysics(),
                     children: allPoles
                         .map(
-                          (data) =>
-                              (data.fieldingStatus == 2) ? PoleSequenceItem(allPolesByLayerModel: data, isLocalMenu: widget.isLocalMenu!,) : Container(),
+                          (data) => (data.fieldingStatus == 2)
+                              ? PoleSequenceItem(
+                                  allPolesByLayerModel: data,
+                                  isLocalMenu: widget.isLocalMenu!,
+                                )
+                              : Container(),
                         )
                         .toList(),
                   ),
@@ -452,7 +460,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
         if (data.latitude != null && data.longitude != null) {
           var fieldingPosition = LatLng(double.parse(data.latitude!), double.parse(data.longitude!));
 
-          if (data.fieldingStatus == null || data.fieldingStatus == 0 || data.fieldingStatus == 1) {
+          if (data.poleType == 12) {
+            _markers.add(Marker(markerId: MarkerId("${data.id}"), position: fieldingPosition, icon: anchorIcon));
+          } else if (data.poleType == 4) {
+            _markers.add(Marker(markerId: MarkerId("${data.id}"), position: fieldingPosition, icon: treeIcon));
+          } else if (data.fieldingStatus == null || data.fieldingStatus == 0 || data.fieldingStatus == 1) {
             _markers.add(Marker(
                 markerId: MarkerId("${data.id}"),
                 position: fieldingPosition,

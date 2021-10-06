@@ -14,6 +14,7 @@ class ButtonUploadPole extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var connect = context.read<ConnectionProvider>();
     return Consumer<LocalProvider>(
       builder: (context, data, _) => InkWell(
           onTap: () {
@@ -27,18 +28,12 @@ class ButtonUploadPole extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
             decoration: BoxDecoration(
-                color: (data.projectLocalSelected.addPoleModel!.isEmpty &&
-                        data.projectLocalSelected.startCompleteModel!.isEmpty)
-                    ? ColorHelpers.colorGrey2
-                    : ColorHelpers.colorGreen2,
+                color: (connect.isConnected) ? ColorHelpers.colorGreen2 : ColorHelpers.colorGrey2,
                 borderRadius: BorderRadius.circular(5)),
             child: Text(
               "Upload Pole",
               style: TextStyle(
-                  color: (data.projectLocalSelected.addPoleModel!.isEmpty &&
-                          data.projectLocalSelected.startCompleteModel!.isEmpty)
-                      ? ColorHelpers.colorBlackText.withOpacity(0.5)
-                      : ColorHelpers.colorWhite,
+                  color: (connect.isConnected) ? ColorHelpers.colorWhite : ColorHelpers.colorBlackText.withOpacity(0.5),
                   fontSize: 12),
             ),
           )),

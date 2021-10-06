@@ -46,7 +46,6 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
             widget.projects.iD!,
             connect.isConnected);
         context.read<LocalProvider>().setProjectsLocal(widget.projects);
-        Get.back();
         Get.to(DetailFieldingPage(
           allProjectsModel: widget.projects,
           isLocalMenu: true,

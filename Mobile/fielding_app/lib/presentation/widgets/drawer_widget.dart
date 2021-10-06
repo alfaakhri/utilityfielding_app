@@ -32,7 +32,7 @@ class DrawerWidget extends StatelessWidget {
                 ),
                 Container(
                     margin: EdgeInsets.only(left: 50),
-                    child: Text(version,
+                    child: Text("V$version",
                         textAlign: TextAlign.end,
                         style: TextStyle(
                             fontSize: 15,

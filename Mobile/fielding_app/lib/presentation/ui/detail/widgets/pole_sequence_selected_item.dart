@@ -156,7 +156,7 @@ class PoleSequenceSelectedItem extends StatelessWidget {
                       onTap: () {
                         var connect = context.read<ConnectionProvider>();
                         if (isLocalMenu && connect.isConnected) {
-                          Fluttertoast.showToast(msg: "Can't Start Fielding in local menu");
+                          Fluttertoast.showToast(msg: "Can't Start Fielding in local menu", toastLength: Toast.LENGTH_LONG);
                         } else {
                           context.read<FieldingBloc>().add(StartFielding(
                               token: context.read<UserProvider>().userModel.data!.token!,
