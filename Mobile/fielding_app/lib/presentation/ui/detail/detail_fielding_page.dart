@@ -501,9 +501,14 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     setState(() {
       _markers.clear();
       list.map((e) {
+        var position = LatLng(double.parse(e.latitude!), double.parse(e.longitude!));
+
         //Check latlong is null
-        if (e.latitude != null && e.longitude != null) {
-          var position = LatLng(double.parse(e.latitude!), double.parse(e.longitude!));
+        if (e.poleType == 12) {
+          _markers.add(Marker(markerId: MarkerId("${e.id}"), position: position, icon: anchorIcon));
+        } else if (e.poleType == 4) {
+          _markers.add(Marker(markerId: MarkerId("${e.id}"), position: position, icon: treeIcon));
+        } else if (e.latitude != null && e.longitude != null) {
           //Check ID is the same
           if (e.id == data.id) {
             _markers.add(Marker(
