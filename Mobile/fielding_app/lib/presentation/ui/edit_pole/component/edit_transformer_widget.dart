@@ -13,10 +13,7 @@ class EditTransformerWidget extends StatefulWidget {
 
 class _EditTransformerWidgetState extends State<EditTransformerWidget> {
   var textDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12);
-  var textBoldDefault = TextStyle(
-      color: ColorHelpers.colorBlackText,
-      fontSize: 12,
-      fontWeight: FontWeight.bold);
+  var textBoldDefault = TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12, fontWeight: FontWeight.bold);
   List<String> _listChoice = ["Yes", "No"];
   bool valueDropdown = false;
   TextEditingController kvController = TextEditingController();
@@ -58,9 +55,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                     color: ColorHelpers.colorBlueNumber,
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: Text("Add",
-                      style: TextStyle(
-                          color: ColorHelpers.colorWhite, fontSize: 12)),
+                  child: Text("Add", style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
                 ),
               ),
             ],
@@ -110,10 +105,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                               color: ColorHelpers.colorGreen,
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Text("Edit",
-                                style: TextStyle(
-                                    color: ColorHelpers.colorWhite,
-                                    fontSize: 12)),
+                            child: Text("Edit", style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
                           ),
                         ),
                       ],
@@ -137,8 +129,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(5.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
             content: Consumer<FieldingProvider>(
               builder: (context, data, _) => Form(
                 key: formKey,
@@ -180,14 +171,6 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                                 child: TextFormField(
                                   controller: kvController,
                                   keyboardType: TextInputType.number,
-                                  validator: (value) {
-                                    if (value == null) {
-                                      return 'Please insert kV value';
-                                    } else if (value == "") {
-                                      return 'Please insert kV value';
-                                    }
-                                    return null;
-                                  },
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     isDense: true,
@@ -195,31 +178,23 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                                     suffixStyle: textDefault,
                                     focusedErrorBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorRed)),
+                                        borderSide: BorderSide(color: ColorHelpers.colorRed)),
                                     disabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorGrey
-                                                .withOpacity(0.3))),
+                                        borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
                                     errorBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorRed)),
+                                        borderSide: BorderSide(color: ColorHelpers.colorRed)),
                                     enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorGrey
-                                                .withOpacity(0.3))),
+                                        borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
                                     focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(5),
-                                        borderSide: BorderSide(
-                                            color: ColorHelpers.colorGrey
-                                                .withOpacity(0.3))),
+                                        borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
                                   ),
                                 ),
                               ),
-                              //TO-DO HIDE for temporary 
+                              //TO-DO HIDE for temporary
                               // UIHelper.horizontalSpaceVerySmall,
                               // Expanded(
                               //   child: TextFormField(
@@ -270,8 +245,7 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                     Container(
                       width: double.infinity,
                       child: FlatButton(
-                        child:
-                            Text("Save", style: TextStyle(color: Colors.white)),
+                        child: Text("Save", style: TextStyle(color: Colors.white)),
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
                             setState(() {
@@ -281,22 +255,12 @@ class _EditTransformerWidgetState extends State<EditTransformerWidget> {
                                 if (index != null) {
                                   data.updateListTransformer(
                                       TransformerList(
-                                          value: double.parse(this
-                                              .kvController
-                                              .text
-                                              .replaceAll(",", ".")),
-                                          hOA: double.parse(this
-                                              .ftController
-                                              .text
-                                              .replaceAll(",", "."))),
+                                          value: (kvController.text.isEmpty) ? 0 : double.parse(this.kvController.text.replaceAll(",", ".")),
+                                          hOA: 0),
                                       index);
                                 } else {
                                   data.addlistTransformer(TransformerList(
-                                      value: double.parse(this
-                                          .kvController
-                                          .text
-                                          .replaceAll(",", ".")),
-                                      hOA: 0));
+                                      value: (kvController.text.isEmpty) ? 0 : double.parse(this.kvController.text.replaceAll(",", ".")), hOA: 0));
                                 }
                               }
 

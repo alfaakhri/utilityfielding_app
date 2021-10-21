@@ -18,9 +18,11 @@ class ButtonUploadPole extends StatelessWidget {
     return Consumer<LocalProvider>(
       builder: (context, data, _) => InkWell(
           onTap: () {
-            Get.to(ListPoleLocalWidget(
-              allProjectsModel: allProjectsModel,
-            ));
+            if (connect.isConnected) {
+              Get.to(ListPoleLocalWidget(
+                allProjectsModel: allProjectsModel,
+              ));
+            }
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),

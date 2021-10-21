@@ -10,16 +10,15 @@ class FormDrawingItem extends StatelessWidget {
   final int lengthValue;
   final Widget classname;
 
-  const FormDrawingItem({Key? key, required this.isBlueColor, required this.title, required this.lengthValue, required this.classname}) : super(key: key);
+  const FormDrawingItem(
+      {Key? key, required this.isBlueColor, required this.title, required this.lengthValue, required this.classname})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          color: isBlueColor
-              ? ColorHelpers.colorBlueIntro
-              : ColorHelpers.colorWhite),
+      decoration: BoxDecoration(color: isBlueColor ? ColorHelpers.colorBlueIntro : ColorHelpers.colorWhite),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -34,9 +33,8 @@ class FormDrawingItem extends StatelessWidget {
           (lengthValue != 0)
               ? Expanded(
                   flex: 2,
-                  child: Text(lengthValue.toString(),
-                      style: TextStyle(
-                          color: ColorHelpers.colorBlackText, fontSize: 14)),
+                  child:
+                      Text(lengthValue.toString(), style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
                 )
               : Container(),
           InkWell(
@@ -54,14 +52,11 @@ class FormDrawingItem extends StatelessWidget {
               height: 30,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: (lengthValue == 0)
-                    ? ColorHelpers.colorBlueNumber
-                    : ColorHelpers.colorGreen,
+                color: ColorHelpers.colorBlueNumber,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Text((lengthValue == 0) ? 'Enter' : "Edit",
-                  style:
-                      TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
+                  style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
             ),
           ),
         ],

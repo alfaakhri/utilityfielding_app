@@ -6,6 +6,7 @@ import 'package:fielding_app/domain/provider/symbol_provider.dart';
 
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/detail/detail.exports.dart';
+import 'package:fielding_app/presentation/ui/detail/widgets/widgets_detail_exports.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,25 +27,31 @@ class ItemLocalPole extends StatefulWidget {
 class _ItemLocalPoleState extends State<ItemLocalPole> {
   final GlobalKey<State> _keyLoader = new GlobalKey<State>();
 
+  int get totalOfflinePole {
+    int result = 0;
+    if (widget.projects.addPoleModel != null) {
+      result += widget.projects.addPoleModel!.length;
+    }
+
+    if (widget.projects.startCompleteModel != null) {
+      result += widget.projects.startCompleteModel!.length;
+    }
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
+    var connect = context.read<ConnectionProvider>();
+
     return InkWell(
       onTap: () {
         var connect = context.read<ConnectionProvider>();
-        context
-            .read<FieldingProvider>()
-            .setAllProjectsSelected(widget.projects);
-        context
-            .read<FieldingProvider>()
-            .getJobNumberAttachModel(widget.projects.iD, connect.isConnected);
+        context.read<FieldingProvider>().setAllProjectsSelected(widget.projects);
+        context.read<FieldingProvider>().getJobNumberAttachModel(widget.projects.iD, connect.isConnected);
         context.read<SymbolProvider>().getOtherSymbolModel(
-            context.read<UserProvider>().userModel.data!.token!,
-            widget.projects.iD!,
-            connect.isConnected);
+            context.read<UserProvider>().userModel.data!.token!, widget.projects.iD!, connect.isConnected);
         context.read<SymbolProvider>().getAllItemLine(
-            context.read<UserProvider>().userModel.data!.token!,
-            widget.projects.iD!,
-            connect.isConnected);
+            context.read<UserProvider>().userModel.data!.token!, widget.projects.iD!, connect.isConnected);
         context.read<LocalProvider>().setProjectsLocal(widget.projects);
         Get.to(DetailFieldingPage(
           allProjectsModel: widget.projects,
@@ -62,40 +69,50 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           "${widget.projects.projectName!} - ${widget.projects.jobNumber!}",
-                          style: TextStyle(
-                              color: ColorHelpers.colorBlackText,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                          style:
+                              TextStyle(color: ColorHelpers.colorBlackText, fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           widget.projects.layerName ?? "-",
-                          style: TextStyle(
-                              color: ColorHelpers.colorBlackText,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                          style:
+                              TextStyle(color: ColorHelpers.colorBlackText, fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                            (widget.projects.totalPoles != null)
-                                ? widget.projects.totalPoles.toString()
-                                : "0",
-                            style: TextStyle(
-                                color: ColorHelpers.colorBlueNumber,
-                                fontSize: 24)),
-                        UIHelper.horizontalSpaceSmall,
-                        Text("Complete Poles",
-                            style: TextStyle(
-                                color: ColorHelpers.colorBlackText,
-                                fontSize: 14)),
+                        RichText(
+                          textAlign: TextAlign.left,
+                          text: TextSpan(
+                            text: (widget.projects.totalPoles != null) ? widget.projects.totalPoles.toString() : "0",
+                            style: TextStyle(color: ColorHelpers.colorBlueNumber, fontSize: 14),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: " Complete Poles",
+                                  style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            text: "${totalOfflinePole.toString()}",
+                            style: TextStyle(color: ColorHelpers.colorGreen2, fontSize: 14),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: " Offline Poles",
+                                  style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12)),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -111,33 +128,38 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                           (widget.projects.dueDate != null)
                               ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(widget.projects.dueDate!))}"
                               : "-",
-                          style: TextStyle(
-                              fontSize: 12, color: ColorHelpers.colorBlackText),
+                          style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                         ),
                         Text(
                           (widget.projects.totalPoles != null)
                               ? "Total ${widget.projects.approx} Poles"
                               : "Total 0 Poles",
-                          style: TextStyle(
-                              fontSize: 12, color: ColorHelpers.colorBlackText),
+                          style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                         )
                       ],
                     ),
                     Row(
                       children: [
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            if (connect.isConnected) {
+                              context.read<LocalProvider>().setProjectsLocal(widget.projects);
+
+                              Get.to(ListPoleLocalWidget(
+                                allProjectsModel: widget.projects,
+                              ));
+                            }
+                          },
                           child: Container(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                "Notes",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 12),
+                                "Upload",
+                                style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 12),
                               ),
                             ),
                             decoration: BoxDecoration(
-                                color: ColorHelpers.colorButtonDefault,
+                                color: (connect.isConnected) ? ColorHelpers.colorGreen2 : ColorHelpers.colorGreyIntro,
                                 borderRadius: BorderRadius.circular(5)),
                           ),
                         ),
@@ -153,28 +175,19 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                           },
                           child: InkWell(
                             onTap: () {
-                              context.read<LocalBloc>().add(
-                                  DeleteFieldingRequest(
-                                      widget.projects,
-                                      context
-                                          .read<UserProvider>()
-                                          .userModel
-                                          .data!
-                                          .user!
-                                          .iD!));
+                              context.read<LocalBloc>().add(DeleteFieldingRequest(
+                                  widget.projects, context.read<UserProvider>().userModel.data!.user!.iD!));
                             },
                             child: Container(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   "Delete",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  style: TextStyle(color: Colors.white, fontSize: 12),
                                 ),
                               ),
-                              decoration: BoxDecoration(
-                                  color: ColorHelpers.colorRed,
-                                  borderRadius: BorderRadius.circular(5)),
+                              decoration:
+                                  BoxDecoration(color: ColorHelpers.colorRed, borderRadius: BorderRadius.circular(5)),
                             ),
                           ),
                         ),
@@ -195,8 +208,7 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
             content: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -205,10 +217,7 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                 Text(
                   'Information',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: ColorHelpers.colorGrey,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500),
+                  style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 UIHelper.verticalSpaceMedium,
                 Padding(
@@ -216,10 +225,7 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                   child: Text(
                     "Are you sure delete this pole from local ?",
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: ColorHelpers.colorGrey,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500),
+                    style: TextStyle(color: ColorHelpers.colorGrey, fontSize: 12, fontWeight: FontWeight.w500),
                   ),
                 ),
                 UIHelper.verticalSpaceMedium,
@@ -237,10 +243,7 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                       ),
                       child: Text(
                         "YES",
-                        style: TextStyle(
-                            color: ColorHelpers.colorWhite,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 14, fontWeight: FontWeight.bold),
                       )),
                 ),
                 UIHelper.verticalSpaceMedium,
@@ -256,10 +259,7 @@ class _ItemLocalPoleState extends State<ItemLocalPole> {
                       ),
                       child: Text(
                         "NO",
-                        style: TextStyle(
-                            color: ColorHelpers.colorWhite,
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 14, fontWeight: FontWeight.bold),
                       )),
                 ),
               ],

@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:configurable_expansion_tile/configurable_expansion_tile.dart';
 
@@ -63,8 +64,7 @@ class _ItemFieldingRequestNewState extends State<ItemFieldingRequestNew> {
         },
         children: [
           for (var item in widget.fieldingRequest.details!
-              .where((element) =>
-                  element.fieldingProgressStatus == fielding.layerStatus)
+              .where((element) => element.fieldingProgressStatus == fielding.layerStatus)
               .toList())
             TileItem(
               detailItem: item,
@@ -79,9 +79,7 @@ class TileTitle extends StatelessWidget {
   final FieldingRequestByJobModel fieldingRequest;
   final IconData iconName;
 
-  const TileTitle(
-      {Key? key, required this.fieldingRequest, required this.iconName})
-      : super(key: key);
+  const TileTitle({Key? key, required this.fieldingRequest, required this.iconName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -104,22 +102,17 @@ class TileTitle extends StatelessWidget {
                       softWrap: true,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: ColorHelpers.colorBlackText,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold),
+                      style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       (fieldingRequest.lastDueDate != null)
                           ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(fieldingRequest.lastDueDate!))}"
                           : "-",
-                      style: TextStyle(
-                          fontSize: 12, color: ColorHelpers.colorBlackText),
+                      style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                     ),
                     Text(
                       "Total ${fieldingRequest.fieldingRequestCount} request",
-                      style: TextStyle(
-                          fontSize: 12, color: ColorHelpers.colorBlackText),
+                      style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                     ),
                   ],
                 ),
@@ -150,19 +143,12 @@ class _TileItemState extends State<TileItem> {
     return InkWell(
       onTap: () {
         var connect = context.read<ConnectionProvider>();
-        context
-            .read<FieldingProvider>()
-            .setAllProjectsSelected(widget.detailItem);
-        context.read<FieldingProvider>().getJobNumberAttachModel(
-            widget.detailItem.iD, connect.isConnected);
+        context.read<FieldingProvider>().setAllProjectsSelected(widget.detailItem);
+        context.read<FieldingProvider>().getJobNumberAttachModel(widget.detailItem.iD, connect.isConnected);
         context.read<SymbolProvider>().getOtherSymbolModel(
-            context.read<UserProvider>().userModel.data!.token!,
-            widget.detailItem.iD!,
-            connect.isConnected);
+            context.read<UserProvider>().userModel.data!.token!, widget.detailItem.iD!, connect.isConnected);
         context.read<SymbolProvider>().getAllItemLine(
-            context.read<UserProvider>().userModel.data!.token!,
-            widget.detailItem.iD!,
-            connect.isConnected);
+            context.read<UserProvider>().userModel.data!.token!, widget.detailItem.iD!, connect.isConnected);
         Get.to(DetailFieldingPage(
           allProjectsModel: widget.detailItem,
           isLocalMenu: false,
@@ -185,17 +171,13 @@ class _TileItemState extends State<TileItem> {
                       children: [
                         Text(
                           widget.detailItem.projectName!,
-                          style: TextStyle(
-                              color: ColorHelpers.colorBlackText,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                          style:
+                              TextStyle(color: ColorHelpers.colorBlackText, fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           widget.detailItem.layerName ?? "-",
-                          style: TextStyle(
-                              color: ColorHelpers.colorBlackText,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
+                          style:
+                              TextStyle(color: ColorHelpers.colorBlackText, fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -204,34 +186,21 @@ class _TileItemState extends State<TileItem> {
                       children: [
                         Row(
                           children: [
-                            Text(
-                                (widget.detailItem.totalPoles != null)
-                                    ? widget.detailItem.totalPoles.toString()
-                                    : "0",
-                                style: TextStyle(
-                                    color: ColorHelpers.colorBlueNumber,
-                                    fontSize: 24)),
+                            Text((widget.detailItem.totalPoles != null) ? widget.detailItem.totalPoles.toString() : "0",
+                                style: TextStyle(color: ColorHelpers.colorBlueNumber, fontSize: 24)),
                             UIHelper.horizontalSpaceSmall,
-                            Text("Complete Poles",
-                                style: TextStyle(
-                                    color: ColorHelpers.colorBlackText,
-                                    fontSize: 14)),
+                            Text("Complete Poles", style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14)),
                           ],
                         ),
                         BlocListener<LocalBloc, LocalState>(
                           listener: (context, state) {
                             if (state is SaveFieldingRequestLoading) {
-                              LoadingWidget.showLoadingDialog(
-                                  context, _keyLoader);
+                              LoadingWidget.showLoadingDialog(context, _keyLoader);
                             } else if (state is SaveFieldingRequestSuccess) {
-                              Navigator.of(_keyLoader.currentContext!,
-                                      rootNavigator: true)
-                                  .pop();
+                              Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
                               Fluttertoast.showToast(msg: "Download success");
                             } else if (state is SaveFieldingRequestFailed) {
-                              Navigator.of(_keyLoader.currentContext!,
-                                      rootNavigator: true)
-                                  .pop();
+                              Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
                               Fluttertoast.showToast(msg: state.toString());
                             }
                           },
@@ -239,23 +208,18 @@ class _TileItemState extends State<TileItem> {
                             onTap: () {
                               var user = context.read<AuthBloc>().userModel;
                               context.read<LocalBloc>().add(SaveFieldingRequest(
-                                  user!.data!.token!,
-                                  widget.detailItem.iD!,
-                                  widget.detailItem,
-                                  user.data!.user!.iD!));
+                                  user!.data!.token!, widget.detailItem.iD!, widget.detailItem, user.data!.user!.iD!));
                             },
                             child: Container(
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   "Download",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  style: TextStyle(color: Colors.white, fontSize: 12),
                                 ),
                               ),
                               decoration: BoxDecoration(
-                                  color: ColorHelpers.colorGreen2,
-                                  borderRadius: BorderRadius.circular(5)),
+                                  color: ColorHelpers.colorGreen2, borderRadius: BorderRadius.circular(5)),
                             ),
                           ),
                         ),
@@ -274,39 +238,62 @@ class _TileItemState extends State<TileItem> {
                           (widget.detailItem.dueDate != null)
                               ? "${DateFormat("dd/MM/yyyy").format(DateTime.parse(widget.detailItem.dueDate!))}"
                               : "-",
-                          style: TextStyle(
-                              fontSize: 12, color: ColorHelpers.colorBlackText),
+                          style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                         ),
                         Text(
                           (widget.detailItem.totalPoles != null)
                               ? "Total ${widget.detailItem.approx} Poles"
                               : "Total 0 Poles",
-                          style: TextStyle(
-                              fontSize: 12, color: ColorHelpers.colorBlackText),
+                          style: TextStyle(fontSize: 12, color: ColorHelpers.colorBlackText),
                         )
                       ],
                     ),
-                    InkWell(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return NotesRequestItem(
-                                  note: widget.detailItem.note);
-                            });
-                      },
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Notes",
-                            style: TextStyle(color: Colors.white, fontSize: 12),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            final availableMaps = await MapLauncher.installedMaps;
+
+                            await availableMaps.first.showMarker(
+                              coords: Coords(double.parse(widget.detailItem.firstPoleLongLat!.split(",")[1]),
+                                  double.parse(widget.detailItem.firstPoleLongLat!.split(",")[0])),
+                              title: "${widget.detailItem.projectName}-${widget.detailItem.layerName}",
+                            );
+                          },
+                          child: Container(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                              child: Text(
+                                "Drive",
+                                style: TextStyle(color: Colors.white, fontSize: 12),
+                              ),
+                            ),
+                            decoration:
+                                BoxDecoration(color: ColorHelpers.colorOrange, borderRadius: BorderRadius.circular(5)),
                           ),
                         ),
-                        decoration: BoxDecoration(
-                            color: ColorHelpers.colorButtonDefault,
-                            borderRadius: BorderRadius.circular(5)),
-                      ),
+                        UIHelper.horizontalSpaceSmall,
+                        InkWell(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return NotesRequestItem(note: widget.detailItem.note);
+                                });
+                          },
+                          child: Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Notes",
+                                style: TextStyle(color: Colors.white, fontSize: 12),
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                                color: ColorHelpers.colorButtonDefault, borderRadius: BorderRadius.circular(5)),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

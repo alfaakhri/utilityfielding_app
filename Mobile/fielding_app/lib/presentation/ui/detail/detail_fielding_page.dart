@@ -1,6 +1,8 @@
 import 'package:fielding_app/data/models/detail_fielding/item_line_by_layer_model.dart';
 import 'package:fielding_app/data/models/models.exports.dart';
+import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
+import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
 import 'package:fielding_app/domain/provider/local_provider.dart';
 import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/domain/provider/symbol_provider.dart';
@@ -147,7 +149,12 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
     var connect = context.read<ConnectionProvider>();
     return WillPopScope(
       onWillPop: () {
-        fieldingBloc.add(GetFieldingRequest(context.read<UserProvider>().userModel.data!.token, connect.isConnected));
+        if (widget.isLocalMenu!) {
+          context.read<LocalBloc>().add(GetListFielding(context.read<AuthBloc>().userModel!.data!.user!.iD!));
+        } else {
+          fieldingBloc.add(GetFieldingRequest(context.read<UserProvider>().userModel.data!.token, connect.isConnected));
+        }
+
         Get.back();
         return Future.value(false);
       },
@@ -160,8 +167,12 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
           ),
           leading: IconButton(
             onPressed: () {
-              fieldingBloc
-                  .add(GetFieldingRequest(context.read<UserProvider>().userModel.data!.token, connect.isConnected));
+              if (widget.isLocalMenu!) {
+                context.read<LocalBloc>().add(GetListFielding(context.read<AuthBloc>().userModel!.data!.user!.iD!));
+              } else {
+                fieldingBloc
+                    .add(GetFieldingRequest(context.read<UserProvider>().userModel.data!.token, connect.isConnected));
+              }
               Get.back();
             },
             icon: Icon(
@@ -402,12 +413,11 @@ class _DetailFieldingPageState extends State<DetailFieldingPage> {
                           isLocalMenu: widget.isLocalMenu!,
                         ),
                   UIHelper.verticalSpaceSmall,
-                  (showButtonCompleteMulti)
-                      ? CompleteMultiPoleButton(
-                          token: context.read<UserProvider>().userModel.data!.token,
-                          layerId: widget.allProjectsModel!.iD,
-                        )
-                      : Container(),
+                  CompleteMultiPoleButton(
+                    token: context.read<UserProvider>().userModel.data!.token,
+                    layerId: widget.allProjectsModel!.iD,
+                    enableButton: showButtonCompleteMulti,
+                  ),
                   UIHelper.verticalSpaceSmall,
                   Container(
                     alignment: Alignment.centerLeft,

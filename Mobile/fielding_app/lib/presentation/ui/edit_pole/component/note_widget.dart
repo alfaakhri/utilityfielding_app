@@ -21,8 +21,7 @@ class _NoteWidgetState extends State<NoteWidget> {
     print(height);
     return Container(
       padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-          color: ColorHelpers.colorWhite),
+      decoration: BoxDecoration(color: ColorHelpers.colorWhite),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -42,9 +41,7 @@ class _NoteWidgetState extends State<NoteWidget> {
               widget.controller!.text,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                  color: ColorHelpers.colorBlackText,
-                  fontSize: 12),
+              style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 12),
             ),
           ),
           InkWell(
@@ -60,14 +57,11 @@ class _NoteWidgetState extends State<NoteWidget> {
               height: 30,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: (widget.controller!.text.isEmpty)
-                    ? ColorHelpers.colorBlueNumber
-                    : ColorHelpers.colorGreen,
+                color: ColorHelpers.colorBlueNumber,
                 borderRadius: BorderRadius.circular(5),
               ),
               child: Text((widget.controller!.text.isEmpty) ? 'Enter' : "Edit",
-                  style:
-                      TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
+                  style: TextStyle(color: ColorHelpers.colorWhite, fontSize: 12)),
             ),
           ),
         ],
@@ -77,8 +71,7 @@ class _NoteWidgetState extends State<NoteWidget> {
 
   AlertDialog _alertContent(BuildContext context, double height) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
       content: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -101,21 +94,16 @@ class _NoteWidgetState extends State<NoteWidget> {
                   border: InputBorder.none,
                   isDense: true,
                   hintText: "${widget.title}...",
-                  hintStyle: TextStyle(
-                      color: ColorHelpers.colorBlackText.withOpacity(0.3),
-                      fontSize: 12),
+                  hintStyle: TextStyle(color: ColorHelpers.colorBlackText.withOpacity(0.3), fontSize: 12),
                   disabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
-                      borderSide: BorderSide(
-                          color: ColorHelpers.colorGrey.withOpacity(0.3))),
+                      borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
-                      borderSide: BorderSide(
-                          color: ColorHelpers.colorGrey.withOpacity(0.3))),
+                      borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
                   focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
-                      borderSide: BorderSide(
-                          color: ColorHelpers.colorGrey.withOpacity(0.3))),
+                      borderSide: BorderSide(color: ColorHelpers.colorGrey.withOpacity(0.3))),
                 ),
               ),
               UIHelper.verticalSpaceSmall,

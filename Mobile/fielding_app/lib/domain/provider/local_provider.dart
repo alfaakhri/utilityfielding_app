@@ -116,7 +116,10 @@ class LocalProvider extends ChangeNotifier {
 
   void uploadFirstWithAlert(String customerId, int indexElement) async {
     Dio _dio = Dio();
-    
+    var dataBox = await _hiveService.openAndGetDataFromHiveBox(getHiveFieldingPoles, customerId);
+    if (dataBox != null) {
+      _allProjectsModel = AllProjectsModel.fromJsonList(jsonDecode(dataBox))!;
+    }
     if (_allProjectsModel[indexElement].addPoleModel!.isNotEmpty) {
       for (var index = 0; index < _allProjectsModel[indexElement].addPoleModel!.length; index++) {
         var response = await _dio.post(
@@ -124,8 +127,8 @@ class LocalProvider extends ChangeNotifier {
           data: jsonEncode(_allProjectsModel[indexElement].addPoleModel![index]),
         );
         if (response.statusCode == 200) {
-          showProgressNotification(
-              index, _allProjectsModel[indexElement].addPoleModel![index].poleSequence!, true, _allProjectsModel[indexElement]);
+          showProgressNotification(index, _allProjectsModel[indexElement].addPoleModel![index].poleSequence!, true,
+              _allProjectsModel[indexElement]);
           _allProjectsModel[indexElement].addPoleModel!.remove(_allProjectsModel[indexElement].addPoleModel![index]);
           // _allProjectsModel.removeWhere((element) => element.iD == _allProjectsModel.first.iD);
           // _allProjectsModel.add(_allProjectsModel.first);
@@ -148,8 +151,8 @@ class LocalProvider extends ChangeNotifier {
             uploadFirstWithAlert(customerId, indexElement);
           }
         } else {
-          showProgressNotification(
-              index, _allProjectsModel[indexElement].addPoleModel![index].poleSequence!, false, _allProjectsModel[indexElement]);
+          showProgressNotification(index, _allProjectsModel[indexElement].addPoleModel![index].poleSequence!, false,
+              _allProjectsModel[indexElement]);
         }
       }
     } else if (_allProjectsModel[indexElement].startCompleteModel!.isNotEmpty) {

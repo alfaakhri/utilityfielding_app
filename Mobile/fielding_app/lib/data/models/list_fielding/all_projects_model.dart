@@ -19,6 +19,7 @@ class AllProjectsModel {
   int? jobStatus;
   int? fieldingProgressStatus;
   String? fieldingProgress;
+  String? firstPoleLongLat;
   List<AllPolesByLayerModel>? allPolesByLayer;
   List<AddPoleModel>? addPoleModel;
   List<StartCompleteModel>? startCompleteModel;
@@ -41,6 +42,7 @@ class AllProjectsModel {
       this.jobStatus,
       this.fieldingProgressStatus,
       this.fieldingProgress,
+      this.firstPoleLongLat,
       this.allPolesByLayer,
       this.addPoleModel,
       this.startCompleteModel});
@@ -63,6 +65,7 @@ class AllProjectsModel {
     jobStatus = json['JobStatus'];
     fieldingProgressStatus = json['FieldingProgressStatus'];
     fieldingProgress = json['FieldingProgress'];
+    firstPoleLongLat = json['FirstPoleLongLat'];
     if (json['AllPolesByLayer'] != null) {
       allPolesByLayer = <AllPolesByLayerModel>[];
       json['AllPolesByLayer'].forEach((v) {
@@ -106,6 +109,8 @@ class AllProjectsModel {
     data['JobStatus'] = this.jobStatus;
     data['FieldingProgressStatus'] = this.fieldingProgressStatus;
     data['FieldingProgress'] = this.fieldingProgress;
+
+    data['FirstPoleLongLat'] = this.firstPoleLongLat;
     if (this.allPolesByLayer != null) {
       data['AllPolesByLayer'] = this.allPolesByLayer!.map((v) => v.toJson()).toList();
     }
