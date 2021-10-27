@@ -1,5 +1,6 @@
 import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/provider/fielding_provider.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/color_helpers.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/widgets/widgets.exports.dart';
@@ -19,9 +20,14 @@ class CompleteMultiPoleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          context
-              .read<FieldingBloc>()
-              .add(CompleteMultiPole(token!, layerId!, context.read<FieldingProvider>().allPolesByLayer));
+          var connect = context.read<ConnectionProvider>();
+          if (connect.isConnected) {
+            context
+                .read<FieldingBloc>()
+                .add(CompleteMultiPole(token!, layerId!, context.read<FieldingProvider>().allPolesByLayer));
+          } else {
+            Fluttertoast.showToast(msg: "Cant complete fielding, because you are in offline mode");
+          }
         },
         child: Container(
           width: 170,

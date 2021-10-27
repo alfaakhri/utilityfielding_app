@@ -1,7 +1,9 @@
 import 'package:fielding_app/data/models/models.exports.dart';
 import 'package:fielding_app/domain/bloc/auth_bloc/auth_bloc.dart';
+import 'package:fielding_app/domain/bloc/fielding_bloc/fielding_bloc.dart';
 import 'package:fielding_app/domain/bloc/local_bloc/local_bloc.dart';
 import 'package:fielding_app/domain/provider/local_provider.dart';
+import 'package:fielding_app/domain/provider/provider.exports.dart';
 import 'package:fielding_app/external/external.exports.dart';
 import 'package:fielding_app/presentation/ui/list/list.exports.dart';
 import 'package:fielding_app/presentation/ui/local/widgets/item_pole_local.dart';
@@ -25,48 +27,72 @@ class _ListLocalPageState extends State<ListLocalPage> {
   @override
   void initState() {
     super.initState();
-    context.read<LocalBloc>().add(
-        GetListFielding(context.read<AuthBloc>().userModel!.data!.user!.iD!));
+    context.read<LocalBloc>().add(GetListFielding(context.read<AuthBloc>().userModel!.data!.user!.iD!));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: IconThemeData(color: ColorHelpers.colorBlackText),
-        title: Text(
-          "Fielding App",
-          style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
+    var connect = context.read<ConnectionProvider>();
+
+    return WillPopScope(
+      onWillPop: () {
+        context
+            .read<FieldingBloc>()
+            .add(GetFieldingRequest(context.read<UserProvider>().userModel.data!.token, connect.isConnected));
+
+        Get.back();
+        return Future.value(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              context
+                  .read<FieldingBloc>()
+                  .add(GetFieldingRequest(context.read<UserProvider>().userModel.data!.token, connect.isConnected));
+
+              Get.back();
+            },
+            icon: Icon(
+              Icons.arrow_back,
+              color: ColorHelpers.colorBlackText,
+            ),
+          ),
+          iconTheme: IconThemeData(color: ColorHelpers.colorBlackText),
+          title: Text(
+            "Fielding App",
+            style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
+          ),
+          backgroundColor: Colors.white,
         ),
         backgroundColor: Colors.white,
-      ),
-      backgroundColor: Colors.white,
-      body: BlocConsumer<LocalBloc, LocalState>(
-        listener: (context, state) {
-          if (state is PostEditPoleFailed) {
-            Fluttertoast.showToast(msg: state.message!);
-          } else if (state is DeletePoleFailed) {
-            Fluttertoast.showToast(msg: state.message!);
-          } else if (state is GetListFieldingSuccess) {
-            context.read<LocalProvider>().setAllProjectsModel(state.allProjectsModel);
-          }
-        },
-        builder: (context, state) {
-          if (state is GetListFieldingLoading) {
-            return _skeletonLoading();
-          } else if (state is GetListFieldingFailed) {
-            return _handlingWidget(state.message);
-          } else if (state is GetListFieldingSuccess) {
+        body: BlocConsumer<LocalBloc, LocalState>(
+          listener: (context, state) {
+            if (state is PostEditPoleFailed) {
+              Fluttertoast.showToast(msg: state.message!);
+            } else if (state is DeletePoleFailed) {
+              Fluttertoast.showToast(msg: state.message!);
+            } else if (state is GetListFieldingSuccess) {
+              context.read<LocalProvider>().setAllProjectsModel(state.allProjectsModel);
+            }
+          },
+          builder: (context, state) {
+            if (state is GetListFieldingLoading) {
+              return _skeletonLoading();
+            } else if (state is GetListFieldingFailed) {
+              return _handlingWidget(state.message);
+            } else if (state is GetListFieldingSuccess) {
+              return _content();
+            } else if (state is GetListFieldingEmpty) {
+              return _handlingWidget("Fielding Request Empty");
+            } else if (state is PostEditPoleSuccess) {
+              return _content();
+            } else if (state is DeletePoleSuccess) {
+              return _content();
+            }
             return _content();
-          } else if (state is GetListFieldingEmpty) {
-            return _handlingWidget("Fielding Request Empty");
-          } else if (state is PostEditPoleSuccess) {
-            return _content();
-          } else if (state is DeletePoleSuccess) {
-            return _content();
-          }
-          return _content();
-        },
+          },
+        ),
       ),
     );
   }
@@ -83,8 +109,7 @@ class _ListLocalPageState extends State<ListLocalPage> {
         FittedBox(
           child: InkWell(
             onTap: () {
-              context.read<LocalBloc>().add(GetListFielding(
-                  context.read<AuthBloc>().userModel!.data!.user!.iD!));
+              context.read<LocalBloc>().add(GetListFielding(context.read<AuthBloc>().userModel!.data!.user!.iD!));
             },
             child: Container(
               color: ColorHelpers.colorBlueIntro,
@@ -140,10 +165,7 @@ class _ListLocalPageState extends State<ListLocalPage> {
               children: [
                 Text(
                   "Edit Pole Local Storage",
-                  style: TextStyle(
-                      color: ColorHelpers.colorBlackText,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 UIHelper.verticalSpaceSmall,
                 ListView(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const String unknownValue = "-";
-const String version = "2.9.5";
+const String version = "2.9.7";
 
 const String baseGoogleApi = "https://maps.googleapis.com";
 const String apiKey = 'AIzaSyDQ-aesOz_ut1yBv_d6FG-0N60uqDwgLZs';

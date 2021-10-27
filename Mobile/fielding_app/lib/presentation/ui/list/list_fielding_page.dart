@@ -37,12 +37,9 @@ class _ListFieldingPageState extends State<ListFieldingPage> {
       drawer: DrawerWidget(),
       appBar: AppBar(
         iconTheme: IconThemeData(color: ColorHelpers.colorBlackText),
-        title: InkWell(
-          onTap: () {},
-          child: Text(
-            "Fielding App",
-            style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
-          ),
+        title: Text(
+          "Fielding App",
+          style: TextStyle(color: ColorHelpers.colorBlackText, fontSize: 14),
         ),
         backgroundColor: Colors.white,
       ),
